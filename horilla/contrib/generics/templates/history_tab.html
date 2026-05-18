@@ -56,11 +56,11 @@
                                         <div
                                             class="
                                                 absolute left-1/2 transform -translate-x-1/2 md:translate-x-0 md:-ml-[8px] top-4 md:top-7 z-10 w-4 h-4 rounded-full flex items-center justify-center
-                                                {% if not entry.status or entry.status == 'completed' %}bg-[#26c163]{% else %}bg-red-500{% endif %}
+                                                {% if entry|is_error_entry %}bg-red-500{% else %}bg-[#26c163]{% endif %}
                                             "
                                         >
                                             <i
-                                                class="fa-solid {% if not entry.status or entry.status == 'completed' %}fa-check{% else %}fa-times{% endif %} text-white text-[.5rem]"
+                                                class="fa-solid {% if entry|is_error_entry %}fa-times{% else %}fa-check{% endif %} text-white text-[.5rem]"
                                             ></i>
                                         </div>
 

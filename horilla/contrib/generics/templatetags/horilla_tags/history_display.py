@@ -240,6 +240,21 @@ def mail_create_display(entry):
 
 
 @register.filter
+def is_error_entry(entry):
+    """Return True if this history entry represents an error/failure (delete action or failed mail)."""
+    if entry is None:
+        return False
+    action = getattr(entry, "action", None)
+    if action == LogEntry.Action.DELETE:
+        return True
+    if action == LogEntry.Action.CREATE:
+        failed_label = str(MAIL_STATUS_CREATE_LABELS.get("failed", ""))
+        if failed_label and _get_mail_create_label(entry) == failed_label:
+            return True
+    return False
+
+
+@register.filter
 def activity_create_display(entry):
     """
     For an Activity CREATE log entry, return a phrase like "Task added", "Event added",
@@ -248,8 +263,6 @@ def activity_create_display(entry):
     if entry is None:
         return ""
     try:
-        from auditlog.models import LogEntry
-
         if getattr(entry, "action", None) != LogEntry.Action.CREATE:
             return ""
     except Exception:
