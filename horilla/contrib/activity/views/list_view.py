@@ -42,6 +42,7 @@ class ActivityTabListMixin:
 
     @cached_property
     def col_attrs(self):
+        """HTMX column attributes so row clicks open the activity detail with correct referrer."""
         object_id = self.kwargs.get("object_id")
         content_type_id = self.request.GET.get("content_type_id")
 
@@ -356,6 +357,7 @@ class MeetingListView(ActivityTabListMixin, HorillaListView):
         ("Title", "title"),
         ("Start Date", "get_start_date"),
         ("End Date", "get_end_date"),
+        (_("Meeting Link"), "meeting_link_col"),
         (_("Status"), "status_col"),
     ]
 
@@ -726,6 +728,12 @@ class EmailListView(HorillaListView):
         ],
     }
 
+    # Delivered / bounced / opened / failed share the same actions as "sent"
+    action_col["delivered"] = action_col["sent"]
+    action_col["bounced"] = action_col["sent"]
+    action_col["opened"] = action_col["sent"]
+    action_col["failed"] = action_col["sent"]
+
     @cached_property
     def actions(self):
         """
@@ -741,6 +749,8 @@ class EmailListView(HorillaListView):
             "draft": "activity-email-list-draft",
             "scheduled": "activity-email-list-scheduled",
         }
+        # All post-send statuses shown under the "Sent" tab
+        sent_statuses = ["sent", "delivered", "bounced", "opened", "failed"]
 
         queryset = super().get_queryset()
         object_id = self.kwargs.get("object_id")
@@ -759,7 +769,10 @@ class EmailListView(HorillaListView):
             queryset = queryset.none()
 
         if view_type in status_view_map:
-            queryset = queryset.filter(mail_status=view_type)
+            if view_type == "sent":
+                queryset = queryset.filter(mail_status__in=sent_statuses)
+            else:
+                queryset = queryset.filter(mail_status=view_type)
             self.view_id = status_view_map[view_type]
 
         return queryset
@@ -920,4 +933,20 @@ class ActivityStatusUpdateView(LoginRequiredMixin, View):
             request,
             f"Status Updated.",
         )
+        tab_map = {
+            "task": "tab-tasks",
+            "meeting": "tab-meetings",
+            "log_call": "tab-call",
+            "event": "tab-events",
+        }
+        sub_tab = "completed" if status == "completed" else "pending"
+        tab_id = tab_map.get(activity.activity_type, "")
+        if tab_id:
+            return HttpResponse(
+                f"<script>"
+                f"localStorage.setItem('horilla_active_activity_tab','{tab_id}');"
+                f"localStorage.setItem('horilla_active_activity_subtab','{sub_tab}');"
+                f"$('#reloadButton').click();"
+                f"</script>"
+            )
         return HttpResponse("<script>$('#reloadButton').click();</script>")

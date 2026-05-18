@@ -9,6 +9,7 @@ from urllib.parse import urlencode
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.functional import cached_property  # type: ignore
+from django.views import View
 from django.views.generic import DetailView
 
 from horilla.contrib.core.models import HorillaContentType
@@ -46,10 +47,15 @@ ACTIVITY_TYPE_SPECIFIC_FIELDS = {
         ("title", "both"),
         ("start_datetime", "both"),
         ("end_datetime", "both"),
-        ("location", "tab"),
         ("is_all_day", "tab"),
-        ("participants", "tab"),
+        ("is_online", "tab"),
+        ("location", "tab"),
         ("meeting_host", "tab"),
+        ("participants", "tab"),
+        ("meeting_provider", "tab"),
+        ("meeting_url", "tab"),
+        ("reminder", "tab"),
+        ("external_participants", "tab"),
     ],
     "event": [
         ("title", "both"),
@@ -63,6 +69,7 @@ ACTIVITY_TYPE_SPECIFIC_FIELDS = {
         ("owner", "both"),
         ("task_priority", "both"),
         ("due_datetime", "both"),
+        ("assigned_to", "tab"),
     ],
     "log_call": [
         ("call_duration_display", "both"),
@@ -78,7 +85,6 @@ COMMON_FIELDS = [
     "activity_type",
     "status",
     "description",
-    "assigned_to",
     "related_object",
 ]
 
@@ -214,7 +220,6 @@ class ActivityNavbar(LoginRequiredMixin, HorillaNavView):
     Navigation view for managing activity.
     """
 
-    nav_title = Activity._meta.verbose_name_plural
     search_url = reverse_lazy("activity:activity_list_view")
     main_url = reverse_lazy("activity:activity_view")
     filterset_class = ActivityFilter
@@ -439,25 +444,77 @@ class ActivityDeleteView(HorillaSingleDeleteView):
             return HttpResponse(
                 "<script>$('#reloadMainContent').click();$('#reloadButton').click();</script>"
             )
-        if activity_type == "task":
+
+        TAB_MAP = {
+            "task": "tab-tasks",
+            "meeting": "tab-meetings",
+            "log_call": "tab-call",
+            "event": "tab-events",
+        }
+        if activity_type in TAB_MAP:
+            tab_id = TAB_MAP[activity_type]
             return HttpResponse(
-                "<script>$('#TaskTab').click();closeDeleteModeModal();"
-                "$('#reloadButton').click();</script>"
-            )
-        if activity_type == "meeting":
-            return HttpResponse(
-                "<script>$('#MeetingsTab').click();closeDeleteModeModal();"
-                "$('#reloadButton').click();;</script>"
-            )
-        if activity_type == "event":
-            return HttpResponse(
-                "<script>$('#EventTab').click();closeDeleteModeModal();"
-                "$('#reloadButton').click();</script>"
-            )
-        if activity_type == "log_call":
-            return HttpResponse(
-                "<script>$('#CallsTab).click();closeDeleteModeModal();"
-                "$('#reloadButton').click();</script>"
+                f"<script>localStorage.setItem('horilla_active_activity_tab', '{tab_id}');</script>"
             )
 
         return HttpResponse("<script>$('#reloadButton').click();</script>")
+
+
+@method_decorator(htmx_required, name="dispatch")
+class MeetingAddEmailView(LoginRequiredMixin, View):
+    """Add an email pill to the external participants field."""
+
+    def post(self, request, *args, **kwargs):
+        """Append an external participant email to the hidden comma list and re-render pills."""
+        from horilla.shortcuts import render as horilla_render
+
+        email = request.POST.get("email", "").strip()
+        field_type = request.POST.get("field_type", "external_participants")
+        current_list = request.POST.get(f"{field_type}_email_list", "")
+        email_list = (
+            [e.strip() for e in current_list.split(",") if e.strip()]
+            if current_list
+            else []
+        )
+        if email and email not in email_list:
+            email_list.append(email)
+        return horilla_render(
+            request,
+            "email_pills_field.html",
+            {
+                "email_list": email_list,
+                "email_string": ", ".join(email_list),
+                "field_type": field_type,
+                "current_search": "",
+            },
+        )
+
+
+@method_decorator(htmx_required, name="dispatch")
+class MeetingRemoveEmailView(LoginRequiredMixin, View):
+    """Remove an email pill from the external participants field."""
+
+    def post(self, request, *args, **kwargs):
+        """Remove one email from the external participants list and re-render pills."""
+        from horilla.shortcuts import render as horilla_render
+
+        email_to_remove = request.POST.get("email_to_remove", "").strip()
+        field_type = request.POST.get("field_type", "external_participants")
+        current_list = request.POST.get(f"{field_type}_email_list", "")
+        email_list = (
+            [e.strip() for e in current_list.split(",") if e.strip()]
+            if current_list
+            else []
+        )
+        if email_to_remove in email_list:
+            email_list.remove(email_to_remove)
+        return horilla_render(
+            request,
+            "email_pills_field.html",
+            {
+                "email_list": email_list,
+                "email_string": ", ".join(email_list),
+                "field_type": field_type,
+                "current_search": "",
+            },
+        )

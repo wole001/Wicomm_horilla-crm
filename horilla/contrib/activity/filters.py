@@ -22,5 +22,5 @@ class ActivityFilter(OwnerFiltersetMixin, HorillaFilterSet):
 
         model = Activity
         fields = "__all__"
-        exclude = ["additional_info", "id"]
+        exclude = ["additional_info", "id", "external_participants"]
         search_fields = ["subject", "activity_type"]

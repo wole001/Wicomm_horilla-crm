@@ -132,4 +132,14 @@ urlpatterns = [
         views.ActivitynNotesAndAttachments.as_view(),
         name="activity_notes_attachments",
     ),
+    path(
+        "meeting/add-email/",
+        views.MeetingAddEmailView.as_view(),
+        name="meeting_add_email",
+    ),
+    path(
+        "meeting/remove-email/",
+        views.MeetingRemoveEmailView.as_view(),
+        name="meeting_remove_email",
+    ),
 ]

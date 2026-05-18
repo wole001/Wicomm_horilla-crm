@@ -87,6 +87,16 @@ class Activity(HorillaCoreModel):
     location = models.CharField(
         max_length=100, null=True, blank=True, verbose_name=_("Location")
     )
+    is_online = models.BooleanField(default=False, verbose_name=_("Online Meeting"))
+    meeting_provider = models.CharField(
+        max_length=30,
+        null=True,
+        blank=True,
+        verbose_name=_("Meeting Provider"),
+    )
+    meeting_url = models.URLField(
+        max_length=2000, null=True, blank=True, verbose_name=_("Meeting Link")
+    )
     is_all_day = models.BooleanField(default=False, verbose_name=_("All Day"))
     assigned_to = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
@@ -155,6 +165,27 @@ class Activity(HorillaCoreModel):
     )
     call_purpose = models.CharField(
         max_length=100, null=True, blank=True, verbose_name=_("Call Purpose")
+    )
+
+    # Meeting extras
+    external_participants = models.JSONField(
+        default=list, blank=True, verbose_name=_("External Participants")
+    )
+    REMINDER_CHOICES = [
+        ("", _("No Reminder")),
+        ("5", _("5 minutes before")),
+        ("10", _("10 minutes before")),
+        ("15", _("15 minutes before")),
+        ("30", _("30 minutes before")),
+        ("60", _("1 hour before")),
+        ("1440", _("1 day before")),
+    ]
+    reminder = models.CharField(
+        max_length=10,
+        choices=REMINDER_CHOICES,
+        blank=True,
+        null=True,
+        verbose_name=_("Reminder"),
     )
 
     OWNER_FIELDS = ["owner", "assigned_to"]
@@ -232,6 +263,15 @@ class Activity(HorillaCoreModel):
         if self.activity_type in ["event", "meeting"] and self.is_all_day:
             return "All Day Event"
         return self.end_datetime or self.due_datetime or self.created_at
+
+    def meeting_link_col(self):
+        """Return a clickable Join link if this is an online meeting with a URL."""
+        if self.is_online and self.meeting_url:
+            return render_template(
+                path="meeting_link_col.html",
+                context={"meeting_url": self.meeting_url},
+            )
+        return "—"
 
     def status_col(self):
         """

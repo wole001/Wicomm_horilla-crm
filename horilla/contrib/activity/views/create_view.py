@@ -4,6 +4,7 @@ Create and update views for activities (tasks, meetings, calls, events) in the H
 
 # Standard library imports
 import datetime
+from types import SimpleNamespace
 
 # Third-party imports (Django)
 from django.contrib import messages
@@ -160,6 +161,7 @@ class MeetingsCreateForm(LoginRequiredMixin, HorillaSingleFormView):
 
     model = Activity
     form_class = MeetingsForm
+    template_name = "meeting_create_form.html"
     save_and_new = False
     fields = [
         "object_id",
@@ -173,6 +175,10 @@ class MeetingsCreateForm(LoginRequiredMixin, HorillaSingleFormView):
         "participants",
         "meeting_host",
         "is_all_day",
+        "is_online",
+        "location",
+        "meeting_provider",
+        "reminder",
         "activity_type",
     ]
     modal_height = False
@@ -192,26 +198,47 @@ class MeetingsCreateForm(LoginRequiredMixin, HorillaSingleFormView):
         initial = super().get_initial()
         if self.request.method == "POST":
             initial["is_all_day"] = self.request.POST.get("is_all_day") == "on"
+            initial["is_online"] = self.request.POST.get("is_online") == "on"
         else:
             object_id = self.request.GET.get("object_id")
             model_name = self.request.GET.get("model_name")
             all_day = self.request.GET.get("is_all_day")
             toggle_is_all_day = self.request.GET.get("toggle_is_all_day")
+            toggle_is_online = self.request.GET.get("toggle_is_online")
 
-            # If toggle_is_all_day is present and we're in edit mode, force is_all_day to False
+            content_type_for_initial = None
+            if object_id and not model_name:
+                ct_param = self.request.GET.get("content_type")
+                if ct_param:
+                    try:
+                        content_type_for_initial = HorillaContentType.objects.get(
+                            pk=int(ct_param)
+                        )
+                        model_name = content_type_for_initial.model
+                    except (HorillaContentType.DoesNotExist, ValueError, TypeError):
+                        pass
+
             if toggle_is_all_day == "true" and self.kwargs.get("pk"):
                 initial["is_all_day"] = False
-
             elif all_day is not None:
                 initial["is_all_day"] = all_day == "on"
-
             elif hasattr(self, "object") and self.object:
                 initial["is_all_day"] = self.object.is_all_day
 
+            if toggle_is_online == "true" and self.kwargs.get("pk"):
+                initial["is_online"] = False
+            elif self.request.GET.get("is_online") is not None:
+                initial["is_online"] = self.request.GET.get("is_online") == "on"
+            elif hasattr(self, "object") and self.object:
+                initial["is_online"] = self.object.is_online
+
             if object_id and model_name:
                 initial["object_id"] = object_id
-                content_type = HorillaContentType.objects.get(model=model_name.lower())
-                initial["content_type"] = content_type.id
+                if content_type_for_initial is not None:
+                    initial["content_type"] = content_type_for_initial.id
+                else:
+                    ct_row = HorillaContentType.objects.get(model=model_name.lower())
+                    initial["content_type"] = ct_row.id
                 initial["activity_type"] = "meeting"
                 initial["owner"] = self.request.user
 
@@ -222,6 +249,19 @@ class MeetingsCreateForm(LoginRequiredMixin, HorillaSingleFormView):
         object_id = request.GET.get("object_id")
         model_name = request.GET.get("model_name")
         app_label = request.GET.get("app_label")
+
+        # HTMX (e.g. is_all_day) hx-include only serializes form fields; model_name /
+        # app_label are not inputs and were only on the initial URL. Recover them
+        # from content_type so partial GETs still pass the gate below.
+        if object_id and not model_name:
+            ct_param = request.GET.get("content_type")
+            if ct_param:
+                try:
+                    ct = HorillaContentType.objects.get(pk=int(ct_param))
+                    model_name = ct.model
+                    app_label = app_label or ct.app_label
+                except (HorillaContentType.DoesNotExist, ValueError, TypeError):
+                    pass
 
         if pk:
             try:
@@ -284,27 +324,278 @@ class MeetingsCreateForm(LoginRequiredMixin, HorillaSingleFormView):
                 return super().get(request, *args, **kwargs)
         return render(request, "403.html")
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        if self.request.method == "POST":
-            return kwargs
-
-        initial = self.get_initial()
-        get_data = self.request.GET.dict()
-        for key, value in get_data.items():
-            if value:
-                initial[key] = value
-        kwargs["initial"] = initial
-        return kwargs
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        instance = getattr(self, "object", None)
+        existing = (
+            instance.external_participants if instance and instance.pk else None
+        ) or []
+        if not isinstance(existing, list):
+            existing = []
+        context["ext_email_list"] = existing
+        context["ext_email_string"] = ",".join(existing)
+        return context
 
     def form_valid(self, form):
         """
-        Handle form submission and save the meeting.
+        Auto-generate meeting URL for OAuth providers before base class saves,
+        then send invite emails to external participants.
         """
+        provider = form.cleaned_data.get("meeting_provider") or ""
+        is_online = form.cleaned_data.get("is_online", False)
+
+        # Capture datetime from cleaned_data now — available before and after save
+        start_dt = form.cleaned_data.get("start_datetime")
+        end_dt = form.cleaned_data.get("end_datetime")
+
+        generated_url = ""
+        if is_online and provider:
+            activity = form.save(commit=False)
+            activity.start_datetime = start_dt
+            activity.end_datetime = end_dt
+            host = activity.meeting_host or self.request.user
+            generated_url = self._generate_url(provider, host, activity) or ""
+            if generated_url:
+                form.instance.meeting_url = generated_url
+
+        # Persist external_participants from cleaned_data into the instance
+        external_emails = form.cleaned_data.get("external_participants") or []
+        form.instance.external_participants = external_emails
+
         super().form_valid(form)
+
+        # Guarantee meeting_url is written — ModelForm only saves its own Meta.fields
+        if generated_url and form.instance.pk:
+            Activity.objects.filter(pk=form.instance.pk).update(
+                meeting_url=generated_url
+            )
+            form.instance.meeting_url = generated_url
+
+        # Send invite emails after save so we have pk and final meeting_url
+        participant_emails = list(
+            form.instance.participants.exclude(email="").values_list("email", flat=True)
+        )
+        all_recipients = list(dict.fromkeys(participant_emails + external_emails))
+        if all_recipients:
+            # Pass datetime from cleaned_data so invite shows correct time even if
+            # form.instance.start_datetime wasn't persisted yet when we read it
+            form.instance.start_datetime = form.instance.start_datetime or start_dt
+            form.instance.end_datetime = form.instance.end_datetime or end_dt
+            self._send_invites(form.instance, all_recipients)
+
         return HttpResponse(
             "<script>htmx.trigger('#MeetingsTab','click');closeModal();</script>"
         )
+
+    def _send_invites(self, activity, emails):
+        """Send an HTML meeting invitation via the configured outgoing mail server."""
+        from django.conf import settings
+        from django.core.mail import EmailMultiAlternatives, get_connection
+
+        if not emails:
+            return
+
+        # Resolve outgoing mail config
+        mail_config = None
+        try:
+            from horilla.contrib.mail.models import HorillaMailConfiguration
+
+            company = getattr(self.request.user, "company", None)
+            mail_config = (
+                HorillaMailConfiguration.objects.filter(
+                    company=company, mail_channel="outgoing", is_primary=True
+                ).first()
+                or HorillaMailConfiguration.objects.filter(
+                    mail_channel="outgoing", is_primary=True
+                ).first()
+                or HorillaMailConfiguration.objects.filter(
+                    mail_channel="outgoing"
+                ).first()
+            )
+        except Exception:
+            pass
+
+        title = activity.title or activity.subject or "Meeting"
+        meeting_url = activity.meeting_url or ""
+        start = activity.start_datetime
+        end = activity.end_datetime
+        host_user = activity.meeting_host or self.request.user
+        host_name = str(host_user)
+
+        # Convert UTC datetimes to the host user's local timezone
+        def _to_local(dt):
+            if not dt:
+                return None
+            try:
+                from zoneinfo import ZoneInfo
+
+                tz_name = getattr(host_user, "time_zone", None)
+                if tz_name:
+                    return dt.astimezone(ZoneInfo(tz_name))
+            except Exception:
+                pass
+            return timezone.localtime(dt)
+
+        local_start = _to_local(start)
+        local_end = _to_local(end)
+        start_str = (
+            local_start.strftime("%A, %B %d, %Y at %I:%M %p") if local_start else "TBD"
+        )
+        end_str = local_end.strftime("%I:%M %p") if local_end else ""
+        time_line = f"{start_str}{' – ' + end_str if end_str else ''}"
+
+        company = getattr(self.request, "active_company", None) or getattr(
+            self.request.user, "company", None
+        )
+        company_name = str(company) if company else "Horilla CRM"
+
+        html_body = f"""
+<div style="max-width:650px;margin:auto;background:white;border-radius:12px;padding:35px;box-shadow:0 4px 12px rgba(0,0,0,0.08)">
+  <h2 style="color:#000000;text-align:center;font-size:24px;margin-bottom:25px">
+    Meeting Invitation
+  </h2>
+
+  <p style="font-size:14px;color:#333;line-height:1.6">
+    You have been invited to a meeting by <strong>{host_name}</strong>.
+  </p>
+
+  <div style="margin:20px 0;padding:15px;background:#fdf2f1;border-left:4px solid #e54f38;border-radius:6px">
+    <p style="margin:6px 0;font-size:14px;color:#333">
+      &#128197; <strong>Title:</strong> {title}
+    </p>
+    <p style="margin:6px 0;font-size:14px;color:#333">
+      &#128336; <strong>When:</strong> {time_line}
+    </p>
+    <p style="margin:6px 0;font-size:14px;color:#333">
+      &#128100; <strong>Host:</strong> {host_name}
+    </p>
+    {f'<p style="margin:6px 0;font-size:14px;color:#333">&#128279; <strong>Join Link:</strong> <a href="{meeting_url}" style="color:#e54f38;">{meeting_url}</a></p>' if meeting_url else ''}
+  </div>
+
+  {f'<div style="text-align:center;margin-top:25px"><a href="{meeting_url}" style="display:inline-block;padding:10px 20px;background-color:#e54f38;color:white;text-decoration:none;border-radius:6px;font-weight:500;margin:5px">Join Meeting</a></div>' if meeting_url else ''}
+
+  <hr style="margin:30px 0;border:none;border-top:1px solid #eee">
+
+  <p style="font-size:12px;color:#888;text-align:center;line-height:1.5">
+    This invitation was sent via <strong>{company_name}</strong>.<br>
+    If you were not expecting this, please ignore this email.
+  </p>
+</div>"""
+
+        plain_body = (
+            f"You have been invited to a meeting by {host_name}.\n\n"
+            f"Title: {title}\nWhen: {time_line}\nHost: {host_name}\n"
+            + (f"Join: {meeting_url}\n" if meeting_url else "")
+        )
+
+        from_email = (
+            mail_config.from_email
+            if mail_config and mail_config.from_email
+            else getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@example.com")
+        )
+
+        try:
+            connection = (
+                get_connection(
+                    "horilla.contrib.mail.backends.HorillaDefaultMailBackend"
+                )
+                if mail_config
+                else get_connection()
+            )
+
+            msg = EmailMultiAlternatives(
+                subject=f"Meeting Invitation: {title}",
+                body=plain_body,
+                from_email=from_email,
+                to=emails,
+                connection=connection,
+            )
+            msg.attach_alternative(html_body, "text/html")
+            msg.send(fail_silently=True)
+        except Exception:
+            pass
+
+    def _generate_url(self, provider, host, activity):
+        """Call the appropriate OAuth API to create a meeting link."""
+        title = activity.title or activity.subject or "Meeting"
+        start = activity.start_datetime
+        end = activity.end_datetime
+        try:
+            if provider == "zoom":
+                from horilla.contrib.meeting.models import ZoomOAuthConfig
+                from horilla.contrib.meeting.oauth.zoom import create_meeting
+
+                config = ZoomOAuthConfig.objects.filter(user=host).first()
+                if config and config.is_connected():
+                    url, _ = create_meeting(config, title, start, end)
+                    return url or ""
+            elif provider == "ms_teams":
+                from horilla.contrib.meeting.models import MicrosoftTeamsOAuthConfig
+                from horilla.contrib.meeting.oauth.teams import create_meeting
+
+                config = MicrosoftTeamsOAuthConfig.objects.filter(user=host).first()
+                if config and config.is_connected():
+                    url, error = create_meeting(config, title, start, end)
+                    if error:
+                        messages.error(self.request, error)
+                    return url or ""
+            elif provider == "google_meet":
+                import time as _time
+                from datetime import datetime as _dt
+                from datetime import timedelta as _td
+                from datetime import timezone as _tz
+
+                from horilla.contrib.calendar.google_calendar.client_settings import (
+                    GOOGLE_CALENDAR_API_BASE,
+                    PRIMARY_CALENDAR_ID,
+                )
+                from horilla.contrib.calendar.google_calendar.service import (
+                    _get_oauth_session,
+                )
+                from horilla.contrib.calendar.models import GoogleCalendarConfig
+
+                config = GoogleCalendarConfig.objects.filter(user=host).first()
+                if config and config.is_connected():
+                    session = _get_oauth_session(config)
+                    _start = start or _dt.now(_tz.utc)
+                    _end = end or (_start + _td(hours=1))
+
+                    # Convert to UTC ISO string
+                    def _fmt(d):
+                        return d.astimezone(_tz.utc).strftime("%Y-%m-%dT%H:%M:00")
+
+                    body = {
+                        "summary": title,
+                        "start": {"dateTime": _fmt(_start), "timeZone": "UTC"},
+                        "end": {"dateTime": _fmt(_end), "timeZone": "UTC"},
+                        "conferenceData": {
+                            "createRequest": {
+                                "requestId": f"horilla-meet-{host.pk}-{int(_time.time())}",
+                                "conferenceSolutionKey": {"type": "hangoutsMeet"},
+                            }
+                        },
+                    }
+                    url = f"{GOOGLE_CALENDAR_API_BASE}/calendars/{PRIMARY_CALENDAR_ID}/events?conferenceDataVersion=1"
+                    resp = session.post(url, json=body)
+                    resp.raise_for_status()
+                    result = resp.json()
+                    meet_url = result.get("hangoutLink") or ""
+                    if not meet_url:
+                        for ep in result.get("conferenceData", {}).get(
+                            "entryPoints", []
+                        ):
+                            if ep.get("entryPointType") == "video":
+                                meet_url = ep.get("uri", "")
+                                break
+                    # Delete the Google Calendar event — we only needed it to provision the Meet link
+                    google_event_id = result.get("id")
+                    if google_event_id:
+                        del_url = f"{GOOGLE_CALENDAR_API_BASE}/calendars/{PRIMARY_CALENDAR_ID}/events/{google_event_id}"
+                        session.delete(del_url)
+                    return meet_url
+        except Exception:
+            pass
+        return ""
 
 
 @method_decorator(htmx_required, name="dispatch")
@@ -608,6 +899,7 @@ class ActivityCreateView(LoginRequiredMixin, HorillaSingleFormView):
 
     model = Activity
     form_class = ActivityCreateForm
+    template_name = "activity_create_form.html"
     success_url = reverse_lazy("activity:activity_list")
     view_id = "activity-form-view"
     save_and_new = False
@@ -630,6 +922,7 @@ class ActivityCreateView(LoginRequiredMixin, HorillaSingleFormView):
             "participants",
             "description",
         ],
+        # Mirrors MeetingsCreateForm / MeetingsForm (pills + provider + online are not on this template).
         "meeting": [
             "activity_type",
             "subject",
@@ -640,11 +933,13 @@ class ActivityCreateView(LoginRequiredMixin, HorillaSingleFormView):
             "title",
             "start_datetime",
             "end_datetime",
-            "location",
-            "is_all_day",
-            "assigned_to",
-            "participants",
             "meeting_host",
+            "is_all_day",
+            "is_online",
+            "location",
+            "meeting_provider",
+            "participants",
+            "reminder",
             "description",
         ],
         "task": [
@@ -698,6 +993,7 @@ class ActivityCreateView(LoginRequiredMixin, HorillaSingleFormView):
 
         if self.request.method == "POST":
             initial["is_all_day"] = self.request.POST.get("is_all_day") == "on"
+            initial["is_online"] = self.request.POST.get("is_online") == "on"
         else:
             object_id = self.request.GET.get("object_id")
             model_name = self.request.GET.get("model_name")
@@ -709,7 +1005,9 @@ class ActivityCreateView(LoginRequiredMixin, HorillaSingleFormView):
             )
 
             if is_create:
-                initial["activity_type"] = "event"
+                initial["activity_type"] = (
+                    self.request.GET.get("activity_type") or "event"
+                )
                 initial["owner"] = self.request.user
             else:
                 initial["activity_type"] = getattr(
@@ -722,6 +1020,21 @@ class ActivityCreateView(LoginRequiredMixin, HorillaSingleFormView):
                 initial["is_all_day"] = all_day == "on"
             elif hasattr(self, "object") and self.object:
                 initial["is_all_day"] = self.object.is_all_day
+
+            toggle_is_online = self.request.GET.get("toggle_is_online")
+            if toggle_is_online == "true" and self.kwargs.get("pk"):
+                initial["is_online"] = False
+            elif self.request.GET.get("is_online") is not None:
+                initial["is_online"] = self.request.GET.get("is_online") == "on"
+            elif hasattr(self, "object") and self.object:
+                initial["is_online"] = getattr(self.object, "is_online", False)
+
+            if (
+                is_create
+                and self.request.GET.get("activity_type") == "meeting"
+                and self.request.GET.get("is_online") is None
+            ):
+                initial["is_online"] = False
 
             if is_create and date_str:
                 try:
@@ -777,6 +1090,9 @@ class ActivityCreateView(LoginRequiredMixin, HorillaSingleFormView):
             for field in self.ACTIVITY_FIELD_MAP.get(
                 activity_type, self.ACTIVITY_FIELD_MAP["event"]
             ):
+                if field == "is_online" and field in self.request.GET:
+                    kwargs["initial"][field] = self.request.GET.get("is_online") == "on"
+                    continue
                 if field in self.request.GET:
                     value = self.request.GET.get(field)
                     if value:
@@ -789,6 +1105,14 @@ class ActivityCreateView(LoginRequiredMixin, HorillaSingleFormView):
                     values = self.request.GET.getlist(field)
                     if values:
                         kwargs["initial"][field] = values
+
+            # New activity + meeting type: default to in-person unless is_online is in the query.
+            if (
+                activity_type == "meeting"
+                and "is_online" not in self.request.GET
+                and not (self.kwargs.get("pk") or self.request.GET.get("id"))
+            ):
+                kwargs["initial"]["is_online"] = False
 
             # Preserve date/time values across activity-type transitions
             # even when the current type does not expose those fields.
@@ -817,6 +1141,27 @@ class ActivityCreateView(LoginRequiredMixin, HorillaSingleFormView):
         context["form_url"] = self.form_url
         context["modal_height"] = True
         context["view_id"] = self.view_id
+        activity_type = (
+            self.request.POST.get("activity_type")
+            or self.request.GET.get("activity_type")
+            or (
+                getattr(self.object, "activity_type", None)
+                if getattr(self, "object", None)
+                else None
+            )
+            or "event"
+        )
+        show_meeting = activity_type == "meeting"
+        context["show_meeting_extras"] = show_meeting
+        if show_meeting:
+            instance = getattr(self, "object", None)
+            existing = (
+                instance.external_participants if instance and instance.pk else None
+            ) or []
+            if not isinstance(existing, list):
+                existing = []
+            context["ext_email_list"] = existing
+            context["ext_email_string"] = ",".join(existing)
         return context
 
     @cached_property
@@ -830,6 +1175,51 @@ class ActivityCreateView(LoginRequiredMixin, HorillaSingleFormView):
         if pk:
             return reverse_lazy("activity:activity_edit_form", kwargs={"pk": pk})
         return reverse_lazy("activity:activity_create_form")
+
+    def _prepare_meeting_activity(self, form):
+        """Set meeting URL and external participants on the instance before save."""
+        provider = form.cleaned_data.get("meeting_provider") or ""
+        is_online = form.cleaned_data.get("is_online", False)
+        start_dt = form.cleaned_data.get("start_datetime")
+        end_dt = form.cleaned_data.get("end_datetime")
+        external_emails = form.cleaned_data.get("external_participants") or []
+        inst = form.instance
+        inst.external_participants = external_emails
+        inst.activity_type = "meeting"
+        form._meeting_generated_url = ""
+        if is_online and provider:
+            inst.start_datetime = start_dt
+            inst.end_datetime = end_dt
+            host = inst.meeting_host or self.request.user
+            bridge = SimpleNamespace(request=self.request)
+            url = MeetingsCreateForm._generate_url(bridge, provider, host, inst) or ""
+            form._meeting_generated_url = url
+            if url:
+                inst.meeting_url = url
+
+    def _after_meeting_activity_save(self, form):
+        """Persist generated meeting link and send invites (same as MeetingsCreateForm)."""
+        inst = self.object
+        if not inst or not inst.pk:
+            return
+        generated_url = getattr(form, "_meeting_generated_url", "") or ""
+        if generated_url:
+            Activity.objects.filter(pk=inst.pk).update(meeting_url=generated_url)
+            inst.meeting_url = generated_url
+        external_emails = form.cleaned_data.get("external_participants") or []
+        participant_emails = list(
+            inst.participants.exclude(email="").values_list("email", flat=True)
+        )
+        all_recipients = list(dict.fromkeys(participant_emails + external_emails))
+        if all_recipients:
+            inst.start_datetime = inst.start_datetime or form.cleaned_data.get(
+                "start_datetime"
+            )
+            inst.end_datetime = inst.end_datetime or form.cleaned_data.get(
+                "end_datetime"
+            )
+            bridge = SimpleNamespace(request=self.request)
+            MeetingsCreateForm._send_invites(bridge, inst, all_recipients)
 
     def _is_calendar_request(self):
         """Return True when the request originates from the calendar page."""
@@ -856,6 +1246,9 @@ class ActivityCreateView(LoginRequiredMixin, HorillaSingleFormView):
         """
         Handle form submission and save the activity.
         """
+        is_meeting = form.cleaned_data.get("activity_type") == "meeting"
+        if is_meeting:
+            self._prepare_meeting_activity(form)
         if self._is_calendar_request():
             self.return_response = HttpResponse(
                 "<script>$('#reloadMainContent').click();closeModal();</script>"
@@ -864,4 +1257,7 @@ class ActivityCreateView(LoginRequiredMixin, HorillaSingleFormView):
             self.return_response = HttpResponse(
                 "<script>$('#reloadButton').click();closeModal();</script>"
             )
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        if is_meeting:
+            self._after_meeting_activity_save(form)
+        return response

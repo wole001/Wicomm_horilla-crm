@@ -1,4 +1,4 @@
-﻿"""
+"""
 Forms module for Activity-related operations including Meetings,
 Calls, Events, and general Activity creation.
 """
@@ -26,6 +26,19 @@ from .models import Activity
 class MeetingsForm(OwnerQuerysetMixin, HorillaModelForm):
     """Form for filtering meetings"""
 
+    meeting_provider = forms.ChoiceField(
+        choices=[],
+        required=False,
+        label="Meeting Provider",
+        widget=forms.Select(
+            attrs={
+                "class": "w-full border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:border-primary-500",
+                "data-online-field": "true",
+                "id": "id_meeting_provider",
+            }
+        ),
+    )
+
     class Meta:
         """
         Meta class for MeetingsForm
@@ -44,6 +57,10 @@ class MeetingsForm(OwnerQuerysetMixin, HorillaModelForm):
             "participants",
             "meeting_host",
             "is_all_day",
+            "is_online",
+            "location",
+            "meeting_provider",
+            "reminder",
             "activity_type",
         ]
 
@@ -58,14 +75,41 @@ class MeetingsForm(OwnerQuerysetMixin, HorillaModelForm):
                     "hx-target": "#activity-form-view",
                 }
             ),
+            "is_online": forms.CheckboxInput(
+                attrs={
+                    "onchange": "toggleMeetingUrlField(this)",
+                    "hx-trigger": "change",
+                    "hx-swap": "outerHTML",
+                    "hx-select": "#activity-form-view",
+                    "hx-include": "#activity-form-view",
+                    "hx-target": "#activity-form-view",
+                }
+            ),
+            "reminder": forms.Select(
+                attrs={
+                    "class": "w-full border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:border-primary-500",
+                }
+            ),
             "object_id": forms.HiddenInput(),
             "content_type": forms.HiddenInput(),
             "activity_type": forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
+        self._request = kwargs.pop("request", None)
         super().__init__(*args, **kwargs)
+
+        # Determine is_online before all-day handling (online meetings need start/end times)
+        is_online = self.data.get("is_online") if self.data else None
+        if is_online is None:
+            if self.instance.pk:
+                is_online = self.instance.is_online
+            else:
+                is_online = self.initial.get("is_online", False)
+        is_online = is_online in ("on", True, "true", "True")
+
         if self.instance.pk:
+            online_hx = f"/activity/meeting-update-form/{self.instance.pk}/"
             self.fields["is_all_day"].widget.attrs.update(
                 {
                     "hx-get": (
@@ -75,32 +119,110 @@ class MeetingsForm(OwnerQuerysetMixin, HorillaModelForm):
                 }
             )
         else:
+            online_hx = "/activity/meeting-create-form/"
             self.fields["is_all_day"].widget.attrs.update(
                 {"hx-get": "/activity/meeting-create-form/"}
             )
+        self.fields["is_online"].widget.attrs.update({"hx-get": online_hx})
 
-        is_all_day = (
-            self.data.get("is_all_day", False)
-            if self.data
-            else self.initial.get("is_all_day")
+        if is_online:
+            self.fields["is_all_day"].widget = forms.HiddenInput()
+            self.fields["is_all_day"].required = False
+            self.initial["is_all_day"] = False
+            self.fields["location"].widget = forms.HiddenInput()
+            self.fields["location"].required = False
+        else:
+            self.fields["location"].required = True
+            is_all_day = (
+                self.data.get("is_all_day", False)
+                if self.data
+                else self.initial.get("is_all_day")
+            )
+            if is_all_day == "on":
+                is_all_day = True
+            elif is_all_day in ("off", False):
+                is_all_day = False
+
+            if is_all_day:
+                self.fields["start_datetime"].widget = forms.HiddenInput()
+                self.initial["start_datetime"] = None
+                self.fields["end_datetime"].widget = forms.HiddenInput()
+                self.initial["end_datetime"] = None
+
+        # Build provider choices from connected accounts
+        user = getattr(self._request, "user", None) if self._request else None
+        provider_choices = self._get_provider_choices(user)
+        self.fields["meeting_provider"].choices = provider_choices
+        self.fields["meeting_provider"].required = False
+
+        # Show/hide provider dropdown with is_online toggle
+        self.fields["meeting_provider"].widget.attrs.update(
+            {"data-online-field": "true"}
         )
-        if is_all_day == "on":  # Checkbox returns 'on' when checked
-            is_all_day = True
-        elif is_all_day in ("off", False):
-            is_all_day = False
+        if not is_online:
+            self.fields["meeting_provider"].widget.attrs.update(
+                {"data-initially-hidden": "true"}
+            )
 
-        # Update widget visibility based on current is_all_day value
-        if is_all_day:
-            self.fields["start_datetime"].widget = forms.HiddenInput()
-            self.initial["start_datetime"] = None
-            self.fields["end_datetime"].widget = forms.HiddenInput()
-            self.initial["end_datetime"] = None
+    def _get_provider_choices(self, user):
+        choices = [("", "— Select Provider —")]
+        if not user:
+            return choices
+        try:
+            from horilla.contrib.calendar.models import GoogleCalendarConfig
+            from horilla.contrib.meeting.models import (
+                MeetingIntegrationSetting,
+                MicrosoftTeamsOAuthConfig,
+                UserMeetingConfig,
+                ZoomOAuthConfig,
+            )
+
+            company = getattr(user, "company", None)
+            if not company or not MeetingIntegrationSetting.user_can_access(
+                user, company
+            ):
+                return choices
+            if ZoomOAuthConfig.objects.filter(
+                user=user, token__has_key="access_token"
+            ).exists():
+                choices.append(("zoom", "Zoom"))
+            gcal = GoogleCalendarConfig.objects.filter(user=user).first()
+            if gcal and gcal.is_connected():
+                choices.append(("google_meet", "Google Meet"))
+            if MicrosoftTeamsOAuthConfig.objects.filter(
+                user=user, token__has_key="access_token"
+            ).exists():
+                choices.append(("ms_teams", "Microsoft Teams"))
+        except Exception:
+            pass
+        return choices
 
     def clean(self):
         cleaned_data = super().clean()
         start_datetime = cleaned_data.get("start_datetime")
         end_datetime = cleaned_data.get("end_datetime")
         is_all_day = cleaned_data.get("is_all_day")
+        if cleaned_data.get("is_online"):
+            cleaned_data["is_all_day"] = False
+            is_all_day = False
+            cleaned_data["location"] = ""
+        else:
+            loc = (cleaned_data.get("location") or "").strip()
+            cleaned_data["location"] = loc
+            if not loc and "location" not in self.errors:
+                self.add_error(
+                    "location",
+                    ValidationError(
+                        "In-person meetings require a location (room, building, or address)."
+                    ),
+                )
+
+        # Read the hidden email list posted by the pills widget
+        raw = ""
+        if self.data:
+            raw = self.data.get("external_participants_email", "") or ""
+        emails = [e.strip().lower() for e in raw.split(",") if e.strip()]
+        cleaned_data["external_participants"] = emails
 
         if not is_all_day and start_datetime and end_datetime:
             if start_datetime.date() == end_datetime.date():
@@ -310,6 +432,8 @@ class ActivityCreateForm(OwnerQuerysetMixin, HorillaModelForm):
             "created_by",
             "updated_by",
             "additional_info",
+            "meeting_url",
+            "external_participants",
         ]
         widgets = {
             "activity_type": forms.Select(
@@ -347,11 +471,14 @@ class ActivityCreateForm(OwnerQuerysetMixin, HorillaModelForm):
         visible_fields = kwargs.pop("visible_fields", None)
         super().__init__(*args, **kwargs)
 
+        excluded_activity_types = []
         if self.request and self.request.GET.get("view") == "calendar":
+            excluded_activity_types.extend(["log_call", "email"])
+        if excluded_activity_types:
             self.fields["activity_type"].choices = [
                 (value, label)
                 for value, label in self.fields["activity_type"].choices
-                if value not in ("log_call", "email")
+                if value not in excluded_activity_types
             ]
 
         # Get activity_type from initial, submitted data, or instance
@@ -416,6 +543,16 @@ class ActivityCreateForm(OwnerQuerysetMixin, HorillaModelForm):
                 else:
                     is_all_day = bool(is_all_day)
 
+                if activity_type == "meeting":
+                    ion = self.data.get("is_online") if self.data else None
+                    if ion is None:
+                        if self.instance.pk:
+                            ion = self.instance.is_online
+                        else:
+                            ion = self.initial.get("is_online", False)
+                    if ion in ("on", True, "true", "True"):
+                        is_all_day = False
+
                 if is_all_day:
                     for field_name in ["start_datetime", "end_datetime"]:
                         if field_name in self.fields:
@@ -473,6 +610,9 @@ class ActivityCreateForm(OwnerQuerysetMixin, HorillaModelForm):
             self.fields["object_id"].choices = [("", "Select Related Object")]
 
         self.fields["object_id"].widget = forms.Select(attrs=object_id_attrs)
+
+        if activity_type == "meeting":
+            self._configure_activity_meeting_fields(base_url)
 
         if visible_fields is not None:
             ordered_fields = OrderedDict()
@@ -556,6 +696,28 @@ class ActivityCreateForm(OwnerQuerysetMixin, HorillaModelForm):
                     {"object_id": "Invalid object selection."}
                 ) from exc
 
+        activity_type = cleaned_data.get("activity_type")
+        if activity_type == "meeting":
+            raw = self.data.get("external_participants_email", "") if self.data else ""
+            emails = [e.strip().lower() for e in raw.split(",") if e.strip()]
+            cleaned_data["external_participants"] = emails
+            if cleaned_data.get("is_online"):
+                cleaned_data["is_all_day"] = False
+                is_all_day = False
+                cleaned_data["location"] = ""
+            else:
+                loc = (cleaned_data.get("location") or "").strip()
+                cleaned_data["location"] = loc
+                if not loc and "location" not in self.errors:
+                    self.add_error(
+                        "location",
+                        ValidationError(
+                            "In-person meetings require a location "
+                            "(room, building, or address)."
+                        ),
+                    )
+            is_all_day = cleaned_data.get("is_all_day")
+
         # Existing date/time validation
         if not is_all_day and start_datetime and end_datetime:
             if start_datetime.date() == end_datetime.date():
@@ -575,6 +737,105 @@ class ActivityCreateForm(OwnerQuerysetMixin, HorillaModelForm):
                     }
                 )
         return cleaned_data
+
+    def _meeting_provider_choices(self, user):
+        choices = [("", "— Select Provider —")]
+        if not user:
+            return choices
+        try:
+            from horilla.contrib.calendar.models import GoogleCalendarConfig
+            from horilla.contrib.meeting.models import (
+                MeetingIntegrationSetting,
+                MicrosoftTeamsOAuthConfig,
+                ZoomOAuthConfig,
+            )
+
+            company = getattr(user, "company", None)
+            if not company or not MeetingIntegrationSetting.user_can_access(
+                user, company
+            ):
+                return choices
+            if ZoomOAuthConfig.objects.filter(
+                user=user, token__has_key="access_token"
+            ).exists():
+                choices.append(("zoom", "Zoom"))
+            gcal = GoogleCalendarConfig.objects.filter(user=user).first()
+            if gcal and gcal.is_connected():
+                choices.append(("google_meet", "Google Meet"))
+            if MicrosoftTeamsOAuthConfig.objects.filter(
+                user=user, token__has_key="access_token"
+            ).exists():
+                choices.append(("ms_teams", "Microsoft Teams"))
+        except Exception:
+            pass
+        return choices
+
+    def _configure_activity_meeting_fields(self, base_url):
+        """Apply MeetingsForm-style widgets and rules while keeping HTMX on activity URLs."""
+        if "is_online" in self.fields:
+            self.fields["is_online"].widget.attrs.update(
+                {
+                    "hx-get": base_url,
+                    "hx-trigger": "change",
+                    "hx-swap": "outerHTML",
+                    "hx-select": "#activity-form-view",
+                    "hx-include": "#activity-form-view",
+                    "hx-target": "#activity-form-view",
+                    "onchange": "toggleMeetingUrlField(this)",
+                }
+            )
+            # HorillaModelForm sets sr-only peer so single_form_view shows one toggle, not a second checkbox.
+            self.fields["is_online"].widget.attrs["class"] = "sr-only peer"
+        user = self.request.user if self.request else None
+        provider_choices = self._meeting_provider_choices(user)
+        prev_label = (
+            self.fields["meeting_provider"].label
+            if "meeting_provider" in self.fields
+            else "Meeting Provider"
+        )
+        self.fields["meeting_provider"] = forms.ChoiceField(
+            choices=provider_choices,
+            required=False,
+            label=prev_label,
+            widget=forms.Select(
+                attrs={
+                    "class": (
+                        "js-example-basic-single headselect w-full border border-gray-300 "
+                        "rounded-md px-3 py-1.5 text-sm focus:outline-none focus:border-primary-500"
+                    ),
+                    "data-online-field": "true",
+                    "data-placeholder": "Select Provider",
+                    "id": "id_meeting_provider",
+                }
+            ),
+        )
+
+        is_online = self.data.get("is_online") if self.data else None
+        if is_online is None:
+            if self.instance.pk:
+                is_online = self.instance.is_online
+            else:
+                is_online = self.initial.get("is_online", False)
+        is_online = is_online in ("on", True, "true", "True")
+
+        if is_online:
+            if "is_all_day" in self.fields:
+                self.fields["is_all_day"].widget = forms.HiddenInput()
+                self.fields["is_all_day"].required = False
+                self.initial["is_all_day"] = False
+            if "location" in self.fields:
+                self.fields["location"].widget = forms.HiddenInput()
+                self.fields["location"].required = False
+        elif "location" in self.fields:
+            self.fields["location"].required = True
+
+        self.fields["meeting_provider"].widget.attrs.update(
+            {"data-online-field": "true"}
+        )
+        if not is_online:
+            self.fields["meeting_provider"].widget.attrs.update(
+                {"data-initially-hidden": "true"}
+            )
 
     def _get_allowed_user_ids(self, user):
         """Get list of allowed user IDs (self + subordinates)"""

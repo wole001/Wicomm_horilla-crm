@@ -28,6 +28,8 @@ class ActivityConfig(AppLauncher):
         "signals",
     ]
 
+    celery_schedule_module = "celery_schedules"
+
     def get_api_paths(self):
         """
         Return API path configurations for this app.
