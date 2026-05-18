@@ -6,7 +6,7 @@
     <div class="flex flex-col sm:flex-row gap-3" style="height: 100%">
         <div class="sm:w-[180px] w-full border-r-[1px] border-[#dddddd]">
             <ul
-                id="custom-tabs"
+                id="activity-custom-tabs"
                 class="flex flex-col space-y-1 text-sm font-normal text-gray-500 dark:text-gray-400 pr-3"
             >
                 <li class="mb-0">
@@ -57,11 +57,11 @@
             </ul>
         </div>
         <div class="sm:flex-[1_0] w-full">
-            <div id="tab-contents">
+            <div id="activity-tab-contents">
                 <!-- Task Tab -->
                 <div id="tab-tasks" class="tab-content block p-2 pt-0 text-sm">
                     <div class="flex flex-wrap gap-y-2 justify-between mb-2">
-                        <ul id="followup-tabs" class="flex gap-2 text-sm font-normal text-gray-500 dark:text-gray-400">
+                        <ul id="activity-followup-tabs" class="flex gap-2 text-sm font-normal text-gray-500 dark:text-gray-400">
                             <li>
                                 <button
                                     id="TaskTab"
@@ -119,7 +119,7 @@
                 <!-- Meetings Tab -->
                 <div id="tab-meetings" class="tab-content hidden p-2 pt-0 text-sm">
                     <div class="flex flex-wrap gap-y-2 justify-between mb-2">
-                        <ul id="followup-tabs1" class="flex gap-2 text-sm font-normal text-gray-500 dark:text-gray-400">
+                        <ul id="activity-followup-tabs1" class="flex gap-2 text-sm font-normal text-gray-500 dark:text-gray-400">
                             <li>
                                 <a
                                     id="MeetingsTab"
@@ -178,7 +178,7 @@
                 <!-- Calls Tab -->
                 <div id="tab-call" class="tab-content hidden p-2 pt-0 text-sm">
                     <div class="flex flex-wrap gap-y-2 justify-between mb-2">
-                        <ul id="followup-tabs2" class="flex gap-2 text-sm font-normal text-gray-500 dark:text-gray-400">
+                        <ul id="activity-followup-tabs2" class="flex gap-2 text-sm font-normal text-gray-500 dark:text-gray-400">
                             <li>
                                 <a
                                     id="CallsTab"
@@ -237,7 +237,7 @@
                 <!-- Emails Tab -->
                 <div id="tab-email" class="tab-content hidden p-2 pt-0 text-sm">
                     <div class="flex flex-wrap gap-y-2 justify-between mb-2">
-                        <ul id="followup-tabs3" class="flex gap-2 text-sm font-normal text-gray-500 dark:text-gray-400">
+                        <ul id="activity-followup-tabs3" class="flex gap-2 text-sm font-normal text-gray-500 dark:text-gray-400">
                             <li>
                                 <button
                                     id="sent-email-tab"
@@ -306,7 +306,7 @@
                 <!-- Events Tab -->
                 <div id="tab-events" class="tab-content hidden p-2 pt-0 text-sm">
                     <div class="flex flex-wrap gap-y-2 justify-between mb-2">
-                        <ul id="followup-tabs4" class="flex gap-2 text-sm font-normal text-gray-500 dark:text-gray-400">
+                        <ul id="activity-followup-tabs4" class="flex gap-2 text-sm font-normal text-gray-500 dark:text-gray-400">
                             <li>
                                 <a
                                     id="EventTab"
@@ -366,31 +366,129 @@
 
 <script>
     (function () {
-        const ACTIVE_TOP_TAB_KEY = "activity.activeTopTab";
-        const ACTIVE_SUB_TAB_KEY_PREFIX = "activity.activeSubTab.";
-        const tabButtons = document.querySelectorAll("#custom-tabs .tab-btn");
-        const tabContents = document.querySelectorAll("#tab-contents .tab-content");
-        const setActiveTopTab = (id) => {
-            const target = document.getElementById(id);
-            if (!target) {
-                return;
+        const scriptEl = document.currentScript;
+        const previousElement = scriptEl?.previousElementSibling;
+        const root =
+            previousElement && previousElement.id === "styled-activity"
+                ? previousElement
+                : document.querySelectorAll("#styled-activity")[
+                      document.querySelectorAll("#styled-activity").length - 1
+                  ];
+        if (!root) return;
+
+        const DEFAULT_TOP_TAB = "tab-tasks";
+
+        const TAB_SUBTAB_MAP = {
+            "tab-tasks": "activity-followup-tabs",
+            "tab-meetings": "activity-followup-tabs1",
+            "tab-call": "activity-followup-tabs2",
+            "tab-email": "activity-followup-tabs3",
+            "tab-events": "activity-followup-tabs4",
+        };
+
+        const initializedGroups = new Set();
+
+        // initialSubTabDataTab: the data-tab value of the sub-tab to activate (e.g. "pending", "completed", "draft")
+        function setupTabGroup(tabListId, initialSubTabDataTab) {
+            if (initializedGroups.has(tabListId)) return;
+            initializedGroups.add(tabListId);
+
+            const subTabButtons = root.querySelectorAll(`#${tabListId} .fu-tab-btn`);
+
+            subTabButtons.forEach((btn) => {
+                btn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    subTabButtons.forEach((b) => {
+                        b.classList.remove("bg-primary-600", "text-white");
+                        b.classList.add("bg-primary-200", "text-primary-600");
+                    });
+                    btn.classList.remove("bg-primary-200", "text-primary-600");
+                    btn.classList.add("bg-primary-600", "text-white");
+                });
+            });
+
+            const targetBtn = initialSubTabDataTab
+                ? root.querySelector(`#${tabListId} .fu-tab-btn[data-tab="${initialSubTabDataTab}"]`)
+                : null;
+            const btnToClick = targetBtn || subTabButtons[0];
+            if (btnToClick) {
+                // Update active styles immediately
+                subTabButtons.forEach((b) => {
+                    b.classList.remove("bg-primary-600", "text-white");
+                    b.classList.add("bg-primary-200", "text-primary-600");
+                });
+                btnToClick.classList.remove("bg-primary-200", "text-primary-600");
+                btnToClick.classList.add("bg-primary-600", "text-white");
+
+                // Use htmx.ajax() directly — element.click() fails during HTMX's
+                // swap phase because listeners aren't attached yet, and hx-trigger="revealed"
+                // only re-checks after scroll events (HTMX 2.x interval+scroll pattern).
+                const hxGet = btnToClick.getAttribute("hx-get") || btnToClick.getAttribute("data-hx-get");
+                const hxTarget = btnToClick.getAttribute("hx-target") || btnToClick.getAttribute("data-hx-target");
+                if (hxGet && hxTarget) {
+                    htmx.ajax("GET", hxGet, { target: hxTarget, swap: "innerHTML" });
+                } else {
+                    btnToClick.click();
+                }
             }
+        }
+
+        const tabButtons = root.querySelectorAll("#activity-custom-tabs .tab-btn");
+        const getTopTabContents = () =>
+            root.querySelectorAll("#activity-tab-contents > .tab-content");
+
+        const setActiveTopTab = (id, initialSubTabDataTab) => {
+            const target = root.querySelector(`#${id}`);
+            if (!target) return;
 
             tabButtons.forEach((b) => {
                 b.classList.remove("bg-primary-600", "text-white");
                 b.classList.add("bg-transparent", "text-[#3d3d3d]");
             });
-            tabContents.forEach((c) => c.classList.add("hidden"));
+            const topTabContents = getTopTabContents();
+            topTabContents.forEach((c) => {
+                c.classList.remove("block");
+                c.classList.add("hidden");
+                c.style.display = "none";
+            });
 
             target.classList.remove("hidden");
-            const selectedButton = document.querySelector(
-                `#custom-tabs .tab-btn[data-tab="${id}"]`
-            );
+            target.classList.add("block");
+            target.style.display = "block";
+            const selectedButton = root.querySelector(`#activity-custom-tabs .tab-btn[data-tab="${id}"]`);
             if (selectedButton) {
                 selectedButton.classList.remove("bg-transparent", "text-[#3d3d3d]");
                 selectedButton.classList.add("bg-primary-600", "text-white");
             }
-            localStorage.setItem(ACTIVE_TOP_TAB_KEY, id);
+
+            const subTabListId = TAB_SUBTAB_MAP[id];
+            if (subTabListId) {
+                setupTabGroup(subTabListId, initialSubTabDataTab);
+            }
+        };
+
+        const activateDefaultTopTab = () => {
+            const savedTab = localStorage.getItem("horilla_active_activity_tab");
+            // horilla_active_activity_subtab: set explicitly by the delete view (e.g. email sub-tabs)
+            // horilla_pending_activity_subtab: captured from the DOM at delete-click time (pending/completed)
+            const savedSubTab = localStorage.getItem("horilla_active_activity_subtab")
+                || localStorage.getItem("horilla_pending_activity_subtab");
+            localStorage.removeItem("horilla_active_activity_tab");
+            localStorage.removeItem("horilla_active_activity_subtab");
+            localStorage.removeItem("horilla_pending_activity_subtab");
+
+            if (savedTab && root.querySelector(`#${savedTab}`)) {
+                setActiveTopTab(savedTab, savedSubTab || null);
+                return;
+            }
+            if (root.querySelector(`#${DEFAULT_TOP_TAB}`)) {
+                setActiveTopTab(DEFAULT_TOP_TAB);
+                return;
+            }
+            const firstTabId = tabButtons[0]?.getAttribute("data-tab");
+            if (firstTabId) {
+                setActiveTopTab(firstTabId);
+            }
         };
 
         tabButtons.forEach((btn) => {
@@ -401,58 +499,27 @@
             });
         });
 
-        const storedTab = localStorage.getItem(ACTIVE_TOP_TAB_KEY);
-        if (storedTab && document.getElementById(storedTab)) {
-            setActiveTopTab(storedTab);
-        } else if (tabButtons.length) {
-            const defaultTab = tabButtons[0].getAttribute("data-tab");
-            if (defaultTab) {
-                setActiveTopTab(defaultTab);
+        // Before any HTMX request within the activity area, snapshot the active sub-tab
+        // so it can be restored if the response triggers a full page reload.
+        root.addEventListener("htmx:beforeRequest", () => {
+            const activeMainBtn = root.querySelector("#activity-custom-tabs .tab-btn.bg-primary-600");
+            if (!activeMainBtn) return;
+            const subTabListId = TAB_SUBTAB_MAP[activeMainBtn.getAttribute("data-tab")];
+            if (!subTabListId) return;
+            const activeSubBtn = root.querySelector(`#${subTabListId} .fu-tab-btn.bg-primary-600`);
+            if (activeSubBtn) {
+                localStorage.setItem("horilla_pending_activity_subtab", activeSubBtn.getAttribute("data-tab") || "pending");
             }
-        }
-    })();
-
-    function setupTabGroup(tabListId, contentContainerId) {
-        const tabButtons = document.querySelectorAll(`#${tabListId} .fu-tab-btn`);
-        const subTabStorageKey = `${ACTIVE_SUB_TAB_KEY_PREFIX}${tabListId}`;
-
-        tabButtons.forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-                e.preventDefault();
-
-                tabButtons.forEach((b) => {
-                    b.classList.remove("bg-primary-600", "text-white");
-                    b.classList.add("bg-primary-200", "text-primary-600");
-                });
-                btn.classList.remove("bg-primary-200", "text-primary-600");
-                btn.classList.add("bg-primary-600", "text-white");
-                const activeSubTab = btn.getAttribute("data-tab");
-                if (activeSubTab) {
-                    localStorage.setItem(subTabStorageKey, activeSubTab);
-                }
-
-            });
         });
 
-        const storedSubTab = localStorage.getItem(subTabStorageKey);
-        if (storedSubTab) {
-            const savedButton = document.querySelector(
-                `#${tabListId} .fu-tab-btn[data-tab="${storedSubTab}"]`
-            );
-            if (savedButton) {
-                savedButton.click();
-                return;
-            }
-        }
+        activateDefaultTopTab();
 
-        if (tabButtons.length) {
-            tabButtons[0].click();
+        // Re-sync when the parent "Activity" tab is opened again.
+        const parentActivityTabButton = document.getElementById("tab-activity");
+        if (parentActivityTabButton) {
+            parentActivityTabButton.addEventListener("click", () => {
+                requestAnimationFrame(activateDefaultTopTab);
+            });
         }
-    }
-
-    setupTabGroup("followup-tabs", "task-list-content");
-    setupTabGroup("followup-tabs1", "meeting-list-content");
-    setupTabGroup("followup-tabs2", "call-list-content");
-    setupTabGroup("followup-tabs3", "email-list-content");
-    setupTabGroup("followup-tabs4", "event-list-content");
+    })();
 </script>
