@@ -11,7 +11,7 @@ from datetime import timedelta
 
 HORILLA_BEAT_SCHEDULE = {
     "run-scheduled-automations-every-minute": {
-        "task": "automations.tasks.run_scheduled_automations",
+        "task": "horilla.contrib.automations.tasks.run_scheduled_automations",
         "schedule": timedelta(minutes=1),
     },
 }
