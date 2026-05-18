@@ -18,7 +18,7 @@ from horilla.contrib.generics.mixins import RecentlyViewedMixin
 from horilla.contrib.generics.views import HorillaListView
 from horilla.contrib.utils.methods import get_section_info_for_model
 from horilla.db.models import ForeignKey, Q
-from horilla.http import HttpNotFound, RefreshResponse
+from horilla.http import HttpNotFound, HttpResponse, RefreshResponse
 from horilla.shortcuts import render
 
 # First party imports (Horilla)
@@ -54,6 +54,28 @@ class ReportDetailView(ReportDetailDataMixin, RecentlyViewedMixin, DetailView):
                 messages.error(self.request, e)
                 return RefreshResponse(request)
             raise HttpNotFound(e)
+
+        temp_report = self.create_temp_report(
+            self.object,
+            request.session.get(f"report_preview_{self.object.pk}", {}),
+        )
+        if temp_report.model_class is None:
+            self.object.delete()
+            messages.error(
+                request,
+                str(
+                    "Module not found: the model linked to this report no longer exists. The report has been deleted."
+                ),
+            )
+            list_url = str(reverse_lazy("reports:reports_list_view"))
+            if request.headers.get("HX-Request") == "true":
+                resp = HttpResponse()
+                resp["HX-Redirect"] = list_url
+                return resp
+            return HttpResponse(
+                f'<html><body><script>window.location.replace("{list_url}");</script></body></html>'
+            )
+
         return super().dispatch(request, *args, **kwargs)
 
     def col_attrs(self):
@@ -94,6 +116,7 @@ class ReportDetailView(ReportDetailDataMixin, RecentlyViewedMixin, DetailView):
             report_owner_id=self.request.user, pk=self.kwargs["pk"]
         ).first() and not self.request.user.has_perm("reports.view_report"):
             return render(self.request, "403.html")
+
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
