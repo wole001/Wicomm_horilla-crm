@@ -3,12 +3,14 @@ This module registers Floating, Settings, My Settings, and Main Section menus
 for the Horilla CRM Forecast app
 """
 
-from horilla.menu import settings_menu, sub_section_menu
+from horilla.menu import MAIN_CONTENT_HX_ATTRS, settings_menu, sub_section_menu
 
 # First-party / Horilla imports
 from horilla.urls import reverse_lazy
 from horilla.utils.translation import gettext_lazy as _
-from horilla_crm.forecast.models import ForecastTarget, ForecastType
+
+# Local imports
+from .models import ForecastTarget, ForecastType
 
 
 @sub_section_menu.register
@@ -17,22 +19,24 @@ class ForecastsSubSection:
     Registers the forecast menu to sub section in the main sidebar.
     """
 
+    # Identity / placement
     section = "sales"
-    verbose_name = _("Forecast")
-    icon = "assets/icons/forecast.svg"
-    url = reverse_lazy("forecast:forecast_view")
     app_label = "forecast"
+    position = 4
+
+    # Display
+    verbose_name = _("Forecast")
+    icon = "/assets/icons/forecast.svg"
+
+    # Behavior
+    url = reverse_lazy("forecast:forecast_view")
+    attrs = MAIN_CONTENT_HX_ATTRS
+
+    # Access control
     perm = [
         "opportunities.view_opportunity",
         "opportunities.view_own_opportunity",
     ]
-    position = 4
-    attrs = {
-        "hx-boost": "true",
-        "hx-target": "#mainContent",
-        "hx-select": "#mainContent",
-        "hx-swap": "outerHTML",
-    }
 
 
 @settings_menu.register

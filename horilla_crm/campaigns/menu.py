@@ -3,12 +3,14 @@ This module registers Floating, Settings, My Settings, and Main Section menus
 for the Horilla CRM Campaigns app
 """
 
-from horilla.menu import floating_menu, sub_section_menu
+from horilla.menu import MAIN_CONTENT_HX_ATTRS, floating_menu, sub_section_menu
 
 # First-party / Horilla imports
 from horilla.urls import reverse_lazy
 from horilla.utils.translation import gettext_lazy as _
-from horilla_crm.campaigns.models import Campaign
+
+# Local imports
+from .models import Campaign
 
 
 @floating_menu.register
@@ -34,16 +36,18 @@ class CampaignSubSection:
     Registers the campaigns menu to sub section in the main sidebar.
     """
 
+    # Identity / placement
     section = "sales"
-    verbose_name = _("Campaigns")
-    icon = "assets/icons/campaign.svg"
-    url = reverse_lazy("campaigns:campaign_view")
     app_label = "campaigns"
-    perm = ["campaigns.view_campaign", "campaigns.view_own_campaign"]
     position = 2
-    attrs = {
-        "hx-boost": "true",
-        "hx-target": "#mainContent",
-        "hx-select": "#mainContent",
-        "hx-swap": "outerHTML",
-    }
+
+    # Display
+    verbose_name = _("Campaigns")
+    icon = "/assets/icons/campaign.svg"
+
+    # Behavior
+    url = reverse_lazy("campaigns:campaign_view")
+    attrs = MAIN_CONTENT_HX_ATTRS
+
+    # Access control
+    perm = ["campaigns.view_campaign", "campaigns.view_own_campaign"]

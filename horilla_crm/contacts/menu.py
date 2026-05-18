@@ -3,12 +3,14 @@ This module registers Floating, Settings, My Settings, and Main Section menus
 for the Horilla CRM Contacts app
 """
 
-from horilla.menu import floating_menu, sub_section_menu
+from horilla.menu import MAIN_CONTENT_HX_ATTRS, floating_menu, sub_section_menu
 
 # First-party / Horilla imports
 from horilla.urls import reverse_lazy
 from horilla.utils.translation import gettext_lazy as _
-from horilla_crm.contacts.models import Contact
+
+# Local imports
+from .models import Contact
 
 
 @floating_menu.register
@@ -32,16 +34,18 @@ class ContactsSubSection:
     Registers the contacts menu to sub section in the main sidebar.
     """
 
+    # Identity / placement
     section = "people"
-    verbose_name = _("Contacts")
-    icon = "assets/icons/contact.svg"
-    url = reverse_lazy("contacts:contacts_view")
     app_label = "contacts"
-    perm = ["contacts.view_contact", "contacts.view_own_contact"]
     position = 2
-    attrs = {
-        "hx-boost": "true",
-        "hx-target": "#mainContent",
-        "hx-select": "#mainContent",
-        "hx-swap": "outerHTML",
-    }
+
+    # Display
+    verbose_name = _("Contacts")
+    icon = "/assets/icons/contact.svg"
+
+    # Behavior
+    url = reverse_lazy("contacts:contacts_view")
+    attrs = MAIN_CONTENT_HX_ATTRS
+
+    # Access control
+    perm = ["contacts.view_contact", "contacts.view_own_contact"]

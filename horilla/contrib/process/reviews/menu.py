@@ -3,7 +3,7 @@
 # First party imports (Horilla)
 # First party imports (Horilla)
 from horilla.contrib.process import ProcessSettings
-from horilla.menu import sub_section_menu
+from horilla.menu import MAIN_CONTENT_HX_ATTRS, sub_section_menu
 from horilla.urls import reverse_lazy
 from horilla.utils.translation import gettext_lazy as _
 
@@ -29,16 +29,18 @@ process.items.extend(
 class ReviewJobsSubSection:
     """My Jobs > Review Jobs sidebar link."""
 
+    # Identity / placement
     section = "my_jobs"
-    verbose_name = _("Review Jobs")
-    icon = "assets/icons/review.svg"
-    url = reverse_lazy("reviews:review_job_view")
     app_label = "reviews"
-    perm = []
     position = 1
-    attrs = {
-        "hx-boost": "true",
-        "hx-target": "#mainContent",
-        "hx-select": "#mainContent",
-        "hx-swap": "outerHTML",
-    }
+
+    # Display
+    verbose_name = _("Review Jobs")
+    icon = "/assets/icons/review.svg"
+
+    # Behavior
+    url = reverse_lazy("reviews:review_job_view")
+    attrs = MAIN_CONTENT_HX_ATTRS
+
+    # Access control
+    perm = []

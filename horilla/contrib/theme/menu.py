@@ -21,7 +21,7 @@ class ThemeSettings:
     """Settings menu for Theme settings module"""
 
     title = ThemeConfig.verbose_name
-    icon = "theme/assets/icons/theme.svg"
+    icon = "/theme/assets/icons/theme.svg"
     order = 7
     items = [
         {

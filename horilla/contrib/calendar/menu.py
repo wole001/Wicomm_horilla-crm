@@ -4,7 +4,12 @@ for the Horilla Calendar app
 """
 
 from horilla.contrib.core.menu import IntegrationsSettings
-from horilla.menu import main_section_menu, my_settings_menu, sub_section_menu
+from horilla.menu import (
+    MAIN_CONTENT_HX_ATTRS,
+    main_section_menu,
+    my_settings_menu,
+    sub_section_menu,
+)
 
 # First party imports (Horilla)
 from horilla.urls import reverse_lazy
@@ -63,15 +68,15 @@ class CalendarSubSection:
     Registers the calendar  menu to sub section in the main sidebar.
     """
 
+    # Identity / placement
     section = "schedule"
-    verbose_name = _("Calendar")
-    icon = "assets/icons/calendar.svg"
-    url = reverse_lazy("calendar:calendar_view")
     app_label = "calendar"
     position = 1
-    attrs = {
-        "hx-boost": "true",
-        "hx-target": "#mainContent",
-        "hx-select": "#mainContent",
-        "hx-swap": "outerHTML",
-    }
+
+    # Display
+    verbose_name = _("Calendar")
+    icon = "/assets/icons/calendar.svg"
+
+    # Behavior
+    url = reverse_lazy("calendar:calendar_view")
+    attrs = MAIN_CONTENT_HX_ATTRS

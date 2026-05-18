@@ -5,7 +5,7 @@ for the approvals app
 
 # Local imports
 from horilla.contrib.process import ProcessSettings
-from horilla.menu import sub_section_menu
+from horilla.menu import MAIN_CONTENT_HX_ATTRS, sub_section_menu
 
 # First party imports (Horilla)
 from horilla.urls import reverse_lazy
@@ -32,16 +32,18 @@ process.items.extend(
 class ApprovalProcessSubSection:
     """My Jobs > Approval Jobs sidebar link."""
 
+    # Identity / placement
     section = "my_jobs"
-    verbose_name = _("Approval Jobs")
-    icon = "assets/icons/approval.svg"
-    url = reverse_lazy("approvals:approval_job_view")
     app_label = "approvals"
-    perm = []
     position = 2
-    attrs = {
-        "hx-boost": "true",
-        "hx-target": "#mainContent",
-        "hx-select": "#mainContent",
-        "hx-swap": "outerHTML",
-    }
+
+    # Display
+    verbose_name = _("Approval Jobs")
+    icon = "/assets/icons/approval.svg"
+
+    # Behavior
+    url = reverse_lazy("approvals:approval_job_view")
+    attrs = MAIN_CONTENT_HX_ATTRS
+
+    # Access control
+    perm = []

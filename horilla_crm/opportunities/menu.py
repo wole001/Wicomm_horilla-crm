@@ -4,6 +4,7 @@ for the Horilla CRM Opportunities app
 """
 
 from horilla.menu import (
+    MAIN_CONTENT_HX_ATTRS,
     floating_menu,
     my_settings_menu,
     settings_menu,
@@ -13,11 +14,9 @@ from horilla.menu import (
 # First-party / Horilla imports
 from horilla.urls import reverse_lazy
 from horilla.utils.translation import gettext_lazy as _
-from horilla_crm.opportunities.models import (
-    Opportunity,
-    OpportunitySettings,
-    OpportunityStage,
-)
+
+# Local imports
+from .models import Opportunity, OpportunitySettings, OpportunityStage
 
 
 @sub_section_menu.register
@@ -26,22 +25,24 @@ class OpportunitiesSubSection:
     Registers the opportunities menu to sub section in the main sidebar.
     """
 
+    # Identity / placement
     section = "sales"
-    verbose_name = _("Opportunities")
-    icon = "assets/icons/opportunities.svg"
-    url = reverse_lazy("opportunities:opportunities_view")
     app_label = "opportunities"
+    position = 3
+
+    # Display
+    verbose_name = _("Opportunities")
+    icon = "/assets/icons/opportunities.svg"
+
+    # Behavior
+    url = reverse_lazy("opportunities:opportunities_view")
+    attrs = MAIN_CONTENT_HX_ATTRS
+
+    # Access control
     perm = [
         "opportunities.view_opportunity",
         "opportunities.view_own_opportunity",
     ]
-    position = 3
-    attrs = {
-        "hx-boost": "true",
-        "hx-target": "#mainContent",
-        "hx-select": "#mainContent",
-        "hx-swap": "outerHTML",
-    }
 
 
 @floating_menu.register

@@ -5,7 +5,12 @@ for the Horilla CRM Accounts app
 
 # Third party imports (Django)
 
-from horilla.menu import floating_menu, main_section_menu, sub_section_menu
+from horilla.menu import (
+    MAIN_CONTENT_HX_ATTRS,
+    floating_menu,
+    main_section_menu,
+    sub_section_menu,
+)
 
 # First party / Horilla imports
 from horilla.urls import reverse_lazy
@@ -53,16 +58,18 @@ class AccountsSubSection:
     Registers the accounts menu to sub section in the main sidebar.
     """
 
+    # Identity / placement
     section = "people"
-    verbose_name = _("Accounts")
-    icon = "assets/icons/account.svg"
-    url = reverse_lazy("accounts:accounts_view")
     app_label = "accounts"
-    perm = ["accounts.view_account", "accounts.view_own_account"]
     position = 1
-    attrs = {
-        "hx-boost": "true",
-        "hx-target": "#mainContent",
-        "hx-select": "#mainContent",
-        "hx-swap": "outerHTML",
-    }
+
+    # Display
+    verbose_name = _("Accounts")
+    icon = "/assets/icons/account.svg"
+
+    # Behavior
+    url = reverse_lazy("accounts:accounts_view")
+    attrs = MAIN_CONTENT_HX_ATTRS
+
+    # Access control
+    perm = ["accounts.view_account", "accounts.view_own_account"]

@@ -5,6 +5,7 @@ for the Horilla CRM Leads app
 
 from horilla.contrib.core.menu import BaseSettings
 from horilla.menu import (
+    MAIN_CONTENT_HX_ATTRS,
     floating_menu,
     main_section_menu,
     settings_menu,
@@ -14,7 +15,9 @@ from horilla.menu import (
 # First party / Horilla imports
 from horilla.urls import reverse_lazy
 from horilla.utils.translation import gettext_lazy as _
-from horilla_crm.leads.models import Lead, LeadStatus, ScoringRule
+
+# Local imports
+from .models import Lead, LeadStatus, ScoringRule
 
 
 @floating_menu.register
@@ -40,6 +43,15 @@ class LeadsSettings:
     icon = "/assets/icons/lead1.svg"
     order = 4
     items = [
+        {
+            "label": _("Assignment Rules"),
+            "url": reverse_lazy("leads:leads_assignment_view"),
+            "hx-target": "#settings-content",
+            "hx-push-url": "true",
+            "hx-select": "#lead-assignment-view",
+            "hx-select-oob": "#settings-sidebar",
+            "perm": "leads.view_leadassignmentrule",
+        },
         {
             "label": LeadStatus()._meta.verbose_name,
             "url": reverse_lazy("leads:lead_stage_view"),
@@ -88,19 +100,21 @@ class LeadSubSection:
     Registers the lead menu to sub section in the main sidebar.
     """
 
+    # Identity / placement
     section = "sales"
-    verbose_name = _("Leads")
-    icon = "assets/icons/leads.svg"
-    url = reverse_lazy("leads:leads_view")
     app_label = "leads"
-    perm = ["leads.view_lead", "leads.view_own_lead"]
     position = 1
-    attrs = {
-        "hx-boost": "true",
-        "hx-target": "#mainContent",
-        "hx-select": "#mainContent",
-        "hx-swap": "outerHTML",
-    }
+
+    # Display
+    verbose_name = _("Leads")
+    icon = "/assets/icons/leads.svg"
+
+    # Behavior
+    url = reverse_lazy("leads:leads_view")
+    attrs = MAIN_CONTENT_HX_ATTRS
+
+    # Access control
+    perm = ["leads.view_lead", "leads.view_own_lead"]
 
 
 BaseSettings.items.append(

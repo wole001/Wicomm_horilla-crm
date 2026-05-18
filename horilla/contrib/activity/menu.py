@@ -3,7 +3,7 @@ This module registers Floating, Settings, My Settings, and Main Section menus
 for the Horilla  Activities app
 """
 
-from horilla.menu import sub_section_menu
+from horilla.menu import MAIN_CONTENT_HX_ATTRS, sub_section_menu
 
 # First party imports (Horilla)
 from horilla.urls import reverse_lazy
@@ -16,16 +16,18 @@ class ActivitySubSection:
     Registers the activity menu to sub section in the main sidebar.
     """
 
+    # Identity / placement
     section = "schedule"
-    verbose_name = _("Activities")
-    icon = "assets/icons/activity.svg"
-    url = reverse_lazy("activity:activity_view")
     app_label = "activity"
-    perm = ["activity.view_activity", "activity.view_own_activity"]
     position = 2
-    attrs = {
-        "hx-boost": "true",
-        "hx-target": "#mainContent",
-        "hx-select": "#mainContent",
-        "hx-swap": "outerHTML",
-    }
+
+    # Display
+    verbose_name = _("Activities")
+    icon = "/assets/icons/activity.svg"
+
+    # Behavior
+    url = reverse_lazy("activity:activity_view")
+    attrs = MAIN_CONTENT_HX_ATTRS
+
+    # Access control
+    perm = ["activity.view_activity", "activity.view_own_activity"]

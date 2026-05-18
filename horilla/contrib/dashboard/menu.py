@@ -3,7 +3,7 @@ This module registers Floating, Settings, My Settings, and Main Section menus
 for the Horilla Dashboard app
 """
 
-from horilla.menu import main_section_menu, sub_section_menu
+from horilla.menu import MAIN_CONTENT_HX_ATTRS, main_section_menu, sub_section_menu
 
 # First party imports (Horilla)
 from horilla.urls import reverse_lazy
@@ -28,16 +28,18 @@ class DashboardSubSection:
     Registers the dashboard to sub section in the main sidebar.
     """
 
+    # Identity / placement
     section = "analytics"
-    verbose_name = _("Dashboards")
-    icon = "assets/icons/dashboards.svg"
-    url = reverse_lazy("dashboard:dashboard_list_view")
     app_label = "dashboard"
-    perm = ["dashboard.view_dashboard", "dashboard.view_own_dashboard"]
     position = 2
-    attrs = {
-        "hx-boost": "true",
-        "hx-target": "#mainContent",
-        "hx-select": "#mainContent",
-        "hx-swap": "outerHTML",
-    }
+
+    # Display
+    verbose_name = _("Dashboards")
+    icon = "/assets/icons/dashboards.svg"
+
+    # Behavior
+    url = reverse_lazy("dashboard:dashboard_list_view")
+    attrs = MAIN_CONTENT_HX_ATTRS
+
+    # Access control
+    perm = ["dashboard.view_dashboard", "dashboard.view_own_dashboard"]
