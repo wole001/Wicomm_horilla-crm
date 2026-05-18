@@ -230,6 +230,7 @@ class ApiPrefixSchemaGenerator(OpenAPISchemaGenerator):
     """
 
     def get_schema(self, request=None, public=False):
+        """Return OpenAPI schema with base path ``/api/`` and Models tab suppressed."""
         schema = super().get_schema(request, public)
         # Ensure examples and "Request URL" use '/api/' as base path
         schema.base_path = "/api/"

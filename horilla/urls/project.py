@@ -25,6 +25,7 @@ from horilla import settings
 
 
 def health_check(request):
+    """Return JSON ``{"status": "ok"}`` for load balancer or uptime probes."""
     return JsonResponse({"status": "ok"}, status=200)
 
 

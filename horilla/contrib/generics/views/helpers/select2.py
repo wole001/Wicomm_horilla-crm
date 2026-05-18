@@ -16,7 +16,6 @@ from django.views import View
 
 # First party imports (Horilla)
 from horilla.apps import apps
-from horilla.db.models import CharField, Q, TextField
 from horilla.http import HttpNotFound, JsonResponse
 from horilla.shortcuts import render
 from horilla.utils.translation import gettext_lazy as _

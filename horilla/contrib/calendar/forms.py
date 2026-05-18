@@ -1,4 +1,4 @@
-﻿"""Forms for custom calendars and Google Calendar integration."""
+"""Forms for custom calendars and Google Calendar integration."""
 
 # Standard library imports
 import json
@@ -97,6 +97,8 @@ class CustomCalendarForm(HorillaModelForm):
     htmx_field_choices_url = "generics:get_model_field_choices"
 
     class Meta:
+        """Field list and widgets for creating or editing a custom calendar."""
+
         model = CustomCalendar
         fields = [
             "name",
@@ -253,6 +255,8 @@ class GoogleSyncDirectionForm(forms.ModelForm):
     """Form for the user to choose one-way or two-way sync direction."""
 
     class Meta:
+        """Expose only ``sync_direction`` on :class:`~.models.GoogleCalendarConfig`."""
+
         from .models import GoogleCalendarConfig
 
         model = GoogleCalendarConfig
@@ -290,6 +294,7 @@ class GoogleCredentialsUploadForm(forms.Form):
     )
 
     def clean_credentials_file(self):
+        """Validate uploaded JSON is a Google OAuth client secret / installed app file."""
         f = self.cleaned_data["credentials_file"]
         try:
             data = json.loads(f.read().decode("utf-8"))

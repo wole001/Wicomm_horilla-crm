@@ -19,7 +19,7 @@ from .models import HorillaColorTheme
 from .utils import THEMES_DATA
 
 
-# @receiver(post_migrate, dispatch_uid="create_default_themes")
+@receiver(post_migrate, dispatch_uid="create_default_themes")
 def create_default_themes(sender, **kwargs):
     """
     Create default color theme after migration

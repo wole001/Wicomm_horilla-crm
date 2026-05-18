@@ -399,6 +399,7 @@ class Campaign(HorillaCoreModel):
         return reverse_lazy("campaigns:campaign_detail_view", kwargs={"pk": self.pk})
 
     def get_detail_url(self):
+        """Compatibility alias returning the canonical campaign detail URL."""
         return self.get_detail_view_url()
 
     def get_duplicate_url(self):
