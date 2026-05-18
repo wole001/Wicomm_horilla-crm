@@ -4,10 +4,14 @@
 import logging
 import re
 
+# Third-party imports
+import bleach
+
 # Third-party imports (Django)
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.views import View
 
 # First party imports (Horilla)
@@ -26,6 +30,76 @@ from horilla.utils.translation import gettext as _
 from ...models import HorillaMail, HorillaMailAttachment, HorillaMailConfiguration
 
 logger = logging.getLogger(__name__)
+
+_ALLOWED_TAGS = [
+    "a",
+    "abbr",
+    "b",
+    "blockquote",
+    "br",
+    "caption",
+    "cite",
+    "code",
+    "col",
+    "colgroup",
+    "dd",
+    "del",
+    "details",
+    "div",
+    "dl",
+    "dt",
+    "em",
+    "figcaption",
+    "figure",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "hr",
+    "i",
+    "img",
+    "ins",
+    "kbd",
+    "li",
+    "mark",
+    "ol",
+    "p",
+    "pre",
+    "q",
+    "s",
+    "small",
+    "span",
+    "strong",
+    "sub",
+    "summary",
+    "sup",
+    "table",
+    "tbody",
+    "td",
+    "tfoot",
+    "th",
+    "thead",
+    "tr",
+    "u",
+    "ul",
+]
+_ALLOWED_ATTRS = {
+    "*": ["class", "style", "id"],
+    "a": ["href", "title", "target", "rel"],
+    "img": ["src", "alt", "width", "height"],
+    "td": ["colspan", "rowspan"],
+    "th": ["colspan", "rowspan", "scope"],
+    "col": ["span"],
+    "colgroup": ["span"],
+}
+
+
+def _sanitize_html(content):
+    return mark_safe(
+        bleach.clean(content, tags=_ALLOWED_TAGS, attributes=_ALLOWED_ATTRS, strip=True)
+    )
 
 
 @method_decorator(htmx_required, name="dispatch")
@@ -115,7 +189,7 @@ class HorillaMailPreviewView(LoginRequiredMixin, View):
             "cc_email": draft_mail.cc,
             "bcc_email": draft_mail.bcc,
             "subject": rendered_subject,
-            "message_content": rendered_body,
+            "message_content": _sanitize_html(rendered_body),
             "from_mail_config": from_mail_config,
             "attachments": attachments,
             "draft": False,
@@ -242,7 +316,7 @@ class HorillaMailPreviewView(LoginRequiredMixin, View):
                 "cc_email": cc_email,
                 "bcc_email": bcc_email,
                 "subject": rendered_subject,
-                "message_content": rendered_content,
+                "message_content": _sanitize_html(rendered_content),
                 "from_mail_config": from_mail_config,
                 "template_context": template_context,
                 "attachments": attachments,
