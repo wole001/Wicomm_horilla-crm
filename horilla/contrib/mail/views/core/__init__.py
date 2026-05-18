@@ -27,6 +27,7 @@ from horilla.contrib.mail.views.core.recipients import (
     HorillaMailFieldSelectionView,
     RemoveEmailView,
 )
+from horilla.contrib.mail.views.core.track import TrackOpenView
 
 __all__ = [
     "parse_email_pills_context",
@@ -43,4 +44,5 @@ __all__ = [
     "HorillaMailtDeleteView",
     "ScheduleMailView",
     "ScheduleMailModallView",
+    "TrackOpenView",
 ]

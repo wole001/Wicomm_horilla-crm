@@ -3,6 +3,7 @@
 # Standard library imports
 import mimetypes
 import re
+import uuid
 
 # Third-party imports (Django)
 from django.template import engines
@@ -203,6 +204,9 @@ class HorillaMail(HorillaCoreModel):
         ("draft", _("Draft")),
         ("scheduled", _("Scheduled")),
         ("sent", _("Sent")),
+        ("delivered", _("Delivered")),
+        ("bounced", _("Bounced")),
+        ("opened", _("Opened")),
         ("failed", _("Failed")),
     ]
 
@@ -233,6 +237,12 @@ class HorillaMail(HorillaCoreModel):
     )
     mail_status_message = models.TextField(blank=True, null=True)
     sent_at = models.DateTimeField(blank=True, null=True)
+    delivered_at = models.DateTimeField(blank=True, null=True)
+    bounced_at = models.DateTimeField(blank=True, null=True)
+    opened_at = models.DateTimeField(blank=True, null=True)
+    tracking_uid = models.UUIDField(
+        default=uuid.uuid4, unique=True, editable=False, null=True, blank=True
+    )
     scheduled_at = models.DateTimeField(
         blank=True,
         null=True,

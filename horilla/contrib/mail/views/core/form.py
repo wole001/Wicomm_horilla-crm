@@ -391,9 +391,12 @@ class HorillaMailFormView(LoginRequiredMixin, TemplateView):
             HorillaMailManager.send_mail(draft_mail, template_context)
             draft_mail.refresh_from_db()
 
-            if draft_mail.mail_status == "sent":
+            if draft_mail.mail_status in ("sent", "delivered"):
                 messages.success(request, _("Mail sent successfully"))
-                # Mail is now saved with status "sent", not "draft"
+            elif draft_mail.mail_status == "bounced":
+                messages.error(
+                    request, _("Mail bounced: ") + draft_mail.mail_status_message
+                )
             else:
                 # If sending failed, delete the draft that was created for sending
                 if not form_data.get(

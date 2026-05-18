@@ -283,3 +283,5 @@ def send_mail_async(mail_id, context=None):
             delattr(_thread_local, "from_mail_id")
         if hasattr(_thread_local, "request"):
             delattr(_thread_local, "request")
+
+    return "Delivery failed"

@@ -47,6 +47,11 @@ urlpatterns = [
         views.MailServerTestEmailView.as_view(),
         name="send_test_email_view",
     ),
+    path(
+        "track-open/<uuid:uid>/",
+        views.TrackOpenView.as_view(),
+        name="track_open",
+    ),
     path("send-mail/", views.HorillaMailFormView.as_view(), name="send_mail_view"),
     path(
         "send-mail-draft/<int:pk>/",
