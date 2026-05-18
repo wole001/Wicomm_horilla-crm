@@ -47,10 +47,11 @@ class ForecastTypeView(LoginRequiredMixin, HorillaView):
 class ForecastTypeNavbar(LoginRequiredMixin, HorillaNavView):
     """Navigation bar for ForecastType with optional 'New' button."""
 
-    nav_title = ForecastType._meta.verbose_name_plural
     search_url = reverse_lazy("forecast:forecast_type_list_view")
     main_url = reverse_lazy("forecast:forecast_type_view")
     filterset_class = ForecastTypeFilter
+    model_name = "ForecastType"
+    model_app_label = "forecast"
     nav_width = False
     gap_enabled = False
     all_view_types = False

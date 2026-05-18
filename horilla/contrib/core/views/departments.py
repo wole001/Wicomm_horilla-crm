@@ -52,7 +52,6 @@ class DepartmentNavbar(LoginRequiredMixin, HorillaNavView):
     Navbar fro department
     """
 
-    nav_title = Department._meta.verbose_name_plural
     search_url = reverse_lazy("core:department_list_view")
     main_url = reverse_lazy("core:department_view")
     filterset_class = DepartmentFilter

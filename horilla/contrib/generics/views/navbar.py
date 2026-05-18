@@ -8,6 +8,7 @@ from functools import cached_property
 from urllib.parse import urlencode
 
 # Third-party imports (Django)
+from django.apps import apps
 from django.views.generic import TemplateView
 
 from horilla.contrib.core.models import PinnedView, SavedFilterList
@@ -22,7 +23,7 @@ class HorillaNavView(TemplateView):
     """View for rendering the navigation bar with filtering and search capabilities."""
 
     template_name = "navbar.html"
-    nav_title: str = ""
+    _nav_title: str = ""
     filterset_class = None
     search_url: str = ""
     main_url: str = ""
@@ -56,6 +57,24 @@ class HorillaNavView(TemplateView):
     search_push_url = True
     enable_quick_filters = False  # Set to True in child classes to enable
     main_session_id: str = "mainSession"  # Override to avoid ID conflicts inside modals
+
+    @property
+    def nav_title(self) -> str:
+        """Resolved list title from explicit override or the model's verbose name plural."""
+        if self._nav_title:
+            return self._nav_title
+        if self.model_name and self.model_app_label:
+            try:
+                return apps.get_model(
+                    self.model_app_label, self.model_name
+                )._meta.verbose_name_plural
+            except LookupError:
+                pass
+        return self._nav_title
+
+    @nav_title.setter
+    def nav_title(self, value: str) -> None:
+        self._nav_title = value
 
     def get_navbar_indication_attrs(self):
         """Return additional attributes for navbar indication when enabled."""

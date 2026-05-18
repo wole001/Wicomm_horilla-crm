@@ -58,7 +58,6 @@ class OpportunityView(LoginRequiredMixin, HorillaView):
 class OpportunityNavbar(LoginRequiredMixin, HorillaNavView):
     """Navigation bar view for opportunities."""
 
-    nav_title = Opportunity._meta.verbose_name_plural
     search_url = reverse_lazy("opportunities:opportunities_list")
     main_url = reverse_lazy("opportunities:opportunities_view")
     filterset_class = OpportunityFilter

@@ -106,7 +106,6 @@ class OpportunityTeamNavbar(
 ):
     """Navbar for opportunity team listing with filters and create option."""
 
-    nav_title = OpportunityTeam._meta.verbose_name_plural
     search_url = reverse_lazy("opportunities:opportunity_team_list_view")
     main_url = reverse_lazy("opportunities:opportunity_team_view")
     filterset_class = OpportunityTeamFilter

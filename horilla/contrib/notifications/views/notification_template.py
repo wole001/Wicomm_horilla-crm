@@ -64,7 +64,6 @@ class NotificationTemplateView(LoginRequiredMixin, HorillaView):
 class NotificationTemplateNavbar(LoginRequiredMixin, HorillaNavView):
     """Navbar for Notification Template"""
 
-    nav_title = NotificationTemplate._meta.verbose_name_plural
     search_url = reverse_lazy("notifications:notification_template_list_view")
     main_url = reverse_lazy("notifications:notification_template_view")
     model_name = "NotificationTemplate"

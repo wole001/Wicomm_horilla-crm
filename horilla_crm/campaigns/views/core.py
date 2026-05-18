@@ -74,7 +74,6 @@ class CampaignNavbar(LoginRequiredMixin, HorillaNavView):
     Navbar View for Campaign page
     """
 
-    nav_title = Campaign._meta.verbose_name_plural
     search_url = reverse_lazy("campaigns:campaign_list_view")
     main_url = reverse_lazy("campaigns:campaign_view")
     kanban_url = reverse_lazy("campaigns:campaign_kanban_view")

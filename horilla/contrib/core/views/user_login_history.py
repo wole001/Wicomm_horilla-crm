@@ -35,7 +35,7 @@ class UserLoginHistoryNavbar(LoginRequiredMixin, HorillaNavView):
     search_url = reverse_lazy("core:user_login_history_list")
     main_url = reverse_lazy("core:user_login_history_view")
     model_name = "LoginHistory"
-    model_app_label = "loginhistory"
+    model_app_label = "login_history"
     nav_width = False
     gap_enabled = False
     all_view_types = False

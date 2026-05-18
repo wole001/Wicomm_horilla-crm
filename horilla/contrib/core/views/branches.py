@@ -66,7 +66,6 @@ class BranchNavbar(LoginRequiredMixin, HorillaNavView):
     navbar view for users
     """
 
-    nav_title = Company._meta.verbose_name_plural
     search_url = reverse_lazy("core:branches_list_view")
     main_url = reverse_lazy("core:branches_view")
     filterset_class = CompanyFilter

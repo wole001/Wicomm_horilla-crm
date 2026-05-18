@@ -51,7 +51,6 @@ class RecycleBinNavbar(LoginRequiredMixin, HorillaNavView):
     navbar for recyclebin
     """
 
-    nav_title = RecycleBin._meta.verbose_name_plural
     main_url = reverse_lazy("core:recycle_bin_view")
     one_view_only = True
     all_view_types = False

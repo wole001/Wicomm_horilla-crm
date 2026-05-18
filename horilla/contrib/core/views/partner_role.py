@@ -54,7 +54,6 @@ class PartnerRoleNavbar(LoginRequiredMixin, HorillaNavView):
     Navbar fro partner role
     """
 
-    nav_title = PartnerRole._meta.verbose_name_plural
     search_url = reverse_lazy("core:partner_role_list_view")
     main_url = reverse_lazy("core:partner_role_view")
     filterset_class = PartnerRoleFilter

@@ -53,7 +53,6 @@ class CustomerRoleNavbar(LoginRequiredMixin, HorillaNavView):
     Navbar fro customer role
     """
 
-    nav_title = CustomerRole._meta.verbose_name_plural
     search_url = reverse_lazy("core:customer_role_list_view")
     main_url = reverse_lazy("core:customer_role_view")
     filterset_class = CustomerRoleFilter

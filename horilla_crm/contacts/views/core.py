@@ -76,7 +76,6 @@ class ContactNavbar(LoginRequiredMixin, HorillaNavView):
     Navbar View for Contact page
     """
 
-    nav_title = Contact._meta.verbose_name_plural
     search_url = reverse_lazy("contacts:contact_list_view")
     main_url = reverse_lazy("contacts:contacts_view")
     kanban_url = reverse_lazy("contacts:contact_kanban_view")

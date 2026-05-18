@@ -61,7 +61,6 @@ class MatchingRuleNavView(LoginRequiredMixin, HorillaNavView):
     Navbar view for Matching Rules
     """
 
-    nav_title = MatchingRule._meta.verbose_name_plural
     search_url = reverse_lazy("duplicates:matching_rule_list_view")
     main_url = reverse_lazy("duplicates:matching_rule_view")
     model_name = "MatchingRule"

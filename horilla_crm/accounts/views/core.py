@@ -80,7 +80,6 @@ class AccountsNavbar(LoginRequiredMixin, HorillaNavView):
     Navbar View for accounts page
     """
 
-    nav_title = Account._meta.verbose_name_plural
     search_url = reverse_lazy("accounts:accounts_list_view")
     main_url = reverse_lazy("accounts:accounts_view")
     kanban_url = reverse_lazy("accounts:accounts_kanban_view")

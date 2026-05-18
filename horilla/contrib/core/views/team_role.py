@@ -54,7 +54,6 @@ class TeamRoleNavbar(LoginRequiredMixin, HorillaNavView):
     Navbar fro team role
     """
 
-    nav_title = TeamRole._meta.verbose_name_plural
     search_url = reverse_lazy("core:team_role_list_view")
     main_url = reverse_lazy("core:team_role_view")
     filterset_class = TeamRoleFilter

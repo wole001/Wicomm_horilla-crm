@@ -81,7 +81,6 @@ class HorillaAutomationNavbar(LoginRequiredMixin, HorillaNavView):
     Navbar view for automation
     """
 
-    nav_title = HorillaAutomation._meta.verbose_name_plural
     search_url = reverse_lazy("automations:automation_list_view")
     main_url = reverse_lazy("automations:automation_view")
     model_name = "HorillaAutomation"
