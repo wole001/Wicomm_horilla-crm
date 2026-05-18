@@ -81,6 +81,7 @@ class ShortKeyNavbar(LoginRequiredMixin, HorillaNavView):
                 "url": f"""{ reverse_lazy('keys:short_key_create')}?new=true""",
                 "attrs": {"id": "short-key-create"},
             }
+        return None
 
 
 @method_decorator(htmx_required, name="dispatch")

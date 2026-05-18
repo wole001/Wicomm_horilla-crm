@@ -22,8 +22,6 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-
-# Third-party imports
 from requests_oauthlib import OAuth2Session
 
 # First party imports (Horilla)
@@ -161,12 +159,14 @@ class GoogleCalendarSettingsView(LoginRequiredMixin, View):
         return None
 
     def get(self, request, *args, **kwargs):
+        """Render credentials form and connection status when integration is enabled."""
         blocked = self._check_integration_enabled(request)
         if blocked:
             return blocked
         return self._render(request)
 
     def post(self, request, *args, **kwargs):
+        """Validate and store uploaded Google OAuth client JSON and redirect URI."""
         blocked = self._check_integration_enabled(request)
         if blocked:
             return blocked
@@ -200,6 +200,7 @@ class GoogleCalendarAuthorizeView(LoginRequiredMixin, View):
     """
 
     def get(self, request, *args, **kwargs):
+        """Redirect to Google consent when credentials JSON is present."""
         config = _get_or_create_config(request.user)
 
         if not config.is_configured():
@@ -252,6 +253,7 @@ class GoogleCalendarCallbackView(View):
     """
 
     def get(self, request, *args, **kwargs):
+        """Finish OAuth: validate state, exchange code, optionally register webhook channel."""
         state = request.GET.get("state")
         code = request.GET.get("code")
         error = request.GET.get("error")
@@ -349,6 +351,7 @@ class GoogleCalendarSyncDirectionView(LoginRequiredMixin, View):
     """Save the user's chosen sync direction (one-way or two-way)."""
 
     def post(self, request, *args, **kwargs):
+        """Persist sync direction posted from the radio form."""
         config = _get_or_create_config(request.user)
         form = GoogleSyncDirectionForm(request.POST, instance=config)
         if form.is_valid():
@@ -362,6 +365,7 @@ class GoogleCalendarDisconnectView(LoginRequiredMixin, View):
     """Clear the Google OAuth token and reset the connection."""
 
     def post(self, request, *args, **kwargs):
+        """Revoke locally stored tokens, stop watch channels, and re-render settings."""
         if not _is_integration_enabled(request):
             response = HttpResponse(status=204)
             response["HX-Redirect"] = reverse("calendar:google_calendar_settings")
@@ -411,6 +415,7 @@ class GoogleCalendarRegisterWebhookView(LoginRequiredMixin, View):
     """(Re-)register the Google Calendar push-notification watch channel."""
 
     def post(self, request, *args, **kwargs):
+        """Stop any prior channel and create a new push subscription for this user."""
         config = _get_or_create_config(request.user)
         if not config.is_connected():
             messages.error(request, _("Google Calendar is not connected."))
@@ -514,6 +519,7 @@ class GoogleCalendarWebhookView(View):
     """
 
     def post(self, request, *args, **kwargs):
+        """Validate push headers, dispatch incremental sync in a background thread."""
         channel_id = request.META.get("HTTP_X_GOOG_CHANNEL_ID", "")
         resource_id = request.META.get("HTTP_X_GOOG_RESOURCE_ID", "")
         resource_state = request.META.get("HTTP_X_GOOG_RESOURCE_STATE", "")
@@ -641,6 +647,7 @@ class GoogleIntegrationSettingsView(LoginRequiredMixin, View):
         return setting
 
     def get(self, request, *args, **kwargs):
+        """Render the company Google integration toggle for admins."""
         setting = self._get_or_create_setting(request)
         return render(
             request,
@@ -678,7 +685,8 @@ class GoogleIntegrationSettingsView(LoginRequiredMixin, View):
         )
 
     def post(self, request, *args, **kwargs):
-        setting = self._get_or_create_setting(request.user)
+        """Persist admin toggle and optionally disconnect all users in the company."""
+        setting = self._get_or_create_setting(request)
         is_enabled = request.POST.get("is_google_calendar_enabled") == "true"
         setting.is_google_calendar_enabled = is_enabled
         setting.updated_by = request.user

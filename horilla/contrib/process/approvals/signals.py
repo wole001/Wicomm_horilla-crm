@@ -57,8 +57,6 @@ def _on_registered_model_pre_save(sender, instance, **kwargs):
 
 
 def _on_registered_model_deleted(sender, instance, **kwargs):
-    from horilla.contrib.core.models import HorillaContentType
-
     from .models import ApprovalInstance
 
     try:
@@ -71,25 +69,36 @@ def _on_registered_model_deleted(sender, instance, **kwargs):
         pass
 
 
-def _connect_registered_models():
-    for model in _approval_models():
-        if _is_approval_internal_model(model):
-            continue
-        post_save.connect(
-            _on_registered_model_saved,
-            sender=model,
-            dispatch_uid=f"approvals_post_save_{model._meta.label_lower}",
-        )
-        pre_save.connect(
-            _on_registered_model_pre_save,
-            sender=model,
-            dispatch_uid=f"approvals_pre_save_{model._meta.label_lower}",
-        )
-        post_delete.connect(
-            _on_registered_model_deleted,
-            sender=model,
-            dispatch_uid=f"approvals_post_delete_{model._meta.label_lower}",
-        )
+def _on_any_model_saved(sender, instance, created, **kwargs):
+    """Generic post_save handler: fires for every model, delegates only for registered ones."""
+    if _is_approval_internal_model(sender):
+        return
+    if sender not in _approval_models():
+        return
+    _on_registered_model_saved(sender, instance, created, **kwargs)
+
+
+def _on_any_model_pre_save(sender, instance, **kwargs):
+    """Generic pre_save handler: fires for every model, delegates only for registered ones."""
+    if _is_approval_internal_model(sender):
+        return
+    if sender not in _approval_models():
+        return
+    _on_registered_model_pre_save(sender, instance, **kwargs)
+
+
+def _on_any_model_deleted(sender, instance, **kwargs):
+    """Generic post_delete handler: fires for every model, delegates only for registered ones."""
+    if _is_approval_internal_model(sender):
+        return
+    if sender not in _approval_models():
+        return
+    _on_registered_model_deleted(sender, instance, **kwargs)
+
+
+post_save.connect(_on_any_model_saved, dispatch_uid="approvals_generic_post_save")
+pre_save.connect(_on_any_model_pre_save, dispatch_uid="approvals_generic_pre_save")
+post_delete.connect(_on_any_model_deleted, dispatch_uid="approvals_generic_post_delete")
 
 
 def _patch_horilla_list_view():
@@ -195,6 +204,5 @@ def _patch_update_field_view():
     UpdateFieldView._approval_patch_applied = True
 
 
-_connect_registered_models()
 _patch_horilla_list_view()
 _patch_update_field_view()

@@ -7,14 +7,13 @@ from datetime import datetime
 # Third-party imports (Django)
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.template import Context, Template
 from django.utils import timezone
 from django.views import View
 
 from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.generics.views import HorillaSingleDeleteView
 from horilla.contrib.utils.middlewares import _thread_local
-from horilla.http import HttpResponse, RedirectResponse
+from horilla.http import HttpResponse
 
 # First party imports (Horilla)
 from horilla.shortcuts import get_object_or_404, render
@@ -68,21 +67,19 @@ class HorillaMailtDeleteView(LoginRequiredMixin, HorillaSingleDeleteView):
             if session_key in self.request.session:
                 del self.request.session[session_key]
 
-        tab_map = {
-            "sent": "sent-email-tab",
-            "draft": "draft-email-tab",
-            "scheduled": "scheduled-email-tab",
+        sub_tab_map = {
+            "sent": "sent",
+            "draft": "draft",
+            "scheduled": "scheduled",
         }
+        sub_tab_id = sub_tab_map.get(view, "sent")
 
-        tab_id = tab_map.get(view)
-
-        if tab_id:
-            content = Template("<script>$('#{{ tab_id }}').click();</script>").render(
-                Context({"tab_id": tab_id})
-            )
-            return HttpResponse(content)
-
-        return RedirectResponse(self.request)
+        return HttpResponse(
+            f"<script>"
+            f"localStorage.setItem('horilla_active_activity_tab', 'tab-email');"
+            f"localStorage.setItem('horilla_active_activity_subtab', '{sub_tab_id}');"
+            f"</script>"
+        )
 
 
 @method_decorator(htmx_required, name="dispatch")

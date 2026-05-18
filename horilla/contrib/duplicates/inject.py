@@ -3,6 +3,7 @@
 # Standard library imports
 import logging
 
+# First party imports (Horilla)
 from horilla.contrib.generics.views import (
     HorillaDetailTabView,
     HorillaMultiStepFormView,

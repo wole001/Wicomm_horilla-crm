@@ -2,11 +2,60 @@
 mail services module
 """
 
+# Standard library imports
+import re
+
 # Third-party imports (Django)
+from django.conf import settings
+from django.urls import reverse
 from django.utils import timezone
+
+# First party imports (Horilla)
+from horilla.contrib.utils.middlewares import _thread_local
 
 # Local imports
 from .models import HorillaMail
+
+_EMAIL_RE = re.compile(r"^[^@\s]+@([^@\s]+)$")
+
+
+def _has_mx_record(domain: str) -> bool:
+    """Return True if the domain can receive mail."""
+    try:
+        import dns.resolver
+
+        try:
+            answers = dns.resolver.resolve(domain, "MX")
+            # Null MX (RFC 7505): single record with preference 0 and exchange "."
+            # means the domain explicitly accepts no mail.
+            records = list(answers)
+            if len(records) == 1 and str(records[0].exchange).rstrip(".") == "":
+                return False
+            return True
+        except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN):
+            pass
+        # Fallback: some domains use A records instead of MX
+        try:
+            dns.resolver.resolve(domain, "A")
+            return True
+        except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN):
+            return False
+    except Exception:
+        return True  # If DNS lookup fails for any other reason, allow the send
+
+
+def _find_undeliverable(recipients: list) -> list:
+    """Return list of addresses whose domain has no MX/A record."""
+    bad = []
+    for addr in recipients:
+        m = _EMAIL_RE.match(addr)
+        if not m:
+            bad.append(addr)
+            continue
+        domain = m.group(1)
+        if not _has_mx_record(domain):
+            bad.append(addr)
+    return bad
 
 
 class HorillaMailManager:
@@ -35,6 +84,17 @@ class HorillaMailManager:
             if not to:
                 raise ValueError("No recipient found in 'to' field")
 
+            # Check MX records before attempting send — catches non-existent domains
+            undeliverable = _find_undeliverable(to)
+            if undeliverable:
+                mail.mail_status = "bounced"
+                mail.bounced_at = timezone.now()
+                mail.mail_status_message = (
+                    f"No mail server found for: {', '.join(undeliverable)}"
+                )
+                mail.save()
+                return
+
             from django.core.mail import EmailMultiAlternatives, get_connection
 
             connection = get_connection(
@@ -49,6 +109,29 @@ class HorillaMailManager:
                 bcc=bcc,
                 connection=connection,
             )
+
+            # Inject tracking pixel so we can detect opens
+            pixel_path = reverse(
+                "mail:track_open", kwargs={"uid": str(mail.tracking_uid)}
+            )
+            site_url = getattr(settings, "SITE_URL", "").rstrip("/")
+            if not site_url:
+                request = getattr(_thread_local, "request", None)
+                if request:
+                    # Honour X-Forwarded-Host (set by ngrok / reverse proxies)
+                    forwarded_host = request.META.get("HTTP_X_FORWARDED_HOST")
+                    forwarded_proto = request.META.get(
+                        "HTTP_X_FORWARDED_PROTO", "https"
+                    )
+                    if forwarded_host:
+                        site_url = f"{forwarded_proto}://{forwarded_host}"
+                    else:
+                        site_url = request.build_absolute_uri("/").rstrip("/")
+            pixel_tag = (
+                f'<img src="{site_url}{pixel_path}" '
+                f'width="1" height="1" style="display:none" alt="" />'
+            )
+            body = body + pixel_tag
 
             # Attach the HTML version
             email.attach_alternative(body, "text/html")
@@ -81,12 +164,20 @@ class HorillaMailManager:
 
             email.send()
 
-            mail.mail_status = "sent"
+            mail.mail_status = "delivered"
             mail.sent_at = timezone.now()
+            mail.delivered_at = timezone.now()
             mail.mail_status_message = ""
             mail.save()
 
         except Exception as e:
-            mail.mail_status = "failed"
-            mail.mail_status_message = str(e)
+            import smtplib
+
+            if isinstance(e, smtplib.SMTPRecipientsRefused):
+                mail.mail_status = "bounced"
+                mail.bounced_at = timezone.now()
+                mail.mail_status_message = str(e)
+            else:
+                mail.mail_status = "failed"
+                mail.mail_status_message = str(e)
             mail.save()

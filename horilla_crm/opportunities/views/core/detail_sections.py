@@ -328,7 +328,6 @@ class OpportunityRelatedLists(LoginRequiredMixin, HorillaRelatedListSectionView)
     def excluded_related_lists(self, value):
         """Setter to allow parent view to set the value (but we ignore it)"""
         # We ignore the setter since we calculate dynamically
-        pass
 
 
 @method_decorator(htmx_required, name="dispatch")

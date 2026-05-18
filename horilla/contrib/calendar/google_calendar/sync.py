@@ -430,8 +430,6 @@ def pull_google_events_to_horilla(config, initial_sync_only=False):
     nextSyncToken without importing any events. This bootstraps incremental sync without
     flooding Horilla with all existing Google Calendar history.
     """
-    from horilla.contrib.activity.models import Activity
-
     # Only pull from Google when the user has chosen two-way sync.
     # One-way (horilla_to_google) skips the pull entirely.
     if config.sync_direction != "both":

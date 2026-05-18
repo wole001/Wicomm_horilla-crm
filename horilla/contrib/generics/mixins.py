@@ -646,5 +646,3 @@ class HorillaListViewMixin(
     Combined mixin for HorillaListView: columns, filter field metadata,
     and filter remove/clear handlers. Use this as the single list-view mixin.
     """
-
-    pass
