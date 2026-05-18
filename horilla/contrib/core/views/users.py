@@ -70,7 +70,6 @@ class UserNavbar(LoginRequiredMixin, HorillaNavView):
     navbar view for users
     """
 
-    nav_title = User._meta.verbose_name_plural
     search_url = reverse_lazy("core:user_list_view")
     main_url = reverse_lazy("core:user_view")
     filterset_class = UserFilter
@@ -622,13 +621,10 @@ class LoginHistoryNavbar(LoginRequiredMixin, HorillaNavView):
     Login history navbar
     """
 
-    from login_history.models import LoginHistory
-
-    nav_title = LoginHistory._meta.verbose_name_plural
     search_url = reverse_lazy("core:login_history_list")
     main_url = reverse_lazy("core:login_history_view")
     model_name = "LoginHistory"
-    model_app_label = "loginhistory"
+    model_app_label = "login_history"
     nav_width = False
     gap_enabled = False
     navbar_indication = True

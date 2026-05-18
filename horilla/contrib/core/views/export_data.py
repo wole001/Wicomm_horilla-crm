@@ -793,6 +793,9 @@ class ScheduleExportListView(LoginRequiredMixin, HorillaListView):
 
     @cached_property
     def col_attrs(self):
+        """
+        Add HTMX attributes to the "Modules" column for opening the detail modal on click.
+        """
         query_string = self.request.session.get(self.ordered_ids_key, [])
         attrs = {
             "hx-get": f"{{get_detail_url}}?instance_ids={query_string}",

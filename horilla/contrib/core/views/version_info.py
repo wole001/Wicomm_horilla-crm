@@ -20,6 +20,7 @@ class VersionInfotemplateView(LoginRequiredMixin, TemplateView):
     fragment_template_name = "version_info/version_details_fragment.html"
 
     def get_context_data(self, **kwargs):
+        """Add core and other module versions to context."""
         context = super().get_context_data(**kwargs)
         module_versions = collect_all_versions()
         context["core_module"] = module_versions["module_versions"][0]
@@ -27,6 +28,7 @@ class VersionInfotemplateView(LoginRequiredMixin, TemplateView):
         return context
 
     def get(self, request, *args, **kwargs):
+        """Handle GET request. If 'details' param is present, return the corresponding module version fragment."""
         details = request.GET.get("details")
         if details is not None:
             module_versions = collect_all_versions()

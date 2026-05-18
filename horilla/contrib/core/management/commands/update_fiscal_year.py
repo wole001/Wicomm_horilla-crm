@@ -26,6 +26,7 @@ class Command(BaseCommand):
     help = "Updates fiscal year instances by checking current status and creating next fiscal year"
 
     def handle(self, *args, **kwargs):
+        """Handle the command to update fiscal year instances."""
         # Use the service method to check and update all fiscal years
         results = FiscalYearService.check_and_update_fiscal_years()
 

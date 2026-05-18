@@ -20,6 +20,7 @@ class Command(BaseCommand):
     help = "Creates a new user"
 
     def add_arguments(self, parser):
+        """Add command-line arguments for user creation."""
         parser.add_argument("--first_name", type=str, help="First name of the new user")
         parser.add_argument("--last_name", type=str, help="Last name of the new user")
         parser.add_argument("--username", type=str, help="Username of the new user")
@@ -28,6 +29,7 @@ class Command(BaseCommand):
         parser.add_argument("--phone", type=str, help="Phone number of the new user")
 
     def handle(self, *args, **options):
+        """Handle the command to create a new user. If command-line arguments are not provided, prompt the user for input."""
         if not options["first_name"]:
             first_name = input("Enter first name: ")
             last_name = input("Enter last name: ")
