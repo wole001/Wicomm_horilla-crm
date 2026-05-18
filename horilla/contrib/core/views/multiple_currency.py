@@ -241,6 +241,8 @@ class CurrencyListView(LoginRequiredMixin, HorillaListView):
             "src": "assets/icons/a4.svg",
             "img_class": "w-4 h-4",
             "permission": "core.delete_multiplecurrency",
+            "disabled_if": lambda obj: obj.is_default,
+            "disabled_title": _("Default currency can't be deleted"),
             "attrs": """
                             hx-post="{get_delete_url}"
                             hx-target="#modalBox"
@@ -577,9 +579,16 @@ class AddCurrencyView(LoginRequiredMixin, HorillaSingleFormView):
         """
         pk = self.kwargs.get("pk") or self.request.GET.get("id")
         if pk:
-            self.fields = ["conversion_rate", "decimal_places", "format", "company"]
+            is_default = MultipleCurrency.objects.filter(
+                pk=pk, is_default=True
+            ).exists()
+            if is_default:
+                self.fields = ["decimal_places", "format", "company"]
+                self.full_width_fields = ["decimal_places", "format"]
+            else:
+                self.fields = ["conversion_rate", "decimal_places", "format", "company"]
+                self.full_width_fields = ["format"]
             self.form_title = _("Edit Currency Information")
-            self.full_width_fields = ["format"]
         return super().dispatch(request, *args, **kwargs)
 
     def get_form(self, form_class=None):
