@@ -2,13 +2,18 @@
 
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.0"
+__version__ = "1.10.1"
 __module_name__ = "Activity"
 __release_date__ = ""
 __description__ = _(
     "Module for tracking and managing activities such as tasks,calls, events, and emails."
 )
 __icon__ = "activity/assets/icons/activity-red.svg"
+
+__1_10_1__ = _(
+    "Meeting integration in activities: schedule meetings from activities, send invites "
+    "and reminders, and display generated Zoom/Teams meeting links on activity records."
+)
 
 __1_10_0__ = _(
     "Release 1.10: activity ships under contrib with app label activity. "

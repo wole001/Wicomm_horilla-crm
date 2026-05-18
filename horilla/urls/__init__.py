@@ -17,7 +17,7 @@ from django.urls import (
     reverse,
     reverse_lazy,
     Resolver404,
-    NoReverseMatch
+    NoReverseMatch,
 )
 
 __all__ = [

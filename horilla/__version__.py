@@ -2,7 +2,7 @@
 
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.0"
+__version__ = "1.10.1"
 __module_name__ = _("Core System")
 __release_date__ = ""
 __description__ = _(
@@ -10,6 +10,12 @@ __description__ = _(
 )
 __icon__ = "assets/icons/logo.png"
 
+__1_10_1__ = _(
+    "Meeting Integration contrib app (Zoom/Teams OAuth, meeting links, activity hooks). "
+    "Generics export and JSONField display improvements. My Profile panel scrolls within "
+    "a fixed viewport. Calendar Google settings respect active company on POST. "
+    "Scheduled automations use corrected Celery task paths."
+)
 
 __1_10_0__ = _(
     "Major platform 1.10 layout: support apps consolidated under the contrib namespace with "

@@ -2,7 +2,19 @@
 This module contains views related to groups and permissions in the Horilla Core application.
 """
 
-from horilla.contrib.core.views.groups_and_permissions.base import *
+from horilla.contrib.core.views.groups_and_permissions.base import (
+    ModelFieldsModalView,
+    RolePermissionView,
+    RolePermissionTabView,
+    GroupTab,
+    RolePermissionsView,
+    RoleMembersView,
+    PermissionTab,
+    UpdateRolePermissionsView,
+    AssignUsersView,
+    UpdateRoleModelPermissionsView,
+    UpdateRoleAllPermissionsView,
+)
 from horilla.contrib.core.views.groups_and_permissions.permission_utils import (
     PermissionUtils,
 )
@@ -34,6 +46,17 @@ from horilla.contrib.core.views.groups_and_permissions.user_permissions_actions 
 )
 
 __all__ = [
+    "ModelFieldsModalView",
+    "RolePermissionView",
+    "RolePermissionTabView",
+    "GroupTab",
+    "RolePermissionsView",
+    "RoleMembersView",
+    "PermissionTab",
+    "UpdateRolePermissionsView",
+    "AssignUsersView",
+    "UpdateRoleModelPermissionsView",
+    "UpdateRoleAllPermissionsView",
     "PermissionUtils",
     "SearchRoleModelsView",
     "SearchUserModelsView",

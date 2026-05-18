@@ -35,7 +35,6 @@ from horilla_crm.campaigns.views.actions import (
     CampaignChangeOwnerForm,
 )
 
-
 __all__ = [
     "AddChildCampaignFormView",
     "ChildCampaignDeleteView",
