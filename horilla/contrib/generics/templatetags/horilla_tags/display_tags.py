@@ -1,5 +1,12 @@
 """Template tags for displaying field values and currency."""
 
+# Standard library imports
+import ast
+import json
+
+# Third-party imports (Django)
+from django.db.models.fields.json import JSONField
+
 # First party imports (Horilla)
 from horilla.contrib.core.models import MultipleCurrency
 from horilla.contrib.core.utils import get_currency_display_value
@@ -34,6 +41,33 @@ def display_field_value(obj, field_name, user):
 
     if value is None:
         return ""
+
+    try:
+        _field = obj._meta.get_field(field_name)
+    except Exception:
+        _field = None
+    if isinstance(_field, JSONField):
+        if isinstance(value, str) and value.strip():
+            s = value.strip()
+            if (s.startswith("[") and s.endswith("]")) or (
+                s.startswith("{") and s.endswith("}")
+            ):
+                try:
+                    value = json.loads(s)
+                except json.JSONDecodeError:
+                    try:
+                        value = ast.literal_eval(s)
+                    except (ValueError, SyntaxError):
+                        pass
+        if isinstance(value, (list, tuple)):
+            return ", ".join(
+                str(v).strip() for v in value if v is not None and str(v).strip()
+            )
+        if isinstance(value, dict):
+            if not value:
+                return ""
+            return ", ".join(f"{k}: {v}" for k, v in value.items())
+        return str(value) if value else ""
 
     _, _, company = _get_request_user_company()
 

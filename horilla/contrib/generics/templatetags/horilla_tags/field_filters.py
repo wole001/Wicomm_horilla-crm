@@ -169,9 +169,23 @@ def render_action_button(action, obj):
     `action` is a mapping that may contain keys like 'src', 'icon', 'action',
     'attrs', and styling options. Returns a marked-safe HTML string for the
     appropriate button representation (image, icon, or text).
+
+    If `disabled_if` is a callable that returns True for the given obj, the
+    button is rendered as disabled (grayed out, no HTMX attrs).
     """
-    attrs = _format_string(action.get("attrs", ""), obj).strip()
-    tooltip = _(action.get("action", ""))
+    disabled_if = action.get("disabled_if")
+    is_disabled = callable(disabled_if) and disabled_if(obj)
+
+    if is_disabled:
+        attrs = ""
+        disabled_attr = mark_safe("disabled")
+        disabled_classes = "opacity-50 cursor-not-allowed"
+        tooltip = _(action.get("disabled_title", action.get("action", "")))
+    else:
+        attrs = _format_string(action.get("attrs", ""), obj).strip()
+        disabled_attr = mark_safe("")
+        disabled_classes = ""
+        tooltip = _(action.get("action", ""))
 
     if "src" in action:
         img_class = action.get("img_class", "")
@@ -184,10 +198,12 @@ def render_action_button(action, obj):
 
         # action_tooltip.js reads title for pill text (fixed; not clipped by overflow-hidden)
         return format_html(
-            "<button {} class='w-10 h-7 bg-dark-25 flex-1 flex justify-center border-r border-r-[white] hover:bg-dark-50 transition duration-300 items-center' title='{}' aria-label='{}'>"
+            "<button {} {} class='w-10 h-7 bg-dark-25 flex-1 flex justify-center border-r border-r-[white] hover:bg-dark-50 transition duration-300 items-center {}' title='{}' aria-label='{}'>"
             '<img src="{}" alt="" width="16" class="{}" />'
             "</button>",
             mark_safe(attrs),
+            disabled_attr,
+            disabled_classes,
             escape(tooltip),
             escape(tooltip),
             escape(static_url),
@@ -198,11 +214,13 @@ def render_action_button(action, obj):
         icon_name = action.get("icon", "")
         icon_class = action.get("icon_class", "")
         return format_html(
-            '<button class="w-10 h-7 bg-dark-25 flex-1 flex justify-center border-r border-r-[white] hover:bg-dark-50 transition duration-300 items-center" aria-label="{}" {} title="{}">'
+            '<button class="w-10 h-7 bg-dark-25 flex-1 flex justify-center border-r border-r-[white] hover:bg-dark-50 transition duration-300 items-center {}" aria-label="{}" {} {} title="{}">'
             '<i class="{} {}"></i>'
             "</button>",
+            disabled_classes,
             escape(tooltip),
             mark_safe(attrs),
+            disabled_attr,
             escape(tooltip),
             escape(icon_name),
             escape(icon_class),
@@ -210,9 +228,11 @@ def render_action_button(action, obj):
 
     button_class = action.get("class", "")
     return format_html(
-        '<button class="{}" {} title="{}">{}</button>',
+        '<button class="{} {}" {} {} title="{}">{}</button>',
         escape(button_class),
+        disabled_classes,
         mark_safe(attrs),
+        disabled_attr,
         escape(tooltip),
         escape(tooltip),
     )
@@ -292,6 +312,19 @@ def get_field_value(obj, field_name):
             if value is False:
                 return "No"
             return ""
+
+        if getattr(field, "get_internal_type", lambda: "")() == "JSONField":
+            if value is None:
+                return ""
+            if isinstance(value, (list, tuple)):
+                return ", ".join(
+                    str(v).strip() for v in value if v is not None and str(v).strip()
+                )
+            if isinstance(value, dict):
+                if not value:
+                    return ""
+                return ", ".join(f"{k}: {v}" for k, v in value.items())
+            return str(value)
 
         if isinstance(field, models.DateTimeField):
             return value.strftime("%Y-%m-%d %H:%M") if value else ""
