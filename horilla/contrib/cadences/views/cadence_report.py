@@ -445,24 +445,37 @@ class CadenceEmailTabView(LoginRequiredMixin, TemplateView):
         email_stats = {
             "triggered_count": 0,
             "delivered_count": 0,
+            "bounced_count": 0,
+            "opened_count": 0,
             "failed_count": 0,
             "delivered_pct": 0,
+            "bounced_pct": 0,
+            "opened_pct": 0,
             "failed_pct": 0,
         }
         if cadence:
             email_mails = get_cadence_email_queryset(cadence)
             email_stats = email_mails.aggregate(
                 triggered_count=Count("id"),
-                delivered_count=Count("id", filter=Q(mail_status="sent")),
+                delivered_count=Count(
+                    "id",
+                    filter=Q(mail_status="delivered"),
+                ),
+                bounced_count=Count("id", filter=Q(mail_status="bounced")),
+                opened_count=Count("id", filter=Q(mail_status="opened")),
                 failed_count=Count("id", filter=Q(mail_status="failed")),
             )
 
             total_triggered = email_stats.get("triggered_count") or 0
             delivered = email_stats.get("delivered_count") or 0
+            bounced = email_stats.get("bounced_count") or 0
+            opened = email_stats.get("opened_count") or 0
             failed = email_stats.get("failed_count") or 0
 
             if total_triggered:
                 email_stats["delivered_pct"] = (delivered * 100) / total_triggered
+                email_stats["bounced_pct"] = (bounced * 100) / total_triggered
+                email_stats["opened_pct"] = (opened * 100) / total_triggered
                 email_stats["failed_pct"] = (failed * 100) / total_triggered
 
         context["email_stats"] = email_stats
@@ -488,6 +501,8 @@ class CadenceEmailListView(LoginRequiredMixin, HorillaListView):
         (_("Follow-Up"), "followup_label"),
         (_("Email Template"), "email_template_name"),
         (_("Delivered"), "delivered_count"),
+        (_("Bounced"), "bounced_count"),
+        (_("Opened"), "opened_count"),
         (_("Failed"), "failed_count"),
     ]
 
@@ -533,7 +548,12 @@ class CadenceEmailListView(LoginRequiredMixin, HorillaListView):
                 )
                 .values("additional_info__cadence_runtime__followup_id")
                 .annotate(
-                    delivered_count=Count("id", filter=Q(mail_status="sent")),
+                    delivered_count=Count(
+                        "id",
+                        filter=Q(mail_status="delivered"),
+                    ),
+                    bounced_count=Count("id", filter=Q(mail_status="bounced")),
+                    opened_count=Count("id", filter=Q(mail_status="opened")),
                     failed_count=Count("id", filter=Q(mail_status="failed")),
                 )
             )
@@ -547,5 +567,7 @@ class CadenceEmailListView(LoginRequiredMixin, HorillaListView):
                 str(followup.email_template) if followup.email_template else ""
             )
             followup.delivered_count = data.get("delivered_count", 0)
+            followup.bounced_count = data.get("bounced_count", 0)
+            followup.opened_count = data.get("opened_count", 0)
             followup.failed_count = data.get("failed_count", 0)
         return context

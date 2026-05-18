@@ -10,6 +10,7 @@ from horilla.contrib.automations.methods import evaluate_condition
 from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.core.utils import is_owner
 from horilla.contrib.generics.views import HorillaListView
+from horilla.contrib.mail.models import HorillaMail
 from horilla.http import Http404
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.translation import gettext_lazy as _
@@ -133,6 +134,29 @@ class CadenceRecordTabView(LoginRequiredMixin, HorillaListView):
         )
         return activities[0]
 
+    @staticmethod
+    def _get_latest_runtime_mail(cadence_pk, obj, content_type):
+        """Return the most-advanced cadence runtime HorillaMail for this record+cadence."""
+        mails = list(
+            HorillaMail.objects.filter(
+                content_type=content_type,
+                object_id=obj.pk,
+                additional_info__cadence_runtime__cadence_id=cadence_pk,
+            ).only("mail_status", "additional_info", "id")
+        )
+        if not mails:
+            return None
+        mails.sort(
+            key=lambda m: (
+                (m.additional_info or {})
+                .get("cadence_runtime", {})
+                .get("followup_number", 0),
+                m.id,
+            ),
+            reverse=True,
+        )
+        return mails[0]
+
     def get_queryset(self):
         obj = self._record_obj
         try:
@@ -153,7 +177,25 @@ class CadenceRecordTabView(LoginRequiredMixin, HorillaListView):
             latest_activity = self._get_latest_runtime_activity(
                 cadence.pk, obj, content_type
             )
-            if latest_activity:
+            latest_mail = self._get_latest_runtime_mail(cadence.pk, obj, content_type)
+            activity_fn = (
+                (latest_activity.additional_info or {})
+                .get("cadence_runtime", {})
+                .get("followup_number", 0)
+                if latest_activity
+                else 0
+            )
+            mail_fn = (
+                (latest_mail.additional_info or {})
+                .get("cadence_runtime", {})
+                .get("followup_number", 0)
+                if latest_mail
+                else 0
+            )
+            if latest_mail and mail_fn >= activity_fn:
+                next_followup_type = _("Email")
+                next_response = latest_mail.get_mail_status_display()
+            elif latest_activity:
                 next_followup_type = self._ACTIVITY_TYPE_LABELS.get(
                     latest_activity.activity_type, "—"
                 )
