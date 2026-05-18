@@ -356,12 +356,42 @@
                 return div.innerHTML;
             }
 
+            let _notifAudioBuffer = null;
+            let _notifAudioCtx = null;
+
+            (function loadNotificationSound() {
+                _notifAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                fetch("{% static 'audio/notification-sound.wav' %}")
+                    .then(function(r) { return r.arrayBuffer(); })
+                    .then(function(buf) { return _notifAudioCtx.decodeAudioData(buf); })
+                    .then(function(decoded) { _notifAudioBuffer = decoded; })
+                    .catch(function(e) { console.warn("Could not load notification sound:", e); });
+            })();
+
+            document.addEventListener("click", function() {
+                if (_notifAudioCtx && _notifAudioCtx.state === "suspended") {
+                    _notifAudioCtx.resume();
+                }
+            }, { once: true });
+
+            function playNotificationSound() {
+                const btn = document.getElementById("notificationSoundToggle");
+                if (btn && btn.getAttribute("data-muted") === "true") return;
+                if (!_notifAudioBuffer || !_notifAudioCtx) return;
+                if (_notifAudioCtx.state === "suspended") { _notifAudioCtx.resume(); }
+                const source = _notifAudioCtx.createBufferSource();
+                source.buffer = _notifAudioBuffer;
+                source.connect(_notifAudioCtx.destination);
+                source.start(0);
+            }
+
             function handleNewNotification(data) {
                 const timesince = "Just now";
 
                 addToDropdownList(data, timesince);
                 addToSidebarList(data, timesince);
                 updateNotificationCount(1);
+                playNotificationSound();
 
                 if ("Notification" in window && Notification.permission === "granted") {
                 new Notification("New Notification", {

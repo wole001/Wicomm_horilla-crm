@@ -41,6 +41,11 @@ urlpatterns = [
         views.OpenNotificationView.as_view(),
         name="open_notification",
     ),
+    path(
+        "notification-sound-toggle/",
+        views.ToggleNotificationSoundView.as_view(),
+        name="toggle_sound",
+    ),
     # Notification Template Urls
     path(
         "notification-template-view/",

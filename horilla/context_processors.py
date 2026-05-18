@@ -10,7 +10,10 @@ from django.utils.translation import get_language
 
 from horilla import __version__ as horilla_version
 from horilla.contrib.core.models import Company, RecentlyViewed
-from horilla.contrib.notifications.models import Notification
+from horilla.contrib.notifications.models import (
+    Notification,
+    NotificationSoundPreference,
+)
 from horilla.menu.floating_menu import get_floating_menu
 from horilla.menu.main_section_menu import get_main_section_menu
 from horilla.menu.my_settings_menu import get_my_settings_menu
@@ -60,12 +63,17 @@ def recently_viewed_items(request):
 
 
 def unread_notifications(request):
-    """Return unread notifications for the current user."""
+    """Return unread notifications and sound preference for the current user."""
     if request.user.is_authenticated:
+        try:
+            sound_muted = request.user.notification_sound_preference.sound_muted
+        except NotificationSoundPreference.DoesNotExist:
+            sound_muted = False
         return {
             "unread_notifications": Notification.objects.filter(
                 user=request.user, read=False
-            ).order_by("-created_at")
+            ).order_by("-created_at"),
+            "notification_sound_muted": sound_muted,
         }
     return {}
 

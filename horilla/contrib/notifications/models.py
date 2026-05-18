@@ -84,6 +84,27 @@ class Notification(models.Model):
         ordering = ["-created_at"]
 
 
+class NotificationSoundPreference(models.Model):
+    """Per-user preference for notification sound (mute/unmute)."""
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="notification_sound_preference",
+    )
+    sound_muted = models.BooleanField(default=False)
+
+    def __str__(self):
+        state = _("muted") if self.sound_muted else _("unmuted")
+        return f"{self.user.username} – {state}"
+
+    class Meta:
+        """Django model options for notification sound preferences."""
+
+        verbose_name = _("Notification Sound Preference")
+        verbose_name_plural = _("Notification Sound Preferences")
+
+
 class NotificationTemplate(HorillaCoreModel):
     """
     Model representing a notification template.

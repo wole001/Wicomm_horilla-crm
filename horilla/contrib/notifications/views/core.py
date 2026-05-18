@@ -3,60 +3,17 @@
 # Third-party imports (Django)
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.utils.formats import date_format
 from django.views import View
 
-# First party imports (Horilla)
-from horilla.db import models
 from horilla.http import HttpResponse
+
+# First party imports (Horilla)
 from horilla.shortcuts import render
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.translation import gettext_lazy as _
 
 # Local imports
-from ..models import Notification
-
-
-def _get_object_display_fields(obj, max_fields=12):
-    """
-    Build a list of (label, display_value) for an object's concrete fields.
-    Used to show related object details in the notification popup when no URL is provided.
-    """
-    if obj is None:
-        return []
-    result = []
-    excluded = {
-        "id",
-        "pk",
-        "history",
-        "additional_info",
-        "is_active",
-        "updated_at",
-        "created_at",
-    }
-    for field in obj._meta.fields:
-        if field.name in excluded:
-            continue
-        if getattr(field, "remote_field", None) and field.remote_field:
-            continue
-        try:
-            value = getattr(obj, field.name, None)
-            if value is None:
-                display = ""
-            elif isinstance(value, models.Model):
-                display = str(value)
-            elif hasattr(value, "strftime"):
-                display = date_format(value, use_l10n=True) if value else ""
-            elif isinstance(value, bool):
-                display = _("Yes") if value else _("No")
-            else:
-                display = str(value)
-            result.append((getattr(field, "verbose_name", field.name), display))
-        except Exception:
-            continue
-        if len(result) >= max_fields:
-            break
-    return result
+from ..models import Notification, NotificationSoundPreference
 
 
 class MarkNotificationReadView(LoginRequiredMixin, View):
@@ -180,3 +137,22 @@ class OpenNotificationView(LoginRequiredMixin, View):
 
         except Notification.DoesNotExist:
             return render(request, "403.html", status=404)
+
+
+class ToggleNotificationSoundView(LoginRequiredMixin, View):
+    """Toggle the notification sound mute preference for the current user."""
+
+    def post(self, request, *args, **kwargs):
+        """Invert ``sound_muted`` and return the refreshed notification list partial."""
+        pref, _ = NotificationSoundPreference.objects.get_or_create(user=request.user)
+        pref.sound_muted = not pref.sound_muted
+        pref.save()
+        unread = Notification.objects.filter(user=request.user, read=False)
+        return render(
+            request,
+            "notification_list.html",
+            {
+                "unread_notifications": unread,
+                "notification_sound_muted": pref.sound_muted,
+            },
+        )

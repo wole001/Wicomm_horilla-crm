@@ -23,11 +23,20 @@
         <div class="flex justify-between items-center p-3 border-b border-b-dark-50">
             <h5 class="font-semibold text-sm">{% trans 'Notifications' %}</h5>
             <div class="flex gap-1">
-                <span
+                <button
+                    type="button"
+                    id="notificationSoundToggle"
+                    data-muted="{{ notification_sound_muted|yesno:'true,false' }}"
+                    title="{% if notification_sound_muted %}{% trans 'Unmute notifications' %}{% else %}{% trans 'Mute notifications' %}{% endif %}"
+                    aria-label="{% if notification_sound_muted %}{% trans 'Unmute notifications' %}{% else %}{% trans 'Mute notifications' %}{% endif %}"
+                    hx-post="{% url 'notifications:toggle_sound' %}"
+                    hx-target="#notificationWrapper"
+                    hx-swap="outerHTML"
+                    hx-on:click="event.stopPropagation()"
                     class="cursor-pointer text-xs group text-primary-600 w-7 h-7 bg-primary-100 hover:bg-primary-600 hover:text-white rounded-full transition duration-300 flex items-center justify-center"
                 >
-                    <i class="fa-solid fa-volume-high"></i>
-                </span>
+                    <i class="fa-solid {% if notification_sound_muted %}fa-volume-xmark{% else %}fa-volume-high{% endif %}"></i>
+                </button>
                 <button
                     type="button"
                     title="{% trans 'Mark all as read' %}"

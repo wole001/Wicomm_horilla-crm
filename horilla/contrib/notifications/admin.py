@@ -11,9 +11,10 @@ allowing administrators to manage notifications through the admin panel.
 from django.contrib import admin
 
 # Local imports
-from .models import Notification, NotificationTemplate
+from .models import Notification, NotificationSoundPreference, NotificationTemplate
 
 admin.site.register(Notification)
 admin.site.register(NotificationTemplate)
+admin.site.register(NotificationSoundPreference)
 
 # Register your notifications models here.
