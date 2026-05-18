@@ -47,6 +47,7 @@ from ..utils import (
     get_who_should_approve_config,
     is_user_pending_approver,
     notify_current_approvers,
+    safe_content_object,
 )
 
 
@@ -56,10 +57,8 @@ class ApprovalJobReviewView(LoginRequiredMixin, TemplateView):
     template_name = "approval_job_detail.html"
 
     def get_template_names(self):
-        """Use full-page wrapper on direct reload, fragment for HTMX."""
-        if self.request.headers.get("HX-Request") == "true":
-            return [self.template_name]
-        return ["approval_job_detail_page.html"]
+        """Always use the HTMX fragment — direct loads are redirected in get()."""
+        return [self.template_name]
 
     @staticmethod
     def _build_record_details(record, editable_fields=None):
@@ -204,9 +203,46 @@ class ApprovalJobReviewView(LoginRequiredMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         """Redirect to history if the approval is no longer pending."""
-        job = get_object_or_404(ApprovalInstance, pk=self.kwargs["pk"])
+        base_url = reverse_lazy("approvals:approval_job_view")
+        is_htmx = request.headers.get("HX-Request") == "true"
+        job = ApprovalInstance.objects.filter(pk=self.kwargs["pk"]).first()
+
+        if job is None:
+            messages.warning(
+                request,
+                str(_("This approval no longer exists.")),
+            )
+            if is_htmx:
+                resp = HttpResponse()
+                resp["HX-Redirect"] = f"{base_url}?section=my_jobs"
+                return resp
+            return HttpResponse(
+                f'<html><body><script>window.location.replace("{base_url}?section=my_jobs");</script></body></html>'
+            )
+
+        # Direct (non-HTMX) page loads can't render the fragment properly.
+        if not is_htmx:
+            return HttpResponse(
+                f'<html><body><script>window.location.replace("{base_url}?section=my_jobs");</script></body></html>'
+            )
+
         if job.status != "pending":
             return HttpResponseRedirect(job.get_history_url())
+
+        if safe_content_object(job) is None and job.content_type:
+            job.delete()
+            messages.warning(
+                request,
+                str(
+                    _(
+                        "Module not found: the linked record no longer exists. The approval entry has been removed."
+                    )
+                ),
+            )
+            resp = HttpResponse()
+            resp["HX-Redirect"] = f"{base_url}?section=my_jobs"
+            return resp
+
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -222,7 +258,7 @@ class ApprovalJobReviewView(LoginRequiredMixin, TemplateView):
         if not is_user_pending_approver(job, self.request.user):
             raise HttpNotFound(_("You are not an approver for this job."))
         policy = get_waiting_policy(job)
-        record = job.content_object
+        record = safe_content_object(job)
         editable_fields = self._editable_fields_for_job(job)
         process_rule = getattr(job.current_step, "approval_process_rule", None)
         total_steps = 0
@@ -373,7 +409,7 @@ class ApprovalJobRespondModalView(LoginRequiredMixin, TemplateView):
             setattr(record, field_name, raw_value)
 
     @classmethod
-    def _apply_action_update_field(cls, job, action_side):
+    def _apply_action_update_field(cls, job, action_side, request=None):
         """
         Apply configured update-field action to target record.
         action_side: 'approval' or 'rejection'
@@ -397,8 +433,17 @@ class ApprovalJobRespondModalView(LoginRequiredMixin, TemplateView):
         field_value = action_cfg.get("update_value")
         if not field_name:
             return
-        record = job.content_object
+        record = safe_content_object(job)
         if record is None:
+            if request:
+                messages.error(
+                    request,
+                    str(
+                        _(
+                            "Module not found: the record linked to this approval no longer exists."
+                        )
+                    ),
+                )
             return
         try:
             setattr(_thread_local, "skip_approval_edit_guard", True)
@@ -520,7 +565,7 @@ class ApprovalJobRespondModalView(LoginRequiredMixin, TemplateView):
         title = (action_cfg.get("task_title") or "").strip()
         description = (action_cfg.get("task_description") or "").strip()
         payload = action_cfg.get("task_payload", {}) or {}
-        record = job.content_object
+        record = safe_content_object(job)
         if record is None:
             return
         due_datetime = None
@@ -559,7 +604,7 @@ class ApprovalJobRespondModalView(LoginRequiredMixin, TemplateView):
             return
         cfg = process_rule.rule_config or {}
         action_cfg = cfg.get(f"{action_side}_action_config", {}) or {}
-        record = job.content_object
+        record = safe_content_object(job)
         if record is None:
             return
 
@@ -653,7 +698,7 @@ class ApprovalJobRespondModalView(LoginRequiredMixin, TemplateView):
         )
 
     @classmethod
-    def _run_configured_actions(cls, job, action_side, request_user):
+    def _run_configured_actions(cls, job, action_side, request_user, request=None):
         """Execute configured side-effects for approval/rejection."""
         step = getattr(job, "current_step", None)
         process_rule = getattr(step, "approval_process_rule", None) if step else None
@@ -665,7 +710,7 @@ class ApprovalJobRespondModalView(LoginRequiredMixin, TemplateView):
             return
         actions = [a.strip() for a in actions_raw.split(",") if a.strip()]
         if "update_field" in actions:
-            cls._apply_action_update_field(job, action_side)
+            cls._apply_action_update_field(job, action_side, request=request)
         if "assign_task" in actions:
             cls._apply_action_assign_task(job, action_side, request_user)
         if "mail" in actions:
@@ -681,7 +726,7 @@ class ApprovalJobRespondModalView(LoginRequiredMixin, TemplateView):
             return
         cfg = process_rule.rule_config or {}
         action_cfg = dict(cfg.get(f"{action_side}_action_config", {}) or {})
-        record = job.content_object
+        record = safe_content_object(job)
         recipients = cls._collect_notification_recipient_users(
             action_cfg, record, request_user
         )
@@ -697,7 +742,7 @@ class ApprovalJobRespondModalView(LoginRequiredMixin, TemplateView):
                 inst = ApprovalInstance.objects.select_related(
                     "rule", "content_type", "company"
                 ).get(pk=job_pk)
-                record_inner = inst.content_object
+                record_inner = safe_content_object(inst)
                 sender = User.objects.get(pk=sender_pk)
                 users = list(User.objects.filter(pk__in=recipient_pks, is_active=True))
                 template_id = (action_cfg.get("notification_template_id") or "").strip()
@@ -806,7 +851,9 @@ class ApprovalJobRespondModalView(LoginRequiredMixin, TemplateView):
             )
 
         if decision == "reject":
-            self._run_configured_actions(job, "rejection", request.user)
+            self._run_configured_actions(
+                job, "rejection", request.user, request=request
+            )
             job.status = "rejected"
             job.updated_by = request.user
             job.save(update_fields=["status", "updated_by", "updated_at"])
@@ -828,7 +875,9 @@ class ApprovalJobRespondModalView(LoginRequiredMixin, TemplateView):
                         request, _("Approved. Waiting for other approvers.")
                     )
                 else:
-                    self._run_configured_actions(job, "approval", request.user)
+                    self._run_configured_actions(
+                        job, "approval", request.user, request=request
+                    )
                     job.status = "approved"
                     job.current_step = None
                     job.updated_by = request.user
@@ -850,7 +899,9 @@ class ApprovalJobRespondModalView(LoginRequiredMixin, TemplateView):
                     notify_current_approvers(job, triggered_by=request.user)
                     messages.success(request, _("Approved and moved to next approver."))
                 else:
-                    self._run_configured_actions(job, "approval", request.user)
+                    self._run_configured_actions(
+                        job, "approval", request.user, request=request
+                    )
                     job.status = "approved"
                     job.current_step = None
                     job.updated_by = request.user

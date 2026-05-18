@@ -24,6 +24,17 @@ from horilla.db import models as db_models
 from .models import ApprovalInstance, ApprovalProcessRule
 
 
+def safe_content_object(instance):
+    """Return instance.content_object safely, or None if the model class is unresolvable."""
+    ct = getattr(instance, "content_type", None)
+    if ct and ct.model_class() is None:
+        return None
+    try:
+        return instance.content_object
+    except Exception:
+        return None
+
+
 def evaluate_condition(instance, condition):
     """Evaluate a single ApprovalCondition against the given model instance."""
     field_name = getattr(condition, "field", "")

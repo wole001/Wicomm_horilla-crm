@@ -30,6 +30,7 @@ from ..utils import (
     get_rejected_policy,
     get_waiting_policy,
     is_user_pending_approver,
+    safe_content_object,
 )
 from ..views.jobs_detail import ApprovalJobReviewView
 
@@ -62,7 +63,7 @@ class ApprovalJobFieldUpdateView(LoginRequiredMixin, View):
                 return HttpResponse("<script>window.alert('Not allowed');</script>")
         else:
             return HttpResponse("<script>window.alert('Not allowed');</script>")
-        record = job.content_object
+        record = safe_content_object(job)
         if record is None:
             return HttpResponse("<script>window.alert('Record not found');</script>")
 
@@ -177,7 +178,7 @@ class ApprovalJobDetailDetailsTabView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         pk = self.request.GET.get("pk")
         job = get_object_or_404(ApprovalInstance, pk=pk)
-        record = job.content_object
+        record = safe_content_object(job)
         policy = get_waiting_policy(job)
         editable_fields = ApprovalJobReviewView._editable_fields_for_job(job)
         body = ApprovalJobReviewView._detail_tab_body(record)

@@ -43,6 +43,7 @@ from ..utils import (
     get_cycle_started_at,
     get_first_user_step,
     get_rejected_policy,
+    safe_content_object,
     user_matches_approver_step,
 )
 from ..views.jobs_detail import ApprovalJobReviewView
@@ -173,25 +174,49 @@ class ApprovalHistoryDetailView(LoginRequiredMixin, TemplateView):
 
     template_name = "approval_history_detail.html"
 
-    def get_template_names(self):
-        """Return the HTMX partial or the full-page template."""
-        if self.request.headers.get("HX-Request") == "true":
-            return [self.template_name]
-        return ["approval_history_detail_page.html"]
-
     def get(self, request, *args, **kwargs):
         """Redirect to the jobs view if the approval is still pending."""
-        obj = get_object_or_404(ApprovalInstance, pk=self.kwargs["pk"])
-        if obj.status == "pending":
-            redirect_url = reverse_lazy("approvals:approval_job_view")
-            section = request.GET.get("section", "my_jobs")
-            if request.headers.get("HX-Request") == "true":
-                return HttpResponse(
-                    f"<script>window.location.href='{redirect_url}?section={section}';</script>"
-                )
-            from horilla.http import HttpResponseRedirect
+        base_url = reverse_lazy("approvals:approval_job_view")
+        is_htmx = request.headers.get("HX-Request") == "true"
+        obj = ApprovalInstance.objects.filter(pk=self.kwargs["pk"]).first()
 
-            return HttpResponseRedirect(f"{redirect_url}?section={section}")
+        if obj is None:
+            messages.warning(
+                request,
+                str(_("This approval no longer exists.")),
+            )
+            if is_htmx:
+                resp = HttpResponse()
+                resp["HX-Redirect"] = f"{base_url}?section=approval-history"
+                return resp
+            return HttpResponse(
+                f'<html><body><script>window.location.replace("{base_url}?section=approval-history");</script></body></html>'
+            )
+
+        # Direct (non-HTMX) page loads can't render the fragment properly.
+        if not is_htmx:
+            return HttpResponse(
+                f'<html><body><script>window.location.replace("{base_url}?section=approval-history");</script></body></html>'
+            )
+
+        if obj.status == "pending":
+            section = request.GET.get("section", "my_jobs")
+            resp = HttpResponse()
+            resp["HX-Redirect"] = f"{base_url}?section={section}"
+            return resp
+        if safe_content_object(obj) is None and obj.content_type:
+            obj.delete()
+            messages.error(
+                request,
+                str(
+                    _(
+                        "Module not found: the linked record no longer exists. The approval entry has been removed."
+                    )
+                ),
+            )
+            resp = HttpResponse()
+            resp["HX-Redirect"] = f"{base_url}?section=approval-history"
+            return resp
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -218,7 +243,7 @@ class ApprovalHistoryDetailView(LoginRequiredMixin, TemplateView):
             if not allowed:
 
                 return render(self.request, "403.html")
-        record = obj.content_object
+        record = safe_content_object(obj)
         can_edit_record = bool(
             record
             and (
@@ -459,7 +484,7 @@ class ApprovalHistoryDetailDetailsTabView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         pk = self.request.GET.get("pk")
         obj = get_object_or_404(ApprovalInstance, pk=pk)
-        record = obj.content_object
+        record = safe_content_object(obj)
         user = self.request.user
         can_edit_record = bool(
             record
