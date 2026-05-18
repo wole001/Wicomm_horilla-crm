@@ -10,6 +10,7 @@ from django.forms import inlineformset_factory
 # First party imports (Horilla)
 from horilla.contrib.core.models import Role
 from horilla.contrib.generics.forms import HorillaModelForm
+from horilla.contrib.utils.middlewares import get_current_request
 
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
@@ -94,6 +95,32 @@ class ApprovalRuleForm(ApprovalBaseForm):
             "trigger_on_edit",
             "is_active",
         ]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        is_active = cleaned_data.get("is_active")
+        model = cleaned_data.get("model")
+        if is_active and model:
+            request = get_current_request()
+            company = getattr(request, "active_company", None) if request else None
+            qs = ApprovalRule.all_objects.filter(
+                model=model,
+                is_active=True,
+                company=company,
+            )
+            if self.instance and self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                conflicting = qs.first()
+                self.add_error(
+                    None,
+                    _(
+                        "'%(name)s' is already the active approval process for this module. "
+                        "Deactivate it before activating another."
+                    )
+                    % {"name": conflicting.name},
+                )
+        return cleaned_data
 
 
 class ApprovalProcessRuleForm(ApprovalBaseForm):

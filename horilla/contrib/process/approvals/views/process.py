@@ -10,6 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Third-party imports (Django)
 from django.db import IntegrityError
+from django.views import View
 
 # First party imports (Horilla)
 from horilla.apps import apps
@@ -108,7 +109,7 @@ class ApprovalProcessListView(LoginRequiredMixin, HorillaListView):
         "name",
         (_("Model"), "model"),
         (_("Execute on"), "get_execute_display"),
-        "is_active",
+        (_("Active"), "is_active_col"),
     ]
     actions = [
         {
@@ -604,3 +605,46 @@ class ApprovalProcessRuleComposeView(LoginRequiredMixin, HorillaSingleFormView):
             "approvals:approval_process_rule_create_view",
             kwargs={"process_pk": self.kwargs["process_pk"]},
         )
+
+
+@method_decorator(htmx_required, name="dispatch")
+class ApprovalProcessToggleView(LoginRequiredMixin, View):
+    """Toggle is_active status for an approval process via HTMX."""
+
+    def post(self, request, *args, **kwargs):
+        """Toggle is_active; when activating, deactivate any other active process for the same company+module."""
+        try:
+            rule = ApprovalRule.objects.get(pk=kwargs["pk"])
+            if request.user.has_perm("approvals.change_approvalrule"):
+                new_state = not rule.is_active
+                deactivated_names = []
+                if new_state:
+                    siblings = ApprovalRule.all_objects.filter(
+                        model=rule.model,
+                        company=rule.company,
+                        is_active=True,
+                    ).exclude(pk=rule.pk)
+                    deactivated_names = list(siblings.values_list("name", flat=True))
+                    siblings.update(is_active=False)
+                rule.is_active = new_state
+                rule.save()
+                status = _("activated") if new_state else _("deactivated")
+                if deactivated_names:
+                    messages.success(
+                        request,
+                        _(
+                            "%(name)s %(status)s successfully. %(deactivated)s deactivated for this module."
+                        )
+                        % {
+                            "name": rule.name,
+                            "status": status,
+                            "deactivated": ", ".join(deactivated_names),
+                        },
+                    )
+                else:
+                    messages.success(request, f"{rule.name} {status} successfully")
+                rule.save()
+            return HttpResponse("<script>$('#reloadButton').click();</script>")
+        except Exception as exc:
+            messages.error(request, exc)
+            return HttpResponse("<script>$('#reloadButton').click();</script>")
