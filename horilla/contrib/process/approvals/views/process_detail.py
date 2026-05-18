@@ -374,6 +374,46 @@ class ApprovalProcessDetailView(LoginRequiredMixin, DetailView):
                         break
         return normalized
 
+    @staticmethod
+    def _resolve_field_verbose_name(field_name, model_cls):
+        """Return the verbose name for a model field."""
+        if not model_cls or not field_name:
+            return field_name
+        try:
+            field = model_cls._meta.get_field(field_name)
+            return str(getattr(field, "verbose_name", field_name)).title()
+        except Exception:
+            return field_name
+
+    @staticmethod
+    def _resolve_condition_value(condition, model_cls):
+        """Return a human-readable display string for condition.value."""
+        if not model_cls or not condition.field or not condition.value:
+            return condition.value
+        try:
+            field = model_cls._meta.get_field(condition.field)
+        except Exception:
+            return condition.value
+
+        if getattr(field, "is_relation", False) and getattr(
+            field, "related_model", None
+        ):
+            try:
+                obj = field.related_model.objects.get(pk=condition.value)
+                return str(obj)
+            except Exception:
+                pass
+            return condition.value
+
+        choices = getattr(field, "choices", None)
+        if choices:
+            for key, label in choices:
+                if str(key) == str(condition.value):
+                    return str(label)
+            return condition.value
+
+        return condition.value
+
     def get_queryset(self):
         """Return approval rules with related process rules and steps."""
         return ApprovalRule.objects.select_related("model").prefetch_related(
@@ -389,9 +429,31 @@ class ApprovalProcessDetailView(LoginRequiredMixin, DetailView):
         context["nav_url"] = reverse_lazy(
             "approvals:approval_process_detail_navbar_view"
         )
+
+        model_cls = None
+        try:
+            model_cls = process.model.model_class()
+        except Exception:
+            pass
+        if model_cls is None:
+            try:
+                model_cls = apps.get_model(process.model.app_label, process.model.model)
+            except Exception:
+                pass
+
         rules = list(process.process_rules.order_by("order", "id"))
         for rule in rules:
             rule.rule_config = self._normalize_rule_config(rule.rule_config or {})
+            enriched = []
+            for condition in rule.conditions.all():
+                condition.value_display = self._resolve_condition_value(
+                    condition, model_cls
+                )
+                condition.field_verbose_name = self._resolve_field_verbose_name(
+                    condition.field, model_cls
+                )
+                enriched.append(condition)
+            rule.enriched_conditions = enriched
         context["process_rules"] = rules
         return context
 
