@@ -1,0 +1,84 @@
+# Horilla Dashboard app — deep dive (`horilla.contrib.dashboard`)
+
+## What this app does
+
+- **Folders** and **dashboards** owned by users, scoped by **company** (`HorillaCoreModel`).
+- **DashboardComponent** rows — KPI, chart, or table tiles; optional FK to a saved **`Report`** from `horilla.contrib.reports`.
+- **ComponentCriteria** — per-component filter rows (operators align with `OPERATOR_CHOICES` from `horilla.utils.choices`).
+- **DefaultHomeLayoutOrder** — lightweight ordering model for the home shell layout.
+- **Home** views compose dashboards or fall back to dynamic KPI/chart/table generation (see [default_dashboard_generator.md](default_dashboard_generator.md) for the generator that lives alongside dashboard views in this codebase).
+- **REST API** at `/dashboard/`.
+
+---
+
+## App startup (`apps.py`)
+
+`DashboardConfig`:
+
+| Setting | Value |
+|---------|--------|
+| `url_prefix` | `dashboard/` |
+| `url_namespace` | `dashboard` |
+| `auto_import_modules` | `registration`, `signals`, `menu` |
+| API | `/dashboard/` → `horilla.contrib.dashboard.api.urls` |
+
+Apps that contribute **default home** tiles add `"dashboard"` to their own `auto_import_modules` and ship a `dashboard.py` that appends to `DefaultDashboardGenerator.extra_models` (see generator guide).
+
+---
+
+## Models (`models.py`)
+
+### `DashboardFolder`
+
+- **`folder_owner`** — `OWNER_FIELDS = ["folder_owner"]`.
+- **`parent_folder`** self-FK for tree structure.
+- **`favourited_by`** M2M.
+- **`actions` / `actions_detail`** — render custom HTMX action partials.
+
+### `Dashboard`
+
+- **`dashboard_owner`**, **`OWNER_FIELDS = ["dashboard_owner"]`**.
+- **`folder`** optional FK.
+- **`is_default`** — `save()` clears other defaults for same **user + company** so only one default dashboard exists.
+- **`get_default_dashboard(user)`** classmethod returns the active default for shell routing.
+- **Favourites** M2M mirroring folders.
+
+### `DashboardComponent`
+
+- **`dashboard`** FK (cascade).
+- **`component_type`** — `chart` | `table_data` | `kpi`.
+- **`reports`** optional FK to **`Report`** — when set, chart/table can reuse saved report definition.
+- **`module`** — `HorillaContentType` limited by **`dashboard_component_models`** for ad-hoc components not tied to a `Report`.
+- Metric and grouping fields (`metric_type`, `grouping_field`, `y_axis_metric_type`, `columns`, …).
+- **`component_owner`** + **`OWNER_FIELDS`** for row-level security on components.
+
+### `ComponentCriteria`
+
+- Child rows describing AND/OR filter lines for a component (linked FK from `DashboardComponent`).
+
+### `DefaultHomeLayoutOrder`
+
+- Plain `models.Model` (not `HorillaCoreModel`) for ordering keys on default home (see model fields).
+
+---
+
+## Views and templates
+
+- **Dashboard detail** — `dashboard_detail_view.html` and partials under `templates/` / `templates/home/`.
+- **Folder detail** — navigates mixed lists of child folders + dashboards (`get_detail_view_url` on folder model points at `dashboard:dashboard_folder_detail_list`).
+
+---
+
+## Typical flows
+
+1. User creates **folder** → adds **dashboards** → sets one as **default** → home loads that layout.
+2. User adds **chart component** bound to a **Report** → execution path loads `Report` filters then runs queryset helpers from **`horilla.contrib.utils.methods`**.
+3. Third-party client hits **`/dashboard/`** API → JSON mirrors web serializer shape.
+
+---
+
+## Related documentation
+
+- Default dashboard generator (fallback when no default dashboard): [default_dashboard_generator.md](default_dashboard_generator.md)
+- Reports model: [../reports/reports.md](../reports/reports.md)
+- Generics chart view: [../generics/views/chart.md](../generics/views/chart.md)
