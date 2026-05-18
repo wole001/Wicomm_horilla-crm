@@ -289,7 +289,7 @@ class HorillaUser(AbstractUser):
             self.username = self.email
 
         if not self.password and self.contact_number:
-            self.password = self.set_password(self.contact_number)
+            self.set_password(self.contact_number)
 
         super().save(*args, **kwargs)
 
