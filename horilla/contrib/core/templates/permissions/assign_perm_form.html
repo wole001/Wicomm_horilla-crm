@@ -22,7 +22,22 @@
         <input type="hidden" id="selected-user-ids" name="selected_user_ids" value="">
         <div class="p-4 pt-1 space-y-4">
             <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700 pb-2">{% trans "Users" %}</label>
+                <div class="flex items-center justify-between pb-2">
+                    <label class="block text-sm font-medium text-gray-700">{% trans "Users" %}</label>
+                    <button
+                        type="button"
+                        class="whitespace-nowrap flex items-center gap-1 text-xs text-primary-600 hover:text-primary-800 bg-primary-300 px-2 py-1 rounded transition-colors"
+                        hx-get="{% url 'generics:user_picker_modal' user_meta.app_label user_meta.model_class_name %}?field_id=selected-users&field_label={% trans 'Users' %}"
+                        hx-target="#horillaModalBox"
+                        hx-swap="innerHTML"
+                        onclick="openhorillaModal()"
+                    >
+                        <svg width="11" height="11" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 5h14M6 10h8M9 15h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        {% trans "Filter" %}
+                    </button>
+                </div>
                 <select
                     name="users"
                     id="selected-users"
