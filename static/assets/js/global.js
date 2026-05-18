@@ -202,8 +202,20 @@ function openDeleteModal() { ModalManager.open("deletemodal", "deleteBox"); }
 function closeDeleteModal() { ModalManager.close("deletemodal", "deleteBox"); }
 function openDeleteModeModal() { ModalManager.open("deleteModeModal", "deleteModeBox"); }
 function closeDeleteModeModal() { ModalManager.close("deleteModeModal", "deleteModeBox"); }
-function openExport() { ModalManager.open("exportModal", "exportBox"); }
-function closeExport() { ModalManager.close("exportModal", "exportBox", false); }
+function openExport(viewId) {
+    if (!viewId) {
+        return;
+    }
+    ModalManager.open(`exportModal-${viewId}`, `exportBox-${viewId}`);
+}
+
+function closeExport(viewId) {
+    if (viewId) {
+        ModalManager.close(`exportModal-${viewId}`, `exportBox-${viewId}`, false);
+    } else {
+        ModalManager.close("exportModal", "exportBox", false);
+    }
+}
 document.body.addEventListener("openNotificationDetailModal", function () { openModal(); });
 
 function closeConfirm(button) {
@@ -702,8 +714,8 @@ function exportSelected(viewId) {
         return;
     }
 
-    openExport();
-    $("#exportRecordIds").val(JSON.stringify(selectedIds));
+    openExport(viewId);
+    $(`#exportRecordIds-${viewId}`).val(JSON.stringify(selectedIds));
 }
 
 // Kanban drag and drop
@@ -1743,15 +1755,14 @@ $(document).on("click", "[id^='clear-select-btn-']", function () {
     clearSelections(viewId);
 });
 
-// Export form validation - works with both regular and HTMX submissions
-$("#exportForm").on("submit", function (e) {
-    const exportFormat = $("#exportFormat").val();
+// Export form validation - each list view uses exportForm-{viewId}
+$(document).on("submit", "form[id^='exportForm-']", function (e) {
+    const exportFormat = $(this).find('select[name="export_format"]').val();
     if (!exportFormat) {
         alert("Please select an export format");
         e.preventDefault();
         return false;
     }
-    // For HTMX, let it proceed - validation is done, download extension will handle the file
     return true;
 });
 
@@ -2290,3 +2301,122 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 })();
+
+
+// ─── User Picker Modal ────────────────────────────────────────────────────────
+(function () {
+    'use strict';
+
+    // Selections persist across HTMX list reloads: { id: { id, text } }
+    var _selected = {};
+
+    // Re-tick checkboxes after every list swap; pre-populate on modal load
+    document.body.addEventListener('htmx:afterSwap', function (evt) {
+        if (!evt.detail || !evt.detail.target) return;
+        var targetId = evt.detail.target.id;
+
+        if (targetId === 'horillaModalBox') {
+            _selected = {};
+            var el = evt.detail.target.querySelector('[data-field-id]');
+            if (el) {
+                var $sel = $('#' + el.dataset.fieldId);
+                $sel.find('option:selected').each(function () {
+                    var id = $(this).val(), text = $(this).text();
+                    if (id) _selected[id] = { id: id, text: text };
+                });
+            }
+        }
+
+        if (targetId === 'userPickerList') {
+            document.querySelectorAll('#userPickerList .up-row-cb').forEach(function (cb) {
+                cb.checked = !!_selected[cb.value];
+                var row = cb.closest('.up-list-row');
+                if (row) row.classList.toggle('bg-primary-50', cb.checked);
+            });
+            _syncSelectAll();
+            _updateCount();
+            // Destroy any Select2 accidentally applied to filter selects
+            $('[data-no-select2="true"].select2-hidden-accessible').each(function () {
+                $(this).select2('destroy');
+            });
+        }
+    });
+
+    // ── Add filter row (needs JS only to compute next row_id)
+    window.upAddFilterRow = function (filterUrl) {
+        var rows  = document.querySelectorAll('#up-filter-rows .up-filter-row');
+        var rowId = rows.length > 0 ? parseInt(rows[rows.length - 1].dataset.rowId || '0', 10) : 0;
+        htmx.ajax('GET', filterUrl + '?add_filter_row=true&row_id=' + rowId, {
+            target: '#up-filter-rows', swap: 'beforeend',
+        });
+    };
+
+    // ── Row click / checkbox
+    window.upRowClick = function (row) {
+        var cb = row.querySelector('.up-row-cb');
+        if (!cb) return;
+        cb.checked = !cb.checked;
+        _onToggle(cb, row);
+    };
+    window.upCbChange = function (cb) { _onToggle(cb, cb.closest('.up-list-row')); };
+
+    function _onToggle(cb, row) {
+        var id = cb.value, text = row ? row.dataset.text : cb.value;
+        if (cb.checked) {
+            _selected[id] = { id: id, text: text };
+            if (row) row.classList.add('bg-primary-50');
+        } else {
+            delete _selected[id];
+            if (row) row.classList.remove('bg-primary-50');
+        }
+        _syncSelectAll();
+        _updateCount();
+    }
+
+    // ── Select-all
+    window.upToggleAll = function (masterCb) {
+        document.querySelectorAll('#userPickerList .up-row-cb').forEach(function (cb) {
+            cb.checked = masterCb.checked;
+            var row = cb.closest('.up-list-row'), id = cb.value;
+            if (masterCb.checked) {
+                _selected[id] = { id: id, text: row ? row.dataset.text : id };
+                if (row) row.classList.add('bg-primary-50');
+            } else {
+                delete _selected[id];
+                if (row) row.classList.remove('bg-primary-50');
+            }
+        });
+        _updateCount();
+    };
+
+    function _syncSelectAll() {
+        var master = document.getElementById('userPickerSelectAll');
+        if (!master) return;
+        var all = Array.from(document.querySelectorAll('#userPickerList .up-row-cb'));
+        var n   = all.filter(function (c) { return c.checked; }).length;
+        master.indeterminate = all.length > 0 && n > 0 && n < all.length;
+        master.checked       = all.length > 0 && n === all.length;
+    }
+
+    function _updateCount() {
+        var el = document.getElementById('userPickerCount');
+        var n  = Object.keys(_selected).length;
+        if (el) el.textContent = n > 0 ? n + ' selected' : '';
+    }
+
+    // ── Confirm: write selections back to originating Select2 field
+    window.userPickerConfirm = function () {
+        var box = document.getElementById('horillaModalBox');
+        var el  = box && box.querySelector('[data-field-id]');
+        if (!el) return;
+        var $sel = $('#' + el.dataset.fieldId);
+        if (!$sel.length) return;
+        Object.keys(_selected).forEach(function (id) {
+            if (!$sel.find('option[value="' + id + '"]').length)
+                $sel.append(new Option(_selected[id].text, id, false, false));
+        });
+        $sel.val(Object.keys(_selected)).trigger('change');
+        closehorillaModal();
+    };
+
+}());

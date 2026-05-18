@@ -275,3 +275,36 @@ class FormViewCommonMixin:
                 pass
 
         return related_models_info
+
+    def _get_m2m_picker_info(self):
+        """Return {field_name: {app_label, model_name}} for every multiple-select field on the form."""
+        info = {}
+        try:
+            form = self.get_form_class()()
+        except Exception:
+            return info
+        for field_name, field in form.fields.items():
+            if not getattr(field.widget, "attrs", {}).get("multiple"):
+                continue
+            related = None
+            # Try to resolve related model from the model's meta field first
+            if getattr(self, "model", None) is not None:
+                try:
+                    meta_field = self.model._meta.get_field(field_name)
+                    related = getattr(meta_field, "related_model", None)
+                except Exception:
+                    pass
+            # Fall back to the form field's queryset (e.g. plain ModelMultipleChoiceField)
+            if related is None:
+                qs = getattr(field, "queryset", None)
+                if qs is not None:
+                    related = qs.model
+            if related:
+                form_class = form.__class__
+                form_class_path = f"{form_class.__module__}.{form_class.__name__}"
+                info[field_name] = {
+                    "app_label": related._meta.app_label,
+                    "model_name": related._meta.model_name,
+                    "form_class": form_class_path,
+                }
+        return info

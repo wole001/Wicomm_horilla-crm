@@ -229,39 +229,18 @@
                                             </script>
                                         {% else %}
                                             <div class="flex justify-between items-center {% if 'select' in field.field.widget.attrs.class|lower or field.field.widget.input_type == 'select' %}mb-2{% else %}mb-1{% endif %}">
-                                                <div class="flex justify-between mb-1 w-full">
-                                                    <label
-                                                        for="{{ field.id_for_label }}"
-                                                        class="text-xs text-color-600"
-                                                    >
-                                                        {{ field.label }}
-                                                        {% if field.field.required %}<span class="text-red-500"
-                                                            >*</span>{% endif %}
-                                                        {% if field.field.widget.attrs.readonly or field.field.widget.attrs.data_readonly or field.field.widget.attrs.disabled %}
-                                                            <span class="ml-2 text-xs text-gray-500 italic"
-                                                            >(Read Only)</span>
-                                                        {% endif %}
-                                                    </label>
-                                                    {% if field.help_text %}
-                                                        <span
-                                                            class="ml-1 inline-flex cursor-pointer text-[#a19e9e]"
-                                                            title="{{ field.help_text|striptags }}"
-                                                            aria-label="{{ field.help_text|striptags }}"
-                                                        >
-                                                            <svg
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                width="15"
-                                                                height="15"
-                                                                viewBox="0 0 20 20"
-                                                            >
-                                                                <path
-                                                                    fill="currentColor"
-                                                                    d="M2.93 17.07A10 10 0 1 1 17.07 2.93A10 10 0 0 1 2.93 17.07m12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32M9 11V9h2v6H9zm0-6h2v2H9z"
-                                                                />
-                                                            </svg>
-                                                        </span>
+                                                <label
+                                                    for="{{ field.id_for_label }}"
+                                                    class="text-xs text-color-600 flex-1 min-w-0"
+                                                >
+                                                    {{ field.label }}
+                                                    {% if field.field.required %}<span class="text-red-500"
+                                                        >*</span>{% endif %}
+                                                    {% if field.field.widget.attrs.readonly or field.field.widget.attrs.data_readonly or field.field.widget.attrs.disabled %}
+                                                        <span class="ml-2 text-xs text-gray-500 italic"
+                                                        >(Read Only)</span>
                                                     {% endif %}
-                                                </div>
+                                                </label>
                                                 {% if field.name in dynamic_create_fields and field.name in related_models_info %}
                                                     {% with initial_data=related_models_info|get_item_form:field.name|get_item_form:'initial' %}
                                                         <button
@@ -276,6 +255,44 @@
                                                             + {% trans "Add" %}
                                                         </button>
                                                     {% endwith %}
+                                                {% endif %}
+                                                {% if field.field.widget.attrs.multiple and field.name in m2m_picker_info %}
+                                                    {% with info=m2m_picker_info|get_item_form:field.name %}
+                                                    <button
+                                                        type="button"
+                                                        class="user-picker-btn whitespace-nowrap flex items-center gap-1 text-xs text-primary-600 hover:text-primary-800  bg-primary-300  px-2 py-1 rounded transition-colors"
+                                                        data-field-id="id_{{ field.name }}"
+                                                        hx-get="{% url 'generics:user_picker_modal' info.app_label info.model_name %}?field_id=id_{{ field.name }}&field_label={{ field.label|urlencode }}&form_class={{ info.form_class|urlencode }}&field_name={{ field.name|urlencode }}"
+                                                        hx-target="#horillaModalBox"
+                                                        hx-swap="innerHTML"
+                                                        hx-on:click="openhorillaModal()"
+                                                        hx-push-url="false"
+                                                    >
+                                                        <svg width="11" height="11" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M3 5h14M6 10h8M9 15h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                                        </svg>
+                                                        {% trans "Filter" %}
+                                                    </button>
+                                                    {% endwith %}
+                                                {% endif %}
+                                                {% if field.help_text %}
+                                                    <span
+                                                        class="ml-1 inline-flex cursor-pointer text-[#a19e9e] flex-shrink-0"
+                                                        title="{{ field.help_text|striptags }}"
+                                                        aria-label="{{ field.help_text|striptags }}"
+                                                    >
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            width="15"
+                                                            height="15"
+                                                            viewBox="0 0 20 20"
+                                                        >
+                                                            <path
+                                                                fill="currentColor"
+                                                                d="M2.93 17.07A10 10 0 1 1 17.07 2.93A10 10 0 0 1 2.93 17.07m12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32M9 11V9h2v6H9zm0-6h2v2H9z"
+                                                            />
+                                                        </svg>
+                                                    </span>
                                                 {% endif %}
                                             </div>
                                             <div class="relative">

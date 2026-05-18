@@ -116,6 +116,21 @@ urlpatterns = [
     ),
     path("search/", views.GlobalSearchView.as_view(), name="global_search"),
     path(
+        "user-picker-modal/<str:app_label>/<str:model_name>/",
+        views.helpers.UserPickerModalView.as_view(),
+        name="user_picker_modal",
+    ),
+    path(
+        "user-picker-filter/<str:app_label>/<str:model_name>/",
+        views.helpers.UserPickerFilterView.as_view(),
+        name="user_picker_filter",
+    ),
+    path(
+        "user-picker-list/<str:app_label>/<str:model_name>/",
+        views.helpers.UserPickerListView.as_view(),
+        name="user_picker_list",
+    ),
+    path(
         "remove-condition-row/<str:row_id>/",
         views.helpers.RemoveConditionRowView.as_view(),
         name="remove_condition_row",

@@ -256,6 +256,7 @@ class HorillaSingleFormView(FormViewCommonMixin, FormView):
         context["field_permissions"] = self.get_field_permissions()
 
         context["related_models_info"] = self.get_related_models_info()
+        context["m2m_picker_info"] = self._get_m2m_picker_info()
 
         query_string = ""
         if self.request.GET:

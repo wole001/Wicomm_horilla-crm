@@ -481,6 +481,7 @@ class HorillaMultiStepFormView(FormViewCommonMixin, FormView):
             context["form_url"] = self.request.path
 
         context["related_models_info"] = self.get_related_models_info()
+        context["m2m_picker_info"] = self._get_m2m_picker_info()
 
         context["stored_form_data"] = self.request.session.get(self.storage_key, {})
         context["stored_files_data"] = self.request.session.get(
