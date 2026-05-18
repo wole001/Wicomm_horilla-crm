@@ -12,6 +12,7 @@ from horilla.contrib.process.reviews.views.core import (
     ReviewProcessDetailView,
     ReviewRuleFormView,
     ReviewProcessApproverFieldsToggleView,
+    ReviewProcessToggleActiveView,
 )
 
 from horilla.contrib.process.reviews.views.review_job import (
@@ -44,6 +45,7 @@ __all__ = [
     "ReviewProcessDetailView",
     "ReviewRuleFormView",
     "ReviewProcessApproverFieldsToggleView",
+    "ReviewProcessToggleActiveView",
     # Review Job
     "ReviewJobView",
     "ReviewJobNavbar",

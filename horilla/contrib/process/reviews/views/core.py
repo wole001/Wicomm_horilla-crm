@@ -7,6 +7,7 @@ from urllib.parse import urlencode
 # Third-party imports (Django)
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views import View
 from django.views.generic import TemplateView
 
 # First party imports (Horilla)
@@ -185,7 +186,7 @@ class ReviewProcessListView(LoginRequiredMixin, HorillaListView):
     enable_sorting = False
     table_height_as_class = "h-[calc(_100vh_-_260px_)]"
 
-    columns = ["title", "model", "is_active"]
+    columns = ["title", "model", (_("Status"), "is_active_col")]
 
     @cached_property
     def col_attrs(self):
@@ -539,6 +540,30 @@ class ReviewRuleFormView(LoginRequiredMixin, HorillaSingleFormView):
         if form is not None:
             context.update(self.get_approver_visibility(form))
         return context
+
+
+@method_decorator(htmx_required, name="dispatch")
+class ReviewProcessToggleActiveView(LoginRequiredMixin, View):
+    """Toggle is_active status for a ReviewProcess via HTMX."""
+
+    def post(self, request, *args, **kwargs):
+        """Flip ``is_active`` on the review process and trigger an HTMX UI reload."""
+        try:
+            process = ReviewProcess.objects.get(pk=kwargs["pk"])
+            if not request.user.has_perm("reviews.change_reviewprocess"):
+                return HttpResponse("<script>$('#reloadButton').click();</script>")
+            process.is_active = not process.is_active
+            process.save(update_fields=["is_active"])
+            status = _("activated") if process.is_active else _("deactivated")
+            messages.success(request, f"{process.title} {status} successfully")
+        except Exception as e:
+            messages.error(
+                request,
+                _(
+                    "An active review process already exists for this model and company."
+                ),
+            )
+        return HttpResponse("<script>$('#reloadButton').click();</script>")
 
 
 @method_decorator(htmx_required, name="dispatch")

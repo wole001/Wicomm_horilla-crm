@@ -80,6 +80,11 @@ urlpatterns = [
         name="review_rule_delete_view",
     ),
     path(
+        "review-processes-toggle-active/<int:pk>/",
+        views.ReviewProcessToggleActiveView.as_view(),
+        name="reviews_toggle_active",
+    ),
+    path(
         "review-jobs/",
         views.ReviewJobView.as_view(),
         name="review_job_view",

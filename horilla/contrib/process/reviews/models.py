@@ -4,6 +4,7 @@
 from django.conf import settings
 
 from horilla.contrib.core.models import HorillaContentType, HorillaCoreModel, Role
+from horilla.contrib.utils.methods import render_template
 from horilla.core.exceptions import ValidationError
 
 # First party imports (Horilla)
@@ -52,6 +53,13 @@ class ReviewProcess(HorillaCoreModel):
 
         verbose_name = _("Review Process")
         verbose_name_plural = _("Review Processes")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["model", "company"],
+                condition=models.Q(is_active=True),
+                name="unique_active_review_process_per_model_company",
+            )
+        ]
 
     def clean(self):
         """Validate required fields before saving the review process."""
@@ -62,6 +70,21 @@ class ReviewProcess(HorillaCoreModel):
             raise ValidationError(
                 {"review_fields": _("Please select at least one field to review.")}
             )
+        if self.is_active and self.model_id:
+            qs = ReviewProcess.objects.filter(
+                model_id=self.model_id,
+                company=self.company,
+                is_active=True,
+            )
+            if self.pk:
+                qs = qs.exclude(pk=self.pk)
+            if qs.exists():
+                raise ValidationError(
+                    _(
+                        "An active review process already exists for this model"
+                        " and company. Only one active process is allowed per model per company."
+                    )
+                )
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -82,6 +105,12 @@ class ReviewProcess(HorillaCoreModel):
         This method to get detail url
         """
         return reverse_lazy("reviews:reviews_detail_view", kwargs={"pk": self.pk})
+
+    def is_active_col(self):
+        """Return HTML toggle for the is_active column in the list view."""
+        return render_template(
+            path="reviews/partials/is_active_col.html", context={"instance": self}
+        )
 
     def __str__(self) -> str:
         return str(self.title)
