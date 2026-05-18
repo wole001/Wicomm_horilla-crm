@@ -327,6 +327,19 @@ class ReviewJobDetailView(LoginRequiredMixin, TemplateView):
             "approvers_done": approvers_done,
         }
 
+    def get(self, request, *args, **kwargs):
+        """Override get to handle missing/uninstalled content-type model gracefully."""
+        try:
+            return super().get(request, *args, **kwargs)
+        except Exception as e:
+            messages.error(
+                request,
+                _("The module for this review record is no longer available."),
+            )
+            return HttpResponse(
+                "<script>$('#reloadButton').click();closeModal();$('#reloadMessagesButton').click();</script>"
+            )
+
     def get_context_data(self, **kwargs):
         """Build context with the review job details and approval status."""
         context = super().get_context_data(**kwargs)

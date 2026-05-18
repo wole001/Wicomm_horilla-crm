@@ -16,22 +16,26 @@ logger = logging.getLogger(__name__)
 
 
 def reviews_post_save_handler(sender, instance, **kwargs):
-    """Sync review jobs for a record whenever it is saved."""
+    """Sync review jobs for a record whenever it is saved.
+
+    Registry membership is checked at dispatch time so that app loading order
+    does not matter — the `reviews` app initialises before CRM apps, but
+    FEATURE_REGISTRY is fully populated by the time any real request triggers
+    a model save.
+    """
+    registry_key = FEATURE_CONFIG.get("reviews", "reviews_models")
+    if sender not in FEATURE_REGISTRY.get(registry_key, []):
+        return
     try:
         sync_jobs_for_record(instance)
     except Exception:
         logger.exception("Failed to sync review jobs for %s", instance)
 
 
-def connect_review_signals():
-    """Bind post_save for all models registered under review process feature."""
-    registry_key = FEATURE_CONFIG.get("reviews", "reviews_models")
-    for model in FEATURE_REGISTRY.get(registry_key, []):
-        post_save.connect(
-            reviews_post_save_handler,
-            sender=model,
-            dispatch_uid=f"reviews_post_save_{model._meta.app_label}_{model._meta.model_name}",
-        )
-
-
-connect_review_signals()
+# Connect a single global handler.  Per-model connections attempted at app
+# startup fail silently because CRM apps register their models AFTER the
+# reviews app's ready() runs, leaving the registry empty at that point.
+post_save.connect(
+    reviews_post_save_handler,
+    dispatch_uid="reviews_post_save_global",
+)
