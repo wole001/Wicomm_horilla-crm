@@ -6,6 +6,9 @@ from django.contrib import admin
 from .models import (
     EmailToLeadConfig,
     Lead,
+    LeadAssignmentCondition,
+    LeadAssignmentMatchCriteria,
+    LeadAssignmentRule,
     LeadCaptureForm,
     LeadStatus,
     ScoringCondition,
@@ -21,6 +24,9 @@ admin.site.register(LeadCaptureForm)
 admin.site.register(ScoringRule)
 admin.site.register(ScoringCriterion)
 admin.site.register(ScoringCondition)
+admin.site.register(LeadAssignmentRule)
+admin.site.register(LeadAssignmentCondition)
+admin.site.register(LeadAssignmentMatchCriteria)
 
 
 @admin.register(LogEntry)

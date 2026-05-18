@@ -71,9 +71,23 @@ from horilla_crm.leads.views.lead_actions import (
     LeadChangeOwnerForm,
 )
 from horilla_crm.leads.views.lead_conversion import LeadConversionView
-
+from horilla_crm.leads.views.assignment_rule import (
+    LeadsAssignmentView,
+    LeadAssignmentNavbar,
+    LeadAssignmentListView,
+    LeadAssignmentActivateView,
+    LeadAssignmentForm,
+    LeadAssignmentDelete,
+    AssignmentRuleDetailView,
+    AssignmentRuleDetailNavbar,
+    AssignmentConditionFormView,
+    AssignmentConditionDeleteView,
+    ToggleAssignToFieldView,
+    ToggleNotifyMethodFieldView,
+)
 
 __all__ = [
+    # Core Views
     "LeadView",
     "LeadNavbar",
     "LeadListView",
@@ -89,6 +103,8 @@ __all__ = [
     "LeadSplitView",
     "LeadsHistoryTabView",
     "LeadsNotesAndAttachments",
+    "LeadTimelineView",
+    # Lead Stage Views
     "LeadsStageView",
     "LeadStageNavbar",
     "LeadStageListView",
@@ -104,11 +120,13 @@ __all__ = [
     "RemoveStageView",
     "CreateStageGroupView",
     "InitializeDatabaseLeadStages",
+    # Mail to Lead Views
     "MailToLeadView",
     "MailToLeadNavbar",
     "MailToLeadListView",
     "MailToLeadFormView",
     "EmailToLeadConfigDeleteView",
+    # Scoring Rule Views
     "ScoringRuleView",
     "ScoringRuleNavbar",
     "ScoringRuleListView",
@@ -119,6 +137,7 @@ __all__ = [
     "ScoringCriterionCreateUpdateView",
     "ScoringCriteriaDeleteView",
     "ScroringActiveToggleView",
+    # Web to Lead Views
     "LeadFormBuilderView",
     "UpdateFormHeadingView",
     "UpdateFormPreviewView",
@@ -127,10 +146,24 @@ __all__ = [
     "RemoveFieldView",
     "PublicLeadFormView",
     "ToggleReturnUrlView",
+    # Lead Actions Views
     "LeadDeleteView",
     "LeadFormView",
     "LeadsSingleFormView",
     "LeadChangeOwnerForm",
+    # Lead Conversion Views
     "LeadConversionView",
-    "LeadTimelineView",
+    # Assignment Rule Views
+    "LeadsAssignmentView",
+    "LeadAssignmentNavbar",
+    "LeadAssignmentListView",
+    "LeadAssignmentActivateView",
+    "LeadAssignmentForm",
+    "LeadAssignmentDelete",
+    "AssignmentRuleDetailView",
+    "AssignmentRuleDetailNavbar",
+    "AssignmentConditionFormView",
+    "AssignmentConditionDeleteView",
+    "ToggleAssignToFieldView",
+    "ToggleNotifyMethodFieldView",
 ]

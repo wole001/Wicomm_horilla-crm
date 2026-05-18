@@ -57,7 +57,6 @@ class LeadsStageView(LoginRequiredMixin, HorillaView):
 class LeadStageNavbar(LoginRequiredMixin, HorillaNavView):
     """Navbar for LeadStage"""
 
-    nav_title = LeadStatus._meta.verbose_name_plural
     search_url = reverse_lazy("leads:lead_stage_list_view")
     main_url = reverse_lazy("leads:lead_stage_view")
     filterset_class = LeadStatusFilter

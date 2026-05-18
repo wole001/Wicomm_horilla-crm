@@ -9,11 +9,15 @@ import pycountry
 # Third-party imports (Django)
 from django import forms
 
+# Third-party imports (Django)
+from django.db.models import Q
+
 # First-party / Horilla imports
 from horilla.auth.models import User
 from horilla.contrib.core.mixins import OwnerQuerysetMixin
 from horilla.contrib.generics.forms import HorillaModelForm, HorillaMultiStepForm
-from horilla.contrib.mail.models import HorillaMailConfiguration
+from horilla.contrib.mail.models import HorillaMailConfiguration, HorillaMailTemplate
+from horilla.contrib.notifications.models import NotificationTemplate
 from horilla.urls import reverse, reverse_lazy
 
 # First-party / Horilla apps
@@ -25,6 +29,8 @@ from horilla_crm.opportunities.models import Opportunity
 from .models import (
     EmailToLeadConfig,
     Lead,
+    LeadAssignmentCondition,
+    LeadAssignmentMatchCriteria,
     LeadStatus,
     ScoringCondition,
     ScoringCriterion,
@@ -437,3 +443,93 @@ class ScoringCriterionForm(HorillaModelForm):
                 }
             ),
         }
+
+
+class AssignmentRuleConditionForm(HorillaModelForm):
+    """Form for creating and editing lead assignment rule conditions."""
+
+    def __init__(self, *args, **kwargs):
+        kwargs["condition_model"] = LeadAssignmentMatchCriteria
+        super().__init__(*args, **kwargs)
+
+        current_type = "user"
+        if self.instance and self.instance.pk:
+            current_type = self.instance.assign_to_type or "user"
+        elif self.data.get("assign_to_type"):
+            current_type = self.data["assign_to_type"]
+
+        self.fields["assign_to_type"].widget.attrs.update(
+            {
+                "hx-post": reverse_lazy("leads:toggle_assign_to_field"),
+                "hx-target": "#assign_to_users_container",
+                "hx-swap": "outerHTML",
+                "hx-trigger": "change",
+            }
+        )
+        self.fields["assign_to_users"].widget.attrs["container_style"] = (
+            "" if current_type == "user" else "display:none"
+        )
+        self.fields["assign_to_roles"].widget.attrs["container_style"] = (
+            "" if current_type == "role" else "display:none"
+        )
+
+        # --- notify_method conditional fields ---
+        current_notify = ""
+        if self.instance and self.instance.pk:
+            current_notify = self.instance.notify_method or ""
+        elif self.data.get("notify_method"):
+            current_notify = self.data["notify_method"]
+
+        lead_template_qs = Q(content_type__isnull=True) | Q(
+            content_type__app_label="leads", content_type__model="lead"
+        )
+        self.fields["mail_template"].queryset = HorillaMailTemplate.objects.filter(
+            lead_template_qs
+        )
+        self.fields["notification_template"].queryset = (
+            NotificationTemplate.objects.filter(lead_template_qs)
+        )
+
+        self.fields["notify_method"].widget.attrs.update(
+            {
+                "hx-post": reverse_lazy("leads:toggle_notify_method_field"),
+                "hx-target": "#mail_template_container",
+                "hx-swap": "outerHTML",
+                "hx-trigger": "change",
+                "hx-include": "[name='mail_template'],[name='notification_template']",
+            }
+        )
+        show_mail = current_notify in ("email", "both")
+        show_notification = current_notify in ("notification", "both")
+        self.fields["mail_template"].widget.attrs["container_style"] = (
+            "" if show_mail else "display:none"
+        )
+        self.fields["notification_template"].widget.attrs["container_style"] = (
+            "" if show_notification else "display:none"
+        )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        condition_rows = self._extract_condition_rows()
+        if not condition_rows:
+            raise forms.ValidationError(
+                "At least one matching criterion must be provided."
+            )
+        cleaned_data["condition_rows"] = condition_rows
+        return cleaned_data
+
+    class Meta:
+        """
+        Meta options for AssignmentRuleConditionForm. Specifies the model and fields to include in the form.
+        """
+
+        model = LeadAssignmentCondition
+        fields = [
+            "rule",
+            "assign_to_type",
+            "assign_to_users",
+            "assign_to_roles",
+            "notify_method",
+            "mail_template",
+            "notification_template",
+        ]

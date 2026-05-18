@@ -56,7 +56,6 @@ class ScoringRuleNavbar(LoginRequiredMixin, HorillaNavView):
     Navbar for scoring rule
     """
 
-    nav_title = ScoringRule._meta.verbose_name_plural
     search_url = reverse_lazy("leads:scoring_rule_list_view")
     main_url = reverse_lazy("leads:scoring_rule_view")
     filterset_class = ScoringRuleFilter

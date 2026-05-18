@@ -5,11 +5,13 @@ Handles automatic updates when company-related events occur, e.g., currency chan
 
 # Standard library imports
 import logging
+import threading
 
 # Third-party imports (Django)
 from django.db import transaction
 from django.db.models.signals import post_migrate, post_save, pre_delete, pre_save
 from django.dispatch import Signal, receiver
+from django.template import engines
 
 # First-party / Horilla imports
 from horilla.apps import apps
@@ -18,12 +20,16 @@ from horilla.auth.models import User
 # First-party / Horilla apps
 from horilla.contrib.core.signals import company_created, company_currency_changed
 from horilla.contrib.keys.models import ShortcutKey
+from horilla.contrib.notifications.methods import create_notification
+from horilla.contrib.utils.middlewares import _thread_local
 from horilla.core.exceptions import FieldDoesNotExist
-from horilla.db.models import Case, F, IntegerField, Q, When
+from horilla.db.models import Case, Count, F, IntegerField, Q, When
 from horilla.shortcuts import render
 from horilla.urls import reverse_lazy
 from horilla_crm.leads.models import (
     Lead,
+    LeadAssignmentCondition,
+    LeadAssignmentRule,
     ScoringCondition,
     ScoringCriterion,
     ScoringRule,
@@ -309,7 +315,10 @@ _CRM_SHORTKEY_URL_MIGRATIONS = {
 }
 
 
-@receiver(post_migrate, dispatch_uid="migrate_crm_shortkey_urls")
+# Disabled in v1.10.1: this one-time URL migration was only needed for the v1.10.0
+# upgrade. Keeping the function in place for v1.10.1 release; remove entirely in the
+# next version.
+# @receiver(post_migrate, dispatch_uid="migrate_crm_shortkey_urls")
 def migrate_crm_shortkey_urls(sender, **kwargs):
     """Prefix existing CRM shortkey URLs with crm/ after the URL restructure."""
     if sender.name != "horilla_crm.leads":
@@ -331,3 +340,289 @@ def update_lead_score(sender, instance, **kwargs):
     """Signal to update lead score before saving a Lead instance."""
 
     instance.lead_score = compute_score(instance)
+
+
+def _eval_single_criterion(criteria, lead):
+    """
+    Evaluate one LeadAssignmentMatchCriteria row against a lead instance.
+    Returns True if the criterion matches, False otherwise.
+    """
+    field = criteria.field
+    operator = criteria.operator
+    value = criteria.value or ""
+
+    try:
+        meta_field = Lead._meta.get_field(field)
+    except FieldDoesNotExist:
+        logger.warning("Assignment rule: field '%s' does not exist on Lead", field)
+        return False
+
+    try:
+        raw = getattr(lead, field, None)
+
+        # FK → compare by PK string
+        if (
+            hasattr(meta_field, "related_model")
+            and meta_field.related_model is not None
+        ):
+            field_val = str(raw.pk) if raw is not None else ""
+        else:
+            field_val = "" if raw is None else str(raw)
+
+        if operator == "exact":
+            return field_val == value
+        if operator == "ne":
+            return field_val != value
+        if operator == "icontains":
+            return value.lower() in field_val.lower()
+        if operator == "not_contains":
+            return value.lower() not in field_val.lower()
+        if operator == "istartswith":
+            return field_val.lower().startswith(value.lower())
+        if operator == "iendswith":
+            return field_val.lower().endswith(value.lower())
+        if operator == "isnull":
+            return not field_val.strip()
+        if operator == "isnotnull":
+            return bool(field_val.strip())
+        if operator in ("gt", "gte", "lt", "lte"):
+            try:
+                fv, rv = float(field_val), float(value)
+                return {"gt": fv > rv, "gte": fv >= rv, "lt": fv < rv, "lte": fv <= rv}[
+                    operator
+                ]
+            except (ValueError, TypeError):
+                return False
+        if operator == "between":
+            parts = [p.strip() for p in value.split(",") if p.strip()]
+            if len(parts) == 2:
+                try:
+                    fv = float(field_val)
+                    return float(parts[0]) <= fv <= float(parts[1])
+                except (ValueError, TypeError):
+                    return False
+    except Exception as exc:
+        logger.error("Assignment rule criterion eval error (field=%s): %s", field, exc)
+
+    return False
+
+
+def _eval_condition_criteria(condition, lead):
+    """
+    Evaluate all match-criteria rows of a condition using their AND/OR logic.
+    Returns True if the condition as a whole matches the lead.
+    No criteria means "always match".
+    """
+    criteria_qs = condition.criteria.all().order_by("created_at")
+    if not criteria_qs.exists():
+        return True
+        return True
+
+    result = None
+    for criteria in criteria_qs:
+        row_result = _eval_single_criterion(criteria, lead)
+        if result is None:
+            result = row_result
+        elif criteria.logical_operator == "or":
+            result = result or row_result
+        else:
+            result = result and row_result
+
+    return bool(result)
+
+
+def _resolve_target_users(condition):
+    """
+    Return a queryset of candidate User objects for the condition:
+    - 'user' type → the explicitly selected users
+    - 'role' type → all users whose role FK matches one of the selected roles
+    """
+    if condition.assign_to_type == "role":
+        roles = condition.assign_to_roles.all()
+        return User.objects.filter(role__in=roles, is_active=True)
+    return condition.assign_to_users.filter(is_active=True)
+
+
+def _pick_round_robin(users_qs):
+    """
+    From a queryset of users, return the one currently owning the fewest active leads.
+    Ties broken by PK (lowest first) for determinism.
+    """
+    if not users_qs.exists():
+        return None
+    return (
+        users_qs.annotate(lead_count=Count("lead")).order_by("lead_count", "pk").first()
+    )
+
+
+def _send_assignment_email(condition, lead, assigned_user):
+    """Send assignment email to the assigned user using the condition's mail template."""
+    try:
+        from django.utils import timezone
+
+        from horilla.contrib.core.models import HorillaContentType
+        from horilla.contrib.mail.models import HorillaMail, HorillaMailConfiguration
+        from horilla.contrib.mail.services import HorillaMailManager
+
+        tmpl = condition.mail_template
+        if not tmpl or not assigned_user.email:
+            return
+
+        company = getattr(lead, "company", None)
+        sender = None
+        if company:
+            sender = (
+                HorillaMailConfiguration.objects.filter(
+                    company=company, mail_channel="outgoing", is_primary=True
+                ).first()
+                or HorillaMailConfiguration.objects.filter(
+                    company=company, mail_channel="outgoing"
+                ).first()
+            )
+
+        content_type = HorillaContentType.objects.get_for_model(lead)
+        mail = HorillaMail.objects.create(
+            sender=sender,
+            to=assigned_user.email,
+            subject=tmpl.subject or "",
+            body=tmpl.body or "",
+            content_type=content_type,
+            object_id=lead.pk,
+            mail_status="draft",
+            company=company,
+            created_at=timezone.now(),
+            updated_at=timezone.now(),
+        )
+
+        context = {"instance": lead, "user": assigned_user, "lead": lead}
+
+        def _send():
+            try:
+                if sender:
+                    setattr(_thread_local, "from_mail_id", sender.pk)
+                HorillaMailManager.send_mail(mail, context=context)
+            except Exception as exc:
+                logger.error(
+                    "Assignment rule email send error (lead=%s): %s", lead.pk, exc
+                )
+            finally:
+                if hasattr(_thread_local, "from_mail_id"):
+                    delattr(_thread_local, "from_mail_id")
+
+        threading.Thread(target=_send, daemon=True).start()
+
+    except Exception as exc:
+        logger.error("Assignment rule email setup error (lead=%s): %s", lead.pk, exc)
+
+
+def _send_assignment_notification(condition, lead, assigned_user):
+    """Send in-app notification to the assigned user using the condition's notification template."""
+    try:
+        tmpl = condition.notification_template
+        if not tmpl:
+            return
+
+        context = {"instance": lead, "lead": lead}
+        django_engine = engines["django"]
+        msg_src = (
+            ("{% load horilla_tags %}\n" + tmpl.message).strip() if tmpl.message else ""
+        )
+        message = (
+            django_engine.from_string(msg_src).render(context)[:500]
+            if msg_src
+            else f"New lead assigned: {lead}"
+        )
+
+        lead_url = (
+            str(lead.get_detail_url()) if hasattr(lead, "get_detail_url") else None
+        )
+        create_notification(
+            user=assigned_user,
+            message=message,
+            sender=None,
+            url=lead_url,
+            instance=lead,
+            read=False,
+        )
+    except Exception as exc:
+        logger.error("Assignment rule notification error (lead=%s): %s", lead.pk, exc)
+
+
+def apply_assignment_rules(lead):
+    """
+    Main assignment engine: evaluate active rules in order and apply the first matching condition.
+
+    Steps:
+    1. Iterate active LeadAssignmentRules ordered by creation date.
+    2. For each rule, iterate its conditions (ordered by `order`).
+    3. Evaluate criteria for each condition against the lead.
+    4. On first match: pick the user with fewest leads (round-robin), update lead_owner,
+       then send email / notification / both per the condition's notify_method.
+    5. Stop after the first matching condition across all rules.
+    """
+    try:
+        rules = LeadAssignmentRule.objects.filter(is_active=True).order_by("created_at")
+        for rule in rules:
+            conditions = LeadAssignmentCondition.objects.filter(rule=rule).order_by(
+                "created_at"
+            )
+
+            for condition in conditions:
+                if not _eval_condition_criteria(condition, lead):
+                    continue
+
+                # Condition matched — resolve target users
+                users_qs = _resolve_target_users(condition)
+                assigned_user = _pick_round_robin(users_qs)
+                if not assigned_user:
+                    logger.warning(
+                        "Assignment rule '%s' condition #%s matched lead %s "
+                        "but no eligible users found.",
+                        rule.name,
+                        condition.order,
+                        lead.pk,
+                    )
+                    continue
+
+                # Assign via direct UPDATE to avoid re-triggering post_save
+                Lead.objects.filter(pk=lead.pk).update(lead_owner=assigned_user)
+                lead.lead_owner = assigned_user  # keep in-memory object consistent
+                logger.info(
+                    "Lead %s assigned to %s via rule '%s'.",
+                    lead.pk,
+                    assigned_user.username,
+                    rule.name,
+                )
+
+                # Deliver notifications / email
+                method = condition.notify_method
+                if method in ("email", "both"):
+                    _send_assignment_email(condition, lead, assigned_user)
+                if method in ("notification", "both"):
+                    _send_assignment_notification(condition, lead, assigned_user)
+
+                return  # first matching condition wins
+
+    except Exception as exc:
+        logger.error(
+            "apply_assignment_rules error for lead %s: %s", lead.pk, exc, exc_info=True
+        )
+
+
+@receiver(post_save, sender=Lead)
+def handle_lead_assignment(sender, instance, created, **kwargs):
+    """
+    Trigger assignment rules after a lead is created or updated.
+    Deferred to on_commit to guarantee the row exists before querying.
+    """
+
+    def _run():
+        try:
+            lead = Lead.objects.get(pk=instance.pk)
+            apply_assignment_rules(lead)
+        except Lead.DoesNotExist:
+            pass
+        except Exception as exc:
+            logger.error("handle_lead_assignment error (pk=%s): %s", instance.pk, exc)
+
+    transaction.on_commit(_run)
