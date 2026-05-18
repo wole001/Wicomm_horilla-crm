@@ -12,6 +12,7 @@ from .process import (  # noqa: F401
     ApprovalProcessCreateUpdateView,
     ApprovalProcessRuleCriteriaView,
     ApprovalProcessRuleComposeView,
+    ApprovalProcessToggleView,
 )
 from .process_rule_dynamic import (  # noqa: F401
     ApprovalProcessRuleActionFormView,
@@ -63,6 +64,7 @@ __all__ = [
     "ApprovalProcessCreateUpdateView",
     "ApprovalProcessRuleCriteriaView",
     "ApprovalProcessRuleComposeView",
+    "ApprovalProcessToggleView",
     "ApprovalProcessRuleActionFormView",
     "ApprovalProcessRuleComposeDynamicView",
     "ApprovalProcessRuleRecordFieldsFragmentView",

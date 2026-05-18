@@ -13,6 +13,7 @@ from django.conf import settings
 
 # First party imports (Horilla)
 from horilla.contrib.core.models import HorillaContentType, HorillaCoreModel
+from horilla.contrib.utils.methods import render_template
 
 # First party imports (Horilla)
 from horilla.db import models
@@ -77,6 +78,12 @@ class ApprovalRule(HorillaCoreModel):
         return reverse_lazy(
             "approvals:approval_process_delete_view",
             kwargs={"pk": self.pk},
+        )
+
+    def is_active_col(self):
+        """Return HTML toggle for active status column."""
+        return render_template(
+            path="approval_process_is_active_col.html", context={"instance": self}
         )
 
     def get_execute_display(self) -> str:

@@ -42,6 +42,11 @@ urlpatterns = [
         name="approval_process_delete_view",
     ),
     path(
+        "approval-process-toggle/<int:pk>/",
+        views.ApprovalProcessToggleView.as_view(),
+        name="approval_process_toggle_view",
+    ),
+    path(
         "approval-process-detail-view/<int:pk>/",
         views.ApprovalProcessDetailView.as_view(),
         name="approval_process_detail_view",
