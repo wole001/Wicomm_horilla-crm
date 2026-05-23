@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 
-from .models import MeetingIntegrationSetting, MeetingLink, UserMeetingConfig
+from .models import MeetingIntegrationSetting, UserMeetingConfig
 
 
 @admin.register(MeetingIntegrationSetting)
@@ -20,12 +20,3 @@ class UserMeetingConfigAdmin(admin.ModelAdmin):
 
     list_display = ("user", "provider", "company")
     list_filter = ("provider",)
-
-
-@admin.register(MeetingLink)
-class MeetingLinkAdmin(admin.ModelAdmin):
-    """Browse meeting links created within the tenant."""
-
-    list_display = ("title", "provider", "created_by_user", "start_datetime", "company")
-    list_filter = ("provider",)
-    search_fields = ("title",)
