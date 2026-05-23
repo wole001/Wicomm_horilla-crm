@@ -17,7 +17,7 @@ from horilla.urls import reverse_lazy
 from horilla.utils.translation import gettext_lazy as _
 
 # Local imports
-from .models import Lead, LeadStatus, ScoringRule
+from .models import Lead, LeadStatus
 
 
 @floating_menu.register
@@ -115,16 +115,3 @@ class LeadSubSection:
 
     # Access control
     perm = ["leads.view_lead", "leads.view_own_lead"]
-
-
-BaseSettings.items.append(
-    {
-        "label": ScoringRule()._meta.verbose_name,
-        "url": reverse_lazy("leads:scoring_rule_view"),
-        "hx-target": "#settings-content",
-        "hx-push-url": "true",
-        "hx-select": "#scoring-rule-view",
-        "hx-select-oob": "#settings-sidebar",
-        "perm": "leads.view_scoringrule",
-    },
-)

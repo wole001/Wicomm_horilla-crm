@@ -209,66 +209,6 @@ urlpatterns = [
         name="public_lead_form",
     ),
     path(
-        "scoring-rule-view/",
-        views.ScoringRuleView.as_view(),
-        name="scoring_rule_view",
-    ),
-    path(
-        "scoring-rule-nav-view/",
-        views.ScoringRuleNavbar.as_view(),
-        name="scoring_rule_nav_view",
-    ),
-    path(
-        "scoring-rule-list-view/",
-        views.ScoringRuleListView.as_view(),
-        name="scoring_rule_list_view",
-    ),
-    path(
-        "scoring-rule-create-form/",
-        views.ScoringRuleFormView.as_view(),
-        name="scoring_rule_create_form",
-    ),
-    path(
-        "scoring-rule-update-form/<int:pk>/",
-        views.ScoringRuleFormView.as_view(),
-        name="scoring_rule_update_form",
-    ),
-    path(
-        "scoring-rule-delete-view/<int:pk>/",
-        views.ScoringRuleDeleteView.as_view(),
-        name="scoring_rule_delete_view",
-    ),
-    path(
-        "scoring-rule-detail-view/<int:pk>/",
-        views.ScoringRuleDetailView.as_view(),
-        name="scoring_rule_detail_view",
-    ),
-    path(
-        "scoring-rule-detail-nav-view/",
-        views.ScoringRuleDetailNavbar.as_view(),
-        name="scoring_rule_detail_nav_view",
-    ),
-    path(
-        "scoring-rule-criteria-create-form/",
-        views.ScoringCriterionCreateUpdateView.as_view(),
-        name="scoring_rule_criteria_create_form",
-    ),
-    path(
-        "scoring-rule-criteria-edit-form/<int:pk>/",
-        views.ScoringCriterionCreateUpdateView.as_view(),
-        name="scoring_rule_criteria_edit_form",
-    ),
-    path(
-        "scoring-rule-criteria-delete/<int:pk>/",
-        views.ScoringCriteriaDeleteView.as_view(),
-        name="scoring_rule_criteria_delete",
-    ),
-    path(
-        "scoring-rule-activate/<int:pk>/",
-        views.ScroringActiveToggleView.as_view(),
-        name="scoring_rule_activate",
-    ),
-    path(
         "leads-assignment-view/",
         views.LeadsAssignmentView.as_view(),
         name="leads_assignment_view",

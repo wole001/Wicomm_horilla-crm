@@ -31,13 +31,8 @@ from horilla_crm.leads.api.docs import (
     LEAD_STATUS_LIST_DOCS,
     LEAD_STATUS_REORDER_DOCS,
 )
-from horilla_crm.leads.api.serializers import (
-    LeadSerializer,
-    LeadStatusSerializer,
-    ScoringCriterionSerializer,
-    ScoringRuleSerializer,
-)
-from horilla_crm.leads.models import Lead, LeadStatus, ScoringCriterion, ScoringRule
+from horilla_crm.leads.api.serializers import LeadSerializer, LeadStatusSerializer
+from horilla_crm.leads.models import Lead, LeadStatus
 
 # Define common Swagger parameters and bodies consistent with core
 search_param = openapi.Parameter(
@@ -364,25 +359,3 @@ class LeadStatusViewSet(SearchFilterMixin, BulkOperationsMixin, viewsets.ModelVi
                 {"error": f"Failed to reorder lead statuses: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-
-
-class ScoringRuleViewSet(SearchFilterMixin, BulkOperationsMixin, viewsets.ModelViewSet):
-    """ViewSet for ScoringRule model"""
-
-    queryset = ScoringRule.objects.all()
-    serializer_class = ScoringRuleSerializer
-    permission_classes = [permissions.IsAuthenticated, IsCompanyMember]
-    search_fields = ["name", "description"]
-    filterset_fields = ["name", "company", "is_active"]
-
-
-class ScoringCriterionViewSet(
-    SearchFilterMixin, BulkOperationsMixin, viewsets.ModelViewSet
-):
-    """ViewSet for ScoringCriterion model"""
-
-    queryset = ScoringCriterion.objects.all()
-    serializer_class = ScoringCriterionSerializer
-    permission_classes = [permissions.IsAuthenticated, IsCompanyMember]
-    search_fields = ["name", "description"]
-    filterset_fields = ["name", "rule", "is_active"]

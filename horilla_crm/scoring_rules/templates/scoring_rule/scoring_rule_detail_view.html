@@ -1,7 +1,7 @@
 {% extends "settings/settings.html" %}
 {% load horilla_tags i18n static %}
 {% block settings %}
-    {% has_perm "core.view_scoringrule" as can_view_scoringrule %}
+    {% has_perm "scoring_rules.view_scoringrule" as can_view_scoringrule %}
     {% if can_view_scoringrule %}
         <div id="scoring-rule-view">
             {% include "messages.html" %}
@@ -29,8 +29,8 @@
                             <th class="text-sm p-3 text-left w-12 rounded-tl-md">#</th>
                             <th class="text-sm p-3 text-left">{% trans "Criteria" %}</th>
                             <th class="text-sm p-3 text-left w-[200px]">{% trans "Points" %}</th>
-                            {% has_perm "core.change_scoringrule" as can_change_scoringrule %}
-                            {% has_perm "core.delete_scoringrule" as can_delete_scoringrule %}
+                            {% has_perm "scoring_rules.change_scoringrule" as can_change_scoringrule %}
+                            {% has_perm "scoring_rules.delete_scoringrule" as can_delete_scoringrule %}
                             {% if can_change_scoringrule or can_delete_scoringrule %}
                                 <th class="text-sm p-3 text-left w-[180px] rounded-tr-md">{% trans "Actions" %}</th>
                             {% endif %}
@@ -65,7 +65,7 @@
                                                 <button
                                                     class="w-10 h-7 bg-dark-25 flex-1 flex justify-center border-r border-r-[white] hover:bg-dark-50 transition duration-300 items-center"
                                                     title="{% trans 'Edit' %}"
-                                                    hx-get="{% url 'leads:scoring_rule_criteria_edit_form' score_crite.pk %}"
+                                                    hx-get="{% url 'scoring_rules:scoring_rule_criteria_edit_form' score_crite.pk %}"
                                                     hx-target="#modalBox"
                                                     hx-swap="innerHTML"
                                                     onclick="openModal()"
@@ -81,7 +81,7 @@
                                                 <button
                                                     class="w-10 h-7 bg-dark-25 flex-1 flex justify-center border-r border-r-[white] hover:bg-dark-50 transition duration-300 items-center"
                                                     title="{% trans 'Delete' %}"
-                                                    hx-post="{% url 'leads:scoring_rule_criteria_delete' score_crite.pk %}"
+                                                    hx-post="{% url 'scoring_rules:scoring_rule_criteria_delete' score_crite.pk %}"
                                                     hx-target="#deleteModeBox"
                                                     hx-swap="innerHTML"
                                                     hx-trigger="click"

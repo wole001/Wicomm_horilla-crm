@@ -42,18 +42,6 @@ from horilla_crm.leads.views.mail_to_lead import (
     MailToLeadFormView,
     EmailToLeadConfigDeleteView,
 )
-from horilla_crm.leads.views.scoring_rule import (
-    ScoringRuleView,
-    ScoringRuleNavbar,
-    ScoringRuleListView,
-    ScoringRuleFormView,
-    ScoringRuleDeleteView,
-    ScoringRuleDetailView,
-    ScoringRuleDetailNavbar,
-    ScoringCriterionCreateUpdateView,
-    ScoringCriteriaDeleteView,
-    ScroringActiveToggleView,
-)
 from horilla_crm.leads.views.web_to_lead import (
     LeadFormBuilderView,
     UpdateFormHeadingView,
@@ -126,17 +114,6 @@ __all__ = [
     "MailToLeadListView",
     "MailToLeadFormView",
     "EmailToLeadConfigDeleteView",
-    # Scoring Rule Views
-    "ScoringRuleView",
-    "ScoringRuleNavbar",
-    "ScoringRuleListView",
-    "ScoringRuleFormView",
-    "ScoringRuleDeleteView",
-    "ScoringRuleDetailView",
-    "ScoringRuleDetailNavbar",
-    "ScoringCriterionCreateUpdateView",
-    "ScoringCriteriaDeleteView",
-    "ScroringActiveToggleView",
     # Web to Lead Views
     "LeadFormBuilderView",
     "UpdateFormHeadingView",

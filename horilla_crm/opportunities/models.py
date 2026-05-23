@@ -28,7 +28,7 @@ from horilla.utils.translation import gettext_lazy as _
 from horilla_crm.accounts.models import Account
 from horilla_crm.campaigns.models import Campaign
 from horilla_crm.contacts.models import Contact
-from horilla_crm.leads.utils import compute_score
+from horilla_crm.scoring_rules.utils import compute_score
 
 
 class OpportunityStage(HorillaCoreModel):

@@ -17,7 +17,7 @@ from horilla.urls import reverse_lazy
 from horilla.utils.translation import gettext_lazy as _
 
 # First-party / Horilla apps
-from horilla_crm.leads.utils import compute_score
+from horilla_crm.scoring_rules.utils import compute_score
 
 
 class Account(HorillaCoreModel):

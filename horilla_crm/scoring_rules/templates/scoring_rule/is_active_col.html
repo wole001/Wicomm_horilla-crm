@@ -5,7 +5,7 @@
         {% if instance.is_active %}
             checked
         {% endif %}
-        hx-post="{% url 'leads:scoring_rule_activate' instance.id %}?{{ request.GET.urlencode}}"
+        hx-post="{% url 'scoring_rules:scoring_rule_activate' instance.id %}?{{ request.GET.urlencode}}"
         value="{{instance.is_active}}"
         hx-swap="innerHTML"
         hx-trigger="change"

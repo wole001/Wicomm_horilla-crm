@@ -1,5 +1,5 @@
 """
-Scoring rule and criterion models for lead/opportunity scoring.
+Scoring rule and criterion models for lead/opportunity/account/contact scoring.
 """
 
 # Standard library imports
@@ -8,11 +8,12 @@ import logging
 # Third-party imports (Django)
 from django.utils.dateparse import parse_date, parse_datetime
 
-from horilla.contrib.core.models import HorillaCoreModel
+from horilla.contrib.core.models import HorillaContentType, HorillaCoreModel
 from horilla.contrib.utils.methods import render_template
 
 # First-party / Horilla imports
 from horilla.db import models
+from horilla.registry.limiters import limit_content_types
 from horilla.registry.permission_registry import permission_exempt_model
 from horilla.urls import reverse_lazy
 from horilla.utils.choices import OPERATOR_CHOICES
@@ -22,18 +23,14 @@ logger = logging.getLogger(__name__)
 
 
 class ScoringRule(HorillaCoreModel):
-    """Scoring rule for calculating lead/opportunity scores."""
+    """Scoring rule for calculating lead/opportunity/account/contact scores."""
 
     name = models.CharField(max_length=100, verbose_name=_("Rule Name"))
-    module = models.CharField(
-        max_length=50,
-        choices=[
-            ("lead", _("Lead")),
-            ("opportunity", _("Opportunity")),
-            ("account", _("Account")),
-            ("contact", _("Contact")),
-        ],
+    module = models.ForeignKey(
+        HorillaContentType,
+        on_delete=models.PROTECT,
         verbose_name=_("Module"),
+        limit_choices_to=limit_content_types("scoring_models"),
     )
     description = models.TextField(blank=True, null=True, verbose_name=_("Description"))
 
@@ -45,32 +42,28 @@ class ScoringRule(HorillaCoreModel):
         html = render_template(
             path="scoring_rule/is_active_col.html", context={"instance": self}
         )
-
         return html
 
     def get_edit_url(self):
-        """
-        This method to get edit url
-        """
-        return reverse_lazy("leads:scoring_rule_update_form", kwargs={"pk": self.pk})
+        """Return the edit URL for this scoring rule."""
+        return reverse_lazy(
+            "scoring_rules:scoring_rule_update_form", kwargs={"pk": self.pk}
+        )
 
     def get_delete_url(self):
-        """
-        This method to get delete url
-        """
-
-        return reverse_lazy("leads:scoring_rule_delete_view", kwargs={"pk": self.pk})
+        """Return the delete URL for this scoring rule."""
+        return reverse_lazy(
+            "scoring_rules:scoring_rule_delete_view", kwargs={"pk": self.pk}
+        )
 
     def get_detail_view_url(self):
-        """
-        This method to get detail view url
-        """
-        return reverse_lazy("leads:scoring_rule_detail_view", kwargs={"pk": self.pk})
+        """Return the detail view URL for this scoring rule."""
+        return reverse_lazy(
+            "scoring_rules:scoring_rule_detail_view", kwargs={"pk": self.pk}
+        )
 
     class Meta:
-        """
-        Meta options for the Scoring Rule model.
-        """
+        """Meta options for the Scoring Rule model."""
 
         verbose_name = _("Scoring Rule")
         verbose_name_plural = _("Scoring Rules")
@@ -84,7 +77,7 @@ class ScoringCriterion(HorillaCoreModel):
     )
     name = models.CharField(
         max_length=200, blank=True, verbose_name=_("Criterion Name")
-    )  # Optional name for the criterion
+    )
     points = models.IntegerField(verbose_name=_("Points to Award"))
     operation_type = models.CharField(
         max_length=3,
@@ -92,17 +85,15 @@ class ScoringCriterion(HorillaCoreModel):
         default="and",
         verbose_name=_("Operation Type"),
     )
-    order = models.PositiveIntegerField(
-        default=0, verbose_name=_("Order")
-    )  # For sorting criteria
+    order = models.PositiveIntegerField(default=0, verbose_name=_("Order"))
 
     def __str__(self):
         return f"{self.rule.name} - {self.name or f'Criterion {self.pk}'}"
 
     def evaluate_conditions(self, instance):
         """
-        Evaluate all conditions for this criterion against the given instance
-        Returns True if all conditions are met according to their logical operators
+        Evaluate all conditions for this criterion against the given instance.
+        Returns True if all conditions are met according to their logical operators.
         """
         conditions = self.conditions.all().order_by("order")
         if not conditions.exists():
@@ -111,13 +102,12 @@ class ScoringCriterion(HorillaCoreModel):
         result = None
         for condition in conditions:
             condition_result = condition.evaluate(instance)
-
             if result is None:
                 result = condition_result
             else:
                 if condition.logical_operator == "and":
                     result = result and condition_result
-                else:  # 'or'
+                else:
                     result = result or condition_result
 
         return result
@@ -150,17 +140,15 @@ class ScoringCondition(HorillaCoreModel):
         default="and",
         verbose_name=_("Logical Operator"),
     )
-    order = models.PositiveIntegerField(
-        default=0, verbose_name=_("Order")
-    )  # For ordering conditions
+    order = models.PositiveIntegerField(default=0, verbose_name=_("Order"))
 
     def __str__(self):
         return f"{self.field} {self.operator} {self.value}"
 
     def evaluate(self, instance):
         """
-        Evaluate this condition against the given instance
-        Returns True if the condition is met, False otherwise
+        Evaluate this condition against the given instance.
+        Returns True if the condition is met, False otherwise.
         """
         try:
             field = instance._meta.get_field(self.field)
@@ -171,7 +159,6 @@ class ScoringCondition(HorillaCoreModel):
             value = self.value or ""
             op = self.operator
 
-            # Filter-style and date/datetime: exact, gt, lt, between, isnull, isnotnull
             if is_date_field or is_datetime_field:
                 if op in ("isnull", "is_empty"):
                     return raw_value is None
@@ -228,7 +215,6 @@ class ScoringCondition(HorillaCoreModel):
                                 return start_val <= raw_value <= end_val
                         return False
 
-            # Map filter-style to legacy for non-date
             if op == "exact":
                 op = "equals"
             if op == "gt":

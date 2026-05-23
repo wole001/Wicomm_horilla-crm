@@ -7,6 +7,7 @@ from django.conf import settings
 # Third-party imports (Django)
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django_countries.fields import CountryField
 
 from horilla.apps import apps
 from horilla.contrib.core.models import HorillaCoreModel
@@ -19,7 +20,7 @@ from horilla.utils.choices import LANGUAGE_CHOICES
 from horilla.utils.translation import gettext_lazy as _
 
 # First-party / Horilla apps
-from horilla_crm.leads.utils import compute_score
+from horilla_crm.scoring_rules.utils import compute_score
 
 CONTACT_SOURCE_CHOICES = [
     ("web", _("Web")),
@@ -54,16 +55,14 @@ class Contact(HorillaCoreModel):
     )
 
     address_city = models.CharField(
-        verbose_name=_("City"), max_length=50, blank=True, null=True
+        verbose_name=_("City"), max_length=100, blank=True, null=True
     )
     address_state = models.CharField(
-        verbose_name=_("State"), max_length=50, blank=True, null=True
+        verbose_name=_("State"), max_length=100, blank=True, null=True
     )
+    address_country = CountryField(verbose_name=_("Country"))
     address_zip = models.CharField(
         verbose_name=_("Zip"), max_length=20, blank=True, null=True
-    )
-    address_country = models.CharField(
-        verbose_name=_("Country"), max_length=50, blank=True, null=True
     )
     parent_contact = models.ForeignKey(
         "self",
