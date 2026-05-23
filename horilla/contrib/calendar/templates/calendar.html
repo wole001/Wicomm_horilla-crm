@@ -170,25 +170,13 @@
 
         // HTMX helper functions for calendar events
         function editEvent(eventId, editUrl) {
-            fetch(editUrl, {
-                headers: {
-                    'HX-Request': 'true',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                }
-            })
-            .then(function(response) { return response.text(); })
-            .then(function(html) {
-                if (window.hideDetailPopup) window.hideDetailPopup(); else $("#calendarPopup").addClass("hidden");
-                // Script response means activity not found or error — don't do a full reload
-                if (html.trim().startsWith('<script>')) {
-                    if (window.calendarInstance) window.calendarInstance.refetchEvents();
-                    $('#reloadMessagesButton').click();
-                } else {
-                    document.getElementById('modalBox').innerHTML = html;
-                    if (typeof openModal === 'function') openModal();
-                }
-            })
-            .catch(function() {
+            if (window.hideDetailPopup) window.hideDetailPopup(); else $("#calendarPopup").addClass("hidden");
+            htmx.ajax('GET', editUrl, {
+                target: '#modalBox',
+                swap: 'innerHTML',
+            }).then(function() {
+                if (typeof openModal === 'function') openModal();
+            }).catch(function() {
                 showCalendarMessage('error', '{% trans "Failed to load edit form" %}');
             });
         }
