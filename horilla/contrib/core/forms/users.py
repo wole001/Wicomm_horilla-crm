@@ -6,7 +6,6 @@ Forms for User model in Horilla CRM.
 import logging
 
 # Third-party imports (Django)
-import pycountry
 from django import forms
 from django.contrib.auth.password_validation import validate_password
 
@@ -21,6 +20,7 @@ from horilla.contrib.generics.forms import (
 # First-party imports (Horilla)
 from horilla.core.exceptions import ValidationError
 from horilla.urls import reverse_lazy
+from horilla.utils.choices import get_subdivision_choices
 from horilla.utils.translation import gettext_lazy as _
 
 # Local imports
@@ -100,21 +100,11 @@ class UserFormClass(HorillaMultiStepForm):
 
         if "country" in self.data:
             country_code = self.data.get("country")
-            self.fields["state"].choices = self.get_subdivision_choices(country_code)
+            self.fields["state"].choices = get_subdivision_choices(country_code)
         elif self.instance.pk and self.instance.country:
-            self.fields["state"].choices = self.get_subdivision_choices(
+            self.fields["state"].choices = get_subdivision_choices(
                 self.instance.country.code
             )
-
-    def get_subdivision_choices(self, country_code):
-        """Get subdivisions for a given country code."""
-        try:
-            subdivisions = list(
-                pycountry.subdivisions.get(country_code=country_code.upper())
-            )
-            return [(sub.code, sub.name) for sub in subdivisions]
-        except Exception:
-            return []
 
 
 class UserFormSingle(HorillaModelForm):
@@ -172,21 +162,11 @@ class UserFormSingle(HorillaModelForm):
 
         if "country" in self.data:
             country_code = self.data.get("country")
-            self.fields["state"].choices = self.get_subdivision_choices(country_code)
+            self.fields["state"].choices = get_subdivision_choices(country_code)
         elif self.instance.pk and self.instance.country:
-            self.fields["state"].choices = self.get_subdivision_choices(
+            self.fields["state"].choices = get_subdivision_choices(
                 self.instance.country.code
             )
-
-    def get_subdivision_choices(self, country_code):
-        """Get subdivisions for a given country code."""
-        try:
-            subdivisions = list(
-                pycountry.subdivisions.get(country_code=country_code.upper())
-            )
-            return [(sub.code, sub.name) for sub in subdivisions]
-        except Exception:
-            return []
 
 
 class UserFormClassSingle(HorillaModelForm):

@@ -6,7 +6,6 @@ Forms for managing company details, including multi-step forms for onboarding an
 import logging
 
 # Third-party imports (Django)
-import pycountry
 from django import forms
 
 # First party imports (Horilla)
@@ -14,6 +13,7 @@ from horilla.contrib.generics.forms import HorillaModelForm, HorillaMultiStepFor
 
 # First-party imports (Horilla)
 from horilla.urls import reverse_lazy
+from horilla.utils.choices import get_subdivision_choices
 from horilla.utils.translation import gettext_lazy as _
 
 # Local / relative imports
@@ -87,21 +87,11 @@ class CompanyMultistepFormClass(OwnerQuerysetMixin, HorillaMultiStepForm):
 
         if "country" in self.data:
             country_code = self.data.get("country")
-            self.fields["state"].choices = self.get_subdivision_choices(country_code)
+            self.fields["state"].choices = get_subdivision_choices(country_code)
         elif self.instance.pk and self.instance.country:
-            self.fields["state"].choices = self.get_subdivision_choices(
+            self.fields["state"].choices = get_subdivision_choices(
                 self.instance.country.code
             )
-
-    def get_subdivision_choices(self, country_code):
-        """Get subdivisions for a given country code."""
-        try:
-            subdivisions = list(
-                pycountry.subdivisions.get(country_code=country_code.upper())
-            )
-            return [(sub.code, sub.name) for sub in subdivisions]
-        except Exception:
-            return []
 
 
 class CompanyFormClass(HorillaModelForm):
@@ -176,18 +166,8 @@ class CompanyFormClassSingle(HorillaModelForm):
 
         if "country" in self.data:
             country_code = self.data.get("country")
-            self.fields["state"].choices = self.get_subdivision_choices(country_code)
+            self.fields["state"].choices = get_subdivision_choices(country_code)
         elif self.instance.pk and self.instance.country:
-            self.fields["state"].choices = self.get_subdivision_choices(
+            self.fields["state"].choices = get_subdivision_choices(
                 self.instance.country.code
             )
-
-    def get_subdivision_choices(self, country_code):
-        """Get subdivisions for a given country code."""
-        try:
-            subdivisions = list(
-                pycountry.subdivisions.get(country_code=country_code.upper())
-            )
-            return [(sub.code, sub.name) for sub in subdivisions]
-        except Exception:
-            return []
