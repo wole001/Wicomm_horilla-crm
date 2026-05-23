@@ -9,6 +9,7 @@ from urllib.parse import urlencode
 # Third-party imports (Django)
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import Permission
 from django.template.loader import render_to_string
 from django.views import View
 from django.views.generic import TemplateView
@@ -387,6 +388,19 @@ class DeleteUserFromRole(LoginRequiredMixin, View):
             return HttpResponse(
                 "<script>$('#reloadButton').click();closeDeleteModeModal();closeContentModal();</script>"
             )
+
+        role = user.role
+        if role is not None:
+            default_perm_ids = set(
+                Permission.objects.filter(codename__startswith="view_own_").values_list(
+                    "id", flat=True
+                )
+            )
+            role_perm_ids = set(role.permissions.values_list("id", flat=True))
+            perms_to_remove_ids = role_perm_ids - default_perm_ids
+            if perms_to_remove_ids:
+                perms_to_remove = Permission.objects.filter(id__in=perms_to_remove_ids)
+                user.user_permissions.remove(*perms_to_remove)
 
         user.role = None
         user.save()
