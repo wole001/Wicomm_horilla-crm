@@ -15,7 +15,13 @@ register_model_for_feature(
     app_label="leads",
     model_name="Lead",
     all=True,
-    features=["duplicate_models", "approval_models", "reviews_models"],
+    features=[
+        "duplicate_models",
+        "approval_models",
+        "reviews_models",
+        "workflow_models",
+        "scoring",
+    ],
 )
 
 register_cadence_tab(
