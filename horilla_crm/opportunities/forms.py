@@ -37,6 +37,12 @@ class OpportunityFormClass(OwnerQuerysetMixin, HorillaMultiStepForm):
 
         model = Opportunity
         fields = "__all__"
+        exclude = [
+            "forecast_category",
+            "expected_revenue",
+            "email",
+            "opportunity_score",
+        ]
 
     step_fields = {
         1: [
@@ -47,30 +53,20 @@ class OpportunityFormClass(OwnerQuerysetMixin, HorillaMultiStepForm):
             "stage",
             "probability",
             "account",
-            "tracking_number",
+            "lead_source",
+            "opportunity_type",
+            "primary_campaign_source",
+            "next_step",
+            "owner",
         ],
         2: [
-            "next_step",
-            "primary_campaign_source",
-            "owner",
-            "opportunity_type",
             "order_number",
-        ],
-        3: [
-            "lead_source",
             "delivery_installation_status",
-            "forecast_category",
+            "tracking_number",
             "main_competitors",
         ],
-        4: ["description"],
+        3: ["description"],
     }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Make created_by and updated_by optional in intermediate steps
-        if self.current_step < len(self.step_fields):
-            self.fields["created_by"].required = False
-            self.fields["updated_by"].required = False
 
 
 class OpportunitySingleForm(OwnerQuerysetMixin, HorillaModelForm):
@@ -79,29 +75,36 @@ class OpportunitySingleForm(OwnerQuerysetMixin, HorillaModelForm):
     Inherits from HorillaModelForm to preserve all existing behavior.
     """
 
+    field_order = fields = [
+        "name",
+        "amount",
+        "quantity",
+        "close_date",
+        "stage",
+        "probability",
+        "account",
+        "lead_source",
+        "opportunity_type",
+        "primary_campaign_source",
+        "next_step",
+        "owner",
+        "order_number",
+        "delivery_installation_status",
+        "tracking_number",
+        "main_competitors",
+        "description",
+    ]
+
     class Meta:
         """Meta class for OpportunitySingleForm"""
 
         model = Opportunity
-        fields = [
-            "name",
-            "amount",
-            "quantity",
-            "close_date",
-            "stage",
-            "probability",
-            "account",
-            "tracking_number",
-            "next_step",
-            "primary_campaign_source",
-            "owner",
-            "opportunity_type",
-            "order_number",
-            "lead_source",
-            "delivery_installation_status",
+        fields = "__all__"
+        exclude = [
             "forecast_category",
-            "main_competitors",
-            "description",
+            "expected_revenue",
+            "email",
+            "opportunity_score",
         ]
 
 
@@ -111,11 +114,13 @@ class OpportunityStageForm(HorillaModelForm):
     Inherits from HorillaModelForm to preserve all existing behavior.
     """
 
+    field_order = ["name", "probability", "is_final", "order", "stage_type"]
+
     class Meta:
         """Meta options for OpportunityStageForm."""
 
         model = OpportunityStage
-        fields = ["name", "probability", "is_final", "order", "stage_type"]
+        fields = "__all__"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -427,7 +432,8 @@ class OpportunityTeamForm(HorillaModelForm):
         """Meta options for OpportunityTeamForm."""
 
         model = OpportunityTeam
-        fields = ["team_name", "description"]
+        fields = "__all__"
+        exclude = ["owner"]
 
 
 class OpportunityTeamMemberForm(HorillaModelForm):
