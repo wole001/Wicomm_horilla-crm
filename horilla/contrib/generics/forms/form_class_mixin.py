@@ -13,6 +13,9 @@ from horilla.db import models
 from horilla.urls import reverse_lazy
 from horilla.utils.translation import gettext_lazy as _
 
+# Local imports
+from .constants import HORILLA_FORM_EXCLUDE
+
 # Shared widget CSS classes (single-step and multi-step use the same styling)
 WIDGET_INPUT_CSS_CLASS = (
     "text-color-600 p-2 placeholder:text-xs pr-[40px] w-full border border-dark-50 "
@@ -35,9 +38,29 @@ SELECT_READONLY_CLASS_SUFFIX = " bg-gray-100 cursor-not-allowed opacity-60"
 class HorillaFormMixin:
     """
     Mixin with shared logic for HorillaModelForm and HorillaMultiStepForm:
+    - Auto-excluding HorillaCoreModel audit fields via __init_subclass__
     - Removing fields based on field_permissions (hidden/readonly)
     - Enforcing readonly in clean() by restoring original values and adding errors
+
+    Meta escape hatches (on any subclass):
+    * ``keep_on_form`` — fields to remove from the base exclude list (shown on form).
+    * ``exclude`` — extra fields added to the merged list; core fields still excluded
+      unless listed in ``keep_on_form``.
     """
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        meta = cls.__dict__.get("Meta")
+        if meta is None:
+            return
+
+        keep_on_form = set(getattr(meta, "keep_on_form", ()) or ())
+        base_exclude = [f for f in HORILLA_FORM_EXCLUDE if f not in keep_on_form]
+
+        child_exclude = list(getattr(meta, "exclude", None) or [])
+        # Union: child's own extra fields + base core fields not already present
+        merged = child_exclude + [f for f in base_exclude if f not in child_exclude]
+        meta.exclude = merged
 
     def _remove_fields_by_permission(
         self,

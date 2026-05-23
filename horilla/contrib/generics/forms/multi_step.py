@@ -29,7 +29,17 @@ logger = logging.getLogger(__name__)
 
 
 class HorillaMultiStepForm(HorillaFormMixin, forms.ModelForm):
-    """Base form class for multi-step form workflows."""
+    """Base form class for multi-step form workflows.
+
+    Subclasses automatically inherit ``HORILLA_FORM_EXCLUDE`` on their
+    ``Meta.exclude``.  Two escape hatches are available on ``Meta``:
+
+    * ``keep_on_form`` — iterable of field names that should be removed from
+      the base exclude list (i.e. shown on this form).
+    * ``exclude`` — any extra fields listed here are *added* to the merged
+      list; the base core fields are still excluded unless listed in
+      ``keep_on_form``.
+    """
 
     step_fields = {}
 
@@ -50,6 +60,22 @@ class HorillaMultiStepForm(HorillaFormMixin, forms.ModelForm):
         if hasattr(self, "step_fields") and self.step_fields:
             for step_fields_list in self.step_fields.values():
                 all_step_fields.extend(step_fields_list)
+
+        # When step_fields is defined, auto-assign any form fields not in any step
+        # to the last step (supports Meta.fields = "__all__" without explicit listing).
+        if all_step_fields and self.step_fields:
+            last_step = max(self.step_fields.keys())
+            for field_name in list(self.fields.keys()):
+                if field_name not in all_step_fields:
+                    try:
+                        model_field = self._meta.model._meta.get_field(field_name)
+                        if not isinstance(model_field, models.ManyToManyField):
+                            self.step_fields[last_step] = list(
+                                self.step_fields[last_step]
+                            ) + [field_name]
+                            all_step_fields.append(field_name)
+                    except models.FieldDoesNotExist:
+                        pass
 
         # Remove ManyToMany fields that are not in any step from the form
         # (like groups, user_permissions in User form)
