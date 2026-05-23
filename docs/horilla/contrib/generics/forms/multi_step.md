@@ -44,9 +44,10 @@ Internal state:
 
 `__init__` performs a long setup pipeline; order matters.
 
-## 1) Step map flattening and unsupported M2M removal
+## 1) Step map flattening, auto-assignment, and unsupported M2M removal
 
 - flattens all fields listed in `step_fields`
+- **auto-assigns unstepped fields to the last step** — any non-M2M field present in the form but not listed in any step is appended to `step_fields[max_step]`. This means `Meta.fields = "__all__"` works without having to enumerate every field explicitly.
 - removes ManyToMany fields not present in any step
   - avoids accidental exposure of fields like `groups/user_permissions`.
 
@@ -241,6 +242,9 @@ This ensures users are blocked only by current step constraints while preserving
 
 Inherited helpers provide shared policy:
 
+- `__init_subclass__` — auto-merges `HORILLA_FORM_EXCLUDE` (`company`, `is_active`, `created_at`, `updated_at`, `created_by`, `updated_by`, `additional_info`) into `Meta.exclude` at class definition time. Two escape hatches on `Meta`:
+  - `keep_on_form = ("company",)` — removes a field from the base exclude list so it stays visible
+  - `exclude = ("my_field",)` — adds extra exclusions; core fields are still excluded unless in `keep_on_form`
 - `_remove_fields_by_permission`
 - `_is_field_mandatory`
 - `_enforce_readonly_in_cleaned_data`
@@ -261,11 +265,19 @@ class EmployeeWizardForm(HorillaMultiStepForm):
     class Meta:
         model = Employee
         fields = "__all__"
+        # HorillaCoreModel audit fields (company, is_active, created_at, etc.)
+        # are excluded automatically — no need to list them here.
+        # Use exclude to hide additional fields:
+        exclude = ["employee_score"]
+        # Use keep_on_form to show a field that would otherwise be auto-excluded:
+        # keep_on_form = ("company",)
 
     step_fields = {
         1: ["first_name", "last_name", "email"],
         2: ["department", "manager", "joining_date"],
         3: ["profile_image", "resume"],
+        # Any fields present in Meta.fields but not listed in any step are
+        # automatically appended to the last step (step 3 here).
     }
 ```
 
@@ -280,6 +292,8 @@ View layer typically instantiates with:
 ## Caveats and implementation notes
 
 - Constructor is intentionally heavy; keep kwargs complete and consistent from view flow.
+- `__init_subclass__` runs at class definition time — `Meta.exclude` is patched before any instance is created. If you manually set `Meta.exclude` after class definition it will be overwritten on the next subclass; always use `keep_on_form` instead.
+- Auto-assignment of unstepped fields to the last step applies to non-M2M fields only. M2M fields not listed in any step are removed from the form entirely.
 - M2M initial parsing handles stringified lists (`"[1,2]"`) defensively, but malformed payloads can still lead to dropped values.
 - Hidden-field/readonly interactions are nuanced; mandatory readonly fields remain visible in create mode by design.
 - File required logic depends on stored filename markers (`<field>_filename`, `<field>_new_file`) in form data/session conventions.
