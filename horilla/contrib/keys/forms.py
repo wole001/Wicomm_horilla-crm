@@ -19,6 +19,7 @@ from horilla.menu import (
 
 # Local imports
 from .models import ShortcutKey
+from .utils import normalize_page_url
 
 
 class ShortcutKeyForm(HorillaModelForm):
@@ -32,7 +33,8 @@ class ShortcutKeyForm(HorillaModelForm):
         """
 
         model = ShortcutKey
-        fields = ["user", "page", "command", "key", "company"]
+        fields = "__all__"
+        keep_on_form = ("company",)
 
     def __init__(self, *args, **kwargs):
         """Initialize form and dynamically populate page and command choices."""
@@ -113,6 +115,13 @@ class ShortcutKeyForm(HorillaModelForm):
 
         if self.instance and self.instance.pk:
             self.fields["command"].initial = "alt"
+            if self.instance.page:
+                self.initial["page"] = normalize_page_url(self.instance.page)
+
+    def clean_page(self):
+        """Store page URLs in the same format as menu choices."""
+        page = self.cleaned_data.get("page")
+        return normalize_page_url(page) if page else page
 
     def _get_command_choices(self):
         """

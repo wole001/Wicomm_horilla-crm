@@ -2,8 +2,11 @@
 Signals for the keys app
 """
 
+# Standard library imports
+import logging
+
 # Third-party imports (Django)
-from django.db.models.signals import post_save
+from django.db.models.signals import post_migrate, post_save
 from django.dispatch import receiver
 
 # First party imports (Horilla)
@@ -13,6 +16,9 @@ from horilla.urls import NoReverseMatch, reverse_lazy
 
 # Local imports
 from .models import ShortcutKey
+from .utils import normalize_page_url
+
+logger = logging.getLogger(__name__)
 
 DEFAULT_SHORTCUTS = [
     {"page": "/", "key": "H", "command": "alt"},
@@ -56,12 +62,27 @@ OPTIONAL_APP_SHORTCUTS = [
 
 def _resolve_shortcut_page(shortcut):
     if "page" in shortcut:
-        return shortcut["page"]
+        return normalize_page_url(shortcut["page"])
 
     try:
-        return str(reverse_lazy(shortcut["url_name"]))
+        return normalize_page_url(str(reverse_lazy(shortcut["url_name"])))
     except (KeyError, NoReverseMatch):
         return None
+
+
+@receiver(post_migrate, dispatch_uid="keys_normalize_shortcut_pages")
+def normalize_shortcut_pages_on_migrate(sender, **kwargs):
+    """Normalize stored page paths so they match menu URL format."""
+    if sender.name != "keys":
+        return
+    updated = 0
+    for sk in ShortcutKey.all_objects.only("id", "page").iterator():
+        normalized = normalize_page_url(sk.page)
+        if normalized and normalized != sk.page:
+            ShortcutKey.all_objects.filter(pk=sk.pk).update(page=normalized)
+            updated += 1
+    if updated:
+        logger.info("Normalized %d shortcut key page URL(s)", updated)
 
 
 @receiver(post_save, sender=User)

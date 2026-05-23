@@ -106,7 +106,7 @@ class ShortKeyListView(LoginRequiredMixin, HorillaListView):
     table_height_as_class = "h-[calc(_100vh_-_320px_)]"
     list_column_visibility = False
 
-    columns = [(_("Page"), "get_page_title"), (_("Key"), "custom_key_col")]
+    columns = [(_("Page"), "page_display"), (_("Key"), "custom_key_col")]
 
     def get_queryset(self):
         """Return shortcut keys filtered by the logged-in user."""
