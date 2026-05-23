@@ -27,7 +27,37 @@ logger = logging.getLogger(__name__)
 
 
 class HorillaModelForm(HorillaFormMixin, forms.ModelForm):
-    """Base model form class with enhanced field configuration and validation."""
+    """Base model form class with enhanced field configuration and validation.
+
+    Subclasses automatically inherit ``HORILLA_FORM_EXCLUDE`` on their
+    ``Meta.exclude``.  Two escape hatches are available on ``Meta``:
+
+    * ``keep_on_form`` — iterable of field names that should be removed from
+      the base exclude list (i.e. shown on this form).
+    * ``exclude`` — any extra fields listed here are *added* to the merged
+      list; the base core fields are still excluded unless listed in
+      ``keep_on_form``.
+
+    Examples::
+
+        class MyForm(HorillaModelForm):
+            class Meta:
+                model = MyModel
+                fields = "__all__"
+                # core fields excluded automatically — nothing extra needed
+
+        class AdminForm(HorillaModelForm):
+            class Meta:
+                model = MyModel
+                fields = "__all__"
+                keep_on_form = ("company",)   # show company, still hide rest
+
+        class RestrictedForm(HorillaModelForm):
+            class Meta:
+                model = MyModel
+                fields = "__all__"
+                exclude = ("internal_notes",)  # hides internal_notes + core fields
+    """
 
     def __init__(self, *args, **kwargs):
         self._pop_form_options(kwargs)
@@ -90,7 +120,8 @@ class HorillaModelForm(HorillaFormMixin, forms.ModelForm):
             if is_readonly:
                 readonly_attrs = {"readonly": "readonly"}
 
-            if not isinstance(field.widget, forms.CheckboxInput):
+            is_color_input = existing_attrs.get("type") == "color"
+            if not isinstance(field.widget, forms.CheckboxInput) and not is_color_input:
                 existing_placeholder = existing_attrs.get("placeholder", "")
                 default_placeholder = (
                     _("Enter %(field)s") % {"field": field.label}
