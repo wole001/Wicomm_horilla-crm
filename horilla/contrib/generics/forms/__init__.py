@@ -5,6 +5,8 @@ Re-exports form classes and widgets from submodules so callers can use:
 from horilla.contrib.generics.forms import HorillaModelForm, KanbanGroupByForm
 """
 
+from horilla.contrib.generics.forms.constants import HORILLA_FORM_EXCLUDE
+
 from horilla.contrib.generics.forms.generics import (
     KanbanGroupByForm,
     TimelineSpanByForm,
@@ -36,4 +38,6 @@ __all__ = [
     "HorillaMultiStepForm",
     # Single-step Forms
     "HorillaModelForm",
+    # Shared exclude list
+    "HORILLA_FORM_EXCLUDE",
 ]

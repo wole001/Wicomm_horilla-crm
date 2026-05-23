@@ -20,7 +20,7 @@ from horilla.db import models
 from horilla.http import HttpResponse, QueryDict
 from horilla.utils.translation import gettext_lazy as _
 
-from ...forms import HorillaModelForm
+from ...forms import HORILLA_FORM_EXCLUDE, HorillaModelForm
 from ...forms.condition_fields import get_model_field_choices
 
 # Local imports
@@ -91,13 +91,7 @@ def get_dynamic_form_class(view):
     condition_hx_include = view.condition_hx_include
     save_and_new = view.save_and_new
 
-    default_exclude = [
-        "created_at",
-        "updated_at",
-        "created_by",
-        "updated_by",
-        "additional_info",
-    ]
+    default_exclude = HORILLA_FORM_EXCLUDE
 
     class DynamicForm(OwnerQuerysetMixin, HorillaModelForm):
         """Dynamically generated form based on model and view configuration."""
