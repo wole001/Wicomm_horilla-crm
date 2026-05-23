@@ -1056,4 +1056,4 @@ class LeadRelatedLists(LoginRequiredMixin, HorillaRelatedListSectionView):
             },
         }
 
-    excluded_related_lists = ["lead_campaign_members"]
+    excluded_related_lists = ["lead_campaign_members", "bookings"]

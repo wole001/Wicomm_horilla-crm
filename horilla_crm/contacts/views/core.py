@@ -588,6 +588,7 @@ class ContactRelatedListsTab(LoginRequiredMixin, HorillaRelatedListSectionView):
         "opportunity_roles",
         "contact_campaign_members",
         "account_relationships",
+        "bookings",
     ]
 
     @cached_property

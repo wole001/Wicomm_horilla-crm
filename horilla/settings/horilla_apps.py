@@ -7,8 +7,10 @@ INSTALLED_APPS.extend(
         "horilla_crm.accounts",
         "horilla_crm.contacts",
         "horilla_crm.leads",
+        "horilla_crm.scoring_rules",
         "horilla_crm.campaigns",
         "horilla_crm.opportunities",
         "horilla_crm.forecast",
+        "booking",
     ]
 )

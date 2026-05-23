@@ -1,0 +1,59 @@
+{% load static i18n %}
+<div>
+    <div class="p-5">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-base font-semibold text-gray-700 dark:text-gray-300">
+                {% trans "Change Booking Status" %}
+            </h2>
+            <button type="button" onclick="closeModal()"
+                class="text-gray-500 hover:text-red-500 cursor-pointer">
+                <img src="{% static 'assets/icons/close.svg' %}" alt="{% trans 'Close' %}">
+            </button>
+        </div>
+
+        <!-- Booking summary -->
+        <div class="mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg text-sm space-y-1">
+            <p class="font-medium text-gray-800 dark:text-gray-200">{{ booking.booker_name }}</p>
+            <p class="text-gray-500 dark:text-gray-400">{{ booking.booker_email }}</p>
+            <p class="text-gray-500 dark:text-gray-400">
+                {{ booking.start_datetime|date:"N j, Y" }} {% trans "at" %} {{ booking.start_datetime|time:"H:i" }}
+            </p>
+            <p>
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
+                    {% if booking.status == 'confirmed' %}bg-green-100 text-green-800
+                    {% elif booking.status == 'cancelled' %}bg-red-100 text-red-800
+                    {% elif booking.status == 'completed' %}bg-blue-100 text-blue-800
+                    {% elif booking.status == 'no_show' %}bg-yellow-100 text-yellow-800
+                    {% else %}bg-gray-100 text-gray-700{% endif %}">
+                    {{ booking.get_status_display }}
+                </span>
+            </p>
+        </div>
+
+        <form hx-post="{% url 'booking:booking_status' booking.pk %}"
+              hx-target="#modalBox"
+              hx-swap="innerHTML">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    {% trans "New Status" %}
+                </label>
+                <select name="status"
+                    class="js-example-basic-single headselect">
+                    <option value="pending" {% if booking.status == 'pending' %}selected{% endif %}>{% trans "Pending" %}</option>
+                    <option value="confirmed" {% if booking.status == 'confirmed' %}selected{% endif %}>{% trans "Confirmed" %}</option>
+                    <option value="completed" {% if booking.status == 'completed' %}selected{% endif %}>{% trans "Completed" %}</option>
+                    <option value="no_show" {% if booking.status == 'no_show' %}selected{% endif %}>{% trans "No Show" %}</option>
+                    <option value="cancelled" {% if booking.status == 'cancelled' %}selected{% endif %}>{% trans "Cancelled" %}</option>
+                </select>
+            </div>
+
+            <div class="flex justify-end gap-2">
+                <button type="submit"
+                    class="px-5 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg transition-colors">
+                    {% trans "Update" %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
