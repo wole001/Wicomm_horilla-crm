@@ -8,6 +8,7 @@ from django.dispatch import receiver
 from horilla.auth.models import User
 from horilla.contrib.core.signals import company_currency_changed
 from horilla.contrib.keys.models import ShortcutKey
+from horilla.contrib.keys.utils import resolve_page_url
 
 # First-party / Horilla apps
 from horilla_crm.accounts.models import Account
@@ -18,8 +19,12 @@ from horilla_crm.accounts.models import Account
 @receiver(post_save, sender=User)
 def create_account_shortcuts(sender, instance, created, **kwargs):
     """Create default keyboard shortcuts for accounts when a user is created."""
+    page = resolve_page_url("accounts:accounts_view")
+    if not page:
+        return
+
     predefined = [
-        {"page": "crm/accounts/accounts-view/", "key": "A", "command": "alt"},
+        {"page": page, "key": "A", "command": "alt"},
     ]
 
     for item in predefined:

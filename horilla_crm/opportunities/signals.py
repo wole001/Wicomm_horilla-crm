@@ -17,6 +17,7 @@ from horilla.auth.models import User
 from horilla.contrib.core.models import TeamRole
 from horilla.contrib.core.signals import company_currency_changed
 from horilla.contrib.keys.models import ShortcutKey
+from horilla.contrib.keys.utils import resolve_page_url
 from horilla.db import models
 from horilla.shortcuts import render
 from horilla.urls import reverse_lazy
@@ -108,8 +109,12 @@ def update_crm_on_currency_change(sender, **kwargs):
 @receiver(post_save, sender=User)
 def create_opportunity_shortcuts(sender, instance, created, **kwargs):
     """Create default keyboard shortcuts for opportunities when a user is created."""
+    page = resolve_page_url("opportunities:opportunities_view")
+    if not page:
+        return
+
     predefined = [
-        {"page": "crm/opportunities/opportunities-view/", "key": "O", "command": "alt"},
+        {"page": page, "key": "O", "command": "alt"},
     ]
 
     for item in predefined:

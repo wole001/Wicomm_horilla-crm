@@ -11,6 +11,7 @@ from django.dispatch import receiver
 from horilla.auth.models import User
 from horilla.contrib.core.signals import company_currency_changed
 from horilla.contrib.keys.models import ShortcutKey
+from horilla.contrib.keys.utils import resolve_page_url
 
 # First-party / Horilla imports
 from horilla.db.models import Sum
@@ -27,8 +28,12 @@ logger = logging.getLogger(__name__)
 @receiver(post_save, sender=User)
 def create_campaign_shortcuts(sender, instance, created, **kwargs):
     """Create default keyboard shortcuts for campaigns when a user is created."""
+    page = resolve_page_url("campaigns:campaign_view")
+    if not page:
+        return
+
     predefined = [
-        {"page": "crm/campaigns/campaign-view/", "key": "C", "command": "alt"},
+        {"page": page, "key": "C", "command": "alt"},
     ]
 
     for item in predefined:

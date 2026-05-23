@@ -11,6 +11,7 @@ from django.dispatch import receiver
 from horilla.apps import apps
 from horilla.auth.models import User
 from horilla.contrib.keys.models import ShortcutKey
+from horilla.contrib.keys.utils import resolve_page_url
 
 # First-party / Horilla apps
 from horilla_crm.contacts.models import Contact, ContactAccountRelationship
@@ -23,8 +24,12 @@ _thread_locals = threading.local()
 @receiver(post_save, sender=User)
 def create_contact_shortcuts(sender, instance, created, **kwargs):
     """Create default keyboard shortcuts for contacts when a user is created."""
+    page = resolve_page_url("contacts:contacts_view")
+    if not page:
+        return
+
     predefined = [
-        {"page": "crm/contacts/contacts-view/", "key": "N", "command": "alt"},
+        {"page": page, "key": "N", "command": "alt"},
     ]
 
     for item in predefined:

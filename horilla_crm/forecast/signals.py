@@ -12,6 +12,7 @@ from horilla.auth.models import User
 from horilla.contrib.core.models import Period
 from horilla.contrib.core.signals import company_currency_changed
 from horilla.contrib.keys.models import ShortcutKey
+from horilla.contrib.keys.utils import resolve_page_url
 
 # First-party / Horilla apps
 from horilla_crm.forecast.models import Forecast, ForecastType
@@ -311,8 +312,12 @@ def update_forecast_on_opportunity_delete(sender, instance, **kwargs):
 @receiver(post_save, sender=User)
 def create_forecast_shortcuts(sender, instance, created, **kwargs):
     """Create default keyboard shortcuts for forecast when a user is created."""
+    page = resolve_page_url("forecast:forecast_view")
+    if not page:
+        return
+
     predefined = [
-        {"page": "crm/forecast/forecast-view/", "key": "F", "command": "alt"},
+        {"page": page, "key": "F", "command": "alt"},
     ]
 
     for item in predefined:
