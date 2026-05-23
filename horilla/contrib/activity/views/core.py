@@ -23,6 +23,7 @@ from horilla.contrib.generics.views import (
     HorillaNavView,
     HorillaNotesAttachementSectionView,
     HorillaSingleDeleteView,
+    HorillaTabView,
     HorillaView,
 )
 from horilla.http import HttpResponse, RefreshResponse
@@ -196,6 +197,47 @@ class HorillaActivitySectionView(DetailView):
         return context
 
 
+@method_decorator(htmx_required, name="dispatch")
+@method_decorator(
+    permission_required_or_denied(
+        ["activity.view_activity", "activity.view_own_activity"]
+    ),
+    name="dispatch",
+)
+class AllActivityTabbedView(LoginRequiredMixin, HorillaTabView):
+    """
+    Tabbed list view that separates activities by type.
+    Each tab shows its own HorillaListView with type-specific columns.
+    """
+
+    template_name = "activity_type_tab_view.html"
+    view_id = "activity-type-tabs"
+    tab_class = "h-[calc(_100vh_-_260px_)] overflow-hidden"
+
+    tabs = [
+        {
+            "id": "tasks",
+            "title": _("Tasks"),
+            "url": reverse_lazy("activity:global_task_list"),
+        },
+        {
+            "id": "meetings",
+            "title": _("Meetings"),
+            "url": reverse_lazy("activity:global_meeting_list"),
+        },
+        {
+            "id": "calls",
+            "title": _("Calls"),
+            "url": reverse_lazy("activity:global_call_list"),
+        },
+        {
+            "id": "events",
+            "title": _("Events"),
+            "url": reverse_lazy("activity:global_event_list"),
+        },
+    ]
+
+
 @method_decorator(
     permission_required_or_denied("activity.view_activity"),
     name="dispatch",
@@ -206,8 +248,8 @@ class ActivityView(LoginRequiredMixin, HorillaView):
     """
 
     nav_url = reverse_lazy("activity:activity_nav_view")
-    list_url = reverse_lazy("activity:activity_list_view")
-    kanban_url = reverse_lazy("activity:activity_kanban_view")
+    list_url = reverse_lazy("activity:activity_tabbed_view")
+    kanban_url = reverse_lazy("activity:activity_kanban_tabbed_view")
 
 
 @method_decorator(htmx_required, name="dispatch")
@@ -223,10 +265,11 @@ class ActivityNavbar(LoginRequiredMixin, HorillaNavView):
     search_url = reverse_lazy("activity:activity_list_view")
     main_url = reverse_lazy("activity:activity_view")
     filterset_class = ActivityFilter
-    kanban_url = reverse_lazy("activity:activity_kanban_view")
+    kanban_url = reverse_lazy("activity:activity_kanban_tabbed_view")
     model_name = "Activity"
     model_app_label = "activity"
     enable_actions = True
+    exclude_kanban_fields = "call_type,reminder,activity_type,meeting_host"
 
     @cached_property
     def new_button(self):
@@ -250,7 +293,7 @@ class ActivityNavbar(LoginRequiredMixin, HorillaNavView):
 )
 class AcivityKanbanView(LoginRequiredMixin, HorillaKanbanView):
     """
-    Acivity Kanban view
+    Activity Kanban view (all types — kept for backward compatibility).
     """
 
     model = Activity
@@ -263,8 +306,8 @@ class AcivityKanbanView(LoginRequiredMixin, HorillaKanbanView):
     actions = AllActivityListView.actions
 
     columns = [
-        "subject",
-        "activity_type",
+        (_("Subject"), "subject"),
+        (_("Activity Type"), "activity_type"),
         (_("Related To"), "related_object"),
     ]
 
@@ -290,6 +333,199 @@ class AcivityKanbanView(LoginRequiredMixin, HorillaKanbanView):
             "owner_field": ["owner"],
         }
         return attrs
+
+    def update_kanban_item(self, request):
+        """
+        After drag-drop, save the status change then reload the active tab's
+        kanban via reloadButton. We cannot re-render inline because the registry
+        maps Activity → this view (all types), but the tabs each show only one type.
+        """
+        from django.db.models import ForeignKey
+
+        from horilla.apps import apps as horilla_apps
+
+        item_id = request.POST.get("item_id")
+        new_column = request.POST.get("new_column")
+        app_label = request.POST.get("app_label", "activity")
+        model_name = request.POST.get("model_name", "activity")
+
+        try:
+            model = horilla_apps.get_model(
+                app_label=app_label.split(".")[-1], model_name=model_name
+            )
+            item = model.all_objects.get(pk=item_id)
+
+            if not self.can_user_modify_item(item):
+                messages.error(
+                    request, _("You do not have permission to modify this item.")
+                )
+                return HttpResponse("<script>$('#reloadButton').click();</script>")
+
+            group_by = self.get_group_by_field()
+            field = model._meta.get_field(group_by)
+
+            if hasattr(field, "choices") and field.choices:
+                valid_choices = dict(field.choices)
+                reverse_choices = {v: k for k, v in valid_choices.items()}
+                if new_column in reverse_choices:
+                    setattr(item, group_by, reverse_choices[new_column])
+                elif new_column in valid_choices:
+                    setattr(item, group_by, new_column)
+            elif isinstance(field, ForeignKey):
+                if new_column.lower() == "none":
+                    setattr(item, group_by, None)
+                else:
+                    related_obj = field.related_model.objects.filter(
+                        pk=new_column
+                    ).first()
+                    if related_obj:
+                        setattr(item, group_by, related_obj)
+
+            item.save(update_fields=[group_by])
+
+        except Exception as e:
+            messages.error(request, str(e))
+
+        return HttpResponse("<script>$('#reloadButton').click();</script>")
+
+
+_KANBAN_TYPE_COLUMNS = {
+    "task": [
+        (_("Subject"), "subject"),
+        (_("Related To"), "related_object"),
+        (_("Priority"), "task_priority"),
+        (_("Due Date"), "due_datetime"),
+        (_("Assigned To"), "assigned_to"),
+    ],
+    "meeting": [
+        (_("Subject"), "subject"),
+        (_("Related To"), "related_object"),
+        (_("Start Date"), "get_start_date"),
+        (_("End Date"), "get_end_date"),
+        (_("Meeting Link"), "get_meeting_url_display"),
+    ],
+    "log_call": [
+        (_("Subject"), "subject"),
+        (_("Related To"), "related_object"),
+        (_("Purpose"), "call_purpose"),
+        (_("Type"), "call_type"),
+        (_("Duration"), "call_duration_display"),
+    ],
+    "event": [
+        (_("Subject"), "subject"),
+        (_("Related To"), "related_object"),
+        (_("Start Date"), "get_start_date"),
+        (_("End Date"), "get_end_date"),
+        (_("Location"), "location"),
+    ],
+}
+
+
+def _make_type_kanban_view(activity_type, view_id):
+    """Factory that creates a per-type kanban view class at import time."""
+
+    @method_decorator(htmx_required, name="dispatch")
+    @method_decorator(
+        permission_required_or_denied(
+            ["activity.view_activity", "activity.view_own_activity"]
+        ),
+        name="dispatch",
+    )
+    class _TypeKanbanView(LoginRequiredMixin, HorillaKanbanView):
+        model = None  # Set after class creation to avoid __init_subclass__ registry collision
+        filterset_class = ActivityFilter
+        group_by_field = "status"
+        height_kanban = "h-[calc(100vh_-_300px)]"
+        list_column_visibility = False
+        exclude_kanban_fields = "call_type,reminder,activity_type,meeting_host"
+        actions = AllActivityListView.actions
+        columns = _KANBAN_TYPE_COLUMNS[activity_type]
+
+        @cached_property
+        def kanban_attrs(self):
+            """Return HTMX attrs for kanban card click navigation with section param."""
+            query_params = {}
+            if "section" in self.request.GET:
+                query_params["section"] = self.request.GET.get("section")
+            query_string = urlencode(query_params)
+            return {
+                "hx-get": f"{{get_detail_url}}?{query_string}",
+                "hx-target": "#mainContent",
+                "hx-swap": "outerHTML",
+                "hx-push-url": "true",
+                "hx-select": "#mainContent",
+                "permission": "activity.change_activity",
+                "own_permission": "activity.change_own_activity",
+                "owner_field": ["owner"],
+            }
+
+        def get_queryset(self):
+            """Filter the queryset to only this kanban view's activity type."""
+            return super().get_queryset().filter(activity_type=activity_type)
+
+        @property
+        def search_url(self):
+            """Return the URL used for search/filter requests."""
+            return reverse_lazy("activity:activity_tabbed_view")
+
+        @property
+        def main_url(self):
+            """Return the main activity list URL."""
+            return reverse_lazy("activity:activity_view")
+
+    _TypeKanbanView.__name__ = view_id
+    _TypeKanbanView.__qualname__ = view_id
+    _TypeKanbanView.view_id = view_id
+    _TypeKanbanView.model = (
+        Activity  # Assign after class creation — skips __init_subclass__ registry
+    )
+    return _TypeKanbanView
+
+
+GlobalTaskKanbanView = _make_type_kanban_view("task", "GlobalTaskKanbanView")
+GlobalMeetingKanbanView = _make_type_kanban_view("meeting", "GlobalMeetingKanbanView")
+GlobalCallKanbanView = _make_type_kanban_view("log_call", "GlobalCallKanbanView")
+GlobalEventKanbanView = _make_type_kanban_view("event", "GlobalEventKanbanView")
+
+
+@method_decorator(htmx_required, name="dispatch")
+@method_decorator(
+    permission_required_or_denied(
+        ["activity.view_activity", "activity.view_own_activity"]
+    ),
+    name="dispatch",
+)
+class AllActivityKanbanTabbedView(LoginRequiredMixin, HorillaTabView):
+    """
+    Tabbed kanban view — one kanban per activity type, wrapped in the white card shell.
+    """
+
+    template_name = "activity_type_tab_view.html"
+    view_id = "activity-kanban-type-tabs"
+    tab_class = "h-[calc(_100vh_-_260px_)] overflow-hidden"
+
+    tabs = [
+        {
+            "id": "kanban-tasks",
+            "title": _("Tasks"),
+            "url": reverse_lazy("activity:global_task_kanban"),
+        },
+        {
+            "id": "kanban-meetings",
+            "title": _("Meetings"),
+            "url": reverse_lazy("activity:global_meeting_kanban"),
+        },
+        {
+            "id": "kanban-calls",
+            "title": _("Calls"),
+            "url": reverse_lazy("activity:global_call_kanban"),
+        },
+        {
+            "id": "kanban-events",
+            "title": _("Events"),
+            "url": reverse_lazy("activity:global_event_kanban"),
+        },
+    ]
 
 
 @method_decorator(

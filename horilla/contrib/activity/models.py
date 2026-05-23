@@ -187,6 +187,14 @@ class Activity(HorillaCoreModel):
         null=True,
         verbose_name=_("Reminder"),
     )
+    mail_template = models.ForeignKey(
+        "mail.HorillaMailTemplate",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="meeting_activities",
+        verbose_name=_("Invitation Email Template"),
+    )
 
     OWNER_FIELDS = ["owner", "assigned_to"]
 
@@ -271,6 +279,12 @@ class Activity(HorillaCoreModel):
                 path="meeting_link_col.html",
                 context={"meeting_url": self.meeting_url},
             )
+        return "—"
+
+    def get_meeting_url_display(self):
+        """Return plain-text meeting URL for kanban cards (no HTML)."""
+        if self.is_online and self.meeting_url:
+            return self.meeting_url
         return "—"
 
     def status_col(self):

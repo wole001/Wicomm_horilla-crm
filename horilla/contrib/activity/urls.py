@@ -14,9 +14,34 @@ app_name = "activity"
 urlpatterns = [
     path("activity-view/", views.ActivityView.as_view(), name="activity_view"),
     path(
+        "activity-tabbed-view/",
+        views.AllActivityTabbedView.as_view(),
+        name="activity_tabbed_view",
+    ),
+    path(
         "activity-list-view/",
         views.AllActivityListView.as_view(),
         name="activity_list_view",
+    ),
+    path(
+        "global-task-list/",
+        views.GlobalTaskListView.as_view(),
+        name="global_task_list",
+    ),
+    path(
+        "global-meeting-list/",
+        views.GlobalMeetingListView.as_view(),
+        name="global_meeting_list",
+    ),
+    path(
+        "global-call-list/",
+        views.GlobalCallListView.as_view(),
+        name="global_call_list",
+    ),
+    path(
+        "global-event-list/",
+        views.GlobalEventListView.as_view(),
+        name="global_event_list",
     ),
     path(
         "activity-nav-view/", views.ActivityNavbar.as_view(), name="activity_nav_view"
@@ -25,6 +50,31 @@ urlpatterns = [
         "activity-kanban-view/",
         views.AcivityKanbanView.as_view(),
         name="activity_kanban_view",
+    ),
+    path(
+        "activity-kanban-tabbed-view/",
+        views.AllActivityKanbanTabbedView.as_view(),
+        name="activity_kanban_tabbed_view",
+    ),
+    path(
+        "global-task-kanban/",
+        views.GlobalTaskKanbanView.as_view(),
+        name="global_task_kanban",
+    ),
+    path(
+        "global-meeting-kanban/",
+        views.GlobalMeetingKanbanView.as_view(),
+        name="global_meeting_kanban",
+    ),
+    path(
+        "global-call-kanban/",
+        views.GlobalCallKanbanView.as_view(),
+        name="global_call_kanban",
+    ),
+    path(
+        "global-event-kanban/",
+        views.GlobalEventKanbanView.as_view(),
+        name="global_event_kanban",
     ),
     path("task-create-form/", views.TaskCreateForm.as_view(), name="task_create_form"),
     path(
