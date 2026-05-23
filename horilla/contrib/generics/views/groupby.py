@@ -118,9 +118,9 @@ class HorillaGroupByView(HorillaListView):
         queryset = self.object_list
         group_by = self.get_group_by_field()
 
-        app_label = self.model.__module__.rsplit(".", 1)[0] if self.model else ""
+        app_label = self.model._meta.app_label if self.model else ""
         model_name = self.model.__name__ if self.model else ""
-        context["app_label"] = app_label.split(".")[-1] if app_label else app_label
+        context["app_label"] = app_label
         context["model_name"] = model_name
 
         if not group_by:

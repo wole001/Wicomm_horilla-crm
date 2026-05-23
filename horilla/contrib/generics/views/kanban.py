@@ -148,6 +148,24 @@ class HorillaKanbanView(HorillaListView):
             view.request = request
             view.kwargs = getattr(view, "kwargs", {})
 
+            # If the registered view class has overridden update_kanban_item, delegate to it.
+            if (
+                type(view).update_kanban_item
+                is not HorillaKanbanView.update_kanban_item
+            ):
+                try:
+                    view.model = apps.get_model(
+                        app_label=app_label.split(".")[-1], model_name=model_name
+                    )
+                except LookupError:
+                    messages.error(
+                        request,
+                        f"Invalid app_label/model_name: {app_label}/{model_name}",
+                    )
+                    return HttpResponse("<script>$('#reloadButton').click();")
+                view.object_list = view.get_queryset()
+                return view.update_kanban_item(request)
+
             # Initialize model
             try:
                 view.model = apps.get_model(
@@ -441,10 +459,10 @@ class HorillaKanbanView(HorillaListView):
         queryset = self.object_list
         group_by = self.get_group_by_field()
 
-        app_label = self.model.__module__.rsplit(".", 1)[0] if self.model else ""
+        app_label = self.model._meta.app_label if self.model else ""
         model_name = self.model.__name__ if self.model else ""
         context["app_label"] = app_label
-        context["apps_label"] = app_label.split(".")[-1] if app_label else ""
+        context["apps_label"] = app_label
         context["model_name"] = model_name
         context["kanban_attrs"] = self.kanban_attrs
         context["class_name"] = self.__class__.__name__
@@ -534,12 +552,28 @@ class HorillaKanbanView(HorillaListView):
                     }
 
             elif isinstance(field, ForeignKey):
-                queryset = queryset.prefetch_related(group_by)
                 related_model = field.related_model
                 if "order" in [f.name for f in related_model._meta.fields]:
-                    related_items = related_model.objects.all().order_by("order")
+                    related_items = list(related_model.objects.all().order_by("order"))
                 else:
-                    related_items = related_model.objects.all().order_by("pk")
+                    related_items = list(related_model.objects.all().order_by("pk"))
+
+                # Fetch all counts in one query. Use a subquery-based count to avoid
+                # the DISTINCT from get_queryset() collapsing GROUP BY counts to 1.
+                from django.db.models import Count as _Count
+
+                fk_field = f"{group_by}_id"
+                count_qs = (
+                    queryset.order_by()
+                    .values(fk_field)
+                    .annotate(_c=_Count("pk", distinct=True))
+                )
+                counts_map = dict(count_qs.values_list(fk_field, "_c"))
+                null_count = (
+                    queryset.filter(**{f"{group_by}__isnull": True}).count()
+                    if field.null
+                    else 0
+                )
 
                 _default_hex_use_primary = "#f39022"
                 for related_item in related_items:
@@ -556,6 +590,7 @@ class HorillaKanbanView(HorillaListView):
                             **{f"{group_by}__pk": related_item.pk}
                         ),
                         "color": raw_color,
+                        "_total_count": counts_map.get(related_item.pk, 0),
                     }
 
                 if field.null:
@@ -563,12 +598,13 @@ class HorillaKanbanView(HorillaListView):
                         "label": "None",
                         "items": queryset.filter(**{f"{group_by}__isnull": True}),
                         "color": None,
+                        "_total_count": null_count,
                     }
                     num_columns = len(related_items) + 1
                 else:
                     num_columns = len(related_items)
 
-                if None in grouped_items and not grouped_items[None]["items"].exists():
+                if None in grouped_items and grouped_items[None]["_total_count"] == 0:
                     del grouped_items[None]
                     if field.null:
                         num_columns -= 1
@@ -580,16 +616,13 @@ class HorillaKanbanView(HorillaListView):
                 if None in grouped_items:
                     sorted_items[None] = grouped_items[None]
 
+                order_by = self.get_kanban_order_by()
+                order_by_tuple = (
+                    order_by if isinstance(order_by, (list, tuple)) else (order_by,)
+                )
                 for key, group in sorted_items.items():
-                    total_count = group["items"].count()
-                    order_by = self.get_kanban_order_by()
-                    ordered_items = group["items"].order_by(
-                        *(
-                            order_by
-                            if isinstance(order_by, (list, tuple))
-                            else (order_by,)
-                        )
-                    )
+                    total_count = group["_total_count"]
+                    ordered_items = group["items"].order_by(*order_by_tuple)
                     paginator = Paginator(ordered_items, self.paginate_by)
                     page = self.request.GET.get(f"page_{key}", 1)
                     try:
@@ -636,8 +669,27 @@ class HorillaKanbanView(HorillaListView):
                         else:
                             # Check if it's a choice field and use display method
                             try:
+                                from django.db.models import (
+                                    ManyToManyField,
+                                    ManyToManyRel,
+                                    ManyToOneRel,
+                                )
+
                                 field = self.model._meta.get_field(field_name)
-                                if hasattr(field, "choices") and field.choices:
+                                if isinstance(
+                                    field,
+                                    (ManyToManyField, ManyToManyRel, ManyToOneRel),
+                                ):
+                                    # M2M / reverse-relation: join all related objects as strings
+                                    m2m_qs = getattr(item, field_name, None)
+                                    if m2m_qs is not None:
+                                        try:
+                                            value = ", ".join(
+                                                str(obj) for obj in m2m_qs.all()
+                                            )
+                                        except Exception:
+                                            value = None
+                                elif hasattr(field, "choices") and field.choices:
                                     # Use the display method for choice fields
                                     display_method_name = f"get_{field_name}_display"
                                     if hasattr(item, display_method_name):
@@ -767,8 +819,27 @@ class HorillaKanbanView(HorillaListView):
                         else:
                             # Check if it's a choice field and use display method
                             try:
+                                from django.db.models import (
+                                    ManyToManyField,
+                                    ManyToManyRel,
+                                    ManyToOneRel,
+                                )
+
                                 field = self.model._meta.get_field(field_name)
-                                if hasattr(field, "choices") and field.choices:
+                                if isinstance(
+                                    field,
+                                    (ManyToManyField, ManyToManyRel, ManyToOneRel),
+                                ):
+                                    # M2M / reverse-relation: join all related objects as strings
+                                    m2m_qs = getattr(item, field_name, None)
+                                    if m2m_qs is not None:
+                                        try:
+                                            value = ", ".join(
+                                                str(obj) for obj in m2m_qs.all()
+                                            )
+                                        except Exception:
+                                            value = None
+                                elif hasattr(field, "choices") and field.choices:
                                     # Use the display method for choice fields
                                     display_method_name = f"get_{field_name}_display"
                                     if hasattr(item, display_method_name):
@@ -814,10 +885,8 @@ class HorillaKanbanView(HorillaListView):
                 "actions": getattr(self, "actions", []),
                 "column_key": column_key,
                 "class_name": self.__class__.__name__,
-                "app_label": (
-                    self.model.__module__.rsplit(".", 1)[0] if self.model else ""
-                ),
-                "apps_label": self.model.__module__.split(".")[1],
+                "app_label": (self.model._meta.app_label if self.model else ""),
+                "apps_label": self.model._meta.app_label if self.model else "",
                 "model_name": self.model.__name__ if self.model else "",
                 "key": column_key,
                 "kanban_attrs": self.kanban_attrs,

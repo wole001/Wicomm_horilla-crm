@@ -720,6 +720,7 @@ function exportSelected(viewId) {
 
 // Kanban drag and drop
 let draggedColumn = null;
+let kanbanRequestInFlight = false;
 
 function drag(ev) {
     ev.dataTransfer.setData("text", ev.target.id);
@@ -735,6 +736,7 @@ function drop(ev) {
     ev.preventDefault();
 
     if (!ev.dataTransfer) return;
+    if (kanbanRequestInFlight) return;
 
     const data = ev.dataTransfer.getData("text");
     const target = ev.target.closest(".kanban-block");
@@ -797,6 +799,7 @@ function drop(ev) {
                 }
             });
 
+            kanbanRequestInFlight = true;
             htmx.ajax("POST", `/generics/update-kanban-column-order/${appLabel}/${modelName}/`, {
                 target: "#kanbancontainer",
                 swap: "innerHTML",
@@ -804,7 +807,7 @@ function drop(ev) {
                     "X-CSRFToken": csrfToken,
                 },
                 values: postValues,
-            });
+            }).then(() => { kanbanRequestInFlight = false; }).catch(() => { kanbanRequestInFlight = false; });
         }
     } else {
         const draggedElement = document.getElementById(data);
@@ -839,6 +842,7 @@ function drop(ev) {
                 }
             });
 
+            kanbanRequestInFlight = true;
             htmx.ajax("POST", `/generics/update-kanban-item/${appLabel}/${modelName}/`, {
                 target: "#kanbancontainer",
                 swap: "innerHTML",
@@ -846,7 +850,7 @@ function drop(ev) {
                     "X-CSRFToken": csrfToken,
                 },
                 values: postValues,
-            });
+            }).then(() => { kanbanRequestInFlight = false; }).catch(() => { kanbanRequestInFlight = false; });
         }
     }
 }

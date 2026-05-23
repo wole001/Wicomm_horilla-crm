@@ -469,7 +469,7 @@ class HorillaTimelineView(HorillaListView):
         )
         context["timeline_title_field"] = title_field
         context["app_label"] = getattr(
-            self, "app_label", model.__module__.rsplit(".", 1)[0] if model else ""
+            self, "app_label", model._meta.app_label if model else ""
         )
         context["apps_label"] = app_label
         context["model_name"] = model.__name__ if model else ""
