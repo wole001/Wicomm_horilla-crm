@@ -5,22 +5,22 @@ Business Hour views for Horilla platform.
 # Standard library imports
 import logging
 
+from django.contrib import messages
+
 # Third-party imports (Django)
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.utils.functional import cached_property  # type: ignore
-from django.views.generic import TemplateView
+from django.utils.functional import cached_property
+from django.views.generic import TemplateView, View
 
 from horilla.contrib.generics.views import (
     HorillaListView,
     HorillaModalDetailView,
-    HorillaSingleDeleteView,
     HorillaSingleFormView,
 )
 from horilla.http import HttpResponse
 
 # First-party imports (Horilla)
-# First party imports (Horilla)
-from horilla.urls import reverse_lazy
+from horilla.urls import reverse, reverse_lazy
 from horilla.utils.decorators import (
     htmx_required,
     method_decorator,
@@ -29,8 +29,9 @@ from horilla.utils.decorators import (
 from horilla.utils.translation import gettext_lazy as _
 
 # Local imports
-from ..forms import BusinessHourForm
-from ..models import BusinessHour
+from ..forms import BusinessHourForm, BusinessHourHolidayForm
+from ..models import BusinessHour, Holiday
+from .holiday import HolidayDetailView
 
 logger = logging.getLogger(__name__)
 
@@ -41,101 +42,49 @@ logger = logging.getLogger(__name__)
 )
 class BusinessHourView(LoginRequiredMixin, TemplateView):
     """
-    TemplateView for business hour view.
+    Shell template for business + shift hours (Working hours tab).
     """
 
     template_name = "settings/business_hour/business_hour.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        company = getattr(self.request, "active_company", None)
+        context["company_business_hour"] = None
+        if company:
+            context["company_business_hour"] = (
+                BusinessHour.objects.filter(company_id=company.id)
+                .prefetch_related("holidays")
+                .first()
+            )
+        return context
 
 
 @method_decorator(htmx_required, name="dispatch")
 @method_decorator(
     permission_required_or_denied("core.view_businesshour"), name="dispatch"
 )
-class BusinessHourListView(LoginRequiredMixin, HorillaListView):
-    """
-    List View for business hour.
-    """
+class BusinessHourCardView(LoginRequiredMixin, TemplateView):
+    """Single-company business hour summary card (replaces list on Working hours)."""
 
-    model = BusinessHour
-    view_id = "business-hour-list-view"
-    table_width = False
-    bulk_select_option = True
-    search_url = reverse_lazy("core:business_hour_list_view")
-    store_ordered_ids = True
-    table_height_as_class = "h-[calc(_100vh_-_410px_)]"
-    list_column_visibility = False
-    bulk_update_option = False
+    template_name = "settings/business_hour/business_hour_card.html"
 
-    columns = [
-        "name",
-        "time_zone",
-        "business_hour_type",
-        "week_start_day",
-        (_("Default Business Hour"), "is_default_hour"),
-    ]
-
-    @cached_property
-    def col_attrs(self):
-        """
-        Get the column attributes for the list view.
-        """
-        query_params = {}
-        if "section" in self.request.GET:
-            query_params["section"] = self.request.GET.get("section")
-        query_string = self.request.session.get(self.ordered_ids_key, [])
-        attrs = {}
-        attrs = {
-            "hx-get": f"{{get_detail_url}}?instance_ids={query_string}",
-            "hx-target": "#detailModalBox",
-            "hx-swap": "innerHTML",
-            "hx-push-url": "false",
-            "hx-on:click": "openDetailModal();",
-            "style": "cursor:pointer",
-            "class": "hover:text-primary-600",
-        }
-        return [
-            {
-                "name": {
-                    **attrs,
-                }
-            }
-        ]
-
-    actions = [
-        {
-            "action": "Edit",
-            "src": "assets/icons/edit.svg",
-            "img_class": "w-4 h-4 flex gap-4",
-            "permission": "core.change_businesshour",
-            "attrs": """
-                hx-get="{get_edit_url}"
-                hx-target="#modalBox"
-                hx-swap="innerHTML"
-                onclick="openModal()"
-            """,
-        },
-        {
-            "action": "Delete",
-            "src": "assets/icons/a4.svg",
-            "img_class": "w-4 h-4",
-            "permission": "core.delete_businesshour",
-            "attrs": """
-                    hx-post="{get_delete_url}"
-                    hx-target="#modalBox"
-                    hx-swap="innerHTML"
-                    hx-trigger="click"
-                    hx-vals='{{"check_dependencies": "false"}}'
-                    onclick="openModal()"
-                """,
-        },
-    ]
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        company = getattr(self.request, "active_company", None)
+        context["business_hour"] = None
+        if company:
+            context["business_hour"] = (
+                BusinessHour.objects.filter(company_id=company.id)
+                .prefetch_related("holidays")
+                .first()
+            )
+        return context
 
 
 @method_decorator(htmx_required, name="dispatch")
 class BusinessHourFormView(LoginRequiredMixin, HorillaSingleFormView):
-    """
-    Business Hour Create/Update View
-    """
+    """Business Hour Create/Update View."""
 
     model = BusinessHour
     form_class = BusinessHourForm
@@ -143,8 +92,10 @@ class BusinessHourFormView(LoginRequiredMixin, HorillaSingleFormView):
     form_title = "Business Hour Form"
     full_width_fields = ["timing_type", "week_days"]
     hidden_fields = ["company"]
+    save_and_new = False
     return_response = HttpResponse(
-        "<script>closeModal();$('#reloadButton').click();$('#detailViewReloadButton').click();</script>"
+        "<script>closeModal();$('#reloadBusinessHourCardButton').click();"
+        "$('#detailViewReloadButton').click();$('#reloadMessagesButton').click();</script>"
     )
 
     @cached_property
@@ -155,10 +106,20 @@ class BusinessHourFormView(LoginRequiredMixin, HorillaSingleFormView):
             return reverse_lazy("core:business_hour_update_form", kwargs={"pk": pk})
         return reverse_lazy("core:business_hour_create_form")
 
+    def get(self, request, *args, **kwargs):
+        """Allow a single business hour per company: block duplicate create."""
+        pk = kwargs.get("pk") or request.GET.get("id")
+        if not pk:
+            company = getattr(request, "active_company", None)
+            if company and BusinessHour.objects.filter(company_id=company.id).exists():
+                return HttpResponse(
+                    "<script>closeModal();</script>",
+                    status=200,
+                )
+        return super().get(request, *args, **kwargs)
+
     def get_initial(self):
-        """
-        Get initial data for business hour form.
-        """
+        """Get initial data for the business hour form."""
         initial = super().get_initial()
         toggle = self.request.GET.get("toggle_data")
         company = getattr(self.request, "active_company", None)
@@ -184,78 +145,230 @@ class BusinessHourFormView(LoginRequiredMixin, HorillaSingleFormView):
 
 
 @method_decorator(htmx_required, name="dispatch")
-@method_decorator(
-    permission_required_or_denied("core.delete_businesshour", modal=True),
-    name="dispatch",
-)
-class BusinessHourDeleteView(LoginRequiredMixin, HorillaSingleDeleteView):
-    """
-    Delete View for Business Hour
-    """
+@method_decorator(permission_required_or_denied("core.view_holiday"), name="dispatch")
+class BusinessHourHolidayListView(LoginRequiredMixin, HorillaListView):
+    """Generic list view for holidays linked to a specific business hour."""
 
-    model = BusinessHour
+    model = Holiday
+    view_id = "bh-holiday-list-view"
+    table_height_as_class = "h-[350px]"
+    table_width = False
+    list_column_visibility = False
+    bulk_select_option = False
+    store_ordered_ids = True
+    columns = ["name", "start_date", "end_date", "is_recurring"]
 
-    def get_post_delete_response(self):
-        """
-        Get the response after deleting a business hour.
-        """
-        return HttpResponse(
-            "<script>$('#reloadBusinessHourButton').click();closeDeleteModeModal();closeDetailModal();</script>"
+    @cached_property
+    def search_url(self):
+        return reverse_lazy(
+            "core:business_hour_holiday_list_view", kwargs={"pk": self.kwargs["pk"]}
         )
+
+    def get_queryset(self):
+        bh_pk = self.kwargs["pk"]
+        try:
+            bh = BusinessHour.objects.get(pk=bh_pk)
+        except BusinessHour.DoesNotExist:
+            queryset = Holiday.objects.none()
+        else:
+            queryset = bh.holidays.order_by("start_date", "name")
+
+        if self.store_ordered_ids:
+            self.request.session[self.ordered_ids_key] = list(
+                queryset.values_list("pk", flat=True)
+            )
+
+        return queryset
+
+    @cached_property
+    def col_attrs(self):
+        query_string = self.request.session.get(self.ordered_ids_key, [])
+        attrs = {}
+        if self.request.user.has_perm("core.view_holiday"):
+            attrs = {
+                "hx-get": f"{{get_bh_readonly_detail_url}}?instance_ids={query_string}",
+                "hx-target": "#detailModalBox",
+                "hx-swap": "innerHTML",
+                "hx-push-url": "false",
+                "hx-on:click": "openDetailModal();",
+                "style": "cursor:pointer",
+                "class": "hover:text-primary-600",
+            }
+        return [{"name": {**attrs}}]
+
+    @cached_property
+    def actions(self):
+        bh_pk = self.kwargs["pk"]
+        remove_base = reverse(
+            "core:business_hour_holiday_remove",
+            kwargs={"pk": bh_pk, "holiday_pk": 0},
+        )
+        remove_url = remove_base.rsplit("/0/", 1)[0] + "/{pk}/remove/"
+        return [
+            {
+                "action": "Remove",
+                "src": "assets/icons/a4.svg",
+                "img_class": "w-4 h-4",
+                "permission": "core.change_businesshour",
+                "attrs": f"""
+                    hx-post="{remove_url}"
+                    hx-target="#deleteModeBox"
+                    hx-swap="innerHTML"
+                    hx-trigger="confirmed"
+                    hx-on:click="hxConfirm(this,'Are you sure you want to remove this holiday?')"
+                    """,
+            },
+        ]
 
 
 @method_decorator(htmx_required, name="dispatch")
 @method_decorator(
     permission_required_or_denied("core.view_businesshour"), name="dispatch"
 )
-class BusinessHourDetailView(LoginRequiredMixin, HorillaModalDetailView):
-    """
-    detail view of page
-    """
+class BusinessHourHolidayPanelView(LoginRequiredMixin, TemplateView):
+    """Renders the holiday panel inside the business hour card."""
+
+    template_name = "settings/business_hour/business_hour_holiday_panel.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get("pk")
+        try:
+            bh = BusinessHour.objects.prefetch_related("holidays").get(pk=pk)
+        except BusinessHour.DoesNotExist:
+            bh = None
+        context["business_hour"] = bh
+
+        if bh:
+            linked_ids = set(bh.holidays.values_list("id", flat=True))
+            context["linked_holidays"] = bh.holidays.order_by("start_date", "name")
+            context["available_holidays"] = (
+                Holiday.objects.filter(company_id=bh.company_id, all_users=True)
+                .exclude(id__in=linked_ids)
+                .order_by("start_date", "name")
+            )
+        return context
+
+
+@method_decorator(htmx_required, name="dispatch")
+@method_decorator(
+    permission_required_or_denied("core.change_businesshour"), name="dispatch"
+)
+class BusinessHourHolidayToggleView(LoginRequiredMixin, TemplateView):
+    """Add or remove a holiday from a business hour (HTMX POST)."""
+
+    template_name = "settings/business_hour/business_hour_holiday_panel.html"
+
+    def post(self, request, pk, holiday_pk):
+        try:
+            bh = BusinessHour.objects.prefetch_related("holidays").get(pk=pk)
+        except BusinessHour.DoesNotExist:
+            return HttpResponse(status=404)
+
+        try:
+            holiday = Holiday.objects.get(
+                pk=holiday_pk, company_id=bh.company_id, all_users=True
+            )
+        except Holiday.DoesNotExist:
+            return HttpResponse(status=404)
+
+        action = request.POST.get("action", "add")
+        if action == "remove":
+            bh.holidays.remove(holiday)
+        else:
+            bh.holidays.add(holiday)
+
+        linked_ids = set(bh.holidays.values_list("id", flat=True))
+        context = {
+            "business_hour": bh,
+            "linked_holidays": bh.holidays.order_by("start_date", "name"),
+            "available_holidays": Holiday.objects.filter(
+                company_id=bh.company_id, all_users=True
+            )
+            .exclude(id__in=linked_ids)
+            .order_by("start_date", "name"),
+        }
+        from django.shortcuts import render
+
+        return render(request, self.template_name, context)
+
+
+@method_decorator(htmx_required, name="dispatch")
+@method_decorator(
+    permission_required_or_denied("core.view_businesshour"), name="dispatch"
+)
+class BusinessHourHolidayModalView(LoginRequiredMixin, TemplateView):
+    """Renders the holiday list inside #contentModalBox."""
+
+    template_name = "settings/business_hour/business_hour_holiday_modal.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get("pk")
+        try:
+            context["business_hour"] = BusinessHour.objects.get(pk=pk)
+        except BusinessHour.DoesNotExist:
+            context["business_hour"] = None
+        return context
+
+
+@method_decorator(htmx_required, name="dispatch")
+@method_decorator(
+    permission_required_or_denied("core.change_businesshour"), name="dispatch"
+)
+class BusinessHourAddHolidayView(LoginRequiredMixin, HorillaSingleFormView):
+    """Modal form to select and link unlinked all-users holidays to a business hour."""
 
     model = BusinessHour
-    title = _("Details")
-    header = {
-        "title": "name",
-        "subtitle": "",
-        "avatar": "get_avatar",
-    }
+    form_class = BusinessHourHolidayForm
+    view_id = "business-hour-add-holiday-form"
+    form_title = _("Add Holidays")
+    save_and_new = False
+    modal_height = False
+    full_width_fields = ["holidays"]
 
-    body = [
-        (_("Time Zone"), "time_zone"),
-        (_("Hour Type"), "get_business_hour_type_display"),
-        (_("Is Default"), "is_default_hour"),
-        (_("Week Starts On"), "get_week_start_day_display"),
-        (_("Business Days"), "get_formatted_week_days"),
-    ]
+    return_response = HttpResponse(
+        "<script>closeModal();$('#reloadBusinessHourCardButton').click();$('#reloadHolidayModalButton').click();$('#reloadMessagesButton').click();</script>"
+    )
 
-    actions = [
-        {
-            "action": "Edit",
-            "src": "assets/icons/edit_white.svg",
-            "img_class": "w-3 h-3 flex gap-4 filter brightness-0 invert",
-            "permission": "core.change_businesshour",
-            "attrs": """
-                class="w-24 justify-center px-4 py-2 bg-primary-600 text-white rounded-md text-xs flex items-center gap-2 hover:bg-primary-800 transition duration-300 disabled:cursor-not-allowed"
-                hx-get="{get_edit_url}"
-                hx-target="#modalBox"
-                hx-swap="innerHTML"
-                onclick="openModal();"
-            """,
-        },
-        {
-            "action": "Delete",
-            "src": "assets/icons/a4.svg",
-            "img_class": "svg-themed w-3 h-3",
-            "permission": "core.delete_businesshour",
-            "attrs": """
-                    class="w-24 justify-center px-4 py-2 bg-[white] rounded-md text-xs flex items-center gap-2 border border-primary-500 hover:border-primary-600 transition duration-300 disabled:cursor-not-allowed text-primary-600"
-                    hx-post="{get_delete_url}"
-                    hx-target="#modalBox"
-                    hx-swap="innerHTML"
-                    hx-trigger="click"
-                    hx-vals='{{"check_dependencies": "false"}}'
-                    onclick="openModal()"
-                """,
-        },
-    ]
+    @cached_property
+    def form_url(self):
+        pk = self.kwargs.get("pk")
+        return reverse_lazy("core:business_hour_add_holiday", kwargs={"pk": pk})
+
+
+@method_decorator(htmx_required, name="dispatch")
+@method_decorator(permission_required_or_denied("core.view_holiday"), name="dispatch")
+class BusinessHourHolidayReadonlyDetailView(HolidayDetailView):
+    """Read-only holiday detail view opened from the business hour holiday list."""
+
+    actions = []
+
+
+@method_decorator(htmx_required, name="dispatch")
+@method_decorator(
+    permission_required_or_denied("core.change_businesshour"), name="dispatch"
+)
+class BusinessHourHolidayRemoveView(LoginRequiredMixin, View):
+    """Remove a single holiday from a business hour (HTMX POST, no confirmation)."""
+
+    def post(self, request, pk, holiday_pk):
+        try:
+            bh = BusinessHour.objects.get(pk=pk)
+            holiday = Holiday.objects.get(pk=holiday_pk, company_id=bh.company_id)
+        except Exception:
+            messages.error(request, _("The requested holiday does not exist."))
+            return HttpResponse(
+                "<script>closeDeleteModeModal();$('#reloadMessagesButton').click();</script>"
+            )
+
+        bh.holidays.remove(holiday)
+        messages.success(request, f"{holiday.name} removed from business hour")
+        return HttpResponse(
+            "<script>"
+            "closeDeleteModeModal();"
+            "$('#reloadHolidayModalButton').click();"
+            "$('#reloadBusinessHourCardButton').click();"
+            "$('#reloadMessagesButton').click();"
+            "</script>"
+        )

@@ -183,9 +183,9 @@ urlpatterns = [
         name="business_hour_view",
     ),
     path(
-        "business-hour-list-view/",
-        views.BusinessHourListView.as_view(),
-        name="business_hour_list_view",
+        "business-hour-card/",
+        views.BusinessHourCardView.as_view(),
+        name="business_hour_card_view",
     ),
     path(
         "business-hour-create-form/",
@@ -198,14 +198,65 @@ urlpatterns = [
         name="business_hour_update_form",
     ),
     path(
-        "business-hour-delete-view/<int:pk>/",
-        views.BusinessHourDeleteView.as_view(),
-        name="business_hour_delete_view",
+        "business-hour/<int:pk>/holidays/",
+        views.BusinessHourHolidayPanelView.as_view(),
+        name="business_hour_holiday_panel",
     ),
     path(
-        "business-hour-detail-view/<int:pk>/",
-        views.BusinessHourDetailView.as_view(),
-        name="business_hour_detail_view",
+        "business-hour/<int:pk>/holiday-list-view/",
+        views.BusinessHourHolidayListView.as_view(),
+        name="business_hour_holiday_list_view",
+    ),
+    path(
+        "business-hour/<int:pk>/holiday-modal/",
+        views.BusinessHourHolidayModalView.as_view(),
+        name="business_hour_holiday_modal",
+    ),
+    path(
+        "business-hour/<int:pk>/holidays/<int:holiday_pk>/toggle/",
+        views.BusinessHourHolidayToggleView.as_view(),
+        name="business_hour_holiday_toggle",
+    ),
+    path(
+        "business-hour/<int:pk>/holidays/add/",
+        views.BusinessHourAddHolidayView.as_view(),
+        name="business_hour_add_holiday",
+    ),
+    path(
+        "business-hour/<int:pk>/holidays/<int:holiday_pk>/remove/",
+        views.BusinessHourHolidayRemoveView.as_view(),
+        name="business_hour_holiday_remove",
+    ),
+    path(
+        "business-hour-holiday-readonly-detail/<int:pk>/",
+        views.BusinessHourHolidayReadonlyDetailView.as_view(),
+        name="business_hour_holiday_readonly_detail",
+    ),
+    # Shift hour urls
+    path(
+        "shift-hour-list-view/",
+        views.ShiftHourListView.as_view(),
+        name="shift_hour_list_view",
+    ),
+    path(
+        "shift-hour-create-form/",
+        views.ShiftHourFormView.as_view(),
+        name="shift_hour_create_form",
+    ),
+    path(
+        "shift-hour-update-form/<int:pk>/",
+        views.ShiftHourFormView.as_view(),
+        name="shift_hour_update_form",
+    ),
+    path(
+        "shift-hour-delete-view/<int:pk>/",
+        views.ShiftHourDeleteView.as_view(),
+        name="shift_hour_delete_view",
+    ),
+    path(
+        "shift-hour-detail-view/<int:pk>/",
+        views.ShiftHourDetailView.as_view(),
+        name="shift_hour_detail_view",
     ),
     # User urls
     path("user-view/", views.UserView.as_view(), name="user_view"),

@@ -232,10 +232,21 @@ from horilla.contrib.core.views.forgot_password import (
 
 from horilla.contrib.core.views.business_hour import (
     BusinessHourView,
-    BusinessHourListView,
+    BusinessHourCardView,
     BusinessHourFormView,
-    BusinessHourDeleteView,
-    BusinessHourDetailView,
+    BusinessHourHolidayPanelView,
+    BusinessHourHolidayToggleView,
+    BusinessHourAddHolidayView,
+    BusinessHourHolidayListView,
+    BusinessHourHolidayModalView,
+    BusinessHourHolidayRemoveView,
+    BusinessHourHolidayReadonlyDetailView,
+)
+from horilla.contrib.core.views.shift_hour import (
+    ShiftHourListView,
+    ShiftHourFormView,
+    ShiftHourDeleteView,
+    ShiftHourDetailView,
 )
 
 from horilla.contrib.core.views.holiday import (
@@ -439,10 +450,19 @@ __all__ = [
     "PasswordResetConfirmView",
     # business_hour.py
     "BusinessHourView",
-    "BusinessHourListView",
+    "BusinessHourCardView",
     "BusinessHourFormView",
-    "BusinessHourDeleteView",
-    "BusinessHourDetailView",
+    "BusinessHourHolidayPanelView",
+    "BusinessHourHolidayToggleView",
+    "BusinessHourAddHolidayView",
+    "BusinessHourHolidayListView",
+    "BusinessHourHolidayModalView",
+    "BusinessHourHolidayRemoveView",
+    # shift_hour.py
+    "ShiftHourListView",
+    "ShiftHourFormView",
+    "ShiftHourDeleteView",
+    "ShiftHourDetailView",
     # holiday.py
     "HolidayView",
     "HolidayListView",

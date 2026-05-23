@@ -35,6 +35,7 @@ from horilla.contrib.core.models.filters import (
 from horilla.contrib.core.models.business_hours import (
     BusinessHourDayMixin,
     BusinessHour,
+    ShiftHour,
 )
 from horilla.contrib.core.models.holidays import Holiday
 from horilla.contrib.core.models.finance import (
@@ -91,6 +92,7 @@ __all__ = [
     "QuickFilter",
     "BusinessHourDayMixin",
     "BusinessHour",
+    "ShiftHour",
     "Holiday",
     "MultipleCurrency",
     "DatedConversionRate",

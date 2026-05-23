@@ -43,6 +43,7 @@ from .models import (
     RecycleBinPolicy,
     Role,
     SavedFilterList,
+    ShiftHour,
     TeamRole,
     TimelineSpanBy,
 )
@@ -57,14 +58,11 @@ admin.site.register(ActiveTab)
 admin.site.register(HorillaContentType)
 admin.site.register(Company)
 admin.site.register(FiscalYear)
-admin.site.register(Holiday)
 admin.site.register(FiscalYearInstance)
 admin.site.register(Quarter)
 admin.site.register(Period)
 admin.site.register(DatedConversionRate)
-admin.site.register(BusinessHour)
 admin.site.register(Department)
-admin.site.register(Role)
 admin.site.register(RecycleBin)
 admin.site.register(PartnerRole)
 admin.site.register(CustomerRole)
@@ -152,3 +150,23 @@ class HorillaUserAdmin(UserAdmin):
             },
         ),
     )
+
+
+@admin.register(Role)
+class RoleAdmin(admin.ModelAdmin):
+    filter_horizontal = ("permissions",)
+
+
+@admin.register(BusinessHour)
+class BusinessHourAdmin(admin.ModelAdmin):
+    filter_horizontal = ("holidays",)
+
+
+@admin.register(ShiftHour)
+class ShiftHourAdmin(admin.ModelAdmin):
+    filter_horizontal = ("assigned_users",)
+
+
+@admin.register(Holiday)
+class HolidayAdmin(admin.ModelAdmin):
+    filter_horizontal = ("specific_users",)

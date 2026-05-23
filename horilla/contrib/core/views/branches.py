@@ -1,4 +1,4 @@
-﻿"""
+"""
 This view handles the methods for user view
 """
 
@@ -320,11 +320,11 @@ class CompanyInformationTabView(LoginRequiredMixin, HorillaTabView):
                 }
             )
 
-        # Business Hours Tab
+        # Business hours & shift hours tab
         if self.request.user.has_perm("core.view_businesshour"):
             tabs.append(
                 {
-                    "title": _("Business Hours"),
+                    "title": _("Working hours"),
                     "url": reverse_lazy("core:business_hour_view"),
                     "target": "business-hour-content",
                     "id": "business-hour-view",

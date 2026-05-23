@@ -6,9 +6,11 @@ from horilla.contrib.core.forms.base import (
     FiscalYearForm,
     HolidayForm,
     BusinessHourForm,
+    BusinessHourHolidayForm,
     RegionalFormattingForm,
     ChangePasswordForm,
 )
+from horilla.contrib.core.forms.shift_hour import ShiftHourForm
 
 from horilla.contrib.core.forms.users import (
     UserFormClass,
@@ -35,29 +37,27 @@ from horilla.contrib.core.forms.permission import (
 )
 
 __all__ = [
-    #Base forms
+    # Base forms
     "FiscalYearForm",
     "HolidayForm",
     "BusinessHourForm",
+    "BusinessHourHolidayForm",
+    "ShiftHourForm",
     "RegionalFormattingForm",
     "ChangePasswordForm",
     "ChangeUserCompanyForm",
-
     # Currency forms
     "CurrencyForm",
     "ConversionRateForm",
     "DatedConversionRateForm",
-
     # User forms
     "UserFormClass",
     "UserFormSingle",
     "UserFormClassSingle",
-
     # Company forms
     "CompanyMultistepFormClass",
     "CompanyFormClass",
     "CompanyFormClassSingle",
-
     # Permission forms
     "AddUsersToRoleForm",
     "AddSuperUsersForm",
