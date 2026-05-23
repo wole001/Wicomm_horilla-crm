@@ -16,25 +16,47 @@ instead of importing each submodule directly.
 
 ## What this file does
 
-The module imports everything from:
+The module imports and re-exports from internal submodules:
 
-- `horilla_generics.forms.generics`
-- `horilla_generics.forms.multi_step`
-- `horilla_generics.forms.single_step`
+- `horilla_generics.forms.constants` — `HORILLA_FORM_EXCLUDE`
+- `horilla_generics.forms.generics` — helper/config forms
+- `horilla_generics.forms.multi_step` — `HorillaMultiStepForm`
+- `horilla_generics.forms.single_step` — `HorillaModelForm`
 
-using wildcard exports:
-
-```python
-from horilla_generics.forms.generics import *
-from horilla_generics.forms.multi_step import *
-from horilla_generics.forms.single_step import *
-```
-
-This exposes forms like:
+This exposes:
 
 - `HorillaModelForm` (single-step base form)
 - `HorillaMultiStepForm` (wizard/multi-step base form)
+- `HORILLA_FORM_EXCLUDE` (core field exclude list)
 - generic helper forms from `generics.py` (e.g., settings/selection/helper forms)
+
+---
+
+## `HORILLA_FORM_EXCLUDE`
+
+Defined in `horilla_generics/forms/constants.py` and re-exported here:
+
+```python
+HORILLA_FORM_EXCLUDE = [
+    "company",
+    "is_active",
+    "created_at",
+    "updated_at",
+    "created_by",
+    "updated_by",
+    "additional_info",
+]
+```
+
+These are `HorillaCoreModel` audit/tenant fields that should not appear on
+create/edit forms.
+
+`HorillaModelForm.__init_subclass__` reads this list automatically and merges it
+into every subclass `Meta.exclude` at class definition time — child forms do not
+need to reference this constant directly.
+
+It lives in `constants.py` (a leaf module with no internal imports) so both
+`single_step.py` and any other module can import it without circular dependency.
 
 ---
 

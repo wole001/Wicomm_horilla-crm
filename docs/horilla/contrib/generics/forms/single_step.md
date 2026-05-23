@@ -33,6 +33,72 @@ Primary external helper dependency:
 
 ---
 
+## Automatic core-field exclusion (`__init_subclass__`)
+
+`HorillaModelForm` overrides `__init_subclass__` so every subclass automatically
+excludes `HORILLA_FORM_EXCLUDE` fields from its `Meta` — no import or helper call
+needed in the child.
+
+### What gets excluded by default
+
+Defined in `horilla_generics/forms/constants.py`:
+
+```python
+HORILLA_FORM_EXCLUDE = [
+    "company",
+    "is_active",
+    "created_at",
+    "updated_at",
+    "created_by",
+    "updated_by",
+    "additional_info",
+]
+```
+
+These are `HorillaCoreModel` audit/tenant fields that should never appear on
+create/edit forms unless explicitly requested.
+
+### Merge logic
+
+At class definition time `__init_subclass__` runs once and:
+
+1. reads `Meta.keep_on_form` (defaults to empty) — fields to **remove** from the base list
+2. reads `Meta.exclude` (defaults to empty) — child's own extra fields to hide
+3. produces `merged = child_exclude + base_exclude_not_already_present`
+4. writes `merged` back onto `meta.exclude`
+
+The child's explicit fields come first; base fields fill in after, no duplicates.
+
+### `Meta.keep_on_form`
+
+Iterable of field names that are normally excluded but should be **visible** on
+this specific form.
+
+```python
+class AdminForm(HorillaModelForm):
+    class Meta:
+        model = MyModel
+        fields = "__all__"
+        keep_on_form = ("company",)   # company shown; rest still hidden
+```
+
+### Patterns
+
+| Child `Meta` | Effective `exclude` |
+|---|---|
+| No `exclude`, no `keep_on_form` | Full `HORILLA_FORM_EXCLUDE` |
+| `exclude = ["name"]` | `["name"] + HORILLA_FORM_EXCLUDE` (no duplicates) |
+| `keep_on_form = ("company",)` | `HORILLA_FORM_EXCLUDE` minus `company` |
+| `exclude = ["name"]` + `keep_on_form = ("company",)` | `["name"]` + core fields minus `company` |
+
+### Why `__init_subclass__` not a helper function
+
+A helper like `horilla_core_form_exclude()` required every child to remember to
+import and call it.  `__init_subclass__` makes the exclusion a **guarantee** —
+forgetting to do anything is the correct action.
+
+---
+
 ## Initialization flow (`__init__`)
 
 `__init__` pipeline is ordered and stateful.
@@ -296,14 +362,31 @@ Useful for modal/file widgets that need to display current file state across sub
 ## Practical subclass example
 
 ```python
-from horilla_generics.forms.single_step import HorillaModelForm
+from horilla.contrib.generics.forms import HorillaModelForm
 from leads.models import Lead
 
 
+# Core fields excluded automatically — no extra code needed
 class LeadForm(HorillaModelForm):
     class Meta:
         model = Lead
         fields = "__all__"
+
+
+# Hide extra field on top of core defaults
+class LeadRestrictedForm(HorillaModelForm):
+    class Meta:
+        model = Lead
+        fields = "__all__"
+        exclude = ["internal_notes"]
+
+
+# Show company on an admin-only screen
+class LeadAdminForm(HorillaModelForm):
+    class Meta:
+        model = Lead
+        fields = "__all__"
+        keep_on_form = ("company",)
 ```
 
 In view, pass runtime kwargs such as:
