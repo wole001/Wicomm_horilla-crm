@@ -11,12 +11,7 @@ from horilla.urls import reverse_lazy
 from horilla.utils.translation import gettext_lazy as _
 
 # Local imports
-from .models import (
-    MEETING_PROVIDER_CHOICES,
-    MeetingIntegrationSetting,
-    MeetingLink,
-    UserMeetingConfig,
-)
+from .models import MeetingIntegrationSetting, UserMeetingConfig
 
 
 class MeetingIntegrationSettingForm(HorillaModelForm):
@@ -114,8 +109,16 @@ class MeetingAccessUsersForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        request = kwargs.pop("request", None)
         _pop_single_form_view_kwargs(self, kwargs)
         super().__init__(*args, **kwargs)
+        if request is not None:
+            from horilla.contrib.meeting.views import _get_active_company
+
+            company = _get_active_company(request)
+            self.fields["allowed_users"].queryset = User.objects.filter(
+                company=company, is_active=True
+            )
 
 
 class UserMeetingConfigForm(HorillaModelForm):
@@ -130,38 +133,3 @@ class UserMeetingConfigForm(HorillaModelForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
-
-
-class MeetingLinkForm(HorillaModelForm):
-    """Form to create or update a meeting link."""
-
-    class Meta:
-        """Manual meeting link creation fields (schedule, notes, URL)."""
-
-        model = MeetingLink
-        fields = [
-            "provider",
-            "title",
-            "meeting_url",
-            "start_datetime",
-            "end_datetime",
-            "notes",
-        ]
-        widgets = {
-            "start_datetime": forms.DateTimeInput(
-                attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
-            ),
-            "end_datetime": forms.DateTimeInput(
-                attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
-            ),
-            "notes": forms.Textarea(attrs={"rows": 3}),
-        }
-
-    def __init__(self, *args, allowed_providers=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        if allowed_providers is not None:
-            self.fields["provider"].choices = [
-                (k, v) for k, v in MEETING_PROVIDER_CHOICES if k in allowed_providers
-            ]
-        self.fields["start_datetime"].input_formats = ["%Y-%m-%dT%H:%M"]
-        self.fields["end_datetime"].input_formats = ["%Y-%m-%dT%H:%M"]
