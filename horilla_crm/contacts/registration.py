@@ -9,7 +9,13 @@ register_model_for_feature(
     app_label="contacts",
     model_name="Contact",
     all=True,
-    features=["duplicate_models", "approval_models", "reviews_models"],
+    features=[
+        "duplicate_models",
+        "approval_models",
+        "reviews_models",
+        "scoring",
+        "workflow_models",
+    ],
 )
 
 register_cadence_tab(

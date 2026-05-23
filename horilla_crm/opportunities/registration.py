@@ -15,7 +15,7 @@ register_model_for_feature(
     app_label="opportunities",
     model_name="Opportunity",
     all=True,
-    features=["approval_models", "reviews_models"],
+    features=["approval_models", "reviews_models", "scoring", "workflow_models"],
 )
 
 register_model_for_feature(
