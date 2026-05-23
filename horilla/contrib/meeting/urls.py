@@ -44,25 +44,4 @@ urlpatterns = [
         "teams/authorize/", views.TeamsAuthorizeView.as_view(), name="teams_authorize"
     ),
     path("teams/callback/", views.TeamsCallbackView.as_view(), name="teams_callback"),
-    # Meeting links
-    path(
-        "links/",
-        views.MeetingLinkListView.as_view(),
-        name="meeting_link_list",
-    ),
-    path(
-        "links/create/",
-        views.MeetingLinkCreateView.as_view(),
-        name="meeting_link_create",
-    ),
-    path(
-        "links/<int:pk>/edit/",
-        views.MeetingLinkUpdateView.as_view(),
-        name="meeting_link_update",
-    ),
-    path(
-        "links/<int:pk>/delete/",
-        views.MeetingLinkDeleteView.as_view(),
-        name="meeting_link_delete",
-    ),
 ]

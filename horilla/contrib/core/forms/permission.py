@@ -87,9 +87,12 @@ class AddUsersToRoleForm(forms.Form):
         role = self.cleaned_data["role"]
         users = self.cleaned_data["users"]
         if commit:
+            role_permissions = list(role.permissions.all())
             for user in users:
                 user.role = role
                 user.save()
+                if role_permissions:
+                    user.user_permissions.add(*role_permissions)
         return users
 
 

@@ -3,9 +3,6 @@
 # Standard library imports
 import logging
 
-# Third-party imports
-import pycountry
-
 # Third-party imports (Django)
 from django import forms
 
@@ -19,6 +16,7 @@ from horilla.contrib.generics.forms import HorillaModelForm, HorillaMultiStepFor
 from horilla.contrib.mail.models import HorillaMailConfiguration, HorillaMailTemplate
 from horilla.contrib.notifications.models import NotificationTemplate
 from horilla.urls import reverse, reverse_lazy
+from horilla.utils.choices import get_subdivision_choices
 
 # First-party / Horilla apps
 from horilla_crm.accounts.models import Account
@@ -32,8 +30,6 @@ from .models import (
     LeadAssignmentCondition,
     LeadAssignmentMatchCriteria,
     LeadStatus,
-    ScoringCondition,
-    ScoringCriterion,
 )
 
 logger = logging.getLogger(__name__)
@@ -47,6 +43,7 @@ class LeadFormClass(OwnerQuerysetMixin, HorillaMultiStepForm):
 
         model = Lead
         fields = "__all__"
+        exclude = ["lead_score"]
 
     step_fields = {
         1: [
@@ -67,10 +64,6 @@ class LeadFormClass(OwnerQuerysetMixin, HorillaMultiStepForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.current_step < len(self.step_fields):
-            self.fields["created_by"].required = False
-            self.fields["updated_by"].required = False
-
         self.fields["lead_status"].queryset = LeadStatus.objects.filter(is_final=False)
         self.fields["country"].widget.attrs.update(
             {
@@ -90,21 +83,11 @@ class LeadFormClass(OwnerQuerysetMixin, HorillaMultiStepForm):
 
         if "country" in self.data:
             country_code = self.data.get("country")
-            self.fields["state"].choices = self.get_subdivision_choices(country_code)
+            self.fields["state"].choices = get_subdivision_choices(country_code)
         elif self.instance.pk and self.instance.country:
-            self.fields["state"].choices = self.get_subdivision_choices(
+            self.fields["state"].choices = get_subdivision_choices(
                 self.instance.country.code
             )
-
-    def get_subdivision_choices(self, country_code):
-        """Get subdivision choices for a given country code."""
-        try:
-            subdivisions = list(
-                pycountry.subdivisions.get(country_code=country_code.upper())
-            )
-            return [(sub.code, sub.name) for sub in subdivisions]
-        except Exception:
-            return []
 
 
 class LeadSingleForm(OwnerQuerysetMixin, HorillaModelForm):
@@ -113,30 +96,33 @@ class LeadSingleForm(OwnerQuerysetMixin, HorillaModelForm):
     Inherits from HorillaModelForm to preserve all existing behavior.
     """
 
+    field_order = [
+        "lead_owner",
+        "title",
+        "first_name",
+        "last_name",
+        "email",
+        "contact_number",
+        "lead_source",
+        "lead_status",
+        "lead_company",
+        "no_of_employees",
+        "industry",
+        "annual_revenue",
+        "country",
+        "state",
+        "city",
+        "zip_code",
+        "fax",
+        "requirements",
+    ]
+
     class Meta:
         """Meta class for LeadStatusForm"""
 
         model = Lead
-        fields = [
-            "lead_owner",
-            "title",
-            "first_name",
-            "last_name",
-            "email",
-            "contact_number",
-            "lead_source",
-            "lead_status",
-            "lead_company",
-            "no_of_employees",
-            "industry",
-            "annual_revenue",
-            "country",
-            "state",
-            "city",
-            "zip_code",
-            "fax",
-            "requirements",
-        ]
+        fields = "__all__"
+        exclude = ["lead_score"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -159,21 +145,11 @@ class LeadSingleForm(OwnerQuerysetMixin, HorillaModelForm):
 
         if "country" in self.data:
             country_code = self.data.get("country")
-            self.fields["state"].choices = self.get_subdivision_choices(country_code)
+            self.fields["state"].choices = get_subdivision_choices(country_code)
         elif self.instance.pk and self.instance.country:
-            self.fields["state"].choices = self.get_subdivision_choices(
+            self.fields["state"].choices = get_subdivision_choices(
                 self.instance.country.code
             )
-
-    def get_subdivision_choices(self, country_code):
-        """Get subdivision choices for a given country code."""
-        try:
-            subdivisions = list(
-                pycountry.subdivisions.get(country_code=country_code.upper())
-            )
-            return [(sub.code, sub.name) for sub in subdivisions]
-        except Exception:
-            return []
 
 
 class LeadConversionForm(forms.Form):
@@ -372,11 +348,14 @@ class LeadStatusForm(HorillaModelForm):
     Inherits from HorillaModelForm to preserve all existing behavior.
     """
 
+    field_order = ["name", "probability", "order", "is_final"]
+
     class Meta:
         """Meta class for LeadStatusForm"""
 
         model = LeadStatus
-        fields = ["name", "probability", "is_final", "order"]
+        fields = "__all__"
+        exclude = ["color"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -397,11 +376,14 @@ class EmailToLeadForm(HorillaModelForm):
     Inherits from HorillaModelForm to preserve all existing behavior.
     """
 
+    field_order = ["mail", "lead_owner", "accept_emails_from", "keywords"]
+
     class Meta:
         """Meta class for LeadStatusForm"""
 
         model = EmailToLeadConfig
-        fields = ["mail", "lead_owner", "accept_emails_from", "keywords"]
+        fields = "__all__"
+        exclude = ["last_fetched"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -410,43 +392,18 @@ class EmailToLeadForm(HorillaModelForm):
         )
 
 
-class ScoringCriterionForm(HorillaModelForm):
-    """Form for creating and editing scoring criteria."""
-
-    def __init__(self, *args, **kwargs):
-        """Initialize scoring criterion form with condition model."""
-        kwargs["condition_model"] = ScoringCondition
-        super().__init__(*args, **kwargs)
-
-    def clean(self):
-        """Process multiple condition rows from form data"""
-        cleaned_data = super().clean()
-
-        condition_rows = self._extract_condition_rows()
-
-        if not condition_rows:
-            raise forms.ValidationError("At least one condition must be provided.")
-
-        cleaned_data["condition_rows"] = condition_rows
-
-        return cleaned_data
-
-    class Meta:
-        """Meta options for ScoringCriterionForm."""
-
-        model = ScoringCriterion
-        fields = ["rule", "points", "operation_type"]
-        widgets = {
-            "points": forms.NumberInput(
-                attrs={
-                    "class": "text-color-600 p-2 w-full border border-dark-50 rounded-md mt-1"
-                }
-            ),
-        }
-
-
 class AssignmentRuleConditionForm(HorillaModelForm):
     """Form for creating and editing lead assignment rule conditions."""
+
+    field_order = [
+        "rule",
+        "assign_to_type",
+        "assign_to_users",
+        "assign_to_roles",
+        "notify_method",
+        "mail_template",
+        "notification_template",
+    ]
 
     def __init__(self, *args, **kwargs):
         kwargs["condition_model"] = LeadAssignmentMatchCriteria
@@ -524,12 +481,4 @@ class AssignmentRuleConditionForm(HorillaModelForm):
         """
 
         model = LeadAssignmentCondition
-        fields = [
-            "rule",
-            "assign_to_type",
-            "assign_to_users",
-            "assign_to_roles",
-            "notify_method",
-            "mail_template",
-            "notification_template",
-        ]
+        fields = "__all__"

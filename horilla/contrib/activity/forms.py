@@ -62,6 +62,7 @@ class MeetingsForm(OwnerQuerysetMixin, HorillaModelForm):
             "meeting_provider",
             "reminder",
             "activity_type",
+            "mail_template",
         ]
 
         widgets = {
@@ -83,6 +84,7 @@ class MeetingsForm(OwnerQuerysetMixin, HorillaModelForm):
                     "hx-select": "#activity-form-view",
                     "hx-include": "#activity-form-view",
                     "hx-target": "#activity-form-view",
+                    "hx-vals": '{"_toggle_field": "is_online"}',
                 }
             ),
             "reminder": forms.Select(
@@ -123,7 +125,7 @@ class MeetingsForm(OwnerQuerysetMixin, HorillaModelForm):
             self.fields["is_all_day"].widget.attrs.update(
                 {"hx-get": "/activity/meeting-create-form/"}
             )
-        self.fields["is_online"].widget.attrs.update({"hx-get": online_hx})
+        self.fields["is_online"].widget.attrs.update({"hx-post": online_hx})
 
         if is_online:
             self.fields["is_all_day"].widget = forms.HiddenInput()
@@ -164,6 +166,29 @@ class MeetingsForm(OwnerQuerysetMixin, HorillaModelForm):
                 {"data-initially-hidden": "true"}
             )
 
+        # Limit mail_template choices to templates linked to Activity or with no content type
+        try:
+            from horilla.contrib.mail.models import HorillaMailTemplate
+
+            activity_ct = HorillaContentType.objects.filter(
+                app_label="activity", model="activity"
+            ).first()
+            if activity_ct:
+                self.fields["mail_template"].queryset = (
+                    HorillaMailTemplate.objects.filter(
+                        Q(content_type=activity_ct) | Q(content_type__isnull=True)
+                    )
+                )
+            else:
+                self.fields["mail_template"].queryset = (
+                    HorillaMailTemplate.objects.filter(content_type__isnull=True)
+                )
+        except Exception:
+            pass
+        self.fields["mail_template"].help_text = (
+            "Optional. Select a template to override the default invitation email design."
+        )
+
     def _get_provider_choices(self, user):
         choices = [("", "— Select Provider —")]
         if not user:
@@ -173,7 +198,6 @@ class MeetingsForm(OwnerQuerysetMixin, HorillaModelForm):
             from horilla.contrib.meeting.models import (
                 MeetingIntegrationSetting,
                 MicrosoftTeamsOAuthConfig,
-                UserMeetingConfig,
                 ZoomOAuthConfig,
             )
 
@@ -775,12 +799,13 @@ class ActivityCreateForm(OwnerQuerysetMixin, HorillaModelForm):
         if "is_online" in self.fields:
             self.fields["is_online"].widget.attrs.update(
                 {
-                    "hx-get": base_url,
+                    "hx-post": base_url,
                     "hx-trigger": "change",
                     "hx-swap": "outerHTML",
                     "hx-select": "#activity-form-view",
                     "hx-include": "#activity-form-view",
                     "hx-target": "#activity-form-view",
+                    "hx-vals": '{"_toggle_field": "is_online"}',
                     "onchange": "toggleMeetingUrlField(this)",
                 }
             )

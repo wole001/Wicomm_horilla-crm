@@ -9,32 +9,31 @@ import threading
 
 # Third-party imports (Django)
 from django.db import transaction
-from django.db.models.signals import post_migrate, post_save, pre_delete, pre_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import Signal, receiver
 from django.template import engines
 
-# First-party / Horilla imports
-from horilla.apps import apps
 from horilla.auth.models import User
 
 # First-party / Horilla apps
 from horilla.contrib.core.signals import company_created, company_currency_changed
 from horilla.contrib.keys.models import ShortcutKey
+from horilla.contrib.keys.utils import resolve_page_url
 from horilla.contrib.notifications.methods import create_notification
 from horilla.contrib.utils.middlewares import _thread_local
 from horilla.core.exceptions import FieldDoesNotExist
-from horilla.db.models import Case, Count, F, IntegerField, Q, When
+from horilla.db.models import Count
 from horilla.shortcuts import render
+
+# First-party / Horilla imports
 from horilla.urls import reverse_lazy
 from horilla_crm.leads.models import (
     Lead,
     LeadAssignmentCondition,
     LeadAssignmentRule,
-    ScoringCondition,
-    ScoringCriterion,
-    ScoringRule,
+    LeadStatus,
 )
-from horilla_crm.leads.utils import compute_score
+from horilla_crm.scoring_rules.utils import compute_score
 
 logger = logging.getLogger(__name__)
 
@@ -84,8 +83,12 @@ def update_crm_on_currency_change(sender, **kwargs):
 @receiver(post_save, sender=User)
 def create_leads_shortcuts(sender, instance, created, **kwargs):
     """Create default keyboard shortcuts for leads when a user is created."""
+    page = resolve_page_url("leads:leads_view")
+    if not page:
+        return
+
     predefined = [
-        {"page": "crm/leads/leads-view/", "key": "E", "command": "alt"},
+        {"page": page, "key": "E", "command": "alt"},
     ]
 
     for item in predefined:
@@ -100,211 +103,6 @@ def create_leads_shortcuts(sender, instance, created, **kwargs):
         )
 
 
-def get_score_field(model):
-    """Get the score field name for a given model."""
-    score_fields = {
-        "lead": "lead_score",
-        "opportunity": "opportunity_score",
-        "account": "account_score",
-        "contact": "contact_score",
-    }
-    return score_fields.get(model._meta.model_name)
-
-
-def get_models_for_module(module):
-    """
-    Dynamically find models matching a module name (e.g., 'lead') across installed apps.
-    Only includes models that have a corresponding score field.
-    """
-    models = []
-    for app_config in apps.get_app_configs():
-        for model in app_config.get_models():
-            if model._meta.model_name == module:
-                score_field = get_score_field(model)
-                if score_field and score_field in [f.name for f in model._meta.fields]:
-                    models.append(model)
-    return models
-
-
-def build_query_from_conditions(criterion, Model):
-    """
-    Build a Django ORM query to filter instances that match a criterion's conditions.
-
-    Args:
-        criterion: ScoringCriterion instance.
-        Model: The Django model class (e.g., Lead).
-
-    Returns:
-        Q object representing the combined conditions.
-    """
-    query = Q()
-    for condition in criterion.conditions.all().order_by("order"):
-        field = condition.field
-        operator = condition.operator
-        value = condition.value
-        logical_operator = condition.logical_operator
-
-        try:
-            Model._meta.get_field(field)
-            if operator == "equals":
-                if Model._meta.get_field(field).get_internal_type() == "ForeignKey":
-                    condition_query = Q(**{f"{field}_id__exact": value})
-                else:
-                    condition_query = Q(**{f"{field}__exact": value})
-            elif operator == "not_equals":
-                if Model._meta.get_field(field).get_internal_type() == "ForeignKey":
-                    condition_query = ~Q(**{f"{field}_id__exact": value})
-                else:
-                    condition_query = ~Q(**{f"{field}__exact": value})
-            elif operator == "contains":
-                condition_query = Q(**{f"{field}__icontains": value})
-            elif operator == "not_contains":
-                condition_query = ~Q(**{f"{field}__icontains": value})
-            elif operator == "starts_with":
-                condition_query = Q(**{f"{field}__istartswith": value})
-            elif operator == "ends_with":
-                condition_query = Q(**{f"{field}__iendswith": value})
-            elif operator == "greater_than":
-                try:
-                    condition_query = Q(**{f"{field}__gt": float(value)})
-                except (ValueError, TypeError):
-                    condition_query = Q(pk__in=[])
-            elif operator == "greater_than_equal":
-                try:
-                    condition_query = Q(**{f"{field}__gte": float(value)})
-                except (ValueError, TypeError):
-                    condition_query = Q(pk__in=[])
-            elif operator == "less_than":
-                try:
-                    condition_query = Q(**{f"{field}__lt": float(value)})
-                except (ValueError, TypeError):
-                    condition_query = Q(pk__in=[])
-            elif operator == "less_than_equal":
-                try:
-                    condition_query = Q(**{f"{field}__lte": float(value)})
-                except (ValueError, TypeError):
-                    condition_query = Q(pk__in=[])
-            elif operator == "is_empty":
-                condition_query = Q(**{field: None}) | Q(**{f"{field}__exact": ""})
-            elif operator == "is_not_empty":
-                condition_query = ~Q(**{field: None}) & ~Q(**{f"{field}__exact": ""})
-            else:
-                condition_query = Q(pk__in=[])
-            if logical_operator == "and":
-                query &= condition_query
-            else:
-                query |= condition_query
-        except FieldDoesNotExist:
-            logger.warning(
-                "Field %s does not exist on %s", field, Model._meta.model_name
-            )
-            query &= Q(pk__in=[])
-
-    return query
-
-
-def update_all_scores_for_module(module):
-    """
-    Update score fields for instances matching active scoring rules' conditions
-    using direct database UPDATE queries.
-
-    Args:
-        module: String (e.g., 'lead', 'opportunity') indicating the module.
-    """
-    models = get_models_for_module(module)
-    for Model in models:
-        score_field = get_score_field(Model)
-        if not score_field:
-            continue
-
-        with transaction.atomic():
-            try:
-                Model.objects.update(**{score_field: 0})
-                logger.info(
-                    "Reset %s to 0 for all %s instances",
-                    score_field,
-                    Model._meta.model_name,
-                )
-            except Exception as e:
-                logger.error(
-                    "Error resetting %s for %s: %s",
-                    score_field,
-                    Model._meta.model_name,
-                    e,
-                )
-                raise
-
-            rules = ScoringRule.objects.filter(module=module, is_active=True)
-            if not rules.exists():
-                continue
-
-            for rule in rules:
-                for criterion in rule.criteria.all().order_by("order"):
-                    query = build_query_from_conditions(criterion, Model)
-                    if not query:
-                        continue
-
-                    points = criterion.points
-                    if criterion.operation_type == "sub":
-                        points = -points
-
-                    try:
-                        Model.objects.filter(query).update(
-                            **{
-                                score_field: Case(
-                                    When(query, then=F(score_field) + points),
-                                    default=F(score_field),
-                                    output_field=IntegerField(),
-                                )
-                            }
-                        )
-                        logger.info(
-                            "Updated %s for %s instances matching criterion %s",
-                            score_field,
-                            Model._meta.model_name,
-                            criterion.id,
-                        )
-                    except Exception as e:
-                        logger.error(
-                            "Error updating %s for %s with criterion %s: %s",
-                            score_field,
-                            Model._meta.model_name,
-                            criterion.id,
-                            e,
-                        )
-                        raise
-
-
-@receiver(post_save, sender=ScoringRule)
-@receiver(pre_delete, sender=ScoringRule)
-def handle_rule_change(sender, instance, **kwargs):
-    """
-    Signal handler triggered when a scoring rule is created, updated, or deleted.
-    Automatically triggers recalculation of all scores for the associated module.
-    """
-    update_all_scores_for_module(instance.module)
-
-
-@receiver(post_save, sender=ScoringCriterion)
-@receiver(pre_delete, sender=ScoringCriterion)
-def handle_criterion_change(sender, instance, **kwargs):
-    """
-    Signal handler triggered when a scoring criterion is created, updated, or deleted.
-    Ensures scores are recalculated for all modules affected by this criterion.
-    """
-    update_all_scores_for_module(instance.rule.module)
-
-
-@receiver(post_save, sender=ScoringCondition)
-@receiver(pre_delete, sender=ScoringCondition)
-def handle_condition_change(sender, instance, **kwargs):
-    """
-    Signal handler triggered when a scoring condition is created, updated, or deleted.
-    Rebuilds and applies scoring rules to update scores for affected module instances.
-    """
-    update_all_scores_for_module(instance.criterion.rule.module)
-
-
 _CRM_SHORTKEY_URL_MIGRATIONS = {
     "/leads/leads-view/": "/crm/leads/leads-view/",
     "/accounts/accounts-view/": "/crm/accounts/accounts-view/",
@@ -312,6 +110,12 @@ _CRM_SHORTKEY_URL_MIGRATIONS = {
     "/opportunities/opportunities-view/": "/crm/opportunities/opportunities-view/",
     "/campaigns/campaign-view/": "/crm/campaigns/campaign-view/",
     "/forecast/forecast-view/": "/crm/forecast/forecast-view/",
+    "crm/leads/leads-view/": "/crm/leads/leads-view/",
+    "crm/accounts/accounts-view/": "/crm/accounts/accounts-view/",
+    "crm/contacts/contacts-view/": "/crm/contacts/contacts-view/",
+    "crm/opportunities/opportunities-view/": "/crm/opportunities/opportunities-view/",
+    "crm/campaigns/campaign-view/": "/crm/campaigns/campaign-view/",
+    "crm/forecast/forecast-view/": "/crm/forecast/forecast-view/",
 }
 
 
@@ -626,3 +430,146 @@ def handle_lead_assignment(sender, instance, created, **kwargs):
             logger.error("handle_lead_assignment error (pk=%s): %s", instance.pk, exc)
 
     transaction.on_commit(_run)
+
+
+# ─── Booking Integration ──────────────────────────────────────────────────────
+# booking fires booking_submitted; we own Lead/Contact/Activity creation.
+# Import is deferred inside the handler to avoid issues if booking is
+# not installed.
+
+
+def _send_booking_confirmation(booking, company):
+    """Send a meeting-invitation-style confirmation email to the booker."""
+    from django.conf import settings as _settings
+
+    from horilla.contrib.utils.middlewares import _thread_local
+
+    booking_pk = booking.pk
+
+    site_url = getattr(_settings, "SITE_URL", "").rstrip("/")
+    if not site_url:
+        request = getattr(_thread_local, "request", None)
+        if request:
+            site_url = request.build_absolute_uri("/").rstrip("/")
+
+    def _send():
+        try:
+            from booking.models import Booking as _Booking
+            from booking.tasks import send_booking_confirmation_email
+
+            booking_obj = _Booking.all_objects.select_related(
+                "booking_page__host", "booking_page"
+            ).get(pk=booking_pk)
+
+            from horilla.urls import reverse_lazy as _reverse_lazy
+
+            cancel_url = f"{site_url}{_reverse_lazy('booking:booking_cancel', kwargs={'token': booking_obj.cancellation_token})}"
+            reschedule_url = f"{site_url}{_reverse_lazy('booking:booking_reschedule', kwargs={'token': booking_obj.cancellation_token})}"
+
+            send_booking_confirmation_email(
+                booking_obj,
+                cancel_url=cancel_url,
+                reschedule_url=reschedule_url,
+            )
+        except Exception:
+            logger.exception(
+                "Booking confirmation email failed for booking pk=%s", booking_pk
+            )
+
+    threading.Thread(target=_send, daemon=True).start()
+
+
+try:
+    from booking.signals import booking_submitted as _booking_submitted
+
+    @receiver(_booking_submitted)
+    def create_or_link_crm_record(
+        sender, booker_name, booker_email, booking_instance, company, **kwargs
+    ):
+        """
+        When a public booking is submitted:
+        1. Find existing Lead or Contact by email (company-scoped).
+        2. If none found, create a new Lead.
+        3. Create a Meeting Activity linked to the Lead/Contact.
+        4. Update the Booking with the CRM links.
+        5. Send a confirmation email (non-blocking thread).
+        """
+        try:
+            from horilla.contrib.activity.models import Activity
+            from horilla.contrib.core.models import HorillaContentType
+            from horilla_crm.contacts.models import Contact
+
+            lead = None
+            contact = None
+
+            lead = Lead.all_objects.filter(email=booker_email, company=company).first()
+            if not lead:
+                contact = Contact.all_objects.filter(
+                    email=booker_email, company=company
+                ).first()
+                if not contact:
+                    name_parts = booker_name.strip().split(None, 1)
+                    first_name = name_parts[0]
+                    last_name = name_parts[1] if len(name_parts) > 1 else "-"
+                    default_status = (
+                        LeadStatus.all_objects.filter(company=company).first()
+                        or LeadStatus.all_objects.first()
+                    )
+                    lead = Lead.objects.create(
+                        email=booker_email,
+                        first_name=first_name,
+                        last_name=last_name,
+                        lead_source="website",
+                        lead_owner=booking_instance.booking_page.host,
+                        lead_status=default_status,
+                        lead_company="",
+                        industry="other",
+                        country="",
+                        company=company,
+                    )
+
+            crm_obj = lead or contact
+            page = booking_instance.booking_page
+            content_type = HorillaContentType.objects.get_for_model(crm_obj)
+            subject = f"{page.title}"[:100]
+            activity = Activity.objects.create(
+                activity_type="meeting",
+                subject=subject,
+                title=subject,
+                status="scheduled",
+                start_datetime=booking_instance.start_datetime,
+                end_datetime=booking_instance.end_datetime,
+                is_online=page.is_online,
+                meeting_provider=page.meeting_provider if page.is_online else "",
+                meeting_url="",
+                location=page.location or "",
+                owner=page.host,
+                meeting_host=page.host,
+                external_participants=[booker_email],
+                company=company,
+                content_type=content_type,
+                object_id=crm_obj.pk,
+            )
+            page_participants = list(page.participants.all())
+            if page_participants:
+                activity.participants.set(page_participants)
+
+            booking_instance.activity = activity
+            info = booking_instance.additional_info or {}
+            if lead:
+                info["crm_lead_id"] = lead.pk
+            elif contact:
+                info["crm_contact_id"] = contact.pk
+            booking_instance.additional_info = info
+            booking_instance.save(update_fields=["activity", "additional_info"])
+
+            _send_booking_confirmation(booking_instance, company)
+
+        except Exception:
+            logger.exception(
+                "create_or_link_crm_record failed for booking pk=%s",
+                booking_instance.pk,
+            )
+
+except ImportError:
+    pass

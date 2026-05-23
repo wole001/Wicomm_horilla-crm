@@ -8,7 +8,6 @@ and menu context for templates.
 from django.conf import settings
 from django.utils.translation import get_language
 
-from horilla import __version__ as horilla_version
 from horilla.contrib.core.models import Company, RecentlyViewed
 from horilla.contrib.notifications.models import (
     Notification,

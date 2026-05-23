@@ -16,7 +16,11 @@ from horilla.contrib.generics.views.single_form import HorillaSingleFormView
 from horilla.http import HttpResponse
 from horilla.shortcuts import redirect, render
 from horilla.urls import reverse, reverse_lazy
-from horilla.utils.decorators import method_decorator, permission_required_or_denied
+from horilla.utils.decorators import (
+    htmx_required,
+    method_decorator,
+    permission_required_or_denied,
+)
 from horilla.utils.translation import gettext_lazy as _
 
 # Local imports
@@ -24,14 +28,11 @@ from .forms import (
     MeetingAccessRolesForm,
     MeetingAccessUsersForm,
     MeetingIntegrationSettingForm,
-    MeetingLinkForm,
 )
-from .models import MeetingIntegrationSetting, MeetingLink, UserMeetingConfig
+from .models import MeetingIntegrationSetting, UserMeetingConfig
 
 _ADMIN_SETTINGS_TEMPLATE = "meeting/meeting_integration_settings.html"
 _USER_SETTINGS_TEMPLATE = "meeting/meeting_user_settings.html"
-_CREATE_LINK_TEMPLATE = "meeting/meeting_create_link.html"
-_MEETING_LIST_TEMPLATE = "meeting/meeting_link_list.html"
 
 
 def _get_active_company(request):
@@ -133,11 +134,7 @@ class MeetingIntegrationSettingsView(LoginRequiredMixin, View):
         return self._render(request)
 
 
-# ─────────────────────────────────────────────────────────────
-# Access edit modals — HorillaSingleFormView style
-# ─────────────────────────────────────────────────────────────
-
-
+@method_decorator(htmx_required, name="dispatch")
 class MeetingAccessRolesView(LoginRequiredMixin, HorillaSingleFormView):
     """Modal form: select which roles can access meeting integration."""
 
@@ -194,6 +191,7 @@ class MeetingAccessRolesView(LoginRequiredMixin, HorillaSingleFormView):
         return HttpResponse("<script>closeModal(); location.reload();</script>")
 
 
+@method_decorator(htmx_required, name="dispatch")
 class MeetingAccessUsersView(LoginRequiredMixin, HorillaSingleFormView):
     """Modal form: select which users can access meeting integration."""
 
@@ -259,7 +257,6 @@ def _build_provider_cards(request, company, open_provider=None):
 
     cards = {}
 
-    # ── Zoom ──
     zoom = ZoomOAuthConfig.objects.filter(user=request.user).first()
     cards["zoom"] = {
         "label": _("Zoom"),
@@ -637,105 +634,3 @@ class TeamsCallbackView(View):
         else:
             messages.success(request, _("Teams account connected successfully."))
         return redirect(reverse("meeting:meeting_user_settings"))
-
-
-# ─────────────────────────────────────────────────────────────
-# Meeting Link CRUD
-# ─────────────────────────────────────────────────────────────
-
-
-class MeetingLinkListView(LoginRequiredMixin, View):
-    """List all meeting links created by the current user."""
-
-    def get(self, request, *args, **kwargs):
-        """Render saved meeting links for the active company."""
-        company = _get_active_company(request)
-        links = MeetingLink.objects.filter(
-            company=company, created_by_user=request.user
-        )
-        return render(request, _MEETING_LIST_TEMPLATE, {"meeting_links": links})
-
-
-class MeetingLinkCreateView(LoginRequiredMixin, View):
-    """Create a new meeting link (manual URL entry)."""
-
-    def _check_access(self, request):
-        company = _get_active_company(request)
-        if not MeetingIntegrationSetting.user_can_access(request.user, company):
-            messages.error(
-                request,
-                _("Meeting integration is not currently enabled for your account."),
-            )
-            return redirect(reverse("meeting:meeting_link_list"))
-        return None
-
-    def get(self, request, *args, **kwargs):
-        """Display empty :class:`MeetingLinkForm` when the user may create links."""
-        blocked = self._check_access(request)
-        if blocked:
-            return blocked
-        return render(request, _CREATE_LINK_TEMPLATE, {"form": MeetingLinkForm()})
-
-    def post(self, request, *args, **kwargs):
-        """Validate and persist a new meeting link for the current company."""
-        blocked = self._check_access(request)
-        if blocked:
-            return blocked
-        company = _get_active_company(request)
-        form = MeetingLinkForm(request.POST)
-        if form.is_valid():
-            link = form.save(commit=False)
-            link.company = company
-            link.created_by_user = request.user
-            link.save()
-            messages.success(request, _("Meeting link created successfully."))
-            return redirect(reverse("meeting:meeting_link_list"))
-        return render(request, _CREATE_LINK_TEMPLATE, {"form": form})
-
-
-class MeetingLinkUpdateView(LoginRequiredMixin, View):
-    """Edit an existing meeting link."""
-
-    def _get_link(self, request, pk):
-        company = _get_active_company(request)
-        return MeetingLink.objects.filter(pk=pk, company=company).first()
-
-    def get(self, request, pk, *args, **kwargs):
-        """Populate the edit form for the given primary key when scoped to the company."""
-        link = self._get_link(request, pk)
-        if not link:
-            messages.error(request, _("Meeting link not found."))
-            return redirect(reverse("meeting:meeting_link_list"))
-        return render(
-            request,
-            _CREATE_LINK_TEMPLATE,
-            {"form": MeetingLinkForm(instance=link), "link": link},
-        )
-
-    def post(self, request, pk, *args, **kwargs):
-        """Save edits to an existing meeting link belonging to this company."""
-        link = self._get_link(request, pk)
-        if not link:
-            messages.error(request, _("Meeting link not found."))
-            return redirect(reverse("meeting:meeting_link_list"))
-        form = MeetingLinkForm(request.POST, instance=link)
-        if form.is_valid():
-            form.save()
-            messages.success(request, _("Meeting link updated."))
-            return redirect(reverse("meeting:meeting_link_list"))
-        return render(request, _CREATE_LINK_TEMPLATE, {"form": form, "link": link})
-
-
-class MeetingLinkDeleteView(LoginRequiredMixin, View):
-    """Delete a meeting link."""
-
-    def post(self, request, pk, *args, **kwargs):
-        """Remove the meeting link if it belongs to the active company."""
-        company = _get_active_company(request)
-        link = MeetingLink.objects.filter(pk=pk, company=company).first()
-        if link:
-            link.delete()
-            messages.success(request, _("Meeting link deleted."))
-        else:
-            messages.error(request, _("Meeting link not found."))
-        return redirect(reverse("meeting:meeting_link_list"))
