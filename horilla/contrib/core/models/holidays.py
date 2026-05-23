@@ -222,6 +222,12 @@ class Holiday(HorillaCoreModel):
         """
         return reverse_lazy("core:holiday_detail_view", kwargs={"pk": self.pk})
 
+    def get_bh_readonly_detail_url(self):
+        """Read-only detail URL used inside the business hour holiday list."""
+        return reverse_lazy(
+            "core:business_hour_holiday_readonly_detail", kwargs={"pk": self.pk}
+        )
+
     def get_user_detail_url(self):
         """
         Get the URL for holiday detail view for users
