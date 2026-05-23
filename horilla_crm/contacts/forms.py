@@ -15,6 +15,7 @@ from horilla.contrib.generics.forms import HorillaModelForm, HorillaMultiStepFor
 
 # First-party / Horilla imports
 from horilla.urls import reverse_lazy
+from horilla.utils.choices import get_subdivision_choices
 from horilla.utils.translation import gettext_lazy as _
 
 # Local imports
@@ -49,17 +50,43 @@ class ContactFormClass(OwnerQuerysetMixin, HorillaMultiStepForm):
             "parent_contact",
             "is_primary",
         ],
-        2: ["address_city", "address_state", "address_country", "address_zip"],
+        2: ["address_country", "address_state", "address_city", "address_zip"],
         3: ["languages", "description"],
     }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         # Make created_by and updated_by optional in intermediate steps
         if self.current_step < len(self.step_fields):
             self.fields["created_by"].required = False
             self.fields["updated_by"].required = False
             self.fields["is_primary"].required = False
+
+        self.fields["address_country"].widget.attrs.update(
+            {
+                "hx-get": reverse_lazy("core:get_country_subdivisions"),
+                "hx-target": "#id_state",
+                "hx-trigger": "change",
+                "hx-swap": "innerHTML",
+                "hx-vals": "js:{country: event.target.value}",
+            }
+        )
+        self.fields["address_state"] = forms.ChoiceField(
+            choices=[],
+            required=False,
+            widget=forms.Select(
+                attrs={"id": "id_state", "class": "js-example-basic-single headselect"}
+            ),
+        )
+
+        if "address_country" in self.data:
+            country_code = self.data.get("address_country")
+            self.fields["address_state"].choices = get_subdivision_choices(country_code)
+        elif self.instance.pk and self.instance.address_country:
+            self.fields["address_state"].choices = get_subdivision_choices(
+                self.instance.address_country.code
+            )
 
 
 class ContactSingleForm(OwnerQuerysetMixin, HorillaModelForm):
@@ -68,31 +95,62 @@ class ContactSingleForm(OwnerQuerysetMixin, HorillaModelForm):
     Inherits from HorillaModelForm to preserve all existing behavior.
     """
 
+    field_order = [
+        "contact_owner",
+        "title",
+        "first_name",
+        "last_name",
+        "phone",
+        "email",
+        "secondary_phone",
+        "birth_date",
+        "assistant",
+        "assistant_phone",
+        "contact_source",
+        "parent_contact",
+        "is_primary",
+        "address_country",
+        "address_state",
+        "address_city",
+        "address_zip",
+        "languages",
+        "description",
+    ]
+
     class Meta:
         """Meta class for LeadStatusForm"""
 
         model = Contact
-        fields = [
-            "contact_owner",
-            "title",
-            "first_name",
-            "last_name",
-            "phone",
-            "email",
-            "secondary_phone",
-            "birth_date",
-            "assistant",
-            "assistant_phone",
-            "contact_source",
-            "parent_contact",
-            "is_primary",
-            "address_city",
-            "address_state",
-            "address_country",
-            "address_zip",
-            "languages",
-            "description",
-        ]
+        fields = "__all__"
+        exclude = ["contact_score"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["address_country"].widget.attrs.update(
+            {
+                "hx-get": reverse_lazy("core:get_country_subdivisions"),
+                "hx-target": "#id_state",
+                "hx-trigger": "change",
+                "hx-swap": "innerHTML",
+                "hx-vals": "js:{country: event.target.value}",
+            }
+        )
+        self.fields["address_state"] = forms.ChoiceField(
+            choices=[],
+            required=False,
+            widget=forms.Select(
+                attrs={"id": "id_state", "class": "js-example-basic-single headselect"}
+            ),
+        )
+
+        if "address_country" in self.data:
+            country_code = self.data.get("address_country")
+            self.fields["address_state"].choices = get_subdivision_choices(country_code)
+        elif self.instance.pk and self.instance.address_country:
+            self.fields["address_state"].choices = get_subdivision_choices(
+                self.instance.address_country.code
+            )
 
 
 class ChildContactForm(forms.Form):
