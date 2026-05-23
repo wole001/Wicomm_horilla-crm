@@ -25,6 +25,7 @@ from horilla.contrib.utils.middlewares import _thread_local
 
 # First party imports (Horilla)
 from horilla.db import models
+from horilla.extension import ExtensionModelBase
 from horilla.registry.permission_registry import permission_exempt_model
 from horilla.urls import reverse_lazy
 from horilla.utils.choices import (
@@ -279,9 +280,12 @@ class CompanyFilteredManager(models.Manager):
         return queryset
 
 
-class HorillaCoreModel(models.Model):
+class HorillaCoreModel(models.Model, metaclass=ExtensionModelBase):
     """
-    Core Base model
+    Core Base model.
+
+    Supports _inherit extensions: subclass with _inherit = "app_label.ModelName"
+    to inject fields onto an existing model without creating a new table.
     """
 
     is_active = models.BooleanField(default=True, verbose_name=_("Is Active"))
