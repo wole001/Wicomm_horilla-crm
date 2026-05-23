@@ -88,6 +88,18 @@ class ApprovalProcessRuleActionFormView(LoginRequiredMixin, View):
                 .select_related("model")
                 .first()
             )
+            if process and process.model_id:
+                mail_templates = mail_templates.filter(
+                    content_type__isnull=True
+                ) | mail_templates.filter(content_type=process.model_id)
+                notification_templates = notification_templates.filter(
+                    content_type__isnull=True
+                ) | notification_templates.filter(content_type=process.model_id)
+            else:
+                mail_templates = mail_templates.filter(content_type__isnull=True)
+                notification_templates = notification_templates.filter(
+                    content_type__isnull=True
+                )
             model_cls = None
             if process and process.model_id:
                 try:
@@ -188,6 +200,11 @@ class ApprovalProcessRuleActionFormView(LoginRequiredMixin, View):
                                     fk_label,
                                 )
                             )
+        else:
+            mail_templates = mail_templates.filter(content_type__isnull=True)
+            notification_templates = notification_templates.filter(
+                content_type__isnull=True
+            )
         if not field_meta:
             # Fallback: resolve by model_name (same strategy used by condition_fields)
             model_name = model_name or model_name_query or ""
