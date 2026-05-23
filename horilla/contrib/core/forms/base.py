@@ -329,6 +329,49 @@ class HolidayForm(HorillaModelForm):
         return cleaned_data
 
 
+class BusinessHourHolidayForm(HorillaModelForm):
+    """Form to link existing all-users holidays to a business hour."""
+
+    class Meta:
+        """Meta options for BusinessHourHolidayForm."""
+
+        model = BusinessHour
+        fields = ["holidays"]
+        widgets = {"holidays": forms.SelectMultiple()}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        instance = self.instance
+        if instance and instance.pk:
+            already_linked = instance.holidays.values_list("id", flat=True)
+            self.fields["holidays"].queryset = (
+                Holiday.objects.filter(company_id=instance.company_id, all_users=True)
+                .exclude(id__in=already_linked)
+                .order_by("start_date", "name")
+            )
+            # Clear pre-selected tags — this is an add form, not edit
+            self.fields["holidays"].widget.attrs["data-initial"] = ""
+        else:
+            self.fields["holidays"].queryset = Holiday.objects.none()
+        self.fields["holidays"].required = True
+
+    def _get_fresh_queryset(self, field_name, related_model):
+        if field_name == "holidays":
+            instance = self.instance
+            if instance and instance.pk:
+                already_linked = instance.holidays.values_list("id", flat=True)
+                return Holiday.objects.filter(
+                    company_id=instance.company_id, all_users=True
+                ).exclude(id__in=already_linked)
+            return Holiday.objects.none()
+        return super()._get_fresh_queryset(field_name, related_model)
+
+    def _save_m2m(self):
+        selected = self.cleaned_data.get("holidays", [])
+        if selected:
+            self.instance.holidays.add(*selected)
+
+
 class BusinessHourForm(HorillaModelForm):
     """Form class for BusinessHour model."""
 
@@ -360,7 +403,6 @@ class BusinessHourForm(HorillaModelForm):
             "saturday_end",
             "sunday_start",
             "sunday_end",
-            "is_default",
             "is_active",
         ]
         exclude = [
@@ -407,26 +449,6 @@ class BusinessHourForm(HorillaModelForm):
         for name in ("business_hour_type", "timing_type"):
             if name in self.fields:
                 self.fields[name].widget.attrs["hx-get"] = base_url
-
-        _has_existing_default = (
-            BusinessHour.objects.filter(is_default=True)
-            .exclude(pk=instance.pk if instance.pk else None)
-            .exists()
-        )
-
-        # if "is_default" in self.fields and has_existing_default:
-        self.fields["is_default"].widget.attrs.update(
-            {
-                "id": "id_is_default",
-                "hx-on:click": "isElementChecked(this)",
-                "hx-target": "#business-hour-form-view-container",
-                "hx-swap": "outerHTML",
-                "hx-include": "#business-hour-form-view",
-                "data-message": _(
-                    "Changing the default will update the current default business hour. Enable to set this as default; disable to allow another. Proceed?"
-                ),
-            }
-        )
 
         def hide_fields(field_list, nullify=False):
             for name in field_list:
@@ -479,6 +501,16 @@ class BusinessHourForm(HorillaModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+
+        company = cleaned_data.get("company")
+        if company and cleaned_data and not self.instance.pk:
+            cid = getattr(company, "id", None) or company
+            limit = getattr(BusinessHour, "BUSINESS_HOUR_PER_COMPANY_LIMIT", 1)
+            if BusinessHour.objects.filter(company_id=cid).count() >= limit:
+                self.add_error(
+                    None,
+                    _("You can only add one business hour per company."),
+                )
 
         if "week_days" in self.errors:
             choices = self.fields["week_days"].choices

@@ -9,6 +9,9 @@ the Horilla application.
 # Standard library imports
 from zoneinfo import available_timezones
 
+# Third-party imports
+import pycountry
+
 # Third-party imports (Django)
 from django.utils.translation import gettext_lazy as _
 
@@ -107,6 +110,37 @@ DAY_CHOICES = [
     ("sat", "Saturday"),
 ]
 
+# Mon→Sun order for business hours, shifts, and per-day TimeField prefixes.
+# (``DAY_CHOICES`` is Sunday-first for legacy pickers — keep these separate.)
+WEEK_ORDER = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+
+DAY_LABELS = {
+    "mon": _("Monday"),
+    "tue": _("Tuesday"),
+    "wed": _("Wednesday"),
+    "thu": _("Thursday"),
+    "fri": _("Friday"),
+    "sat": _("Saturday"),
+    "sun": _("Sunday"),
+}
+
+# BusinessHour.timing_type and ShiftHour.timing_type
+TIMING_CHOICES = [
+    ("same", _("Same Hour Every Day")),
+    ("different", _("Different Hour Per Day")),
+]
+
+# Short weekday code → TimeField name prefix (``mon`` → ``monday`` for ``monday_start``)
+SHORT_TO_DAY_PREFIX = {
+    "mon": "monday",
+    "tue": "tuesday",
+    "wed": "wednesday",
+    "thu": "thursday",
+    "fri": "friday",
+    "sat": "saturday",
+    "sun": "sunday",
+}
+
 OPERATOR_CHOICES = [
     ("exact", _("Equals")),
     ("ne", _("Not Equals")),
@@ -162,3 +196,14 @@ BLOCKED_EXTENSIONS = {
     ".ini",
     ".conf",
 }
+
+
+def get_subdivision_choices(country_code):
+    """Return (code, name) subdivision choices for a given ISO country code."""
+    try:
+        subdivisions = list(
+            pycountry.subdivisions.get(country_code=country_code.upper())
+        )
+        return [(sub.code, sub.name) for sub in subdivisions]
+    except Exception:
+        return []
