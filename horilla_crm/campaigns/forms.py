@@ -58,24 +58,36 @@ class CampaignSingleForm(OwnerQuerysetMixin, HorillaModelForm):
     Inherits from HorillaModelForm to preserve all existing behavior.
     """
 
+    field_order = [
+        "campaign_owner",
+        "campaign_name",
+        "parent_campaign",
+        "campaign_type",
+        "status",
+        "start_date",
+        "end_date",
+        "expected_revenue",
+        "budget_cost",
+        "actual_cost",
+        "expected_response",
+        "number_sent",
+        "description",
+    ]
+
     class Meta:
         """Meta class for CampaignSingleForm"""
 
         model = Campaign
-        fields = [
-            "campaign_owner",
-            "campaign_name",
-            "parent_campaign",
-            "campaign_type",
-            "status",
-            "start_date",
-            "end_date",
-            "expected_revenue",
-            "budget_cost",
-            "actual_cost",
-            "expected_response",
-            "number_sent",
-            "description",
+        fields = "__all__"
+        exclude = [
+            "leads_in_campaign",
+            "contacts_in_campaign",
+            "converted_leads_in_campaign",
+            "opportunities_in_campaign",
+            "won_opportunities_in_campaign",
+            "value_won_opportunities",
+            "value_opportunities",
+            "responses_in_campaign",
         ]
 
 
@@ -84,13 +96,15 @@ class CampaignMemberForm(HorillaModelForm):
     Campaign Member Form
     """
 
+    field_order = ["member_type", "campaign", "lead", "contact", "member_status"]
+
     class Meta:
         """
         Meta class for CampaignMemberForm
         """
 
         model = CampaignMember
-        fields = ["member_type", "campaign", "lead", "contact", "member_status"]
+        fields = "__all__"
         widgets = {
             "member_type": forms.Select(
                 attrs={
