@@ -151,7 +151,9 @@ class DeleteDependencyMixin:
                             **{related.field.name: obj}
                         )
                     else:
-                        related_records = getattr(obj, related_name).all()
+                        related_records = related_model.objects.filter(
+                            **{related.field.name: obj}
+                        )
                     all_records.extend(related_records)
                     is_nullable = self._is_field_nullable(related_model)
 
@@ -227,7 +229,10 @@ class DeleteDependencyMixin:
                             else list(all_related_records[:10])
                         )
                     else:
-                        related_records_qs = getattr(obj, related_name).all()
+                        fk_field_name = related.field.name
+                        related_records_qs = related_model.objects.filter(
+                            **{fk_field_name: obj}
+                        )
                         total_count = related_records_qs.count()
                         related_records = (
                             list(related_records_qs)
@@ -368,7 +373,10 @@ class DeleteReassignMixin:
                             **{fk_field_name: obj}
                         )
                     else:
-                        related_records = getattr(obj, related_name).all()
+                        fk_field_name = related.field.name
+                        related_records = related_model.objects.filter(
+                            **{fk_field_name: obj}
+                        )
 
                     field_name = get_fk_field_name(related_model, self.model)
                     if field_name:
@@ -419,7 +427,10 @@ class DeleteReassignMixin:
                             **{fk_field_name: obj}
                         )
                     else:
-                        related_records = getattr(obj, related_name).all()
+                        fk_field_name = related.field.name
+                        related_records = related_model.objects.filter(
+                            **{fk_field_name: obj}
+                        )
 
                     field_name = get_fk_field_name(related_model, self.model)
                     for rec in related_records:
@@ -486,7 +497,10 @@ class DeleteReassignMixin:
                         **{fk_field_name: self.object}
                     ).delete()
                 else:
-                    getattr(self.object, related_name).all().delete()
+                    fk_field_name = related.field.name
+                    related_model.objects.filter(
+                        **{fk_field_name: self.object}
+                    ).delete()
 
     def _find_related_record_by_id(self, record_id_to_find):
         """Find a related record by id in any related model. Returns record or None."""

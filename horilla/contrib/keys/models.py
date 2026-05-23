@@ -13,11 +13,11 @@ from horilla.contrib.utils.middlewares import _thread_local
 # First party imports (Horilla)
 from horilla.db import models
 from horilla.menu.main_section_menu import get_main_section_menu
-from horilla.menu.my_settings_menu import get_my_settings_menu
-from horilla.menu.settings_menu import get_settings_menu
 from horilla.menu.sub_section_menu import get_sub_section_menu
 from horilla.urls import reverse_lazy
 from horilla.utils.translation import gettext_lazy as _
+
+from .utils import normalize_page_url, resolve_page_title
 
 
 class ShortcutKey(HorillaCoreModel):
@@ -27,7 +27,7 @@ class ShortcutKey(HorillaCoreModel):
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         related_name="shortcut_keys",
         verbose_name=_("User"),
     )
@@ -90,41 +90,14 @@ class ShortcutKey(HorillaCoreModel):
     def get_page_title(self):
         """
         Returns the human-readable title or label for this page.
-        Checks both main and sub-section menus.
+        Uses full menu registry (ignores permissions) so admin-only pages
+        still show friendly names for every user in the shortcut list.
         """
+        return resolve_page_title(self.page)
 
-        request = getattr(_thread_local, "request", None)
-
-        if self.page == "/":
-            return "Home"
-
-        for item in get_main_section_menu(None):
-            if item.get("url") == self.page:
-                return item.get("name") or item.get("label") or item.get("title")
-
-        sub_sections = get_sub_section_menu(None)
-        for _, items in sub_sections.items():
-            for item in items:
-                if item.get("url") == self.page:
-                    return item.get("label") or item.get("name") or item.get("title")
-
-        main_settings = get_settings_menu(request)
-        for item in main_settings:
-            title = item.get("title")
-            for subitem in item.get("items", []):
-                label = subitem.get("label")
-                url = subitem.get("url")
-                if url == self.page:
-                    return label or title
-
-        my_settings = get_my_settings_menu(request)
-        for item in my_settings:
-            title = item.get("title")
-            url = item.get("url")
-            if url == self.page:
-                return title
-
-        return self.page
+    def page_display(self):
+        """List column helper for the Page field."""
+        return self.get_page_title()
 
     def get_section(self):
         """
@@ -132,17 +105,19 @@ class ShortcutKey(HorillaCoreModel):
         Only returns 'home' if the page is '/'.
         Otherwise, returns None if no section is found.
         """
-        if self.page == "/":
+        page = normalize_page_url(self.page)
+
+        if page == "/":
             return "home"
 
         for item in get_main_section_menu(None):
-            if item.get("url") == self.page:
+            if normalize_page_url(item.get("url")) == page:
                 return item.get("section")
 
         sub_sections = get_sub_section_menu(None)
         for section_name, items in sub_sections.items():
             for item in items:
-                if item.get("url") == self.page:
+                if normalize_page_url(item.get("url")) == page:
                     return section_name
 
         return None
