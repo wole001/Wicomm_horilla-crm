@@ -17,6 +17,10 @@ from .models import (
 
 admin.site.register(ReviewProcess)
 admin.site.register(ReviewCondition)
-admin.site.register(ReviewRule)
 admin.site.register(ReviewRuleCondition)
 admin.site.register(ReviewJob)
+
+
+@admin.register(ReviewRule)
+class ReviewRuleAdmin(admin.ModelAdmin):
+    filter_horizontal = ("approver_users", "approver_roles")

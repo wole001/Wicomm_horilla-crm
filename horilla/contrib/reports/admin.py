@@ -9,4 +9,8 @@ from . import models
 # Register your reports models here.
 
 admin.site.register(models.ReportFolder)
-admin.site.register(models.Report)
+
+
+@admin.register(models.Report)
+class ReportAdmin(admin.ModelAdmin):
+    filter_horizontal = ("shared_with",)

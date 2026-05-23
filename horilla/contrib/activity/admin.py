@@ -10,4 +10,7 @@ from .models import Activity
 
 # Register your activity models here.
 
-admin.site.register(Activity)
+
+@admin.register(Activity)
+class ActivityAdmin(admin.ModelAdmin):
+    filter_horizontal = ("assigned_to", "participants")

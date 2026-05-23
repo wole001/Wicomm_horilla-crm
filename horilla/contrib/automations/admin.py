@@ -10,6 +10,11 @@ from .models import AutomationCondition, AutomationRunLog, HorillaAutomation
 
 # Register your automations models here.
 
-admin.site.register(HorillaAutomation)
+
+@admin.register(HorillaAutomation)
+class HorillaAutomationAdmin(admin.ModelAdmin):
+    filter_horizontal = ("also_sent_to",)
+
+
 admin.site.register(AutomationCondition)
 admin.site.register(AutomationRunLog)

@@ -13,8 +13,16 @@ from .models import (
 )
 
 # Register your dashboard models here.
-admin.site.register(Dashboard)
 admin.site.register(DashboardComponent)
 admin.site.register(ComponentCriteria)
-admin.site.register(DashboardFolder)
 admin.site.register(DefaultHomeLayoutOrder)
+
+
+@admin.register(Dashboard)
+class DashboardAdmin(admin.ModelAdmin):
+    filter_horizontal = ("favourited_by",)
+
+
+@admin.register(DashboardFolder)
+class DashboardFolderAdmin(admin.ModelAdmin):
+    filter_horizontal = ("favourited_by",)
