@@ -26,6 +26,18 @@ logger = logging.getLogger(__name__)
 class ForecastTargetForm(HorillaModelForm):
     """Form to create or update forecast targets with dynamic conditions."""
 
+    field_order = [
+        "role",
+        "assigned_to",
+        "period",
+        "forcasts_type",
+        "target_amount",
+        "is_role_based",
+        "is_period_same",
+        "is_target_same",
+        "is_forecast_type_same",
+    ]
+
     is_role_based = forms.BooleanField(
         required=False,
         label="Role-Based Assignment",
@@ -94,24 +106,7 @@ class ForecastTargetForm(HorillaModelForm):
         """Meta settings for ForecastTargetForm."""
 
         model = ForecastTarget
-        fields = [
-            "role",
-            "assigned_to",
-            "period",
-            "forcasts_type",
-            "target_amount",
-            "is_role_based",
-            "is_period_same",
-            "is_target_same",
-            "is_forecast_type_same",
-        ]
-        exclude = [
-            "created_at",
-            "updated_at",
-            "created_by",
-            "updated_by",
-            "additional_info",
-        ]
+        fields = "__all__"
         widgets = {
             "target_amount": forms.NumberInput(
                 attrs={"step": "0.01", "min": "0", "placeholder": "Enter target"}
@@ -196,6 +191,8 @@ class ForecastTargetForm(HorillaModelForm):
 class ForecastTypeForm(HorillaModelForm):
     """Form to create or update forecast types with condition rows."""
 
+    field_order = ["name", "forecast_type", "description"]
+
     def __init__(self, *args, **kwargs):
         kwargs["condition_model"] = ForecastCondition
 
@@ -232,11 +229,10 @@ class ForecastTypeForm(HorillaModelForm):
         """Meta settings for ForecastTypeForm."""
 
         model = ForecastType
-        fields = ["name", "forecast_type", "description"]
+        fields = "__all__"
         exclude = [
-            "created_at",
-            "updated_at",
-            "created_by",
-            "updated_by",
-            "additional_info",
+            "include_pipeline",
+            "include_best_case",
+            "include_closed",
+            "include_commit",
         ]
