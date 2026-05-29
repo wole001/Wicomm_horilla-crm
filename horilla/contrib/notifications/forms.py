@@ -16,11 +16,26 @@ from .models import NotificationTemplate
 class NotificationTemplateForm(forms.ModelForm):
     """Form for creating and editing Horilla notification Templates"""
 
+    field_order = [
+        "title",
+        "content_type",
+        "message",
+        "company",
+    ]
+
     class Meta:
-        """Meta class for HorillaMailTemplateForm."""
+        """Meta class for NotificationTemplateForm."""
 
         model = NotificationTemplate
-        fields = ["title", "content_type", "message", "company"]
+        fields = "__all__"
+        exclude = [
+            "is_active",
+            "created_at",
+            "updated_at",
+            "created_by",
+            "updated_by",
+            "additional_info",
+        ]
 
     def clean_title(self):
         """

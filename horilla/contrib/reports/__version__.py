@@ -3,13 +3,18 @@
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.0"
+__version__ = "1.10.1"
 __module_name__ = "Reports"
 __release_date__ = ""
 __description__ = _(
     "Module for creating and customizing reports across all system modules."
 )
 __icon__ = "assets/icons/icon5.svg"
+
+__1_10_1__ = _(
+    "Report forms aligned with HorillaModelForm layout: field_order and "
+    'Meta.fields = "__all__" with Meta.exclude; folder and column HTMX unchanged.'
+)
 
 __1_10_0__ = _(
     "Release 1.10: reports ship under contrib with app label reports. "

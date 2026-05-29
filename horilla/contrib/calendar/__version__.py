@@ -8,11 +8,16 @@ application registry and UI.
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.1"
+__version__ = "1.10.2"
 __module_name__ = "Calendar"
 __release_date__ = ""
 __description__ = _("Module for managing calendar events and schedules.")
 __icon__ = "assets/icons/calendar-red.svg"
+
+__1_10_2__ = _(
+    "Custom calendar form aligned with HorillaModelForm layout: field_order, "
+    'Meta.fields = "__all__", and Meta.exclude; save logic and HTMX behavior unchanged.'
+)
 
 __1_10_1__ = _(
     "Google Calendar integration settings now pass the full request on POST so "

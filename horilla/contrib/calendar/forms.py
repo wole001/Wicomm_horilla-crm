@@ -96,19 +96,22 @@ class CustomCalendarForm(HorillaModelForm):
 
     htmx_field_choices_url = "generics:get_model_field_choices"
 
+    field_order = [
+        "name",
+        "color",
+        "module",
+        "start_date_field",
+        "end_date_field",
+        "display_name_field",
+        "is_selected",
+    ]
+
     class Meta:
         """Field list and widgets for creating or editing a custom calendar."""
 
         model = CustomCalendar
-        fields = [
-            "name",
-            "color",
-            "module",
-            "start_date_field",
-            "end_date_field",
-            "display_name_field",
-            "is_selected",
-        ]
+        fields = "__all__"
+        exclude = ["user"]
         widgets = {
             "color": forms.TextInput(
                 attrs={

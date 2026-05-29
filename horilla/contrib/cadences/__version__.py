@@ -5,13 +5,18 @@ Version information for the cadences app
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.0"
+__version__ = "1.10.1"
 __module_name__ = "Cadences"
 __release_date__ = ""
 __description__ = _(
     "Module for managing cadence workflows and runtime activity sequences."
 )
 __icon__ = "cadences/assets/icons/cadence.svg"
+
+__1_10_1__ = _(
+    "Cadence forms aligned with HorillaModelForm layout: field_order, "
+    'Meta.fields = "__all__", Meta.exclude, and keep_on_form; save logic and HTMX unchanged.'
+)
 
 __1_10_0__ = _(
     "Release 1.10: cadences ship under contrib with app label cadences. "

@@ -16,11 +16,31 @@ from .models import Report, ReportFolder
 class ReportForm(HorillaModelForm):
     """Form for creating and editing reports with module, columns, and folder selection."""
 
+    field_order = [
+        "name",
+        "module",
+        "folder",
+        "selected_columns",
+        "report_owner",
+    ]
+
     class Meta:
         """Meta options for ReportForm."""
 
         model = Report
-        fields = ["name", "module", "folder", "selected_columns", "report_owner"]
+        fields = "__all__"
+        exclude = [
+            "row_groups",
+            "column_groups",
+            "aggregate_columns",
+            "filters",
+            "chart_type",
+            "chart_field",
+            "chart_field_stacked",
+            "chart_value_field",
+            "is_favourite",
+            "shared_with",
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -82,11 +102,29 @@ class ReportForm(HorillaModelForm):
 class ChangeChartReportForm(HorillaModelForm):
     """Form for changing the chart type of a report."""
 
+    field_order = ["chart_type"]
+
     class Meta:
         """Meta options for ChangeChartReportForm."""
 
         model = Report
-        fields = ["chart_type"]
+        fields = "__all__"
+        exclude = [
+            "name",
+            "module",
+            "folder",
+            "selected_columns",
+            "row_groups",
+            "column_groups",
+            "aggregate_columns",
+            "filters",
+            "chart_field",
+            "chart_field_stacked",
+            "chart_value_field",
+            "is_favourite",
+            "shared_with",
+            "report_owner",
+        ]
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.get("request")

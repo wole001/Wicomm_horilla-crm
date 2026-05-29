@@ -3,13 +3,18 @@
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.0"
+__version__ = "1.10.1"
 __module_name__ = "Mail"
 __release_date__ = ""
 __description__ = _(
     "Module for managing incoming and outgoing emails through mail servers and Outlook."
 )
 __icon__ = "assets/icons/icon1.svg"
+
+__1_10_1__ = _(
+    "Mail forms aligned with HorillaModelForm / ModelForm layout: field_order, "
+    'Meta.fields = "__all__", Meta.exclude, and keep_on_form on configuration forms.'
+)
 
 __1_10_0__ = _(
     "Release 1.10: mail ships under the contrib package tree with Django app label mail. "

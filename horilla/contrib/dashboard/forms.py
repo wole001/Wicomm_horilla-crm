@@ -36,11 +36,20 @@ def get_dashboard_component_models():
 class DashboardForm(HorillaModelForm):
     """Form for creating and and editing dashboards"""
 
+    field_order = [
+        "name",
+        "description",
+        "folder",
+        "is_default",
+        "dashboard_owner",
+    ]
+
     class Meta:
-        """Meta options for ReportForm."""
+        """Meta options for DashboardForm."""
 
         model = Dashboard
-        fields = ["name", "description", "folder", "is_default", "dashboard_owner"]
+        fields = "__all__"
+        exclude = ["favourited_by"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -56,18 +65,28 @@ class DashboardCreateForm(HorillaModelForm):
 
     htmx_field_choices_url = "dashboard:get_module_field_choices"
 
+    field_order = [
+        "name",
+        "component_type",
+        "chart_type",
+        "module",
+        "grouping_field",
+        "secondary_grouping",
+        "metric_type",
+        "y_axis_metric_type",
+        "columns",
+        "icon",
+        "dashboard",
+        "sequence",
+        "component_owner",
+        "reports",
+    ]
+
     class Meta:
         """Meta class for DashboardCreateForm"""
 
         model = DashboardComponent
         fields = "__all__"
-        exclude = [
-            "created_at",
-            "updated_at",
-            "created_by",
-            "updated_by",
-            "additional_info",
-        ]
         widgets = {
             "component_type": forms.Select(
                 attrs={

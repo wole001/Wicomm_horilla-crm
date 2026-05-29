@@ -23,18 +23,21 @@ from .models import (
 class WorkflowRuleForm(HorillaModelForm):
     """Create/edit workflow rule (module, name, triggers)."""
 
+    field_order = [
+        "name",
+        "model",
+        "description",
+        "trigger_on_create",
+        "trigger_on_edit",
+        "is_active",
+    ]
+
     class Meta:
         """Meta options for WorkflowRuleForm"""
 
         model = WorkflowRule
-        fields = [
-            "name",
-            "model",
-            "description",
-            "trigger_on_create",
-            "trigger_on_edit",
-            "is_active",
-        ]
+        fields = "__all__"
+        keep_on_form = ("is_active",)
 
 
 _INPUT_CLASS = (

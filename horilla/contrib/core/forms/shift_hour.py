@@ -140,7 +140,7 @@ def reorder_shift_hour_form_fields(form, toggle_params):
     two-column grid. Put break1 diff right after break1 block, break2 after break2,
     then assigned_users and is_active.
     """
-    meta = list(form.Meta.fields)
+    meta = list(getattr(form.__class__, "field_order", None) or [])
     block1 = meta[: meta.index("break1_per_day") + 1]
     i2 = meta.index("break2_mode")
     block2 = meta[i2 : meta.index("break2_per_day") + 1]
@@ -216,51 +216,47 @@ class ShiftHourForm(HorillaModelForm):
     and field order are applied in ``__init__``.
     """
 
+    field_order = [
+        "company",
+        "name",
+        "time_zone",
+        "timing_type",
+        "week_days",
+        "default_start_time",
+        "default_end_time",
+        "monday_start",
+        "monday_end",
+        "tuesday_start",
+        "tuesday_end",
+        "wednesday_start",
+        "wednesday_end",
+        "thursday_start",
+        "thursday_end",
+        "friday_start",
+        "friday_end",
+        "saturday_start",
+        "saturday_end",
+        "sunday_start",
+        "sunday_end",
+        "break1_mode",
+        "break1_week_days",
+        "break1_default_start",
+        "break1_default_end",
+        "break1_per_day",
+        "break2_mode",
+        "break2_week_days",
+        "break2_default_start",
+        "break2_default_end",
+        "break2_per_day",
+        "assigned_users",
+    ]
+
     class Meta:
-        """Meta for shift hour form: all fields except timestamps and additional_info."""
+        """Meta for shift hour form: all model fields; core audit fields auto-excluded."""
 
         model = ShiftHour
-        fields = [
-            "company",
-            "name",
-            "time_zone",
-            "timing_type",
-            "week_days",
-            "default_start_time",
-            "default_end_time",
-            "monday_start",
-            "monday_end",
-            "tuesday_start",
-            "tuesday_end",
-            "wednesday_start",
-            "wednesday_end",
-            "thursday_start",
-            "thursday_end",
-            "friday_start",
-            "friday_end",
-            "saturday_start",
-            "saturday_end",
-            "sunday_start",
-            "sunday_end",
-            "break1_mode",
-            "break1_week_days",
-            "break1_default_start",
-            "break1_default_end",
-            "break1_per_day",
-            "break2_mode",
-            "break2_week_days",
-            "break2_default_start",
-            "break2_default_end",
-            "break2_per_day",
-            "assigned_users",
-        ]
-        exclude = [
-            "created_by",
-            "updated_by",
-            "created_at",
-            "updated_at",
-            "additional_info",
-        ]
+        fields = "__all__"
+        keep_on_form = ("company",)
         widgets = {
             "timing_type": forms.Select(
                 attrs={

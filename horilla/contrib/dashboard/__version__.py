@@ -8,11 +8,16 @@ application registry and UI.
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.0"
+__version__ = "1.10.1"
 __module_name__ = "Dashboards"
 __release_date__ = ""
 __description__ = _("Module for building and customizing interactive dashboards.")
 __icon__ = "assets/icons/icon6.svg"
+
+__1_10_1__ = _(
+    "Dashboard forms aligned with HorillaModelForm layout: field_order and "
+    'Meta.fields = "__all__" with Meta.exclude; component form __init__ unchanged.'
+)
 
 __1_10_0__ = _(
     "Release 1.10: dashboards ship under contrib with app label dashboard. "

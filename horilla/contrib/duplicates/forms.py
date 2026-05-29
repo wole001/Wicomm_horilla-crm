@@ -34,6 +34,18 @@ class MatchingRuleForm(HorillaModelForm):
         "exclude_choice_fields": True,
     }
 
+    field_order = [
+        "name",
+        "content_type",
+        "description",
+    ]
+
+    class Meta:
+        """Meta options for MatchingRuleForm."""
+
+        model = MatchingRule
+        fields = "__all__"
+
     def __init__(self, *args, **kwargs):
         self.row_id = kwargs.pop("row_id", "0")
         kwargs["condition_model"] = MatchingRuleCriteria
@@ -124,16 +136,6 @@ class MatchingRuleForm(HorillaModelForm):
 
         return field_choices
 
-    class Meta:
-        """Meta options for MatchingRuleForm."""
-
-        model = MatchingRule
-        fields = [
-            "name",
-            "content_type",
-            "description",
-        ]
-
     def clean(self):
         """
         Require at least one valid matching criterion row.
@@ -215,6 +217,24 @@ class DuplicateRuleForm(HorillaModelForm):
     """
     Form for DuplicateRule with optional conditions
     """
+
+    field_order = [
+        "name",
+        "content_type",
+        "description",
+        "matching_rule",
+        "action_on_create",
+        "action_on_edit",
+        "alert_title",
+        "alert_message",
+        "show_duplicate_records",
+    ]
+
+    class Meta:
+        """Meta options for DuplicateRuleForm."""
+
+        model = DuplicateRule
+        fields = "__all__"
 
     def __init__(self, *args, **kwargs):
         self.row_id = kwargs.pop("row_id", "0")
@@ -322,19 +342,3 @@ class DuplicateRuleForm(HorillaModelForm):
                 )
 
         return cleaned_data
-
-    class Meta:
-        """Meta options for DuplicateRuleForm."""
-
-        model = DuplicateRule
-        fields = [
-            "name",
-            "content_type",
-            "description",
-            "matching_rule",
-            "action_on_create",
-            "action_on_edit",
-            "alert_title",
-            "alert_message",
-            "show_duplicate_records",
-        ]

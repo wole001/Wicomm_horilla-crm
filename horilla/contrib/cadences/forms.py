@@ -102,19 +102,19 @@ class CadenceForm(HorillaModelForm):
     htmx_field_choices_url = "generics:get_model_field_choices"
     CONDITION_INPUT_FIELDS = ("field", "operator", "value")
 
+    field_order = [
+        "name",
+        "module",
+        "description",
+        "is_active",
+    ]
+
     class Meta:
         """Meta class for CadenceForm"""
 
         model = Cadence
-        exclude = [
-            "company",
-            "created_at",
-            "updated_at",
-            "created_by",
-            "updated_by",
-            "additional_info",
-        ]
-        fields = ["name", "module", "description", "is_active"]
+        fields = "__all__"
+        keep_on_form = ("is_active",)
 
     def __init__(self, *args, **kwargs):
         # HTMX reload after changing module must NOT use ``data=GET`` - that binds the form and
@@ -208,39 +208,35 @@ class CadenceFollowUpForm(HorillaModelForm):
         "email": ["to", "email_template"],
     }
 
+    field_order = [
+        "cadence",
+        "followup_number",
+        "branch_from",
+        "followup_type",
+        "do_this_unit",
+        "do_this_value",
+        "previous_status",
+        "subject",
+        "due_after_days",
+        "task_status",
+        "task_priority",
+        "task_owner",
+        "call_start_after_days",
+        "call_owner",
+        "purpose",
+        "to",
+        "email_template",
+    ]
+
     class Meta:
         """Meta class for CadenceFollowUpForm"""
 
         model = CadenceFollowUp
+        fields = "__all__"
         exclude = [
-            "company",
-            "created_at",
-            "updated_at",
-            "created_by",
-            "updated_by",
-            "additional_info",
             "call_type",
             "call_status",
             "order",
-        ]
-        fields = [
-            "cadence",
-            "followup_number",
-            "branch_from",
-            "followup_type",
-            "do_this_unit",
-            "do_this_value",
-            "previous_status",
-            "subject",
-            "due_after_days",
-            "task_status",
-            "task_priority",
-            "task_owner",
-            "call_start_after_days",
-            "call_owner",
-            "purpose",
-            "to",
-            "email_template",
         ]
 
     def __init__(self, *args, **kwargs):

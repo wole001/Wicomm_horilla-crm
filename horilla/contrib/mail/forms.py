@@ -67,11 +67,27 @@ class DynamicMailTestForm(forms.Form):
 class HorillaMailTemplateForm(forms.ModelForm):
     """Form for creating and editing Horilla Mail Templates"""
 
+    field_order = [
+        "title",
+        "subject",
+        "content_type",
+        "body",
+        "company",
+    ]
+
     class Meta:
         """Meta class for HorillaMailTemplateForm."""
 
         model = HorillaMailTemplate
-        fields = ["title", "subject", "content_type", "body", "company"]
+        fields = "__all__"
+        exclude = [
+            "is_active",
+            "created_at",
+            "updated_at",
+            "created_by",
+            "updated_by",
+            "additional_info",
+        ]
 
     def clean_title(self):
         """
@@ -186,26 +202,41 @@ class HorillaMailConfigurationForm(HorillaModelForm):
         required=True,
     )
 
+    field_order = [
+        "host",
+        "port",
+        "from_email",
+        "username",
+        "display_name",
+        "password",
+        "use_tls",
+        "use_ssl",
+        "fail_silently",
+        "is_primary",
+        "use_dynamic_display_name",
+        "timeout",
+        "company",
+        "type",
+        "mail_channel",
+    ]
+
     class Meta:
         """Meta class for HorillaMailConfigurationForm."""
 
         model = HorillaMailConfiguration
-        fields = [
-            "host",
-            "port",
-            "from_email",
-            "username",
-            "display_name",
-            "password",
-            "use_tls",
-            "use_ssl",
-            "fail_silently",
-            "is_primary",
-            "use_dynamic_display_name",
-            "timeout",
-            "company",
-            "type",
-            "mail_channel",
+        fields = "__all__"
+        keep_on_form = ("company",)
+        exclude = [
+            "outlook_client_id",
+            "outlook_client_secret",
+            "outlook_tenant_id",
+            "outlook_redirect_uri",
+            "outlook_authorization_url",
+            "outlook_token_url",
+            "outlook_api_endpoint",
+            "token",
+            "oauth_state",
+            "last_refreshed",
         ]
 
     def __init__(self, *args, **kwargs):
@@ -240,19 +271,41 @@ class IncomingHorillaMailConfigurationForm(HorillaModelForm):
         required=True,
     )
 
+    field_order = [
+        "host",
+        "port",
+        "username",
+        "password",
+        "is_primary",
+        "company",
+        "type",
+        "mail_channel",
+    ]
+
     class Meta:
         """Meta class for IncomingHorillaMailConfigurationForm."""
 
         model = HorillaMailConfiguration
-        fields = [
-            "host",
-            "port",
-            "username",
-            "password",
-            "is_primary",
-            "company",
-            "type",
-            "mail_channel",
+        fields = "__all__"
+        keep_on_form = ("company",)
+        exclude = [
+            "from_email",
+            "display_name",
+            "use_tls",
+            "use_ssl",
+            "fail_silently",
+            "use_dynamic_display_name",
+            "timeout",
+            "outlook_client_id",
+            "outlook_client_secret",
+            "outlook_tenant_id",
+            "outlook_redirect_uri",
+            "outlook_authorization_url",
+            "outlook_token_url",
+            "outlook_api_endpoint",
+            "token",
+            "oauth_state",
+            "last_refreshed",
         ]
 
     def __init__(self, *args, **kwargs):
@@ -288,24 +341,41 @@ class OutlookMailConfigurationForm(HorillaModelForm):
         required=True,
     )
 
+    field_order = [
+        "mail_channel",
+        "outlook_client_id",
+        "outlook_client_secret",
+        "outlook_tenant_id",
+        "username",
+        "display_name",
+        "outlook_redirect_uri",
+        "outlook_authorization_url",
+        "outlook_token_url",
+        "outlook_api_endpoint",
+        "is_primary",
+        "company",
+        "type",
+    ]
+
     class Meta:
         """Meta class for OutlookMailConfigurationForm."""
 
         model = HorillaMailConfiguration
-        fields = [
-            "mail_channel",
-            "outlook_client_id",
-            "outlook_client_secret",
-            "outlook_tenant_id",
-            "username",
-            "display_name",
-            "outlook_redirect_uri",
-            "outlook_authorization_url",
-            "outlook_token_url",
-            "outlook_api_endpoint",
-            "is_primary",
-            "company",
-            "type",
+        fields = "__all__"
+        keep_on_form = ("company",)
+        exclude = [
+            "host",
+            "port",
+            "from_email",
+            "password",
+            "use_tls",
+            "use_ssl",
+            "fail_silently",
+            "use_dynamic_display_name",
+            "timeout",
+            "token",
+            "oauth_state",
+            "last_refreshed",
         ]
 
     def __init__(self, *args, **kwargs):

@@ -39,30 +39,47 @@ class MeetingsForm(OwnerQuerysetMixin, HorillaModelForm):
         ),
     )
 
+    field_order = [
+        "object_id",
+        "content_type",
+        "title",
+        "subject",
+        "status",
+        "owner",
+        "start_datetime",
+        "end_datetime",
+        "participants",
+        "meeting_host",
+        "is_all_day",
+        "is_online",
+        "location",
+        "meeting_provider",
+        "reminder",
+        "mail_template",
+        "activity_type",
+    ]
+
     class Meta:
         """
         Meta class for MeetingsForm
         """
 
         model = Activity
-        fields = [
-            "object_id",
-            "content_type",
-            "title",
-            "subject",
-            "status",
-            "owner",
-            "start_datetime",
-            "end_datetime",
-            "participants",
-            "meeting_host",
-            "is_all_day",
-            "is_online",
-            "location",
-            "meeting_provider",
-            "reminder",
-            "activity_type",
-            "mail_template",
+        fields = "__all__"
+        exclude = [
+            "description",
+            "assigned_to",
+            "task_priority",
+            "due_datetime",
+            "recipient_email",
+            "call_duration_display",
+            "call_duration_seconds",
+            "call_type",
+            "call_purpose",
+            "notes",
+            "google_event_id",
+            "meeting_url",
+            "external_participants",
         ]
 
         widgets = {
@@ -272,23 +289,47 @@ class MeetingsForm(OwnerQuerysetMixin, HorillaModelForm):
 class LogCallForm(OwnerQuerysetMixin, HorillaModelForm):
     """Form for filtering log calls"""
 
+    field_order = [
+        "object_id",
+        "content_type",
+        "subject",
+        "owner",
+        "call_purpose",
+        "call_type",
+        "call_duration_display",
+        "status",
+        "notes",
+        "activity_type",
+    ]
+
     class Meta:
         """
         Meta class for LogCallForm
         """
 
         model = Activity
-        fields = [
-            "object_id",
-            "content_type",
-            "subject",
-            "owner",
-            "call_purpose",
-            "call_type",
-            "call_duration_display",
-            "status",
-            "notes",
-            "activity_type",
+        fields = "__all__"
+        exclude = [
+            "description",
+            "title",
+            "start_datetime",
+            "end_datetime",
+            "location",
+            "is_online",
+            "meeting_provider",
+            "meeting_url",
+            "is_all_day",
+            "assigned_to",
+            "participants",
+            "meeting_host",
+            "task_priority",
+            "due_datetime",
+            "recipient_email",
+            "call_duration_seconds",
+            "google_event_id",
+            "external_participants",
+            "reminder",
+            "mail_template",
         ]
         widgets = {
             "call_duration_display": forms.TextInput(
@@ -340,26 +381,47 @@ class LogCallForm(OwnerQuerysetMixin, HorillaModelForm):
 class EventForm(OwnerQuerysetMixin, HorillaModelForm):
     """Form for filtering meetings"""
 
+    field_order = [
+        "object_id",
+        "content_type",
+        "title",
+        "subject",
+        "owner",
+        "start_datetime",
+        "end_datetime",
+        "location",
+        "assigned_to",
+        "status",
+        "is_all_day",
+        "activity_type",
+    ]
+
     class Meta:
         """
         Meta class for EventForm
         """
 
         model = Activity
-        fields = [
-            "object_id",
-            "content_type",
-            "title",
-            "subject",
-            "owner",
-            "status",
-            "start_datetime",
-            "end_datetime",
-            "location",
-            "assigned_to",
-            "status",
-            "is_all_day",
-            "activity_type",
+        fields = "__all__"
+        exclude = [
+            "description",
+            "call_purpose",
+            "call_type",
+            "call_duration_display",
+            "call_duration_seconds",
+            "notes",
+            "task_priority",
+            "due_datetime",
+            "recipient_email",
+            "is_online",
+            "meeting_provider",
+            "meeting_url",
+            "participants",
+            "meeting_host",
+            "google_event_id",
+            "external_participants",
+            "reminder",
+            "mail_template",
         ]
 
         widgets = {
@@ -443,6 +505,34 @@ class ActivityCreateForm(OwnerQuerysetMixin, HorillaModelForm):
     Activity creation and update form
     """
 
+    field_order = [
+        "activity_type",
+        "subject",
+        "title",
+        "content_type",
+        "object_id",
+        "owner",
+        "status",
+        "start_datetime",
+        "end_datetime",
+        "is_all_day",
+        "is_online",
+        "location",
+        "meeting_provider",
+        "meeting_host",
+        "assigned_to",
+        "participants",
+        "task_priority",
+        "due_datetime",
+        "call_type",
+        "call_purpose",
+        "call_duration_display",
+        "reminder",
+        "mail_template",
+        "description",
+        "notes",
+    ]
+
     class Meta:
         """
         meta class for ActivityCreateForm
@@ -451,13 +541,10 @@ class ActivityCreateForm(OwnerQuerysetMixin, HorillaModelForm):
         model = Activity
         fields = "__all__"
         exclude = [
-            "created_at",
-            "updated_at",
-            "created_by",
-            "updated_by",
-            "additional_info",
             "meeting_url",
             "external_participants",
+            "call_duration_seconds",
+            "google_event_id",
         ]
         widgets = {
             "activity_type": forms.Select(
