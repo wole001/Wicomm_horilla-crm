@@ -46,10 +46,6 @@ class CampaignFormClass(OwnerQuerysetMixin, HorillaMultiStepForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Make created_by and updated_by optional in intermediate steps
-        if self.current_step < len(self.step_fields):
-            self.fields["created_by"].required = False
-            self.fields["updated_by"].required = False
 
 
 class CampaignSingleForm(OwnerQuerysetMixin, HorillaModelForm):
