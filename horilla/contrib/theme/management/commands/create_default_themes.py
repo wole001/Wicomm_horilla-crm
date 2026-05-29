@@ -8,9 +8,12 @@ from ...utils import THEMES_DATA
 
 
 class Command(BaseCommand):
+    """Create default HorillaColorTheme records from THEMES_DATA."""
+
     help = "Create default color themes for the Horilla platform"
 
     def handle(self, *args, **options):
+        """Seed default color themes if none exist yet."""
         # Check if themes already exist
         if HorillaColorTheme.objects.exists():
             self.stdout.write(

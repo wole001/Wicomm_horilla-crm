@@ -38,6 +38,7 @@ class GenericForeignKey(DjangoGenericForeignKey):
         super().__init__(ct_field, fk_field, for_concrete_model=for_concrete_model)
 
     def contribute_to_class(self, cls, name, **kwargs):
+        """Attach the field to the model and preserve a custom verbose_name."""
         super().contribute_to_class(cls, name, **kwargs)
 
         # Preserve custom verbose_name

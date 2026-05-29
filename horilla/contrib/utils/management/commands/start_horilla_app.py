@@ -28,6 +28,7 @@ class Command(BaseCommand):
     help = "Creates a Django app with additional files and directories and auto-configures it"
 
     def add_arguments(self, parser):
+        """Define CLI arguments for app name, directory, project, and languages."""
         parser.add_argument("app_name", type=str, help="Name of the application")
         parser.add_argument(
             "--directory", "-d", dest="directory", help="Optional destination directory"
@@ -48,6 +49,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        """Create the app scaffold and auto-configure URLs and locale folders."""
         app_name = options["app_name"]
         directory = options["directory"]
         project_name = "horilla"

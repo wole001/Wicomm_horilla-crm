@@ -99,14 +99,17 @@ class DashboardFolderViewSet(
         operation_description=DASHBOARD_FOLDER_LIST_DOCS,
     )
     def list(self, request, *args, **kwargs):
+        """List dashboard folders with search and filter capabilities."""
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(operation_description=DASHBOARD_FOLDER_DETAIL_DOCS)
     def retrieve(self, request, *args, **kwargs):
+        """Retrieve a single dashboard folder."""
         return super().retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(operation_description=DASHBOARD_FOLDER_CREATE_DOCS)
     def create(self, request, *args, **kwargs):
+        """Create a new dashboard folder."""
         return super().create(request, *args, **kwargs)
 
     @swagger_auto_schema(
@@ -151,14 +154,17 @@ class DashboardViewSet(SearchFilterMixin, BulkOperationsMixin, viewsets.ModelVie
         operation_description=DASHBOARD_LIST_DOCS,
     )
     def list(self, request, *args, **kwargs):
+        """List dashboards with search and filter capabilities."""
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(operation_description=DASHBOARD_DETAIL_DOCS)
     def retrieve(self, request, *args, **kwargs):
+        """Retrieve a single dashboard."""
         return super().retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(operation_description=DASHBOARD_CREATE_DOCS)
     def create(self, request, *args, **kwargs):
+        """Create a new dashboard."""
         return super().create(request, *args, **kwargs)
 
     @swagger_auto_schema(
@@ -209,14 +215,17 @@ class DashboardComponentViewSet(
         operation_description=DASHBOARD_COMPONENT_LIST_DOCS,
     )
     def list(self, request, *args, **kwargs):
+        """List dashboard components with search and filter capabilities."""
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(operation_description=DASHBOARD_COMPONENT_DETAIL_DOCS)
     def retrieve(self, request, *args, **kwargs):
+        """Retrieve a single dashboard component."""
         return super().retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(operation_description=DASHBOARD_COMPONENT_CREATE_DOCS)
     def create(self, request, *args, **kwargs):
+        """Create a new dashboard component."""
         return super().create(request, *args, **kwargs)
 
     @swagger_auto_schema(
@@ -262,14 +271,17 @@ class ComponentCriteriaViewSet(
         operation_description=COMPONENT_CRITERIA_LIST_DOCS,
     )
     def list(self, request, *args, **kwargs):
+        """List component criteria with search and filter capabilities."""
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(operation_description=COMPONENT_CRITERIA_DETAIL_DOCS)
     def retrieve(self, request, *args, **kwargs):
+        """Retrieve a single component criteria record."""
         return super().retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(operation_description=COMPONENT_CRITERIA_CREATE_DOCS)
     def create(self, request, *args, **kwargs):
+        """Create a new component criteria record."""
         return super().create(request, *args, **kwargs)
 
     @swagger_auto_schema(

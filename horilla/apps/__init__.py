@@ -48,6 +48,7 @@ class AppLauncher(AppConfig):
     # ================= Core Logic =================
 
     def ready(self):
+        """Register URLs, JS, modules, and Celery schedule when the app starts."""
         try:
             self._register_urls()
             self._register_js()

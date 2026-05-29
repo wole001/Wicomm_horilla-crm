@@ -19,6 +19,7 @@ class ShortcutKeySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def validate(self, attrs):
+        """Enforce unique (user, page) shortcut keys at the serializer level."""
         # Enforce unique_together (user, page) at the serializer level to avoid 500s
         user = attrs.get("user") or getattr(self.instance, "user", None)
         page = attrs.get("page") or getattr(self.instance, "page", None)
