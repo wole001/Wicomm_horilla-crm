@@ -154,19 +154,27 @@ class HorillaUserAdmin(UserAdmin):
 
 @admin.register(Role)
 class RoleAdmin(admin.ModelAdmin):
+    """Admin configuration for Role."""
+
     filter_horizontal = ("permissions",)
 
 
 @admin.register(BusinessHour)
 class BusinessHourAdmin(admin.ModelAdmin):
+    """Admin configuration for BusinessHour."""
+
     filter_horizontal = ("holidays",)
 
 
 @admin.register(ShiftHour)
 class ShiftHourAdmin(admin.ModelAdmin):
+    """Admin configuration for ShiftHour."""
+
     filter_horizontal = ("assigned_users",)
 
 
 @admin.register(Holiday)
 class HolidayAdmin(admin.ModelAdmin):
+    """Admin configuration for Holiday."""
+
     filter_horizontal = ("specific_users",)

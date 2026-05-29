@@ -22,7 +22,6 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.template import Context, Template
 from django.views import View
-from django.views.decorators.csrf import csrf_exempt
 
 from horilla.auth.models import User
 from horilla.contrib.generics.views import HorillaSingleFormView

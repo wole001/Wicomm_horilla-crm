@@ -244,7 +244,7 @@ def sync_default_currency_when_multiple_off(sender, instance, created, **kwargs)
         return
     try:
         with transaction.atomic():
-            default_currency = MultipleCurrency.all_objects.filter(
+            _default_currency = MultipleCurrency.all_objects.filter(
                 company=instance, is_default=True
             ).first()
 

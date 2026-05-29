@@ -45,6 +45,7 @@ class BusinessHourView(LoginRequiredMixin, TemplateView):
     template_name = "settings/business_hour/business_hour.html"
 
     def get_context_data(self, **kwargs):
+        """Add the active company's business hour for the Working hours tab shell."""
         context = super().get_context_data(**kwargs)
         company = getattr(self.request, "active_company", None)
         context["company_business_hour"] = None
@@ -67,6 +68,7 @@ class BusinessHourCardView(LoginRequiredMixin, TemplateView):
     template_name = "settings/business_hour/business_hour_card.html"
 
     def get_context_data(self, **kwargs):
+        """Add the active company's business hour for the summary card."""
         context = super().get_context_data(**kwargs)
         company = getattr(self.request, "active_company", None)
         context["business_hour"] = None
@@ -157,11 +159,13 @@ class BusinessHourHolidayListView(LoginRequiredMixin, HorillaListView):
 
     @cached_property
     def search_url(self):
+        """Return the holiday list search URL for this business hour."""
         return reverse_lazy(
             "core:business_hour_holiday_list_view", kwargs={"pk": self.kwargs["pk"]}
         )
 
     def get_queryset(self):
+        """Return holidays linked to the business hour and store ordered IDs in session."""
         bh_pk = self.kwargs["pk"]
         try:
             bh = BusinessHour.objects.get(pk=bh_pk)
@@ -179,6 +183,7 @@ class BusinessHourHolidayListView(LoginRequiredMixin, HorillaListView):
 
     @cached_property
     def col_attrs(self):
+        """Add HTMX attributes to open readonly holiday detail from the list."""
         query_string = self.request.session.get(self.ordered_ids_key, [])
         attrs = {}
         if self.request.user.has_perm("core.view_holiday"):
@@ -195,6 +200,7 @@ class BusinessHourHolidayListView(LoginRequiredMixin, HorillaListView):
 
     @cached_property
     def actions(self):
+        """Return remove-holiday action for the business hour holiday list."""
         bh_pk = self.kwargs["pk"]
         remove_base = reverse(
             "core:business_hour_holiday_remove",
@@ -228,6 +234,7 @@ class BusinessHourHolidayPanelView(LoginRequiredMixin, TemplateView):
     template_name = "settings/business_hour/business_hour_holiday_panel.html"
 
     def get_context_data(self, **kwargs):
+        """Add linked and available holidays for the business hour panel."""
         context = super().get_context_data(**kwargs)
         pk = self.kwargs.get("pk")
         try:
@@ -257,6 +264,7 @@ class BusinessHourHolidayToggleView(LoginRequiredMixin, TemplateView):
     template_name = "settings/business_hour/business_hour_holiday_panel.html"
 
     def post(self, request, pk, holiday_pk):
+        """Toggle a holiday on the business hour and re-render the panel."""
         try:
             bh = BusinessHour.objects.prefetch_related("holidays").get(pk=pk)
         except BusinessHour.DoesNotExist:
@@ -299,6 +307,7 @@ class BusinessHourHolidayModalView(LoginRequiredMixin, TemplateView):
     template_name = "settings/business_hour/business_hour_holiday_modal.html"
 
     def get(self, request, *args, **kwargs):
+        """Load the holiday modal or close modals when the business hour is missing."""
         pk = self.kwargs.get("pk")
         try:
             BusinessHour.objects.get(pk=pk)
@@ -310,6 +319,7 @@ class BusinessHourHolidayModalView(LoginRequiredMixin, TemplateView):
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        """Add business hour context for the holiday modal."""
         context = super().get_context_data(**kwargs)
         pk = self.kwargs.get("pk")
         context["business_hour"] = BusinessHour.objects.get(pk=pk)
@@ -337,6 +347,7 @@ class BusinessHourAddHolidayView(LoginRequiredMixin, HorillaSingleFormView):
 
     @cached_property
     def form_url(self):
+        """Return the URL for linking holidays to a business hour."""
         pk = self.kwargs.get("pk")
         return reverse_lazy("core:business_hour_add_holiday", kwargs={"pk": pk})
 
@@ -349,6 +360,7 @@ class BusinessHourHolidayReadonlyDetailView(HolidayDetailView):
     actions = []
 
     def get(self, request, *args, **kwargs):
+        """Open readonly holiday detail or refresh modals when the holiday is missing."""
         response = super().get(request, *args, **kwargs)
         if not self.instance:
             return HttpResponse(
@@ -370,6 +382,7 @@ class BusinessHourHolidayRemoveView(LoginRequiredMixin, View):
     """Remove a single holiday from a business hour (HTMX POST, no confirmation)."""
 
     def post(self, request, pk, holiday_pk):
+        """Remove a holiday from the business hour and refresh related UI."""
         try:
             bh = BusinessHour.objects.get(pk=pk)
             holiday = Holiday.objects.get(pk=holiday_pk, company_id=bh.company_id)
