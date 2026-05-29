@@ -1,3 +1,21 @@
-"""
-Version information for the booking app
-"""
+"""Version and metadata for the booking app."""
+
+from horilla.utils.translation import gettext_lazy as _
+
+__version__ = "1.10.0"
+__module_name__ = _("Booking")
+__release_date__ = ""
+__description__ = _(
+    "Public scheduling pages with slot availability, online meeting links "
+    "(Zoom, Google Meet, Microsoft Teams), CRM lead integration, and "
+    "confirmation, reminder, reschedule, and cancellation emails."
+)
+__icon__ = "/assets/icons/calendar.svg"
+
+__1_10_0__ = _(
+    "Initial release: booking pages with business-hour or shift-hour availability, "
+    "public booking forms, embed URLs, custom questions and brand colors, "
+    "My Bookings under My Jobs, settings under General Settings, optional mail "
+    "templates for confirmation/cancellation/reschedule, Celery reminder tasks, "
+    "and automatic lead and activity creation on booking submission."
+)
