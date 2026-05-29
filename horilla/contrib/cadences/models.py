@@ -350,6 +350,7 @@ class CadenceFollowUp(HorillaCoreModel):
                 errors[field_name] = msg
 
     def clean(self):
+        """Validate follow-up type, number, timing, and type-specific required fields."""
         super().clean()
         errors = {}
 

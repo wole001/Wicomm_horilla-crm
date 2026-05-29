@@ -62,6 +62,7 @@ class CadenceRecordTabView(LoginRequiredMixin, HorillaListView):
         )
 
     def dispatch(self, request, *args, **kwargs):
+        """Resolve the record, check view permission, and set list URLs."""
         self.main_url = request.path
         self.search_url = request.path
         model = self._get_model()

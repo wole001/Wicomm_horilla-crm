@@ -79,6 +79,7 @@ class CadenceReportView(LoginRequiredMixin, TemplateView):
     template_name = "cadence_report/cadence_report_view.html"
 
     def get(self, request, *args, **kwargs):
+        """Validate cadence_pk when present; redirect with an error if the cadence is missing."""
         cadence_pk = request.GET.get("cadence_pk")
         if cadence_pk:
             try:
@@ -232,6 +233,7 @@ class CadenceTaskListView(LoginRequiredMixin, HorillaListView):
     ]
 
     def dispatch(self, request, *args, **kwargs):
+        """Set list URLs from the request path before dispatch."""
         self.main_url = request.path
         self.search_url = request.path
         return super().dispatch(request, *args, **kwargs)
@@ -360,6 +362,7 @@ class CadenceCallListView(LoginRequiredMixin, HorillaListView):
     ]
 
     def dispatch(self, request, *args, **kwargs):
+        """Set list URLs from the request path before dispatch."""
         self.main_url = request.path
         self.search_url = request.path
         return super().dispatch(request, *args, **kwargs)
@@ -507,6 +510,7 @@ class CadenceEmailListView(LoginRequiredMixin, HorillaListView):
     ]
 
     def dispatch(self, request, *args, **kwargs):
+        """Set list URLs from the request path before dispatch."""
         self.main_url = request.path
         self.search_url = request.path
         return super().dispatch(request, *args, **kwargs)

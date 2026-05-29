@@ -49,7 +49,7 @@ class CadenceFollowUpCreateView(LoginRequiredMixin, HorillaSingleFormView):
         cadence_pk = kwargs.get("cadence_pk")
         if cadence_pk is not None:
             try:
-                cadence = get_object_or_404(Cadence, pk=cadence_pk)
+                _cadence = get_object_or_404(Cadence, pk=cadence_pk)
             except Exception as e:
                 messages.error(request, str(e))
                 return HttpResponse(
@@ -106,6 +106,7 @@ class CadenceFollowUpCreateView(LoginRequiredMixin, HorillaSingleFormView):
         return response
 
     def get_initial(self):
+        """Set initial cadence and follow-up fields from URL when creating a follow-up."""
         initial = super().get_initial()
         if self.kwargs.get("pk"):
             return initial
@@ -217,6 +218,7 @@ class CadenceFollowupDoThisValueFieldView(LoginRequiredMixin, TemplateView):
     template_name = "partials/cadence_followup_do_this_value_field.html"
 
     def get_context_data(self, **kwargs):
+        """Build form context for the do_this_value field partial."""
         context = super().get_context_data(**kwargs)
         form = CadenceFollowUpForm(
             initial=self.request.GET.dict() if self.request.GET else None
