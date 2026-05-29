@@ -570,8 +570,8 @@ function renderDateStrip() {
         if (iso === selectedDate) card.classList.add("active");
         card.innerHTML =
             `<div class="dc-day">${WEEKDAY_SHORT[d.getDay()]}</div>` +
-            `<div class="dc-num">${day}</div>` +
-            `<div class="dc-mon">${MONTH_NAMES[currentMonth].slice(0,3)}</div>`;
+            `<div class="dc-num">${d.getDate()}</div>` +
+            `<div class="dc-mon">${MONTH_NAMES[d.getMonth()].slice(0,3)}</div>`;
         if (ok) card.onclick = () => onDateClick(iso, d);
         strip.appendChild(card);
     }
