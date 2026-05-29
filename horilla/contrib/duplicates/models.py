@@ -162,7 +162,7 @@ class DuplicateRule(HorillaCoreModel):
         return f"{self.name} ({self.content_type.model})"
 
     def clean(self):
-        # Validate that matching rule applies to same content type
+        """Ensure the matching rule applies to the same content type as this rule."""
         if self.matching_rule and self.matching_rule.content_type != self.content_type:
             raise ValidationError(
                 "Matching rule must apply to the same content type as duplicate rule"

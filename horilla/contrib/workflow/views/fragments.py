@@ -592,6 +592,7 @@ class WorkflowTimeTriggerSaveView(LoginRequiredMixin, View):
         return WorkflowRule.objects.filter(pk=rule_pk).select_related("model").first()
 
     def get(self, request, rule_pk=None, pk=None):
+        """Render the time-trigger action form modal for create or edit."""
         instance = None
         rule = None
         if pk:
@@ -667,6 +668,7 @@ class WorkflowTimeTriggerSaveView(LoginRequiredMixin, View):
         return render(request, "workflow_time_trigger_form.html", ctx)
 
     def post(self, request, rule_pk=None, pk=None):
+        """Save or re-render the time-trigger action form from POST data."""
         instance = None
         if pk:
             instance = (

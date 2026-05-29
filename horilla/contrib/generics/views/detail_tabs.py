@@ -43,6 +43,7 @@ class HorillaDetailTabView(HorillaTabView):
     tab_class = "h-[calc(_100vh_-_475px_)] overflow-hidden"
 
     def setup(self, request, *args, **kwargs):
+        """Initialize detail tabs from configured URLs and object_id."""
         super().setup(request, *args, **kwargs)
         self._prepare_detail_tabs()
 

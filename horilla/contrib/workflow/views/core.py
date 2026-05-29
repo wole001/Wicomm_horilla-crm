@@ -483,6 +483,7 @@ class WorkflowTimeTriggerHistoryView(LoginRequiredMixin, HorillaListView):
 
     @cached_property
     def search_url(self):
+        """Return the search URL for this rule's time-trigger execution history."""
         return reverse(
             "workflow:workflow_time_trigger_history_view",
             kwargs={"rule_pk": self.kwargs["rule_pk"]},

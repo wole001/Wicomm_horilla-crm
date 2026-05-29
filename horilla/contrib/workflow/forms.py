@@ -190,11 +190,13 @@ class ActionConfigMixin:
         return {}
 
     def clean(self):
+        """Build action_config from hidden fields and attach it to cleaned_data."""
         cleaned_data = super().clean()
         cleaned_data["action_config"] = self._build_action_config(cleaned_data)
         return cleaned_data
 
     def save(self, commit=True):
+        """Persist the model with action_config from cleaned_data."""
         instance = super().save(commit=False)
         instance.action_config = self.cleaned_data.get("action_config", {})
         if commit:

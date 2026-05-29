@@ -30,6 +30,7 @@ class ThemeView(LoginRequiredMixin, TemplateView):
     template_name = "theme/theme_view.html"
 
     def get_context_data(self, **kwargs):
+        """Add themes, active theme, and company theme context for the settings page."""
         context = super().get_context_data(**kwargs)
         active_company = getattr(self.request, "active_company", None)
         context["themes"] = HorillaColorTheme.objects.all()

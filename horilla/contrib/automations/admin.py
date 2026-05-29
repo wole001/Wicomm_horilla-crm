@@ -13,6 +13,8 @@ from .models import AutomationCondition, AutomationRunLog, HorillaAutomation
 
 @admin.register(HorillaAutomation)
 class HorillaAutomationAdmin(admin.ModelAdmin):
+    """Admin configuration for HorillaAutomation."""
+
     filter_horizontal = ("also_sent_to",)
 
 

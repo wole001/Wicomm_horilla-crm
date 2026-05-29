@@ -60,6 +60,7 @@ class ApprovalJobsTabView(LoginRequiredMixin, HorillaTabView):
     tab_class = "h-[calc(_100vh_-_300px_)] overflow-hidden"
 
     def setup(self, request, *args, **kwargs):
+        """Configure approval jobs and history tabs."""
         super().setup(request, *args, **kwargs)
         self.tabs = [
             {

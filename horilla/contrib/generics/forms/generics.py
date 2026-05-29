@@ -155,6 +155,7 @@ class TimelineSpanByForm(forms.ModelForm):
             self.fields["end_field"].choices = [("", "---------")]
 
     def clean(self):
+        """Validate timeline start/end fields via TimelineSpanBy model clean."""
         cleaned = super().clean()
         model_name = cleaned.get("model_name")
         app_label = cleaned.get("app_label")

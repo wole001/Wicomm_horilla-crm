@@ -23,4 +23,6 @@ admin.site.register(ReviewJob)
 
 @admin.register(ReviewRule)
 class ReviewRuleAdmin(admin.ModelAdmin):
+    """Admin configuration for ReviewRule."""
+
     filter_horizontal = ("approver_users", "approver_roles")

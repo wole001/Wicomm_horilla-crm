@@ -27,6 +27,7 @@ class TimelineSettingsFormView(FormView):
     form_class = TimelineSpanByForm
 
     def get_form_kwargs(self):
+        """Build form kwargs with instance/initial from GET and saved TimelineSpanBy row."""
         kwargs = super().get_form_kwargs()
         model_name = self.request.GET.get("model") or self.request.POST.get(
             "model_name"
@@ -75,11 +76,13 @@ class TimelineSettingsFormView(FormView):
         return kwargs
 
     def get_context_data(self, **kwargs):
+        """Add settings title for the timeline span form modal."""
         context = super().get_context_data(**kwargs)
         context["settings_title"] = _("Timeline settings")
         return context
 
     def form_valid(self, form):
+        """Save timeline span settings and reload the timeline via HTMX."""
         form.instance.user = self.request.user
         form.save()
         main_url = (

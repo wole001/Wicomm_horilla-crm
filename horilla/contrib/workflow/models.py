@@ -271,6 +271,8 @@ class WorkflowTimeTriggerAction(HorillaCoreModel):
     )
 
     class Meta:
+        """Meta options for WorkflowTimeTriggerAction."""
+
         verbose_name = _("Workflow Time Trigger Action")
         verbose_name_plural = _("Workflow Time Trigger Actions")
         ordering = ["order", "created_at"]
@@ -323,6 +325,8 @@ class ScheduledWorkflowExecution(HorillaCoreModel):
     error_message = models.TextField(blank=True, verbose_name=_("Error"))
 
     class Meta:
+        """Meta options for ScheduledWorkflowExecution."""
+
         verbose_name = _("Scheduled Workflow Execution")
         verbose_name_plural = _("Scheduled Workflow Executions")
         ordering = ["scheduled_at"]

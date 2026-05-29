@@ -52,6 +52,7 @@ class HorillaTimelineView(HorillaListView):
         return s
 
     def dispatch(self, request, *args, **kwargs):
+        """Redirect non-HTMX GET requests to main_url with timeline layout params."""
         if request.method == "GET" and request.headers.get("HX-Request") != "true":
             main_url = getattr(self, "main_url", None)
             if main_url:

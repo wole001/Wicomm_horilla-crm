@@ -447,6 +447,7 @@ class ApprovalHistoryDetailTabView(LoginRequiredMixin, HorillaTabView):
         return TemplateView.dispatch(self, request, *args, **kwargs)
 
     def setup(self, request, *args, **kwargs):
+        """Configure approval history detail tabs."""
         super().setup(request, *args, **kwargs)
         self.tabs = [
             {

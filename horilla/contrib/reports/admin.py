@@ -13,4 +13,6 @@ admin.site.register(models.ReportFolder)
 
 @admin.register(models.Report)
 class ReportAdmin(admin.ModelAdmin):
+    """Admin configuration for Report."""
+
     filter_horizontal = ("shared_with",)
