@@ -65,6 +65,22 @@ Theme app listens to **`pre_logout_signal`** / **`pre_login_render_signal`**—s
 | Settings / `horilla_apps` / passwords | [Settings/](Settings/base.md) |
 | Exceptions | [Core/exceptions.md](Core/exceptions.md) |
 | Keyboard shortcuts registration (core vs keys) | [Shortcuts/shortcuts.md](Shortcuts/shortcuts.md) |
+| Shift hours (`ShiftHour` model + form) | [models.md](models.md) · `horilla/contrib/core/forms/shift_hour.py` |
+
+---
+
+## Shift hour form (`forms/shift_hour.py`)
+
+**`ShiftHourForm`** (`HorillaModelForm`) — create/update named shifts (main hours + two optional breaks + assigned users).
+
+| Pattern | Value |
+|---------|--------|
+| **`field_order`** | Full list through `assigned_users` (used by **`reorder_shift_hour_form_fields`**, not `Meta.fields`) |
+| **`Meta.fields`** | `"__all__"` |
+| **`keep_on_form`** | `("company",)` — field stays on form; **`ShiftHourFormView.hidden_fields`** still hides it in the UI |
+| **Runtime** | `__init__` adds per-day break `TimeField`s, hides blocks by `timing_type` / `break*_mode`, HTMX reload on toggles |
+
+See [generics single-step `HorillaModelForm`](../generics/forms/single_step.md) for automatic `HORILLA_FORM_EXCLUDE`.
 
 ---
 

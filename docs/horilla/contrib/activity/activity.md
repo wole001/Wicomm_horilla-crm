@@ -72,9 +72,10 @@ Without `register_model_for_feature`, the four-layer permission system would not
 
 ### Type-specific columns
 
+- **Meeting** — `is_online`, `meeting_provider`, `meeting_url` (generated on save), `meeting_host`, M2M `participants`, `external_participants` (JSON email list), `reminder`, FK `mail_template` (invitation override).
 - **Task** — `task_priority`, `due_datetime`, `recipient_email`.
-- **Log call** — `call_type`, `call_duration_display` / `call_duration_seconds` (auto-derived in `save()` from `HH:MM:SS` string), `call_purpose`, `notes`.
-- **Calendar sync** — `google_event_id` (indexed) for Google Calendar integration.
+- **Log call** — `call_type`, `call_duration_display` / `call_duration_seconds` (computed in `clean()` and `save()` from `HH:MM:SS`), `call_purpose`, `notes`.
+- **Calendar sync** — `google_event_id` (indexed; excluded from user-facing forms).
 
 ### Indexes
 
@@ -87,6 +88,92 @@ Composite-friendly indexes on `activity_type`, `created_at`, `status`, `start_da
 ### List / inline UI
 
 - **`status_col`** / **`get_status_update_html`** — render partials via `render_template()` for inline status changes in list views.
+
+---
+
+## Forms (`forms.py`)
+
+All activity create/update modals use **`OwnerQuerysetMixin, HorillaModelForm`** (see [single-step form base](../generics/forms/single_step.md)).
+
+### HorillaModelForm layout (`field_order` + `Meta`)
+
+Each dedicated form class now uses:
+
+| Pattern | Purpose |
+|---------|---------|
+| `field_order` | Default field order for `HorillaSingleFormView` |
+| `Meta.fields = "__all__"` | All `Activity` columns unless excluded |
+| `Meta.exclude` | Hide columns for **other** activity types (and computed/system fields) |
+| Auto `HORILLA_FORM_EXCLUDE` | `company`, `is_active`, `created_at`, `updated_at`, `created_by`, `updated_by`, `additional_info` — do **not** repeat these in `Meta.exclude` |
+
+Shared **computed / system** fields (listed in `exclude` where relevant):
+
+| Field | Reason |
+|-------|--------|
+| `meeting_url` | Set on save when an online meeting is generated |
+| `external_participants` | Filled in `clean()` from `external_participants_email` POST key |
+| `call_duration_seconds` | Set in `LogCallForm.clean()` from `call_duration_display` |
+| `google_event_id` | Google Calendar sync only |
+
+`__init__`, `clean()`, HTMX paths, and helper methods are unchanged from the prior implementation; only `field_order` and `Meta` were updated to match the Horilla 1.10 form pattern.
+
+### Form classes
+
+| Class | View | Purpose |
+|-------|------|---------|
+| `MeetingsForm` | `MeetingsCreateForm` | Dedicated meeting modal |
+| `LogCallForm` | `CallCreateForm` | Log call modal |
+| `EventForm` | `EventCreateForm` | Event modal |
+| `ActivityCreateForm` | `ActivityCreateView` | Multi-type create/edit (calendar, New activity) |
+
+Named URL routes (for reference): `activity:meeting_create_form`, `activity:meeting_update_form`, `activity:call_create_form`, `activity:call_update_form`, `activity:event_create_form`, `activity:event_update_form`, `activity:activity_create_form`, `activity:activity_edit_form`.
+
+### `MeetingsForm`
+
+- **`field_order`**: `object_id`, `content_type`, `title`, `subject`, `status`, `owner`, `start_datetime`, `end_datetime`, `participants`, `meeting_host`, `is_all_day`, `is_online`, `location`, `meeting_provider`, `reminder`, `mail_template`, `activity_type`.
+- **`Meta.exclude`**: task/call/event-only fields plus `meeting_url`, `external_participants`, `google_event_id` (see `forms.py`).
+- **Extra field**: class-level `meeting_provider` `ChoiceField` (choices filled in `__init__` from connected Zoom / Google Meet / Teams).
+- **HTMX**: hardcoded `/activity/meeting-create-form/` and `/activity/meeting-update-form/<pk>/` paths on `is_all_day` / `is_online`; `is_online` POST uses `_toggle_field=is_online`.
+- **`__init__`**: uses `kwargs.pop("request")` as `self._request` for provider lookup (legacy pattern on this form).
+
+### `LogCallForm`
+
+- **`field_order`**: `object_id`, `content_type`, `subject`, `owner`, `call_purpose`, `call_type`, `call_duration_display`, `status`, `notes`, `activity_type`.
+- **`Meta.exclude`**: meeting/event/task schedule fields and system fields such as `call_duration_seconds`, `meeting_url`, `google_event_id`.
+- **`clean_call_duration_display`** / **`clean`**: `HH:MM:SS` validation; persists `call_duration_seconds`.
+
+### `EventForm`
+
+- **`field_order`**: `object_id`, `content_type`, `title`, `subject`, `owner`, `start_datetime`, `end_datetime`, `location`, `assigned_to`, `status`, `is_all_day`, `activity_type`.
+- **`Meta.exclude`**: meeting/call/task-specific and system fields.
+- **HTMX**: `/activity/event-create-form/` and `/activity/event-update-form/<pk>/` on `is_all_day`; hides start/end datetimes in `__init__` when all-day is checked.
+
+### `ActivityCreateForm`
+
+- **`field_order`**: full cross-type ordering (activity type first, then shared and type-specific columns).
+- **`Meta.exclude`**: only `meeting_url`, `external_participants`, `call_duration_seconds`, `google_event_id` (all other type-specific fields stay on the form and are shown/hidden at runtime).
+- **`visible_fields`**: `ActivityCreateView.get_form_kwargs()` passes a subset from **`ACTIVITY_FIELD_MAP`** per `activity_type` (`event`, `meeting`, `task`, `log_call`, `email` placeholder).
+- **HTMX**: `activity_type` / `content_type` reload via `/activity/activity-create-form/` or edit URL with optional `?view=calendar`; `object_id` Select2 uses `reverse_lazy("generics:model_select2", …)`; meeting branch calls `_configure_activity_meeting_fields(base_url)`.
+- **Calendar**: drops `log_call` and `email` from `activity_type` choices when `?view=calendar`.
+
+### Extending activity forms
+
+1. Add the column on `Activity` (or model `_inherit` in an extension app).
+2. Add the name to **`field_order`** and remove it from **`Meta.exclude`** on the form class that should show it (or add to `ACTIVITY_FIELD_MAP` for `ActivityCreateForm`).
+3. Keep widgets, HTMX, and validation in `__init__` / `clean` on the concrete form (see [form extension](../../extension/form_extension.md)).
+
+---
+
+## Create/update views (`views/create_view/`)
+
+| View | Form | Notable behavior |
+|------|------|------------------|
+| `MeetingsCreateForm` | `MeetingsForm` | Generates `meeting_url` via meeting integration; sends invitation emails; external participant context |
+| `CallCreateForm` | `LogCallForm` | Default duration `00:00:00` on create |
+| `EventCreateForm` | `EventForm` | `toggle_is_all_day` initial handling |
+| `ActivityCreateView` | `ActivityCreateForm` | `ACTIVITY_FIELD_MAP`, calendar prefill, meeting URL + invites on save, `is_online` partial POST |
+
+All of the above extend **`HorillaSingleFormView`** with **`LoginRequiredMixin`** and **`htmx_required`**.
 
 ---
 
@@ -103,4 +190,9 @@ Composite-friendly indexes on `activity_type`, `created_at`, `status`, `start_da
 
 - Core models and `HorillaContentType`: [../core/models.md](../core/models.md)
 - Feature registry: [../core/Registry/feature.md](../core/Registry/feature.md)
+- **`HorillaModelForm` (single-step forms)**: [../generics/forms/single_step.md](../generics/forms/single_step.md)
+- **`HorillaSingleFormView`**: [../generics/views/toolkit/single_form_builder.md](../generics/views/toolkit/single_form_builder.md)
+- Form extension (`_inherit_form` plan): [../../extension/form_extension.md](../../extension/form_extension.md)
+- Meeting integration (URLs, OAuth): [../meeting/meeting.md](../meeting/meeting.md)
 - Generics list/detail patterns: [../generics/views/list.md](../generics/views/list.md), [../generics/views/details.md](../generics/views/details.md)
+- Module version metadata: `horilla/contrib/activity/__version__.py`

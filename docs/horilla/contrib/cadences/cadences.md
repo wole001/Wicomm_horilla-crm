@@ -87,6 +87,36 @@ This avoids empty tabs on unrelated models.
 
 ---
 
+## Forms (`forms.py`)
+
+Cadence builder forms use **`HorillaModelForm`** (see [single-step form base](../generics/forms/single_step.md)). Only **`field_order`** and **`Meta`** were aligned to the 1.10 pattern; **`__init__`**, HTMX module reload, and **`clean()`** are unchanged.
+
+### Shared conventions
+
+| Pattern | Usage |
+|---------|--------|
+| `field_order` | Default layout order |
+| `Meta.fields = "__all__"` | All model columns unless excluded |
+| `keep_on_form` | Fields removed from auto `HORILLA_FORM_EXCLUDE` |
+| `Meta.exclude` | Extra columns hidden on this form only |
+
+Do **not** list `company`, `created_at`, `updated_at`, `created_by`, `updated_by`, or `additional_info` in `Meta.exclude` on `HorillaModelForm` subclasses unless you intentionally override the base list.
+
+### `CadenceForm`
+
+- **`field_order`**: `name`, `module`, `description`, `is_active`
+- **`keep_on_form`**: `("is_active",)`
+- **Conditions**: `CadenceCondition` rows via `HorillaSingleFormView` (`field`, `operator`, `value`); **`clean()`** requires at least one complete condition row
+- **HTMX**: `module` reloads the form partial on change (GET merged into `initial`, not bound `data`)
+
+### `CadenceFollowUpForm`
+
+- **`field_order`**: cadence metadata first, then all task/call/email columns (runtime visibility via **`TYPE_FIELD_MAP`** in `__init__`)
+- **`Meta.exclude`**: `call_type`, `call_status`, `order`
+- **HTMX**: `followup_type` / `do_this_unit` toggles unchanged
+
+---
+
 ## Related documentation
 
 - Activity outcomes used by follow-ups: [../activity/activity.md](../activity/activity.md)

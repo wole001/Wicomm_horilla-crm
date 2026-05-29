@@ -68,6 +68,23 @@ All extend **`HorillaCoreModel`** — company-scoped.
 
 ---
 
+## Forms (`forms.py`)
+
+Both rule forms use **`HorillaModelForm`** with **`fields = "__all__"`** and explicit **`field_order`** (model has no extra columns beyond those lists). Criteria rows use **`condition_fields`** on the views, not extra model fields on these forms.
+
+### `MatchingRuleForm`
+
+- **`field_order`**: `name`, `content_type`, `description`
+- **Conditions**: `MatchingRuleCriteria` — `field_name`, `matching_method`, `match_blank_fields` (dynamic choices in **`__init__`**)
+- **`clean()`**: requires at least one valid criterion row; no duplicate `field_name` across rows
+
+### `DuplicateRuleForm`
+
+- **`field_order`**: `name`, `content_type`, `description`, `matching_rule`, `action_on_create`, `action_on_edit`, `alert_title`, `alert_message`, `show_duplicate_records`
+- **`__init__`**: HTMX on `content_type` filters `matching_rule` queryset; **`clean()`** enforces matching rule / content type alignment
+
+---
+
 ## Typical flows
 
 1. Admin defines a **matching rule** for Lead email + phone.

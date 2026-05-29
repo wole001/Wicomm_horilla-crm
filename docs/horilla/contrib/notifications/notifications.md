@@ -53,6 +53,19 @@ Lightweight row (not `HorillaCoreModel`) for high volume:
 
 ---
 
+## Forms (`forms.py`)
+
+### `NotificationTemplateForm` (`forms.ModelForm`)
+
+Same layout pattern as mail templates: **`field_order`**, **`fields = "__all__"`**, manual audit **`exclude`** (not `HorillaModelForm`).
+
+- **`field_order`**: `title`, `content_type`, `message`, `company`
+- **`Meta.exclude`**: `is_active`, `created_at`, `updated_at`, `created_by`, `updated_by`, `additional_info`
+- **`company`** remains visible on the form
+- **`clean_title`** / **`clean_message`**: non-empty validation (unchanged)
+
+---
+
 ## Signals (`signals.py`)
 
 Receivers create notifications when:

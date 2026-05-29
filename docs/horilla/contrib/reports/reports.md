@@ -55,6 +55,26 @@ Registers main navigation / floating entries for **Reports list**, **builder**, 
 
 ---
 
+## Forms (`forms.py`)
+
+### `ReportForm` (`HorillaModelForm`)
+
+- **`field_order`**: `name`, `module`, `folder`, `selected_columns`, `report_owner`
+- **`Meta.fields = "__all__"`**
+- **`Meta.exclude`**: `row_groups`, `column_groups`, `aggregate_columns`, `filters`, `chart_type`, `chart_field`, `chart_field_stacked`, `chart_value_field`, `is_favourite`, `shared_with` (builder/chart UI uses other views)
+- **`__init__`**: folder queryset, module HTMX → column picker, `SelectMultiple` for `selected_columns` (unchanged)
+- **View**: `report_owner` in **`hidden_fields`**
+
+### `ChangeChartReportForm` (`HorillaModelForm`)
+
+- **`field_order`**: `chart_type` only
+- **`Meta.exclude`**: all other `Report` columns
+- **`__init__`**: filters `chart_type` choices when grouping count ≤ 1 (unchanged)
+
+Pivot/chart configuration views may still declare their own `fields` on **`HorillaSingleFormView`**; those are separate from these two form classes.
+
+---
+
 ## Signals (`signals.py`)
 
 May update denormalized counts when reports run on a schedule, or touch `RecentlyViewed`—read module for senders.

@@ -20,6 +20,7 @@ This tree mirrors **`horilla/contrib/`** Django apps. Each subfolder holds docum
 | **process** (approvals + reviews) | [process/process.md](process/process.md) |
 | **reports** | [reports/reports.md](reports/reports.md) |
 | **theme** | [theme/theme.md](theme/theme.md) |
+| **workflow** | [workflow/workflow.md](workflow/workflow.md) |
 | **utils** (`horilla.contrib.utils`) | [utils/utils.md](utils/utils.md) |
 
 Top-level **`horilla.utils`** (Python package, not this Django app) is documented under [../utils/utils.md](../utils/utils.md).

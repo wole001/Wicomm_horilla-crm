@@ -62,6 +62,25 @@ Apps that contribute **default home** tiles add `"dashboard"` to their own `auto
 
 ---
 
+## Forms (`forms.py`)
+
+### `DashboardForm` (`HorillaModelForm`)
+
+- **`field_order`**: `name`, `description`, `folder`, `is_default`, `dashboard_owner`
+- **`Meta.fields = "__all__"`**, **`Meta.exclude = ["favourited_by"]`**
+- **`__init__`**: limits `folder` queryset by owner (unchanged)
+
+### `DashboardCreateForm` (`HorillaModelForm`)
+
+- **`field_order`**: `name`, `component_type`, `chart_type`, `module`, grouping/metric/column fields, then `icon`, `dashboard`, `sequence`, `component_owner`, `reports`
+- **`Meta.fields = "__all__"`** — no extra `exclude`; chart/KPI/table fields are hidden at runtime in **`__init__`** by `component_type`
+- **View**: `DashboardComponentFormView` sets **`hidden_fields`** for `dashboard`, `sequence`, `component_owner`, `reports`, `company`, etc.
+- **Conditions**: `ComponentCriteria` via `condition_fields` on the view
+
+Core audit fields are auto-excluded via **`HORILLA_FORM_EXCLUDE`**; do not duplicate them in `Meta.exclude`.
+
+---
+
 ## Views and templates
 
 - **Dashboard detail** — `dashboard_detail_view.html` and partials under `templates/` / `templates/home/`.

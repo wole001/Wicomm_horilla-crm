@@ -55,6 +55,35 @@ Models that expose themselves under **`mail_template_models`** can be selected w
 
 ---
 
+## Forms (`forms.py`)
+
+### `HorillaMailTemplateForm` (`forms.ModelForm`, not `HorillaModelForm`)
+
+- **`field_order`**: `title`, `subject`, `content_type`, `body`, `company`
+- **`Meta.fields = "__all__"`**
+- **`Meta.exclude`**: `is_active`, `created_at`, `updated_at`, `created_by`, `updated_by`, `additional_info` — **`company` stays on the form** (manual exclude list, same effect as `keep_on_form` on `HorillaModelForm`)
+- Used by **`MailTemplateCreateUpdateView`** (`FormView`, not `HorillaSingleFormView`)
+
+### `SaveAsMailTemplateForm`
+
+- Still uses explicit **`fields = ["title", "body", "company", "content_type"]`** (unchanged)
+
+### Mail configuration (`HorillaModelForm`)
+
+| Form | `keep_on_form` | `Meta.exclude` (high level) |
+|------|----------------|----------------------------|
+| **`HorillaMailConfigurationForm`** (outgoing SMTP) | `company` | Outlook/OAuth fields (`outlook_*`, `token`, `oauth_state`, `last_refreshed`) |
+| **`IncomingHorillaMailConfigurationForm`** | `company` | Outgoing-only SMTP + Outlook/OAuth fields |
+| **`OutlookMailConfigurationForm`** | `company` | SMTP fields (`host`, `port`, `from_email`, model `password`, TLS/SSL, …) + token/oauth |
+
+Each configuration form declares a class-level **`password`** or **`outlook_client_secret`** `CharField` override. **`__init__`** required-field logic is unchanged.
+
+### Other
+
+- **`DynamicMailTestForm`**, **`MailTemplateSelectForm`** — plain `forms.Form`; unchanged
+
+---
+
 ## Signals (`signals.py`)
 
 Common patterns:

@@ -66,6 +66,23 @@ Used for:
 
 ---
 
+## Forms (`forms.py`)
+
+### `CustomCalendarForm` (`HorillaModelForm`)
+
+- **`field_order`**: `name`, `color`, `module`, `start_date_field`, `end_date_field`, `display_name_field`, `is_selected`
+- **`Meta.fields = "__all__"`**, **`Meta.exclude = ["user"]`** — `user` is set on create in the view, not on the form
+- **`htmx_field_choices_url`**: `generics:get_model_field_choices`
+- **`__init__`**: HTMX GET reload merges query params into `initial`; date/display field choices rebuilt from selected `module` (unchanged)
+
+### Other forms
+
+- **`GoogleSyncDirectionForm`** / **`GoogleCredentialsUploadForm`** — plain `forms.Form` / `ModelForm`; not part of the `__all__` refactor
+
+See [single-step form base](../generics/forms/single_step.md) for `HORILLA_FORM_EXCLUDE` on `HorillaModelForm`.
+
+---
+
 ## Templates and UX
 
 - Main shell calendar: `horilla/contrib/calendar/templates/calendar.html` (extends project layout; HTMX loads events).
