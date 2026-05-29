@@ -29,20 +29,6 @@ class EventCreateForm(
     modal_height = False
     full_width_fields = ["notes"]
     save_and_new = False
-    fields = [
-        "object_id",
-        "content_type",
-        "title",
-        "subject",
-        "owner",
-        "start_datetime",
-        "end_datetime",
-        "location",
-        "assigned_to",
-        "status",
-        "is_all_day",
-        "activity_type",
-    ]
 
     @cached_property
     def form_url(self):

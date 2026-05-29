@@ -29,25 +29,6 @@ class MeetingsCreateForm(
     form_class = MeetingsForm
     template_name = "meeting_create_form.html"
     save_and_new = False
-    fields = [
-        "object_id",
-        "content_type",
-        "title",
-        "subject",
-        "start_datetime",
-        "end_datetime",
-        "status",
-        "owner",
-        "participants",
-        "meeting_host",
-        "is_all_day",
-        "is_online",
-        "location",
-        "meeting_provider",
-        "reminder",
-        "activity_type",
-        "mail_template",
-    ]
     modal_height = False
 
     @cached_property

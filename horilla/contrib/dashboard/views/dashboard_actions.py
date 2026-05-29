@@ -101,7 +101,6 @@ class DashboardCreateFormView(LoginRequiredMixin, HorillaSingleFormView):
     model = Dashboard
     form_class = DashboardForm
     modal_height = False
-    fields = ["name", "description", "folder", "is_default", "dashboard_owner"]
     full_width_fields = ["name", "description", "folder", "dashboard_owner"]
     hidden_fields = ["dashboard_owner"]
     save_and_new = False

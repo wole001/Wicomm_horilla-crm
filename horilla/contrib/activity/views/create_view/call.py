@@ -29,18 +29,6 @@ class CallCreateForm(
     modal_height = False
     full_width_fields = ["notes"]
     save_and_new = False
-    fields = [
-        "object_id",
-        "content_type",
-        "subject",
-        "owner",
-        "call_purpose",
-        "call_type",
-        "call_duration_display",
-        "status",
-        "notes",
-        "activity_type",
-    ]
 
     @cached_property
     def form_url(self):

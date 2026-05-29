@@ -333,7 +333,6 @@ class CreateReportView(LoginRequiredMixin, HorillaSingleFormView):
     """View for creating new reports with module, columns, and folder selection."""
 
     model = Report
-    fields = ["name", "module", "folder", "selected_columns", "report_owner"]
     modal_height = False
     form_class = ReportForm
     hidden_fields = ["report_owner"]
