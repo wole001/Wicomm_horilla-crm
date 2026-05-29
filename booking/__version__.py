@@ -2,7 +2,7 @@
 
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.0"
+__version__ = "1.11.0"
 __module_name__ = _("Booking")
 __release_date__ = ""
 __description__ = _(
@@ -11,6 +11,14 @@ __description__ = _(
     "confirmation, reminder, reschedule, and cancellation emails."
 )
 __icon__ = "/assets/icons/calendar.svg"
+
+__1_11_0__ = _(
+    "Select2 timezone picker and clearer public scheduling layout. "
+    "HTMX toggles for allow_cancel, allow_reschedule, and is_online with "
+    "better online/offline location controls and brand-color widget rendering. "
+    "Per-booking-page mail templates for confirmation, cancellation, and reschedule — "
+    "plus Celery reminder emails aligned with CRM lead/contact/activity hooks."
+)
 
 __1_10_0__ = _(
     "Initial release: booking pages with business-hour or shift-hour availability, "

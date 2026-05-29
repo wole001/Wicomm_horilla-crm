@@ -2,7 +2,7 @@
 
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.1"
+__version__ = "1.11.0"
 __module_name__ = _("Workflow")
 __release_date__ = ""
 __description__ = _(
@@ -11,6 +11,15 @@ __description__ = _(
     "scheduled relative to record or rule dates."
 )
 __icon__ = "assets/icons/automation.svg"
+
+__1_11_0__ = _(
+    "Workflow automation engine: WorkflowRule / WorkflowCondition / WorkflowAction models, "
+    "dynamic condition evaluation, immediate dispatch on record saves, Celery "
+    "WorkflowTimeTriggerAction and ScheduledWorkflowExecution, execution history modal, "
+    "FilterSet support, auto-registration for workflow-enabled CRM models (leads, "
+    "accounts, campaigns, contacts, opportunities), modular views, hidden-field action "
+    "configuration fixes, restored workflow detail pages, and improved routing namespaces."
+)
 
 __1_10_1__ = _(
     "WorkflowRuleForm aligned with HorillaModelForm layout: field_order, "

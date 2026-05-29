@@ -2,13 +2,23 @@
 
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.1"
+__version__ = "1.11.0"
 __module_name__ = _("Core System")
 __release_date__ = ""
 __description__ = _(
     "Core system providing authentication, configuration, utilities, and platform-level services."
 )
 __icon__ = "assets/icons/logo.png"
+
+__1_11_0__ = _(
+    "Workflow automation engine (rules, conditions, actions, Celery time triggers, "
+    "execution history). Public booking platform with slots, public pages, reminders, "
+    "and lead/contact/activity integration. ERP-style _inherit model extensions with "
+    "InjectField and extension-owned migrations. ShiftHour scheduling and BusinessHour "
+    "enhancements with holiday support. HTMX-first UX, multi-step form refactors, "
+    "django-countries subdivisions, permission inheritance fixes, activity/booking mail "
+    "templates, and Django 6.0 generics stability improvements."
+)
 
 __1_10_1__ = _(
     "Meeting Integration contrib app (Zoom/Teams OAuth, meeting links, activity hooks). "
