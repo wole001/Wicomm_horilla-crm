@@ -15,20 +15,22 @@ def _get_redirect_uri(request):
     return request.build_absolute_uri("/meeting/zoom/callback/")
 
 
-def get_or_create_config(user):
+def get_or_create_config(user, company=None):
     """Ensure a :class:`~horilla.contrib.meeting.models.ZoomOAuthConfig` exists for ``user``."""
     from horilla.contrib.meeting.models import ZoomOAuthConfig
 
-    config, _ = ZoomOAuthConfig.objects.get_or_create(
+    target_company = company or user.company
+    config, _ = ZoomOAuthConfig.all_objects.get_or_create(
         user=user,
-        defaults={"company": user.company},
+        company=target_company,
     )
     return config
 
 
 def start_oauth(request):
     """Return (authorization_url, state). Saves state to config."""
-    config = get_or_create_config(request.user)
+    company = getattr(request, "active_company", None) or request.user.company
+    config = get_or_create_config(request.user, company=company)
     if os.environ.get("OAUTHLIB_INSECURE_TRANSPORT") is None:
         os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
     oauth = OAuth2Session(
@@ -49,7 +51,7 @@ def handle_callback(request):
     from horilla.contrib.meeting.models import ZoomOAuthConfig
 
     try:
-        config = ZoomOAuthConfig.objects.get(oauth_state=state)
+        config = ZoomOAuthConfig.all_objects.get(oauth_state=state)
     except ZoomOAuthConfig.DoesNotExist:
         return None, "OAuth state mismatch. Please try again."
 

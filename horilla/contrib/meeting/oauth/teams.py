@@ -19,20 +19,22 @@ def _get_redirect_uri(request):
     return request.build_absolute_uri("/meeting/teams/callback/")
 
 
-def get_or_create_config(user):
+def get_or_create_config(user, company=None):
     """Ensure a :class:`~horilla.contrib.meeting.models.MicrosoftTeamsOAuthConfig` exists for ``user``."""
     from horilla.contrib.meeting.models import MicrosoftTeamsOAuthConfig
 
-    config, _ = MicrosoftTeamsOAuthConfig.objects.get_or_create(
+    target_company = company or user.company
+    config, _ = MicrosoftTeamsOAuthConfig.all_objects.get_or_create(
         user=user,
-        defaults={"company": user.company},
+        company=target_company,
     )
     return config
 
 
 def start_oauth(request):
     """Return authorization_url. Saves state to config."""
-    config = get_or_create_config(request.user)
+    company = getattr(request, "active_company", None) or request.user.company
+    config = get_or_create_config(request.user, company=company)
     if os.environ.get("OAUTHLIB_INSECURE_TRANSPORT") is None:
         os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
     tenant = config.tenant_id or "common"
@@ -55,7 +57,7 @@ def handle_callback(request):
     from horilla.contrib.meeting.models import MicrosoftTeamsOAuthConfig
 
     try:
-        config = MicrosoftTeamsOAuthConfig.objects.get(oauth_state=state)
+        config = MicrosoftTeamsOAuthConfig.all_objects.get(oauth_state=state)
     except MicrosoftTeamsOAuthConfig.DoesNotExist:
         return None, "OAuth state mismatch. Please try again."
 
