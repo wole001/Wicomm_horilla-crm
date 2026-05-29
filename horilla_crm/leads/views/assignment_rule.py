@@ -358,15 +358,6 @@ class AssignmentConditionFormView(LoginRequiredMixin, HorillaSingleFormView):
 
     model = LeadAssignmentCondition
     form_class = ConditionForm
-    fields = [
-        "rule",
-        "assign_to_type",
-        "assign_to_users",
-        "assign_to_roles",
-        "notify_method",
-        "mail_template",
-        "notification_template",
-    ]
     condition_fields = ["field", "operator", "value", "logical_operator"]
     condition_model = LeadAssignmentMatchCriteria
     condition_related_name = "criteria"

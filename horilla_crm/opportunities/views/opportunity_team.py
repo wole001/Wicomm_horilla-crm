@@ -489,7 +489,6 @@ class OpportunityTeamMemberCreateView(
 
     model = DefaultOpportunityMember
     form_class = OpportunityTeamMemberForm
-    fields = ["team"]
     condition_fields = ["user", "team_role", "opportunity_access_level"]
     modal_height = False
     form_title = _("Create Opportunity Team")
@@ -824,7 +823,6 @@ class AddOpportunityMemberView(
 
     model = OpportunityTeamMember
     form_class = OpportunityMemberForm
-    fields = ["opportunity"]
     condition_fields = ["user", "team_role", "opportunity_access"]
     modal_height = False
     form_title = _("Add Opportunity Members")

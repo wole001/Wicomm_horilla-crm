@@ -283,7 +283,6 @@ class ScoringCriterionCreateUpdateView(LoginRequiredMixin, HorillaSingleFormView
 
     model = ScoringCriterion
     form_class = ScoringCriterionForm
-    fields = "__all__"
     condition_fields = ["field", "operator", "value", "logical_operator"]
     condition_model = ScoringCondition
     condition_related_name = "conditions"

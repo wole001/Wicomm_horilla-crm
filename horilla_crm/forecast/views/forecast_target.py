@@ -313,17 +313,6 @@ class ForecastTargetFormView(LoginRequiredMixin, HorillaSingleFormView):
     model = ForecastTarget
     form_class = ForecastTargetForm
     template_name = "forecast_target/forecast_target_form.html"
-    fields = [
-        "role",
-        "assigned_to",
-        "period",
-        "forcasts_type",
-        "target_amount",
-        "is_role_based",
-        "is_period_same",
-        "is_target_same",
-        "is_forecast_type_same",
-    ]
     form_url = reverse_lazy("forecast:forecast_target_form_view")
     condition_fields = ["assigned_to", "period", "forcasts_type", "target_amount"]
     condition_field_title = "Select User"
