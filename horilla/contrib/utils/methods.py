@@ -239,3 +239,46 @@ def has_xss(value: str) -> bool:
     combined = re.compile("|".join(xss_patterns), re.IGNORECASE | re.DOTALL)
     result = bool(combined.search(value))
     return result
+
+
+def has_ssti(value: str) -> bool:
+    """
+    Detect dangerous Django template injection attempts in a string.
+
+    Allows legitimate mail-merge variables like {{ instance.email }},
+    {{ user.first_name }}, {{ active_company.name }}.
+
+    Blocks access to sensitive context objects: request, settings,
+    password fields, META, environ, and dangerous template tags
+    (debug, load, include, extends, blocktranslate).
+
+    Args:
+        value (str): The string to check for SSTI patterns.
+
+    Returns:
+        bool: True if dangerous template patterns are detected, False otherwise.
+    """
+    if not isinstance(value, str):
+        return False
+
+    dangerous_patterns = [
+        # settings object - always dangerous
+        r"\{\{[\s\w|.\"']*\bsettings\b",
+        # Dangerous paths on request object
+        r"\brequest\s*\.\s*META\b",
+        r"\brequest\s*\.\s*session\b",
+        r"\brequest\s*\.\s*COOKIES\b",
+        r"\brequest\s*\.\s*environ\b",
+        # Password / secret field access anywhere in a variable chain
+        r"\{\{[^}]*\bpassword\b[^}]*\}\}",
+        r"\{\{[^}]*\bsecret\b[^}]*\}\}",
+        r"\{\{[^}]*\bapi_key\b[^}]*\}\}",
+        # Dangerous template tags
+        r"\{%\s*debug\b",
+        r"\{%\s*load\b",
+        r"\{%\s*include\b",
+        r"\{%\s*extends\b",
+    ]
+
+    combined = re.compile("|".join(dangerous_patterns), re.IGNORECASE | re.DOTALL)
+    return bool(combined.search(value))

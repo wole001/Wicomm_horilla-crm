@@ -17,6 +17,7 @@ from django.views import View
 # First party imports (Horilla)
 from horilla.apps import apps
 from horilla.contrib.core.models import HorillaContentType
+from horilla.contrib.utils.methods import has_ssti, has_xss
 from horilla.http import HttpResponse
 from horilla.shortcuts import render
 from horilla.utils.decorators import (
@@ -246,6 +247,20 @@ class HorillaMailPreviewView(LoginRequiredMixin, View):
                     company=company,
                 )
 
+            # Validate subject and body for XSS and SSTI before any rendering
+            if has_xss(subject) or has_ssti(subject):
+                return render(
+                    request,
+                    "mail_preview_error.html",
+                    {"error_message": _("Subject contains dangerous content.")},
+                )
+            if has_xss(message_content) or has_ssti(message_content):
+                return render(
+                    request,
+                    "mail_preview_error.html",
+                    {"error_message": _("Message body contains dangerous content.")},
+                )
+
             draft_mail.sender = from_mail_config
             draft_mail.to = to_email
             draft_mail.cc = cc_email if cc_email else None
@@ -253,6 +268,9 @@ class HorillaMailPreviewView(LoginRequiredMixin, View):
             draft_mail.subject = subject
             draft_mail.body = message_content
 
+            # request is needed for {{ request.user.first_name }} insert-field variables.
+            # Dangerous paths (request.META, request.session, password, etc.)
+            # are blocked earlier by has_ssti().
             template_context = {
                 "request": request,
                 "user": request.user,
@@ -270,6 +288,25 @@ class HorillaMailPreviewView(LoginRequiredMixin, View):
                     model_class = apps.get_model(
                         app_label=content_type.app_label, model_name=content_type.model
                     )
+                    # IDOR fix: verify the requesting user has view permission
+                    # for this model before loading the object
+                    perm = f"{content_type.app_label}.view_{content_type.model}"
+                    if not request.user.has_perm(perm):
+                        logger.warning(
+                            "User %s attempted to access %s pk=%s without permission",
+                            request.user,
+                            content_type.model,
+                            object_id,
+                        )
+                        return render(
+                            request,
+                            "mail_preview_error.html",
+                            {
+                                "error_message": _(
+                                    "You do not have permission to access this record."
+                                )
+                            },
+                        )
                     related_object = model_class.objects.get(pk=object_id)
                     template_context["instance"] = related_object
                     draft_mail.related_to = related_object
