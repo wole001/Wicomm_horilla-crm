@@ -115,6 +115,30 @@ Theme app listens to **`pre_logout_signal`** / **`pre_login_render_signal`**—s
 
 ---
 
+## Business hour views (`views/business_hour.py`)
+
+Nine class-based views manage business hour configuration per company.
+
+| View | Base | Purpose |
+|------|------|---------|
+| `BusinessHourView` | `View` | Shell template; guarded by `@permission_required` |
+| `BusinessHourCardView` | `View` | Single company card summary partial |
+| `BusinessHourFormView` | `HorillaSingleFormView` | Create/update business hours; blocks duplicate per company |
+| `BusinessHourHolidayListView` | `HorillaListView` | Filtered list of holidays for a business hour config |
+| `BusinessHourHolidayPanelView` | `View` | Holiday panel partial (HTMX target) |
+| `BusinessHourHolidayToggleView` | `View` | HTMX POST — add or remove a holiday record |
+| `BusinessHourHolidayModalView` | `View` | Modal listing all holidays for selection |
+| `BusinessHourAddHolidayView` | `HorillaSingleFormView` | Modal form to create a new holiday entry |
+| `BusinessHourHolidayRemoveView` | `View` | Remove one holiday from a business hour config |
+
+**Duplicate prevention** — `BusinessHourFormView.get()` checks for an existing `BusinessHour` for the active company before rendering; redirects if one exists rather than allowing creation of a second row.
+
+**Performance** — views use `select_related()` / `prefetch_related()` for company and holiday relations to avoid N+1 queries on the card and list pages.
+
+**HTMX return responses** — success handlers call `return_response` containing a script that reloads the detail view panel and shows a Django messages toast; cross-view reloads are orchestrated without full page refreshes.
+
+---
+
 ## Shift hour form (`forms/shift_hour.py`)
 
 **`ShiftHourForm`** (`HorillaModelForm`) — create/update named shifts (main hours + two optional breaks + assigned users).

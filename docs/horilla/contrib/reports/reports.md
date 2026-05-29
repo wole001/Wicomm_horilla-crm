@@ -75,6 +75,39 @@ Pivot/chart configuration views may still declare their own `fields` on **`Horil
 
 ---
 
+## CRUD and configuration views (`views/report_crud.py`)
+
+Eleven views cover report lifecycle and chart configuration.
+
+### Report management
+
+| View | Base | Purpose |
+|------|------|---------|
+| `CreateReportView` | `HorillaSingleFormView` | Create report with module + column selection |
+| `UpdateReportView` | `HorillaSingleFormView` | Edit report metadata (name, folder, description) |
+| `MoveReportView` | `HorillaSingleFormView` | Move report to a different folder |
+| `MoveFolderView` | `HorillaSingleFormView` | Move a folder to a new parent folder |
+| `ReportUpdateView` | `DetailView` | Configuration panel interface (opens chart/column editor) |
+| `GetModuleColumnsHTMXView` | `View` | HTMX endpoint; returns dynamic column widget when module changes |
+| `DiscardReportChangesView` | `View` | Clears session preview data (`report_preview_{pk}`) |
+| `SaveReportChangesView` | `View` | Persists session preview data to the `Report` model |
+| `CloseReportPanelView` | `View` | Closes the configuration panel partial |
+
+### Chart configuration
+
+| View | Base | Purpose |
+|------|------|---------|
+| `ChangeChartTypeView` | `HorillaSingleFormView` | Unified chart-type + chart-field selector; filters choices based on group count |
+| `ChangeChartFieldView` | `HorillaSingleFormView` | Kept for URL compatibility; use `ChangeChartTypeView` for new work |
+
+**Chart type filtering** — `ChangeChartTypeView.__init__` removes stacked chart types when `row_groups` count ≤ 1, keeping the choice list relevant. The "Stack by" field (`chart_field_stacked`) is hidden for non-stacked chart types via `form_invalid()` which rebuilds field choices dynamically on each render.
+
+**Preview mode** — editing stores incremental changes in `request.session["report_preview_{pk}"]`. `SaveReportChangesView` moves session data to the database; `DiscardReportChangesView` removes it. This allows multi-step configuration without committing after every interaction.
+
+**Owner access control** — create/update views check `reports.add_report` / `reports.change_report` permissions or confirm `report_owner == request.user` before allowing edits.
+
+---
+
 ## Signals (`signals.py`)
 
 May update denormalized counts when reports run on a schedule, or touch `RecentlyViewed`—read module for senders.

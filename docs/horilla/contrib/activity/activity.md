@@ -166,14 +166,55 @@ Named URL routes (for reference): `activity:meeting_create_form`, `activity:meet
 
 ## Create/update views (`views/create_view/`)
 
-| View | Form | Notable behavior |
-|------|------|------------------|
-| `MeetingsCreateForm` | `MeetingsForm` | Generates `meeting_url` via meeting integration; sends invitation emails; external participant context |
-| `CallCreateForm` | `LogCallForm` | Default duration `00:00:00` on create |
-| `EventCreateForm` | `EventForm` | `toggle_is_all_day` initial handling |
-| `ActivityCreateView` | `ActivityCreateForm` | `ACTIVITY_FIELD_MAP`, calendar prefill, meeting URL + invites on save, `is_online` partial POST |
+All four views extend **`HorillaSingleFormView`** with **`ActivityOwnerPermissionMixin`**, **`LoginRequiredMixin`**, and `@method_decorator(htmx_required, name="dispatch")`.
 
-All of the above extend **`HorillaSingleFormView`** with **`LoginRequiredMixin`** and **`htmx_required`**.
+### Common patterns
+
+- **`@cached_property form_url`** — returns the create URL when no `pk` is present, the update URL otherwise (avoids re-computing on every render).
+- **Object linking** — `GET` params `object_id`, `model_name`, and `app_label` bind the activity to any registered CRM record (passed via `get_initial()`).
+- **HTMX close + tab reload** — `form_valid()` returns a script that triggers the relevant tab button click (`#CallsTab`, `#EventTab`, `#MeetingsTab`) and calls `closeModal()`.
+
+### `CallCreateForm` (`views/create_view/call.py`)
+
+| Attribute | Value |
+|-----------|-------|
+| Form | `LogCallForm` |
+| Named URLs | `activity:call_create_form` / `activity:call_update_form` |
+| Create default | `call_duration_display` initialised to `"00:00:00"` in `get_initial()` |
+| HTMX trigger | Clicks `#CallsTab` and closes modal on save |
+
+### `EventCreateForm` (`views/create_view/event.py`)
+
+| Attribute | Value |
+|-----------|-------|
+| Form | `EventForm` |
+| Named URLs | `activity:event_create_form` / `activity:event_update_form` |
+| `get_initial()` | Handles `is_all_day` toggle state from GET param, POST data, or existing object |
+| `toggle_is_all_day` | GET param `toggle_is_all_day=1` flips the value before re-rendering the form |
+| `get_form_kwargs()` | Passes raw GET data as `initial` values to the form |
+| HTMX trigger | Clicks `#EventTab` and closes modal on save |
+
+### `MeetingsCreateForm` (`views/create_view/meeting.py`)
+
+| Attribute | Value |
+|-----------|-------|
+| Form | `MeetingsForm` |
+| Named URLs | `activity:meeting_create_form` / `activity:meeting_update_form` |
+| Toggles | `is_all_day` and `is_online` both handled; `content_type` resolved from `model_name` when missing |
+| `_toggle_field` | `"is_online"` — a POST to the form URL with `_toggle_field=is_online` re-renders the form in-place without saving |
+| `form_valid()` | Calls `generate_meeting_url()`, sends invitations to participants and external emails, updates external participants list |
+| Helper methods | Instance methods bridge to `meeting_helpers` functions |
+| HTMX trigger | Clicks `#MeetingsTab` and closes modal on save |
+
+### `ActivityCreateView` (`views/create_view/activity.py`)
+
+| Attribute | Value |
+|-----------|-------|
+| Form | `ActivityCreateForm` |
+| Named URLs | `activity:activity_create_form` / `activity:activity_edit_form` |
+| Field map | `ACTIVITY_FIELD_MAP` drives visible fields per `activity_type` |
+| Calendar mode | `?view=calendar` drops `log_call` and `email` from type choices; pre-fills datetimes |
+| Meeting branch | `is_online` partial POST re-renders form; `generate_meeting_url()` + invites on save |
 
 ---
 

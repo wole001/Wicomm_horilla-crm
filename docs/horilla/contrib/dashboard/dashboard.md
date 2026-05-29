@@ -86,6 +86,24 @@ Core audit fields are auto-excluded via **`HORILLA_FORM_EXCLUDE`**; do not dupli
 - **Dashboard detail** — `dashboard_detail_view.html` and partials under `templates/` / `templates/home/`.
 - **Folder detail** — navigates mixed lists of child folders + dashboards (`get_detail_view_url` on folder model points at `dashboard:dashboard_folder_detail_list`).
 
+### Dashboard action views (`views/dashboard_actions.py`)
+
+Five focused views handle state mutations for dashboards.
+
+| View | Base | URL pattern | Behavior |
+|------|------|-------------|----------|
+| `DashboardDefaultToggleView` | `View` | POST | Sets `is_default=True` on target; clears `is_default` on all other dashboards for the same user+company pair |
+| `DashboardFavoriteToggleView` | `View` | POST (GET → 403) | Adds or removes the current user from `Dashboard.favourited_by` M2M |
+| `DashboardCreateFormView` | `HorillaSingleFormView` | GET+POST | Create/update `Dashboard`; falls back to `_thread_local` for `active_company` when not on request |
+| `DashboardDeleteView` | `HorillaSingleDeleteView` | POST | Deletes dashboard and redirects |
+| `ResetDashboardLayoutOrderView` | `View` | POST | Clears `DefaultHomeLayoutOrder` rows for the current user, resetting home tile ordering |
+
+**Default toggle logic** — `DashboardDefaultToggleView` uses a queryset `update()` to deactivate all other defaults in one query, then sets the target via `save()`. This guarantees only one default dashboard per user per company at any time.
+
+**Favorite toggle** — responds only to POST (returns HTTP 403 for GET). Checks M2M membership before deciding add vs. remove.
+
+**HTMX reload** — all action views return a response containing `<script>$('#reloadButton').click();</script>` to trigger a list refresh without a full page load.
+
 ---
 
 ## Typical flows

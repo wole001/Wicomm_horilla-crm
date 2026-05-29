@@ -8,6 +8,7 @@ This tree mirrors **`horilla/contrib/`** Django apps. Each subfolder holds docum
 |-----|-------------|
 | **activity** | [activity/activity.md](activity/activity.md) |
 | **automations** | [automations/automations.md](automations/automations.md) |
+| **booking** | [booking/booking.md](booking/booking.md) |
 | **cadences** | [cadences/cadences.md](cadences/cadences.md) |
 | **calendar** | [calendar/calendar.md](calendar/calendar.md) |
 | **core** | [core/core_app.md](core/core_app.md) (index) · [core/horilla.md](core/horilla.md) · [core/models.md](core/models.md) · … |
