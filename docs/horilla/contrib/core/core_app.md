@@ -31,10 +31,56 @@ This page is an **index and orientation**. Detailed topics live in focused files
 Registered from **`horilla.contrib.core.middlewares`** in project settings:
 
 - **`TimezoneMiddleware`**, **`ActiveCompanyMiddleware`** — per-request active company + tz.
-- **`HorillaExceptionMiddleware`**, **`Horilla405Middleware`** — consistent error pages.
+- **`HorillaExceptionMiddleware`** — maps **`HttpNotFound`** to the custom 404 flow.
+- **`Horilla405Middleware`** — when the view returns **405 Method Not Allowed**, renders **`templates/405.html`** (same card layout as other error pages).
 - **`SVGSecurityMiddleware`**, **`HTMXRedirectMiddleware`**, **`EnsureSectionMiddleware`** — security + HTMX navigation polish.
 
-Deep behavior belongs next to source; cross-check [Settings/base.md](Settings/base.md) for ordering relative to Django defaults.
+Deep behavior belongs next to source; cross-check [settings `base.py`](../../settings/base.md) for middleware order and CSRF settings.
+
+---
+
+## Custom error pages (`templates/` + `views/error_pages.py`)
+
+User-facing errors share **`templates/error.html`** (Tailwind card, dark-mode script). Child templates live at the project **`templates/`** root.
+
+| Template | When it appears | HTTP status |
+|----------|-----------------|-------------|
+| **`403.html`** | Permission denied (views, decorators, includes with `embed=True`) | 403 |
+| **`404.html`** | **`HttpNotFound`** / not found | 404 |
+| **`405.html`** | **`Horilla405Middleware`** on disallowed HTTP method | 405 |
+| **`csrf_failure.html`** | CSRF verification failed when **`DEBUG=False`** | 403 |
+
+Settings-only embed variant: **`horilla/contrib/core/templates/error/settings_403.html`** (extends the same base).
+
+### CSRF failure (`CSRF_FAILURE_VIEW`)
+
+In **`horilla/settings/base.py`**:
+
+```python
+CSRF_FAILURE_VIEW = "horilla.contrib.core.views.error_pages.csrf_failure"
+```
+
+Implementation: **`horilla/contrib/core/views/error_pages.py`** → **`csrf_failure(request, reason="")`**.
+
+| `DEBUG` | Behavior |
+|---------|----------|
+| **`True`** | Delegates to Django’s built-in CSRF failure view (yellow technical help page). |
+| **`False`** | Renders **`csrf_failure.html`** with a short user message (`message` context). |
+
+**HTMX POST:** returns **`HX-Redirect`** to `HX-Current-URL`, `Referer`, or `/` so the client reloads and picks up a fresh CSRF token.
+
+**Configuration (common fix):** origin mismatches (e.g. `127.0.0.1` vs `localhost`) require the exact browser origin in **`CSRF_TRUSTED_ORIGINS`** (from `.env`). Example:
+
+```env
+CSRF_TRUSTED_ORIGINS=http://localhost:8000,http://127.0.0.1:8000
+```
+
+### Permission 403 vs CSRF 403
+
+Both may return HTTP **403**, but they are different paths:
+
+- **Permission** — view renders **`403.html`** (or modal embed); user lacks access.
+- **CSRF** — middleware aborts POST before the view; **`csrf_failure`** runs when **`DEBUG=False`**.
 
 ---
 
@@ -62,7 +108,7 @@ Theme app listens to **`pre_logout_signal`** / **`pre_login_render_signal`**—s
 | HTTP helpers in core package path | [Http/http.md](Http/http.md) |
 | Decorators (legacy path name) | [Decorator ( Utils )/decorators.md](Decorator%20(%20Utils%20)/decorators.md) |
 | Translation shim | [Translation (Utils )/translation.md](Translation%20(Utils%20)/translation.md) |
-| Settings / `horilla_apps` / passwords | [Settings/](Settings/base.md) |
+| Settings / `horilla_apps` / passwords / `CSRF_FAILURE_VIEW` | [settings `base.py`](../../settings/base.md) |
 | Exceptions | [Core/exceptions.md](Core/exceptions.md) |
 | Keyboard shortcuts registration (core vs keys) | [Shortcuts/shortcuts.md](Shortcuts/shortcuts.md) |
 | Shift hours (`ShiftHour` model + form) | [models.md](models.md) · `horilla/contrib/core/forms/shift_hour.py` |

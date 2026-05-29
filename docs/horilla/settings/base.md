@@ -17,7 +17,7 @@ The file uses `environ.Env(...)` to define expected variables with defaults:
 - `ENVIRONMENT` (default `"development"`)
 - `SECRET_KEY` (default `"django-insecure-default-key"`)
 - `ALLOWED_HOSTS` (default `["*"]`)
-- `CSRF_TRUSTED_ORIGINS` (default `["http://localhost:8000"]`)
+- `CSRF_TRUSTED_ORIGINS` (default `["http://localhost:8000"]`) — must include every origin the browser uses (scheme + host + port); add both `localhost` and `127.0.0.1` in local dev if you switch between them.
 
 If a `.env` file exists under `BASE_DIR`, it loads it:
 - `env.read_env(str(env_file), overwrite=True)`
@@ -31,6 +31,14 @@ So typical usage:
 `base.py` defines large lists:
 - `INSTALLED_APPS`: core Django apps + third-party apps + Horilla apps
 - `MIDDLEWARE`: security, session/auth, Horilla middlewares, locale, CSRF, messages, etc.
+
+**CSRF failure page** (production-friendly, when `DEBUG=False`):
+
+```python
+CSRF_FAILURE_VIEW = "horilla.contrib.core.views.error_pages.csrf_failure"
+```
+
+Renders `templates/csrf_failure.html` (extends `error.html`, same layout as `403.html` / `404.html` / `405.html`). When `DEBUG=True`, the same setting still points at `csrf_failure`, but that view delegates to Django’s technical CSRF help page. See [contrib core app — Custom error pages](../contrib/core/core_app.md#custom-error-pages-templates--viewserror_pagespy).
 
 Note: `horilla/settings/horilla_apps.py` extends `INSTALLED_APPS` further .
 
