@@ -486,6 +486,8 @@ class DeleteReassignMixin:
         related_objects = self.model._meta.related_objects
         excluded_models = self._get_excluded_models()
         for related in related_objects:
+            if related.many_to_many:
+                continue
             related_model = related.related_model
             if related_model in excluded_models:
                 continue
