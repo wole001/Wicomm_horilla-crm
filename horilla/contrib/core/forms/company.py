@@ -114,32 +114,34 @@ class CompanyFormClass(HorillaModelForm):
 class CompanyFormClassSingle(HorillaModelForm):
     """Form class for Company model with all fields."""
 
+    field_order = [
+        "name",
+        "email",
+        "website",
+        "icon",
+        "contact_number",
+        "fax",
+        "annual_revenue",
+        "no_of_employees",
+        "country",
+        "state",
+        "city",
+        "zip_code",
+        "language",
+        "time_zone",
+        "currency",
+        "time_format",
+        "date_format",
+        "date_time_format",
+        "hq",
+        "activate_multiple_currencies",
+    ]
+
     class Meta:
         """Meta options for CompanyFormClassSingle."""
 
         model = Company
-        fields = [
-            "name",
-            "email",
-            "website",
-            "icon",
-            "contact_number",
-            "fax",
-            "annual_revenue",
-            "no_of_employees",
-            "country",
-            "state",
-            "city",
-            "zip_code",
-            "language",
-            "time_zone",
-            "currency",
-            "time_format",
-            "date_format",
-            "date_time_format",
-            "hq",
-            "activate_multiple_currencies",
-        ]
+        fields = "__all__"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
