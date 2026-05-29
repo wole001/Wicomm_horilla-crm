@@ -526,7 +526,7 @@ class CustomStagesFormView(LoginRequiredMixin, View):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-@method_decorator(htmx_required(), name="dispatch")
+# @method_decorator(htmx_required(), name="dispatch")
 @method_decorator(
     permission_required_or_denied("leads.add_leadstatus"), name="dispatch"
 )
@@ -586,9 +586,10 @@ class SaveCustomStagesView(LoginRequiredMixin, View, ProgressStepsMixin):
                 "Invalid form data: order or probability missing for one or more stages.",
             )
 
-        LeadStatus.all_objects.filter(company=company).delete()
-
         try:
+            # Validate all stages before making any DB changes
+            parsed_stages = []
+            seen_names = set()
             for i, name in enumerate(stage_names):
                 is_final = str(i) in stage_is_finals
                 name = name.strip()
@@ -596,6 +597,11 @@ class SaveCustomStagesView(LoginRequiredMixin, View, ProgressStepsMixin):
                     return self._error_response(
                         request, f"Stage name cannot be empty for stage {i+1}."
                     )
+                if name in seen_names:
+                    return self._error_response(
+                        request, f'Duplicate stage name "{name}" in submission.'
+                    )
+                seen_names.add(name)
                 try:
                     order = int(stage_orders[i])
                 except (ValueError, TypeError):
@@ -615,17 +621,33 @@ class SaveCustomStagesView(LoginRequiredMixin, View, ProgressStepsMixin):
                         request,
                         f"Probability must be between 0 and 100 for stage: {name}",
                     )
-                if LeadStatus.all_objects.filter(company=company, name=name).exists():
-                    return self._error_response(
-                        request, f'Stage "{name}" already exists for this company.'
-                    )
-                LeadStatus.all_objects.create(
-                    company=company,
-                    name=name,
-                    order=order,
-                    probability=probability,
-                    is_final=is_final,
+                parsed_stages.append(
+                    {
+                        "name": name,
+                        "order": order,
+                        "probability": probability,
+                        "is_final": is_final,
+                    }
                 )
+
+            with transaction.atomic():
+                submitted_names = {s["name"] for s in parsed_stages}
+
+                # Delete only stages with no leads attached
+                for stage in LeadStatus.all_objects.filter(company=company):
+                    if stage.name not in submitted_names and not stage.lead.exists():
+                        stage.delete()
+
+                for stage_data in parsed_stages:
+                    LeadStatus.all_objects.update_or_create(
+                        company=company,
+                        name=stage_data["name"],
+                        defaults={
+                            "order": stage_data["order"],
+                            "probability": stage_data["probability"],
+                            "is_final": stage_data["is_final"],
+                        },
+                    )
 
             messages.success(
                 request, f"Successfully created {company} and associated Lead Stages."
