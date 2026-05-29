@@ -65,9 +65,6 @@ class CompanyMultistepFormClass(OwnerQuerysetMixin, HorillaMultiStepForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.current_step < len(self.step_fields):
-            self.fields["created_by"].required = False
-            self.fields["updated_by"].required = False
 
         self.fields["country"].widget.attrs.update(
             {
