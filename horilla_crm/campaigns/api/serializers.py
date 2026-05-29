@@ -17,6 +17,8 @@ class CampaignSerializer(serializers.ModelSerializer):
     parent_campaign_details = serializers.SerializerMethodField()
 
     class Meta:
+        """Meta options for CampaignSerializer."""
+
         model = Campaign
         fields = "__all__"
 

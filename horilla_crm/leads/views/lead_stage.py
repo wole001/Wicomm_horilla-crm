@@ -662,7 +662,7 @@ class SaveCustomStagesView(LoginRequiredMixin, View, ProgressStepsMixin):
 
             responses = lead_stage_created.send(sender=self.__class__, **signal_kwargs)
 
-            for receiver, response in responses:
+            for _receiver, response in responses:
                 if isinstance(response, HttpResponse):
                     return response
 
@@ -867,7 +867,7 @@ class CreateStageGroupView(LoginRequiredMixin, View, ProgressStepsMixin):
 
             responses = lead_stage_created.send(sender=self.__class__, **signal_kwargs)
 
-            for receiver, response in responses:
+            for _receiver, response in responses:
                 if isinstance(response, HttpResponse):
                     return response
 

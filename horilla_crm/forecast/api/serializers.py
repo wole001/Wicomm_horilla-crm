@@ -17,6 +17,8 @@ class ForecastTypeSerializer(serializers.ModelSerializer):
     """Serializer for ForecastType model"""
 
     class Meta:
+        """Meta options for ForecastTypeSerializer."""
+
         model = ForecastType
         fields = "__all__"
 
@@ -30,6 +32,8 @@ class ForecastSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
+        """Meta options for ForecastSerializer."""
+
         model = Forecast
         fields = "__all__"
 
@@ -43,6 +47,8 @@ class ForecastTargetSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
+        """Meta options for ForecastTargetSerializer."""
+
         model = ForecastTarget
         fields = "__all__"
 
@@ -56,5 +62,7 @@ class ForecastTargetUserSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
+        """Meta options for ForecastTargetUserSerializer."""
+
         model = ForecastTargetUser
         fields = "__all__"

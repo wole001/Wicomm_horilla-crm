@@ -25,6 +25,8 @@ admin.site.register(LeadAssignmentMatchCriteria)
 
 @admin.register(LeadAssignmentCondition)
 class LeadAssignmentConditionAdmin(admin.ModelAdmin):
+    """Admin for lead assignment conditions with M2M assignee widgets."""
+
     filter_horizontal = ("assign_to_users", "assign_to_roles")
 
 

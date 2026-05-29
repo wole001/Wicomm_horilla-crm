@@ -112,14 +112,17 @@ class ForecastTypeViewSet(
         operation_description=FORECAST_TYPE_LIST_DOCS,
     )
     def list(self, request, *args, **kwargs):
+        """List forecast types with search and filter capabilities."""
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(operation_description=FORECAST_TYPE_DETAIL_DOCS)
     def retrieve(self, request, *args, **kwargs):
+        """Retrieve a single forecast type."""
         return super().retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(operation_description=FORECAST_TYPE_CREATE_DOCS)
     def create(self, request, *args, **kwargs):
+        """Create a new forecast type."""
         return super().create(request, *args, **kwargs)
 
     @swagger_auto_schema(
@@ -167,14 +170,17 @@ class ForecastViewSet(SearchFilterMixin, BulkOperationsMixin, viewsets.ModelView
         operation_description=FORECAST_LIST_DOCS,
     )
     def list(self, request, *args, **kwargs):
+        """List forecasts with search and filter capabilities."""
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(operation_description=FORECAST_DETAIL_DOCS)
     def retrieve(self, request, *args, **kwargs):
+        """Retrieve a single forecast."""
         return super().retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(operation_description=FORECAST_CREATE_DOCS)
     def create(self, request, *args, **kwargs):
+        """Create a new forecast."""
         return super().create(request, *args, **kwargs)
 
     @swagger_auto_schema(
@@ -222,14 +228,17 @@ class ForecastTargetViewSet(
         operation_description=FORECAST_TARGET_LIST_DOCS,
     )
     def list(self, request, *args, **kwargs):
+        """List forecast targets with search and filter capabilities."""
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(operation_description=FORECAST_TARGET_DETAIL_DOCS)
     def retrieve(self, request, *args, **kwargs):
+        """Retrieve a single forecast target."""
         return super().retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(operation_description=FORECAST_TARGET_CREATE_DOCS)
     def create(self, request, *args, **kwargs):
+        """Create a new forecast target."""
         return super().create(request, *args, **kwargs)
 
     @swagger_auto_schema(
@@ -276,14 +285,17 @@ class ForecastTargetUserViewSet(
         operation_description=FORECAST_TARGET_USER_LIST_DOCS,
     )
     def list(self, request, *args, **kwargs):
+        """List forecast target users with search and filter capabilities."""
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(operation_description=FORECAST_TARGET_USER_DETAIL_DOCS)
     def retrieve(self, request, *args, **kwargs):
+        """Retrieve a single forecast target user assignment."""
         return super().retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(operation_description=FORECAST_TARGET_USER_CREATE_DOCS)
     def create(self, request, *args, **kwargs):
+        """Create a new forecast target user assignment."""
         return super().create(request, *args, **kwargs)
 
     @swagger_auto_schema(

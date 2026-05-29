@@ -17,6 +17,8 @@ class ContactSerializer(serializers.ModelSerializer):
     parent_contact_details = serializers.SerializerMethodField()
 
     class Meta:
+        """Meta options for ContactSerializer."""
+
         model = Contact
         fields = "__all__"
 

@@ -526,7 +526,7 @@ class LoadOpportunityStagesView(LoginRequiredMixin, View):
         signature_groups = {}
         default_signature = create_stage_signature(default_stages)
 
-        for comp_id, comp_data in raw_company_stages.items():
+        for _comp_id, comp_data in raw_company_stages.items():
             signature = create_stage_signature(comp_data["stages"])
 
             if signature == default_signature:
@@ -847,7 +847,7 @@ class SaveCustomOppStagesView(LoginRequiredMixin, View):
 
             responses = opp_stage_created.send(sender=self.__class__, **signal_kwargs)
 
-            for receiver, response in responses:
+            for _receiver, response in responses:
                 if isinstance(response, HttpResponse):
                     return response
 
@@ -984,7 +984,7 @@ class CreateOppStageGroupView(LoginRequiredMixin, View):
 
             responses = opp_stage_created.send(sender=self.__class__, **signal_kwargs)
 
-            for receiver, response in responses:
+            for _receiver, response in responses:
                 if isinstance(response, HttpResponse):
                     return response
 

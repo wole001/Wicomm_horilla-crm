@@ -441,8 +441,6 @@ def _send_booking_confirmation(booking, company):
     """Send a meeting-invitation-style confirmation email to the booker."""
     from django.conf import settings as _settings
 
-    from horilla.contrib.utils.middlewares import _thread_local
-
     booking_pk = booking.pk
 
     site_url = getattr(_settings, "SITE_URL", "").rstrip("/")
@@ -460,10 +458,8 @@ def _send_booking_confirmation(booking, company):
                 "booking_page__host", "booking_page"
             ).get(pk=booking_pk)
 
-            from horilla.urls import reverse_lazy as _reverse_lazy
-
-            cancel_url = f"{site_url}{_reverse_lazy('booking:booking_cancel', kwargs={'token': booking_obj.cancellation_token})}"
-            reschedule_url = f"{site_url}{_reverse_lazy('booking:booking_reschedule', kwargs={'token': booking_obj.cancellation_token})}"
+            cancel_url = f"{site_url}{reverse_lazy('booking:booking_cancel', kwargs={'token': booking_obj.cancellation_token})}"
+            reschedule_url = f"{site_url}{reverse_lazy('booking:booking_reschedule', kwargs={'token': booking_obj.cancellation_token})}"
 
             send_booking_confirmation_email(
                 booking_obj,

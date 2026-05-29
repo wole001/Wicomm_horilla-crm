@@ -23,9 +23,12 @@ from horilla_crm.forecast.utils import ForecastCalculator
 
 
 class Command(BaseCommand):
+    """Recalculate forecast amounts/quantities from current CRM data."""
+
     help = "Recalculate all existing forecasts to fix any inconsistencies"
 
     def add_arguments(self, parser):
+        """Register optional filters and dry-run flag."""
         parser.add_argument(
             "--user-id",
             type=int,
@@ -48,6 +51,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        """Recalculate forecasts matching optional user, fiscal year, and type filters."""
         user_id = options.get("user_id")
         fiscal_year_id = options.get("fiscal_year_id")
         forecast_type_id = options.get("forecast_type_id")
