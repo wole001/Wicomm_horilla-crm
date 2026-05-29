@@ -22,6 +22,7 @@ class LogMixin:
     BADGE_SKIP = "\033[1;47;97m SKIP \033[0m"  # gray bg,   white text  ← was 30
 
     def section(self, title):
+        """Print a boxed section header."""
         bar = "═" * self.WIDTH
         self.stdout.write(self.style.HTTP_INFO(f"\n╔{bar}╗"))
         padded = title.ljust(self.WIDTH)
@@ -29,21 +30,27 @@ class LogMixin:
         self.stdout.write(self.style.HTTP_INFO(f"╚{bar}╝"))
 
     def step(self, message):
+        """Log an in-progress step message."""
         self.stdout.write(f"{self.BADGE_STEP} {self.style.WARNING(message)}")
 
     def success(self, message):
+        """Log a successful step message."""
         self.stdout.write(f"{self.BADGE_OK} {self.style.SUCCESS(message)}")
 
     def info(self, message):
+        """Log an informational message."""
         self.stdout.write(f"{self.BADGE_INFO} {self.style.NOTICE(message)}")
 
     def warn(self, message):
+        """Log a warning message."""
         self.stdout.write(f"{self.BADGE_WARN} {self.style.WARNING(message)}")
 
     def error(self, message):
+        """Log an error message."""
         self.stdout.write(f"{self.BADGE_ERR} {self.style.ERROR(message)}")
 
     def skip(self, message):
+        """Log a skipped step message."""
         self.stdout.write(f"{self.BADGE_SKIP} {self.style.NOTICE(message)}")
 
     def tree(self, items, label=""):
@@ -56,10 +63,13 @@ class LogMixin:
             self.stdout.write(f"  \033[90m{connector} {k}\033[0m → \033[96m{v}\033[0m")
 
     def divider(self):
+        """Print a horizontal divider line."""
         self.stdout.write(self.style.NOTICE("  " + "─" * (self.WIDTH - 2)))
 
 
 class Command(LogMixin, BaseCommand):
+    """Migrate and remap Horilla CRM v1.9 database labels to v1.10.0."""
+
     help = "Sync db: migrate DB structure, remap app labels, update references"
 
     APP_REMAP = {
@@ -80,6 +90,7 @@ class Command(LogMixin, BaseCommand):
     }
 
     def handle(self, *args, **options):
+        """Run migration remap, content-type updates, audit fixes, and session clear."""
         self.section("SYNC DB STARTED")
         self.info("Syncing DB from Horilla CRM v1.9 to v1.10.0")
 
@@ -171,6 +182,7 @@ class Command(LogMixin, BaseCommand):
     # CONTENT TYPE REMAP
     # =====================================================
     def remap_content_types(self):
+        """Remap ContentType app_label values from legacy horilla_* names."""
         self.warn("Remapping content types...")
 
         new_labels = list(self.APP_REMAP.values())
@@ -186,6 +198,7 @@ class Command(LogMixin, BaseCommand):
     # CUSTOM app_label FIELD UPDATE
     # =====================================================
     def update_app_label_fields(self):
+        """Update stored app_label fields on core models after app rename."""
         self.warn("Updating app_label fields...")
 
         MODELS = [
@@ -224,6 +237,7 @@ class Command(LogMixin, BaseCommand):
     # AUDIT LOG UPDATE
     # =====================================================
     def update_audit_logs(self):
+        """Patch audit log object_repr and changes JSON after app label remap."""
         try:
             LogEntry = apps.get_model("auditlog", "LogEntry")
         except LookupError:
@@ -309,6 +323,7 @@ class Command(LogMixin, BaseCommand):
     # RECYCLE BIN UPDATE
     # =====================================================
     def update_recyclebin_model_names(self):
+        """Rewrite RecycleBin model_name prefixes after app label remap."""
         try:
             RecycleBin = apps.get_model("core", "RecycleBin")
         except LookupError:
