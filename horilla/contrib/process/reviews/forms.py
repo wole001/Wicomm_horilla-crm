@@ -78,6 +78,16 @@ class ReviewFieldsField(forms.Field):
 class ReviewProcessForm(HorillaModelForm):
     """Form fro review process create and update"""
 
+    field_order = [
+        "title",
+        "model",
+        "review_fields",
+        "notify_on_submission",
+        "notify_on_approval",
+        "notify_on_rejection",
+        "is_active",
+    ]
+
     # App-local endpoint so the swapped "Field" select keeps HTMX wiring.
     review_fields = ReviewFieldsField(required=True, label=_("Fields to Review"))
 
@@ -190,15 +200,9 @@ class ReviewProcessForm(HorillaModelForm):
         """Meta class for ReviewProcessForm"""
 
         model = ReviewProcess
-        fields = [
-            "title",
-            "model",
-            "review_fields",
-            "notify_on_submission",
-            "notify_on_approval",
-            "notify_on_rejection",
-            "is_active",
-        ]
+        fields = "__all__"
+        exclude = ["method_title"]
+        keep_on_form = ["is_active"]
 
 
 class ReviewProcessRuleForm(HorillaModelForm):
