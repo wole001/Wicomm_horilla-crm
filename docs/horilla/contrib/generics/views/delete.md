@@ -177,7 +177,7 @@ Referenced by this view:
 ## Example: subclass for an app model
 
 ```python
-from django.urls import reverse_lazy
+from horilla.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
 from horilla.utils.decorators import (

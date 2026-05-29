@@ -117,7 +117,7 @@ Theme app listens to **`pre_logout_signal`** / **`pre_login_render_signal`**—s
 
 ## Business hour views (`views/business_hour.py`)
 
-Nine class-based views manage business hour configuration per company.
+Ten class-based views manage business hour configuration per company.
 
 | View | Base | Purpose |
 |------|------|---------|
@@ -126,9 +126,10 @@ Nine class-based views manage business hour configuration per company.
 | `BusinessHourFormView` | `HorillaSingleFormView` | Create/update business hours; blocks duplicate per company |
 | `BusinessHourHolidayListView` | `HorillaListView` | Filtered list of holidays for a business hour config |
 | `BusinessHourHolidayPanelView` | `View` | Holiday panel partial (HTMX target) |
-| `BusinessHourHolidayToggleView` | `View` | HTMX POST — add or remove a holiday record |
+| `BusinessHourHolidayToggleView` | `View` | HTMX POST — add or remove a holiday record; re-renders panel via `horilla.shortcuts.render` |
 | `BusinessHourHolidayModalView` | `View` | Modal listing all holidays for selection |
 | `BusinessHourAddHolidayView` | `HorillaSingleFormView` | Modal form to create a new holiday entry |
+| `BusinessHourHolidayReadonlyDetailView` | `HolidayDetailView` | Read-only holiday detail opened from the business-hour holiday list (`core:business_hour_holiday_readonly_detail`); `actions = []` |
 | `BusinessHourHolidayRemoveView` | `View` | Remove one holiday from a business hour config |
 
 **Duplicate prevention** — `BusinessHourFormView.get()` checks for an existing `BusinessHour` for the active company before rendering; redirects if one exists rather than allowing creation of a second row.

@@ -284,6 +284,20 @@ Ensures the value you pass into the template (and later into redirects) is safe.
 
 ---
 
+## 📬 Real-world example: mail open tracking
+
+`horilla.contrib.mail.views.core.track.TrackOpenView` returns a 1×1 GIF for email open detection:
+
+```python
+from horilla.http import HttpResponse
+
+return HttpResponse(_PIXEL_GIF, content_type="image/gif")
+```
+
+The pixel URL is built in `horilla.contrib.mail.services` with `horilla.urls.reverse("mail:track_open", kwargs={"uid": …})`. OAuth authorize views in the meeting app use the same module for **`HttpResponseRedirect(provider_auth_url)`**.
+
+---
+
 ## ⚠️ Important guidelines
 
 | Avoid | Prefer |

@@ -5,13 +5,14 @@ Models for the horilla_booking app
 # Standard library imports
 import uuid
 
-# Django imports
+# Third-party imports (Django)
 from django.conf import settings
 
 from horilla.contrib.core.models import HorillaCoreModel
 
-# Horilla imports
+# First party imports (Horilla)
 from horilla.db import models
+from horilla.urls import reverse
 from horilla.utils.translation import gettext_lazy as _
 
 MEETING_PROVIDER_CHOICES = [
@@ -205,7 +206,6 @@ class BookingPage(HorillaCoreModel):
 
     def get_public_url(self, request=None):
         """Return the absolute or relative public booking URL."""
-        from django.urls import reverse
 
         path = reverse("booking:public_booking", kwargs={"slug": self.slug})
         if request:
@@ -214,31 +214,26 @@ class BookingPage(HorillaCoreModel):
 
     def get_edit_url(self):
         """Return the URL for editing this booking page."""
-        from django.urls import reverse
 
         return reverse("booking:booking_page_edit", kwargs={"pk": self.pk})
 
     def get_delete_url(self):
         """Return the URL for deleting this booking page."""
-        from django.urls import reverse
 
         return reverse("booking:booking_page_delete", kwargs={"pk": self.pk})
 
     def get_availability_url(self):
         """Return the URL for managing availability of this booking page."""
-        from django.urls import reverse
 
         return reverse("booking:booking_availability", kwargs={"pk": self.pk})
 
     def get_embed_url(self):
         """Return the embed URL for this booking page."""
-        from django.urls import reverse
 
         return reverse("booking:booking_embed", kwargs={"pk": self.pk})
 
     def get_detail_url(self):
         """Return the detail URL for this booking page."""
-        from django.urls import reverse
 
         return reverse("booking:booking_page_detail", kwargs={"pk": self.pk})
 
@@ -316,6 +311,5 @@ class Booking(HorillaCoreModel):
 
     def get_status_url(self):
         """Return the URL for checking the status of this booking."""
-        from django.urls import reverse
 
         return reverse("booking:booking_status", kwargs={"pk": self.pk})

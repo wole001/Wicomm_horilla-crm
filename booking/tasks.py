@@ -2,11 +2,14 @@
 Celery tasks for horilla_booking — booking reminder emails.
 """
 
+# Standard library imports
 import logging
 from datetime import timedelta
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from celery import shared_task
+
+# Third-party imports (Django)
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.utils import timezone

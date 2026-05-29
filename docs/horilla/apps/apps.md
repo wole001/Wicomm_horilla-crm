@@ -9,7 +9,17 @@ Import it using:
 
 ```python
 from horilla.apps import AppLauncher
-````
+```
+
+For the Django app registry (model lookups in generics, kanban, navbar), use the re-exported registry:
+
+```python
+from horilla.apps import apps
+
+Model = apps.get_model("leads", "Lead")
+```
+
+This is equivalent to `django.apps.apps` but keeps imports consistent with Horilla contrib modules.`
 
 ---
 

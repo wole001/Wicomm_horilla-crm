@@ -1,4 +1,4 @@
-# Kanban view (`horilla_generics/views/kanban.py`)
+# Kanban view (`horilla/contrib/generics/views/kanban.py`)
 
 ## Purpose
 
@@ -85,17 +85,21 @@ Required POST fields:
 Flow:
 
 1. Recreate model-specific view instance from `_view_registry`.
-2. Resolve model via `apps.get_model`.
+2. Resolve model via **`horilla.apps.apps.get_model()`** (kanban base and overrides such as `AcivityKanbanView` use the Horilla re-export, not `django.apps`).
 3. Resolve effective group field via `get_group_by_field()`.
 4. Permission check with `can_user_modify_item`.
 5. Update group field:
    - **Choice**: accepts raw choice key or label (label reverse-mapped),
-   - **ForeignKey**: accepts related pk or `"none"` for nullable.
+   - **ForeignKey**: accepts related pk or `"none"` for nullable; type checks use **`horilla.db.models.ForeignKey`** where needed.
 6. Save item.
 7. Rebuild query params from POST (excluding control fields/CSRF), assign to `view.request.GET`.
 8. Recompute `view.object_list = view.get_queryset()` (important: preserves all list filters/search).
-9. Render `partials/kanban_blocks.html`.
+9. Render `partials/kanban_blocks.html` — **unless** the registered view overrides `update_kanban_item()` (see Activity kanban below).
 10. Set `HX-Push-Url` to `main_url` + reconstructed query string.
+
+### Activity kanban override
+
+`AcivityKanbanView` (activity app) overrides step 9: after saving a drag-drop status change it returns a reload script (`$('#reloadButton').click()`) instead of re-rendering kanban blocks, because one registry entry serves all activity types while tabbed UIs filter to a single type. See [activity.md — Kanban views](../activity/activity.md#kanban-views-viewscorepy).
 
 ### 2) `update_kanban_column_order`
 

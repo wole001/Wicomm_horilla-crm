@@ -72,7 +72,6 @@ class MeetingIntegrationSettingsView(LoginRequiredMixin, View):
         permission_required_or_denied("meeting.change_meetingintegrationsetting")
     )
     def dispatch(self, *args, **kwargs):
-        """Require meeting integration settings change permission before dispatch."""
         return super().dispatch(*args, **kwargs)
 
     def _render(self, request, form=None):
@@ -164,7 +163,6 @@ class MeetingAllowedUsersListView(LoginRequiredMixin, HorillaListView):
         permission_required_or_denied("meeting.change_meetingintegrationsetting")
     )
     def dispatch(self, *args, **kwargs):
-        """Require meeting integration settings change permission before dispatch."""
         return super().dispatch(*args, **kwargs)
 
     def get_queryset(self):
@@ -208,7 +206,6 @@ class MeetingAllowedRolesListView(LoginRequiredMixin, HorillaListView):
         permission_required_or_denied("meeting.change_meetingintegrationsetting")
     )
     def dispatch(self, *args, **kwargs):
-        """Require meeting integration settings change permission before dispatch."""
         return super().dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -242,14 +239,12 @@ class MeetingAccessRolesView(LoginRequiredMixin, HorillaSingleFormView):
         permission_required_or_denied("meeting.change_meetingintegrationsetting")
     )
     def dispatch(self, *args, **kwargs):
-        """Require meeting integration settings change permission before dispatch."""
         return super().dispatch(*args, **kwargs)
 
     def _get_m2m_picker_info(self):
         return {}
 
     def get_form(self, form_class=None):
-        """Scope allowed_roles queryset and initial values to the active company."""
         form = super().get_form(form_class)
         company = _get_active_company(self.request)
         setting = MeetingIntegrationSetting.get_for_company(company)
@@ -301,11 +296,9 @@ class MeetingAccessUsersView(LoginRequiredMixin, HorillaSingleFormView):
         permission_required_or_denied("meeting.change_meetingintegrationsetting")
     )
     def dispatch(self, *args, **kwargs):
-        """Require meeting integration settings change permission before dispatch."""
         return super().dispatch(*args, **kwargs)
 
     def get_form(self, form_class=None):
-        """Scope allowed_users queryset and initial values to the active company."""
         form = super().get_form(form_class)
         company = _get_active_company(self.request)
         setting = MeetingIntegrationSetting.get_for_company(company)
@@ -680,7 +673,7 @@ class ZoomCallbackView(View):
         """Exchange the callback for tokens, set flash messages, then return to settings."""
         from horilla.contrib.meeting.oauth.zoom import handle_callback
 
-        _config, error = handle_callback(request)
+        config, error = handle_callback(request)
         if error:
             messages.error(request, f"Zoom OAuth error: {error}")
         else:
@@ -722,7 +715,7 @@ class TeamsCallbackView(View):
         """Complete the OAuth dance, set flash messages, then return to settings."""
         from horilla.contrib.meeting.oauth.teams import handle_callback
 
-        _config, error = handle_callback(request)
+        config, error = handle_callback(request)
         if error:
             messages.error(request, f"Teams OAuth error: {error}")
         else:

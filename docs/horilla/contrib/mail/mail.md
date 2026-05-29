@@ -101,11 +101,31 @@ Registers APScheduler / Celery beat entries for mailbox sync or retry queues (im
 
 ---
 
+## Open tracking (`services.py`, `views/core/track.py`)
+
+Outbound HTML from **`HorillaMailManager.send_mail()`** appends a 1×1 tracking pixel when the body is HTML:
+
+1. **`reverse("mail:track_open", kwargs={"uid": str(mail.tracking_uid)})`** — built via `horilla.urls.reverse` (not `django.urls`).
+2. **`SITE_URL`** from settings, or the current request's absolute URI (honours `X-Forwarded-Host` / `X-Forwarded-Proto` for ngrok and reverse proxies).
+3. An invisible `<img>` tag is appended to the HTML body before SMTP send.
+
+**`TrackOpenView`** (`mail/track-open/<uuid:uid>/`, name `mail:track_open`):
+
+- Public GET endpoint (no login).
+- Looks up `HorillaMail` by `tracking_uid`.
+- On first open: sets `opened_at`, updates `mail_status` to `"opened"`, saves.
+- Returns a transparent GIF via **`horilla.http.HttpResponse`** (`content_type="image/gif"`).
+
+Model fields involved: `HorillaMail.tracking_uid` (UUID, set on create), `opened_at`, and `mail_status` choice `"opened"`.
+
+---
+
 ## Typical flows
 
 1. Admin configures **outgoing** server → automation picks it via FK or falls back to primary.
-2. **HorillaAutomation** with `delivery_channel=mail` renders **`HorillaMailTemplate`** with context from triggering instance → `HorillaMail` row created → Celery sends SMTP.
+2. **HorillaAutomation** with `delivery_channel=mail` renders **`HorillaMailTemplate`** with context from triggering instance → `HorillaMail` row created → Celery sends SMTP (pixel injected when HTML).
 3. User composes one-off mail from record detail → same models, different view.
+4. Recipient opens the message → browser loads the pixel → `TrackOpenView` records the first open.
 
 ---
 

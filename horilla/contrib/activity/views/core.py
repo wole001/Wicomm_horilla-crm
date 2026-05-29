@@ -366,9 +366,8 @@ class AcivityKanbanView(LoginRequiredMixin, HorillaKanbanView):
         kanban via reloadButton. We cannot re-render inline because the registry
         maps Activity → this view (all types), but the tabs each show only one type.
         """
-        from django.db.models import ForeignKey
-
         from horilla.apps import apps as horilla_apps
+        from horilla.db.models import ForeignKey
 
         item_id = request.POST.get("item_id")
         new_column = request.POST.get("new_column")

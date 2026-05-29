@@ -19,6 +19,18 @@ Many Horilla modules (views, models, forms) import URL helpers like:
 
 The `horilla/urls/__init__.py` module is designed to be **safe to import early**, because it only re-exports primitives from `django.urls` and does **not** import the project root URL configuration.
 
+### Convention in app code
+
+Prefer **`horilla.urls`** over direct **`django.urls`** imports in models, views, tasks, menus, and services — even though the symbols are thin re-exports. This keeps imports consistent across contrib apps (booking model helpers, mail tracking pixels, navbar actions, etc.) and avoids accidentally pulling in project URLconf during early startup.
+
+```python
+# ✅ Preferred in Horilla apps
+from horilla.urls import reverse, reverse_lazy, path
+
+# ❌ Avoid in new Horilla code when horilla.urls exports the symbol
+from django.urls import reverse
+```
+
 ---
 
 ## 📦 Module layout

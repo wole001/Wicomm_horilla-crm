@@ -164,6 +164,28 @@ Named URL routes (for reference): `activity:meeting_create_form`, `activity:meet
 
 ---
 
+## Kanban views (`views/core.py`)
+
+| View | Purpose |
+|------|---------|
+| `AcivityKanbanView` | All-type activity kanban (backward compatible); groups by `status` |
+| `AllActivityKanbanTabbedView` | Tabbed kanban — one activity type per tab |
+
+### `AcivityKanbanView.update_kanban_item` override
+
+The generic kanban POST handler normally re-renders `partials/kanban_blocks.html` inline. Activities override this because the view registry maps **Activity → one kanban class for all types**, while tabbed UIs each show a single `activity_type`.
+
+After drag-drop:
+
+1. Resolves the model with **`horilla.apps.apps.get_model()`** (not `django.apps`).
+2. Type-checks FK group fields with **`horilla.db.models.ForeignKey`** (not `django.db.models`).
+3. Saves the status (or FK) change on the item.
+4. Returns `<script>$('#reloadButton').click();</script>` so the active tab's kanban reloads instead of swapping a partial that would mix all activity types.
+
+Permission checks use `can_user_modify_item()`; failures also trigger `#reloadButton`.
+
+---
+
 ## Create/update views (`views/create_view/`)
 
 All four views extend **`HorillaSingleFormView`** with **`ActivityOwnerPermissionMixin`**, **`LoginRequiredMixin`**, and `@method_decorator(htmx_required, name="dispatch")`.

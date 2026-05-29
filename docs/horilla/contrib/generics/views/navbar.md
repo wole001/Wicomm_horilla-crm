@@ -1,4 +1,4 @@
-# Horilla Navbar View (`horilla_generics/views/navbar.py`)
+# Horilla Navbar View (`horilla/contrib/generics/views/navbar.py`)
 
 ## 🎯 Purpose
 
@@ -12,6 +12,18 @@ It supports:
 - optional UI actions (import / add column / settings modals) when permissions allow
 
 The class is designed to be subclassed by feature-specific Navbar classes (example: `LeadNavbar`).
+
+### Implementation imports
+
+`navbar.py` uses Horilla shims (not raw Django registry/query imports):
+
+```python
+from horilla.apps import apps
+from horilla.db.models import Q
+from horilla.urls import resolve, reverse_lazy
+```
+
+Saved filter lists and pinned views resolve models through `horilla.apps.apps.get_model()` when building dropdown context.
 
 ---
 

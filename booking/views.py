@@ -8,11 +8,12 @@ import logging
 from datetime import date, datetime, timedelta
 from functools import cached_property
 
-# Django imports
+# Third-party imports (Django)
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 from django.views.generic import View
 
+# First party imports (Horilla)
 from horilla.contrib.generics.views import (
     HorillaListView,
     HorillaNavView,
@@ -20,7 +21,7 @@ from horilla.contrib.generics.views import (
     HorillaSingleFormView,
     HorillaView,
 )
-from horilla.http import HttpResponse, JsonResponse
+from horilla.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import (
@@ -36,9 +37,6 @@ from .forms import BookingPageForm
 from .models import Booking, BookingPage
 from .signals import booking_submitted
 from .utils import _get_day_hours, get_available_slots
-
-# Horilla imports
-
 
 _get_schedule_hours = _get_day_hours
 
@@ -67,8 +65,6 @@ class GoToWorkingHoursView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         """Activate the Working Hours tab and redirect to Company Information."""
-        from django.http import HttpResponseRedirect
-
         from horilla.contrib.core.models import ActiveTab
 
         tab_path = "/company-tab-view/"

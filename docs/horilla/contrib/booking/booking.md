@@ -75,6 +75,7 @@ An individual booking submitted by a visitor.
 | `meeting_url` | `URLField` | Video conference join link |
 | `cancellation_token` | `UUIDField` | Unguessable token used in cancel/reschedule links |
 | `cancellation_reason` | `TextField` | Optional reason supplied when cancelling |
+| `booker_timezone` | `CharField` | IANA timezone name detected from the visitor's browser (used in reminder/confirmation email formatting) |
 | `activity` | OneToOne → `activity.Activity` | Meeting activity created on booking confirmation |
 
 Database indexes are on `(booking_page, start_datetime)`, `booker_email`, and `status`.
@@ -186,7 +187,7 @@ from django.dispatch import Signal
 booking_submitted = Signal()
 ```
 
-Fired by `PublicBookingView` after the `Booking` record is saved.
+Fired by `PublicBookingView` after the `Booking` record is saved. When the page is online with a meeting provider, the view calls `generate_meeting_url()` from `horilla.contrib.meeting.views` (via a thin adapter) and persists `booking.meeting_url` before the signal fires.
 
 **Keyword arguments:**
 
@@ -201,10 +202,27 @@ Receivers in `horilla_crm.leads` create a `Lead`, `Contact`, and `Activity` from
 
 ---
 
+## Import conventions
+
+Booking follows Horilla CRM import shims (not raw Django URL/HTTP helpers):
+
+| Use case | Import |
+|---|---|
+| Model URL helpers (`get_public_url`, `get_edit_url`, …) | `from horilla.urls import reverse` |
+| Celery tasks (cancel/reschedule links in HTML) | `from horilla.urls import reverse_lazy` |
+| Views | `from horilla.http import HttpResponse, HttpResponseRedirect, JsonResponse` |
+| Template rendering / 404 | `from horilla.shortcuts import get_object_or_404, render` |
+
+`BookingPage` and `Booking` URL helper methods call `reverse("booking:…")` at module level — no inline `django.urls` imports.
+
+---
+
 ## Email Notifications (`booking/tasks.py`)
 
 Three functions send transactional emails. All use `HorillaMailConfiguration` for SMTP routing
 (falls back to `DEFAULT_FROM_EMAIL`).
+
+Reminder and confirmation bodies format datetimes in the **booker's timezone** when `booker_timezone` is set (`ZoneInfo` with fallback to the server timezone). Cancel/reschedule links use `reverse_lazy("booking:booking_cancel", …)` and `reverse_lazy("booking:booking_reschedule", …)` with the booking's `cancellation_token`.
 
 | Function | Trigger | Template override field |
 |---|---|---|

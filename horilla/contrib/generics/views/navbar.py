@@ -8,12 +8,11 @@ from functools import cached_property
 from urllib.parse import urlencode
 
 # Third-party imports (Django)
-from django.apps import apps
 from django.views.generic import TemplateView
 
-from horilla.contrib.core.models import PinnedView, SavedFilterList
-
 # First party imports (Horilla)
+from horilla.apps import apps
+from horilla.contrib.core.models import PinnedView, SavedFilterList
 from horilla.db.models import Q
 from horilla.urls import resolve, reverse_lazy
 from horilla.utils.translation import gettext_lazy as _

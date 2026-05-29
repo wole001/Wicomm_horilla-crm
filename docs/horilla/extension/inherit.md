@@ -95,3 +95,7 @@ The metaclass treats Horilla fields (`from horilla.db import models`) as Django 
 Migration autodetector patching runs when **`horilla.contrib.core`** finishes loading (`CoreConfig.ready()`). Do not import `horilla.extension` from `horilla/__init__.py` or you may see `AppRegistryNotReady` during `manage.py` startup.
 
 See [Plan_HORILLA_INHERIT_MIGRATION.md](../../Plan_HORILLA_INHERIT_MIGRATION.md) §4.5 for architecture details.
+
+## Related: form extensions (planned)
+
+Model `_inherit` adds DB columns; **forms** are extended separately via `_inherit_form` on concrete child classes such as `LeadSingleForm(OwnerQuerysetMixin, HorillaModelForm)`. Full design: [form_extension.md](./form_extension.md).

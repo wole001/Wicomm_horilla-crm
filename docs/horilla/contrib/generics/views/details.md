@@ -136,7 +136,7 @@ This mirrors how **`LeadDetailView`** is wired: **`model`** registers the view f
 ```python
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
-from django.urls import reverse_lazy
+from horilla.urls import reverse_lazy
 from horilla.utils.decorators import permission_required_or_denied
 from horilla_generics.views.details import HorillaDetailView
 from horilla_crm.leads.models import Lead

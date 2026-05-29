@@ -3,12 +3,14 @@ Tracking pixel view for email open detection.
 """
 
 # Third-party imports (Django)
-from django.http import HttpResponse
 from django.utils import timezone
 from django.views import View
 
+# First party imports (Horilla)
+from horilla.http import HttpResponse
+
 # Local imports
-from horilla.contrib.mail.models import HorillaMail
+from ...models import HorillaMail
 
 # 1×1 transparent GIF
 _PIXEL_GIF = (

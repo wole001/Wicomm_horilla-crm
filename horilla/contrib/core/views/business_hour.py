@@ -12,12 +12,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView, View
 
-from horilla.contrib.generics.views import (
-    HorillaListView,
-    HorillaModalDetailView,
-    HorillaSingleFormView,
-)
+from horilla.contrib.generics.views import HorillaListView, HorillaSingleFormView
 from horilla.http import HttpResponse
+from horilla.shortcuts import render
 
 # First-party imports (Horilla)
 from horilla.urls import reverse, reverse_lazy
@@ -288,7 +285,6 @@ class BusinessHourHolidayToggleView(LoginRequiredMixin, TemplateView):
             .exclude(id__in=linked_ids)
             .order_by("start_date", "name"),
         }
-        from django.shortcuts import render
 
         return render(request, self.template_name, context)
 
