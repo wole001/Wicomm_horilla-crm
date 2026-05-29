@@ -1,7 +1,7 @@
 """
 Core models for the approvals app.
 
-- ApprovalRule: one *approval process* (module, name, triggers, process-level actions in process_config).
+- ApprovalRule: one *approval process* (module, name, triggers).
 - ApprovalProcessRule: one *rule* inside the process (criteria + approvers); multiple per process.
 - ApprovalCondition / ApprovalStep: belong to a process rule.
 
@@ -26,7 +26,7 @@ from horilla.utils.translation import gettext_lazy as _
 
 class ApprovalRule(HorillaCoreModel):
     """
-    Holds module, execution triggers, and optional legacy process_config.
+    Holds module, execution triggers for an approval process.
     Per-rule steps 3–6 live on ApprovalProcessRule.rule_config.
     """
 
@@ -51,13 +51,6 @@ class ApprovalRule(HorillaCoreModel):
         default=False,
         verbose_name=_("When record is edited"),
         help_text=_("Run this process when a record is edited."),
-    )
-    process_config = models.JSONField(
-        default=dict,
-        blank=True,
-        help_text=_(
-            "Optional process-wide defaults. Prefer rule_config on each process rule."
-        ),
     )
 
     def get_detail_url(self):

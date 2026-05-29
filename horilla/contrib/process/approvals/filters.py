@@ -34,5 +34,5 @@ class ApprovalRuleFilter(HorillaFilterSet):
 
         model = ApprovalRule
         fields = "__all__"
-        exclude = ["additional_info", "process_config"]
+        exclude = ["additional_info"]
         search_fields = ["name"]

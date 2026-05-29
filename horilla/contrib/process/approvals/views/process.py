@@ -178,14 +178,7 @@ class ApprovalProcessCreateUpdateView(LoginRequiredMixin, HorillaSingleFormView)
 
     model = ApprovalRule
     form_class = ApprovalRuleForm
-    fields = [
-        "name",
-        "model",
-        "trigger_on_create",
-        "trigger_on_edit",
-        "is_active",
-    ]
-    full_width_fields = ["name", "model"]
+    full_width_fields = ["description"]
     modal_height = False
     save_and_new = False
     form_title = _("Approval Process")

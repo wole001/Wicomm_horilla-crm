@@ -84,17 +84,21 @@ class ApprovalBaseForm(HorillaModelForm):
 class ApprovalRuleForm(ApprovalBaseForm):
     """Create/edit approval process only (module, name, triggers). Criteria are per process rule."""
 
+    field_order = fields = [
+        "name",
+        "model",
+        "trigger_on_create",
+        "trigger_on_edit",
+        "is_active",
+        "description",
+    ]
+
     class Meta:
         """Meta options for ApprovalRuleForm."""
 
         model = ApprovalRule
-        fields = [
-            "name",
-            "model",
-            "trigger_on_create",
-            "trigger_on_edit",
-            "is_active",
-        ]
+        fields = "__all__"
+        keep_on_form = ["is_active"]
 
     def clean(self):
         cleaned_data = super().clean()
