@@ -34,8 +34,8 @@ logger = logging.getLogger(__name__)
 @method_decorator(
     permission_required_or_denied(
         [
-            "mail.view_horillamailconfiguration",
-            "mail.add_horillamailconfiguration",
+            "mail.add_horillamail",
+            "mail.add_own_horillamail",
         ]
     ),
     name="dispatch",
@@ -64,6 +64,22 @@ class HorillaMailFormView(LoginRequiredMixin, TemplateView):
                     ),
                 },
             )
+        if not request.user.has_perm("mail.add_horillamail"):
+            model_name = request.GET.get("model_name")
+            object_id = request.GET.get("object_id")
+            if model_name and object_id:
+                try:
+                    ct = HorillaContentType.objects.get(model=model_name.lower())
+                    model_class = apps.get_model(ct.app_label, ct.model)
+                    related_obj = model_class.objects.get(pk=object_id)
+                    owner_fields = getattr(model_class, "OWNER_FIELDS", [])
+                    if not any(
+                        getattr(related_obj, f, None) == request.user
+                        for f in owner_fields
+                    ):
+                        return render(request, "403.html", status=403)
+                except Exception:
+                    return render(request, "403.html", status=403)
         pk = kwargs.get("pk") or request.GET.get("pk")
         cancel = self.request.GET.get("cancel") == "true"
         if pk:
@@ -309,6 +325,25 @@ class HorillaMailFormView(LoginRequiredMixin, TemplateView):
                             "<script>closehorillaModal();"
                             "htmx.trigger('#reloadButton','click');</script>"
                         )
+
+            if (
+                not request.user.has_perm("mail.add_horillamail")
+                and content_type
+                and form_data.get("object_id")
+            ):
+                try:
+                    model_class = apps.get_model(
+                        content_type.app_label, content_type.model
+                    )
+                    related_obj = model_class.objects.get(pk=form_data["object_id"])
+                    owner_fields = getattr(model_class, "OWNER_FIELDS", [])
+                    if not any(
+                        getattr(related_obj, f, None) == request.user
+                        for f in owner_fields
+                    ):
+                        return render(request, "403.html", status=403)
+                except Exception:
+                    return render(request, "403.html", status=403)
 
             # For sending mail, only use existing draft if pk exists, don't create new draft
             # Create a mail object for sending (will be saved only if successfully sent)

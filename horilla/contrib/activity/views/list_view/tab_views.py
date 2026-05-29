@@ -316,7 +316,12 @@ class CallListView(ActivityTabListMixin, HorillaListView):
 @method_decorator(htmx_required, name="dispatch")
 @method_decorator(
     permission_required_or_denied(
-        ["activity.view_activity", "activity.view_own_activity"]
+        [
+            "mail.view_horillamail",
+            "mail.view_own_horillamail",
+            "mail.add_horillamail",
+            "mail.add_own_horillamail",
+        ]
     ),
     name="dispatch",
 )
@@ -484,6 +489,12 @@ class EmailListView(HorillaListView):
             else:
                 queryset = queryset.filter(mail_status=view_type)
             self.view_id = status_view_map[view_type]
+
+        user = self.request.user
+        if not user.has_perm("mail.view_horillamail") and not user.has_perm(
+            "mail.add_horillamail"
+        ):
+            queryset = queryset.filter(created_by=user)
 
         return queryset
 

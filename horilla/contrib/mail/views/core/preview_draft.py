@@ -107,8 +107,8 @@ def _sanitize_html(content):
 @method_decorator(
     permission_required_or_denied(
         [
-            "mail.change_horillamailconfiguration",
-            "mail.view_horillamailconfiguration",
+            "mail.view_horillamail",
+            "mail.view_own_horillamail",
         ]
     ),
     name="dispatch",
@@ -125,6 +125,11 @@ class HorillaMailPreviewView(LoginRequiredMixin, View):
 
         pk = self.kwargs.get("pk")
         draft_mail = HorillaMail.objects.filter(pk=pk).first()
+        if not draft_mail:
+            return HttpResponse(status=404)
+        if not request.user.has_perm("mail.view_horillamail"):
+            if draft_mail.created_by != request.user:
+                return render(request, "403.html", status=403)
         try:
             from_mail_config = HorillaMailConfiguration.objects.get(
                 id=draft_mail.sender.id
@@ -369,8 +374,10 @@ class HorillaMailPreviewView(LoginRequiredMixin, View):
 @method_decorator(
     permission_required_or_denied(
         [
-            "mail.change_horillamailconfiguration",
-            "mail.view_horillamailconfiguration",
+            "mail.add_horillamail",
+            "mail.add_own_horillamail",
+            "mail.change_horillamail",
+            "mail.change_own_horillamail",
         ]
     ),
     name="dispatch",
@@ -399,8 +406,10 @@ class CheckDraftChangesView(LoginRequiredMixin, View):
 @method_decorator(
     permission_required_or_denied(
         [
-            "mail.change_horillamailconfiguration",
-            "mail.view_horillamailconfiguration",
+            "mail.add_horillamail",
+            "mail.add_own_horillamail",
+            "mail.change_horillamail",
+            "mail.change_own_horillamail",
         ]
     ),
     name="dispatch",
@@ -577,8 +586,10 @@ class SaveDraftView(LoginRequiredMixin, View):
 @method_decorator(
     permission_required_or_denied(
         [
-            "mail.change_horillamailconfiguration",
-            "mail.view_horillamailconfiguration",
+            "mail.add_horillamail",
+            "mail.add_own_horillamail",
+            "mail.change_horillamail",
+            "mail.change_own_horillamail",
         ]
     ),
     name="dispatch",

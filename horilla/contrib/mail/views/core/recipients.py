@@ -29,8 +29,8 @@ logger = logging.getLogger(__name__)
 @method_decorator(
     permission_required_or_denied(
         [
-            "mail.change_horillamailconfiguration",
-            "mail.add_horillamailconfiguration",
+            "mail.change_horillamail",
+            "mail.change_own_horillamail",
         ]
     ),
     name="dispatch",
@@ -71,8 +71,8 @@ class AddEmailView(LoginRequiredMixin, View):
 @method_decorator(
     permission_required_or_denied(
         [
-            "mail.change_horillamailconfiguration",
-            "mail.add_horillamailconfiguration",
+            "mail.change_horillamail",
+            "mail.change_own_horillamail",
         ]
     ),
     name="dispatch",
@@ -114,8 +114,8 @@ class RemoveEmailView(LoginRequiredMixin, View):
 @method_decorator(
     permission_required_or_denied(
         [
-            "mail.change_horillamailconfiguration",
-            "mail.view_horillamailconfiguration",
+            "mail.view_horillamail",
+            "mail.view_own_horillamail",
         ]
     ),
     name="dispatch",
@@ -266,8 +266,8 @@ class EmailSuggestionView(LoginRequiredMixin, View):
 @method_decorator(
     permission_required_or_denied(
         [
-            "mail.change_horillamailconfiguration",
-            "mail.view_horillamailconfiguration",
+            "mail.view_horillamail",
+            "mail.view_own_horillamail",
         ]
     ),
     name="dispatch",

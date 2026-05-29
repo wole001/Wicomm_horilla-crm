@@ -36,6 +36,7 @@
                         <i class="fa-solid fa-phone"></i> {% trans "Call" %}
                     </a>
                 </li>
+                {% if can_view_mail %}
                 <li>
                     <a
                         href="#"
@@ -45,6 +46,7 @@
                         <i class="fa-solid fa-envelope"></i> {% trans "Email" %}
                     </a>
                 </li>
+                {% endif %}
                 <li>
                     <a
                         href="#"
@@ -235,6 +237,7 @@
                 </div>
 
                 <!-- Emails Tab -->
+                {% if can_view_mail %}
                 <div id="tab-email" class="tab-content hidden p-2 pt-0 text-sm">
                     <div class="flex flex-wrap gap-y-2 justify-between mb-2">
                         <ul id="activity-followup-tabs3" class="flex gap-2 text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -275,7 +278,7 @@
                                 </button>
                             </li>
                         </ul>
-                        {% if can_add_activity %}
+                        {% if can_send_mail %}
                             {% if add_email_button.url %}
                                 <button
                                     hx-get="{{ add_email_button.url }}?object_id={{ obj.pk }}&model_name={{obj|model_name}}"
@@ -302,6 +305,7 @@
                     >
                     </div>
                 </div>
+                {% endif %}
 
                 <!-- Events Tab -->
                 <div id="tab-events" class="tab-content hidden p-2 pt-0 text-sm">

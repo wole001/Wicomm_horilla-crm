@@ -28,23 +28,26 @@ logger = logging.getLogger(__name__)
 class FiscalYearForm(HorillaModelForm):
     """Form class for FiscalYear model."""
 
+    field_order = [
+        "fiscal_year_type",
+        "start_date_month",
+        "display_year_based_on",
+        "start_date_day",
+        "format_type",
+        "year_based_format",
+        "quarter_based_format",
+        "week_start_day",
+        "number_weeks_by",
+        "period_display_option",
+        "company",
+    ]
+
     class Meta:
         """Meta options for FiscalYearForm."""
 
         model = FiscalYear
-        fields = [
-            "fiscal_year_type",
-            "start_date_month",
-            "display_year_based_on",
-            "start_date_day",
-            "format_type",
-            "year_based_format",
-            "quarter_based_format",
-            "week_start_day",
-            "number_weeks_by",
-            "period_display_option",
-            "company",
-        ]
+        fields = "__all__"
+        keep_on_form = ["company"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -600,18 +603,30 @@ class BusinessHourForm(HorillaModelForm):
 class RegionalFormattingForm(HorillaModelForm):
     """Form class for updating user's regional formatting settings."""
 
+    field_order = [
+        "date_format",
+        "time_format",
+        "date_time_format",
+        "language",
+        "time_zone",
+        "currency",
+        "number_grouping",
+    ]
+
     class Meta:
         """Meta options for RegionalFormattingForm."""
 
         model = User
-        fields = [
-            "date_format",
-            "time_format",
-            "date_time_format",
-            "language",
-            "time_zone",
-            "currency",
-            "number_grouping",
+        fields = "__all__"
+        exclude = [
+            "password",
+            "last_login",
+            "date_joined",
+            "is_superuser",
+            "username",
+            "is_staff",
+            "groups",
+            "user_permissions",
         ]
 
     def __init__(self, *args, **kwargs):

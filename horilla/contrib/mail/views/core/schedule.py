@@ -10,12 +10,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 from django.views import View
 
+# First party imports (Horilla)
+from horilla.apps import apps
 from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.generics.views import HorillaSingleDeleteView
 from horilla.contrib.utils.middlewares import _thread_local
 from horilla.http import HttpResponse
-
-# First party imports (Horilla)
 from horilla.shortcuts import get_object_or_404, render
 from horilla.utils.decorators import (
     htmx_required,
@@ -33,7 +33,9 @@ logger = logging.getLogger(__name__)
 
 @method_decorator(htmx_required, name="dispatch")
 @method_decorator(
-    permission_required_or_denied("mail.delete_horillamailconfiguration", modal=True),
+    permission_required_or_denied(
+        ["mail.delete_horillamail", "mail.delete_own_horillamail"], modal=True
+    ),
     name="dispatch",
 )
 class HorillaMailtDeleteView(LoginRequiredMixin, HorillaSingleDeleteView):
@@ -48,6 +50,11 @@ class HorillaMailtDeleteView(LoginRequiredMixin, HorillaSingleDeleteView):
         self.view_param = None
 
     def post(self, request, *args, **kwargs):
+        if not request.user.has_perm("mail.delete_horillamail"):
+            pk = kwargs.get("pk") or self.kwargs.get("pk")
+            mail = get_object_or_404(HorillaMail, pk=pk)
+            if mail.created_by != request.user:
+                return HttpResponse(status=403)
         view_from_get = request.GET.get("view")
         if view_from_get:
             pk = kwargs.get("pk") or self.kwargs.get("pk")
@@ -86,8 +93,8 @@ class HorillaMailtDeleteView(LoginRequiredMixin, HorillaSingleDeleteView):
 @method_decorator(
     permission_required_or_denied(
         [
-            "mail.view_horillamailconfiguration",
-            "mail.add_horillamailconfiguration",
+            "mail.add_horillamail",
+            "mail.add_own_horillamail",
         ]
     ),
     name="dispatch",
@@ -162,6 +169,19 @@ class ScheduleMailView(LoginRequiredMixin, View):
             return self._render_error_response(
                 request, errors, pk=pk, is_reschedule=True, scheduled_at=scheduled_at
             )
+
+        if not request.user.has_perm("mail.add_horillamail"):
+            if draft_mail.created_by != request.user:
+                errors["non_field_error"] = _(
+                    "You do not have permission to reschedule this mail."
+                )
+                return self._render_error_response(
+                    request,
+                    errors,
+                    pk=pk,
+                    is_reschedule=True,
+                    scheduled_at=scheduled_at,
+                )
 
         schedule_at, validation_errors = self._validate_schedule_datetime(scheduled_at)
         if validation_errors:
@@ -310,6 +330,44 @@ class ScheduleMailView(LoginRequiredMixin, View):
                     scheduled_at,
                 )
 
+        if (
+            content_type
+            and object_id
+            and not request.user.has_perm("mail.add_horillamail")
+        ):
+            try:
+                model_class = apps.get_model(content_type.app_label, content_type.model)
+                related_obj = model_class.objects.get(pk=object_id)
+                owner_fields = getattr(model_class, "OWNER_FIELDS", [])
+                if not any(
+                    getattr(related_obj, f, None) == request.user for f in owner_fields
+                ):
+                    errors["non_field_error"] = _(
+                        "You do not have permission to send mail for this record."
+                    )
+                    return self._render_error_response(
+                        request,
+                        errors,
+                        model_name,
+                        object_id,
+                        pk,
+                        is_reschedule,
+                        scheduled_at,
+                    )
+            except Exception:
+                errors["non_field_error"] = _(
+                    "You do not have permission to send mail for this record."
+                )
+                return self._render_error_response(
+                    request,
+                    errors,
+                    model_name,
+                    object_id,
+                    pk,
+                    is_reschedule,
+                    scheduled_at,
+                )
+
         schedule_at, _unused = self._validate_schedule_datetime(scheduled_at)
 
         draft_mail = self._get_or_create_draft_mail(
@@ -379,8 +437,8 @@ class ScheduleMailView(LoginRequiredMixin, View):
 @method_decorator(
     permission_required_or_denied(
         [
-            "mail.view_horillamailconfiguration",
-            "mail.add_horillamailconfiguration",
+            "mail.add_horillamail",
+            "mail.add_own_horillamail",
         ]
     ),
     name="dispatch",
@@ -398,6 +456,24 @@ class ScheduleMailModallView(LoginRequiredMixin, View):
         pk = request.GET.get("pk") or kwargs.get("pk")
         is_reschedule = bool(kwargs.get("pk"))
         scheduled_at_formatted = ""
+
+        if (
+            not request.user.has_perm("mail.add_horillamail")
+            and model_name
+            and object_id
+        ):
+            try:
+                ct = HorillaContentType.objects.get(model=model_name.lower())
+                model_class = apps.get_model(ct.app_label, ct.model)
+                related_obj = model_class.objects.get(pk=object_id)
+                owner_fields = getattr(model_class, "OWNER_FIELDS", [])
+                if not any(
+                    getattr(related_obj, f, None) == request.user for f in owner_fields
+                ):
+                    return render(request, "403.html", status=403)
+            except Exception:
+                return render(request, "403.html", status=403)
+
         if pk:
             mail = get_object_or_404(HorillaMail, pk=pk)
             if mail.scheduled_at:
