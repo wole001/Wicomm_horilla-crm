@@ -3,9 +3,11 @@ Utility functions for horilla_booking — slot availability calculation.
 Slots are derived from the BookingPage's linked BusinessHour, not BookingAvailability.
 """
 
+# Standard library imports
 from datetime import date, datetime, time, timedelta
 
-from django.utils import timezone
+# First party imports (Horilla)
+from horilla.utils import timezone
 
 # Maps Python weekday() (0=Mon…6=Sun) → BusinessHour day-code
 _WEEKDAY_CODE = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]

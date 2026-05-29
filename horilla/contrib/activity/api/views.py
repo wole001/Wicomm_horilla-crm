@@ -5,7 +5,6 @@ This module mirrors core and accounts API patterns including search, filtering,
 bulk update, bulk delete, permissions, and documentation, adapted for activity-specific logic.
 """
 
-from django.utils import timezone
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions, status, viewsets
@@ -17,6 +16,9 @@ from horilla.contrib.core.api.mixins import BulkOperationsMixin, SearchFilterMix
 from horilla.contrib.core.api.permissions import IsCompanyMember
 from horilla.contrib.core.models import HorillaContentType
 from horilla.db import models
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 
 from ..models import Activity
 from .docs import (

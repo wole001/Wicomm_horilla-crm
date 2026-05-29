@@ -16,10 +16,11 @@ from horilla.contrib.generics.views import HorillaListView
 from horilla.contrib.generics.views.core import HorillaTabView
 from horilla.contrib.mail.models import HorillaMail
 from horilla.db.models import CharField, Count, F, Q, Value
-
-# First party imports (Horilla)
 from horilla.shortcuts import get_object_or_404, redirect
 from horilla.urls import reverse_lazy
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.decorators import (
     htmx_required,
     method_decorator,
@@ -394,7 +395,6 @@ class CadenceCallListView(LoginRequiredMixin, HorillaListView):
         followup_ids = [row.pk for row in rows]
         stats_map = {}
         if followup_ids:
-            from django.utils import timezone
 
             now = timezone.now()
             followup_stats = (

@@ -13,16 +13,16 @@ from io import BytesIO
 
 # Third-party imports (Django)
 from django.db.models.fields.related import ManyToManyField
-from django.utils import timezone
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
 from horilla.db.models import ForeignKey
+from horilla.http import HttpResponse
 
 # First party imports (Horilla)
-from horilla.http import HttpResponse
+from horilla.utils import timezone
 
 logger = logging.getLogger(__name__)
 

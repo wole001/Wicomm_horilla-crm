@@ -11,10 +11,12 @@ from django.db import transaction
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 
-# First-party / Horilla imports
 from horilla.apps import apps
 from horilla.core.exceptions import FieldDoesNotExist
 from horilla.db.models import Case, F, IntegerField, Q, When
+
+# First party imports (Horilla)
+from horilla.db.models.signals import post_save, pre_delete
 
 # Local imports
 from horilla_crm.scoring_rules.models import (

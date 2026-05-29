@@ -7,11 +7,12 @@ Used by datetime_filters, field_filters, display_tags, etc.
 from datetime import date, datetime, time
 from zoneinfo import ZoneInfo
 
-# Third-party imports (Django)
-from django.utils import timezone
+from horilla.contrib.utils.middlewares import _thread_local
 
 # First party imports (Horilla)
-from horilla.contrib.utils.middlewares import _thread_local
+from horilla.utils import timezone
+
+# Third-party imports (Django)
 
 
 def _get_request_user_company():

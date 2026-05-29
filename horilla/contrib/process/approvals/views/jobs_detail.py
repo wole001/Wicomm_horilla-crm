@@ -11,12 +11,9 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import close_old_connections, transaction
 from django.template import Context, Template
-from django.utils import timezone
 from django.views.generic import TemplateView
 
 from horilla.auth.models import User
-
-# First party imports (Horilla)
 from horilla.contrib.activity.models import Activity
 from horilla.contrib.mail.models import (
     HorillaMail,
@@ -27,12 +24,13 @@ from horilla.contrib.mail.services import HorillaMailManager
 from horilla.contrib.notifications.methods import create_notification
 from horilla.contrib.notifications.models import NotificationTemplate
 from horilla.contrib.utils.middlewares import _thread_local
-
-# First party imports (Horilla)
 from horilla.db.models import Q
 from horilla.http import HttpNotFound, HttpResponse, HttpResponseRedirect
 from horilla.shortcuts import get_object_or_404
 from horilla.urls import reverse_lazy
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.translation import gettext_lazy as _
 

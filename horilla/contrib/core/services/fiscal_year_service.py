@@ -16,10 +16,11 @@ from dateutil.relativedelta import relativedelta
 
 # Third-party imports (Django)
 from django.db import transaction
-from django.utils import timezone
+
+from horilla.apps import apps
 
 # First party imports (Horilla)
-from horilla.apps import apps
+from horilla.utils import timezone
 
 # Local imports
 from ..models import FiscalYear

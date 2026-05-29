@@ -9,7 +9,6 @@ from collections.abc import Iterable
 # Django imports
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
-from django.utils import timezone
 from django.utils.html import format_html
 
 # Third-party imports (Django)
@@ -17,10 +16,11 @@ from django_countries.fields import CountryField
 
 from horilla.contrib.utils.methods import render_template
 from horilla.core.exceptions import ValidationError
-
-# First party imports (Horilla)
 from horilla.db import models
 from horilla.urls import reverse_lazy
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.choices import (
     DATE_FORMAT_CHOICES,
     DATETIME_FORMAT_CHOICES,

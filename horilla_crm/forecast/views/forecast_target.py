@@ -9,11 +9,9 @@ from functools import cached_property
 # Third party imports (Django)
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
 
-# First-party / Horilla imports
 from horilla.auth.models import User
 from horilla.contrib.core.models import Period, Role
 from horilla.contrib.generics.views import (
@@ -26,6 +24,9 @@ from horilla.contrib.generics.views import (
 from horilla.http import HttpResponse, HttpResponseRedirect
 from horilla.shortcuts import render
 from horilla.urls import reverse_lazy
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.decorators import (
     htmx_required,
     method_decorator,

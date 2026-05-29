@@ -10,9 +10,7 @@ import threading
 # Third-party imports (Django)
 from django.db import connection, transaction
 from django.template import engines
-from django.utils import timezone
 
-# First-party imports (Horilla)
 from horilla.auth.models import User
 
 # Re-use the battle-tested MockRequest from automations rather than defining our own
@@ -26,6 +24,9 @@ from horilla.contrib.mail.models import (
 from horilla.contrib.mail.services import HorillaMailManager
 from horilla.contrib.notifications.methods import create_notification
 from horilla.contrib.utils.middlewares import _thread_local
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 
 # Local imports
 from .models import ScheduledWorkflowExecution, WorkflowRule

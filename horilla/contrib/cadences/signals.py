@@ -10,22 +10,21 @@ from datetime import timedelta
 
 # Third-party imports (Django)
 from django.db import transaction
-from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from django.utils import timezone
 
-# First party imports (Horilla)
 from horilla.contrib.activity.models import Activity
 from horilla.contrib.automations.methods import (
     evaluate_condition,
     resolve_mail_recipients,
 )
-
-# First party imports (Horilla)
 from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.mail.models import HorillaMail, HorillaMailConfiguration
 from horilla.contrib.mail.services import HorillaMailManager
 from horilla.contrib.utils.middlewares import _thread_local
+from horilla.db.models.signals import post_save, pre_save
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 
 # Local imports
 from .models import Cadence, CadenceFollowUp

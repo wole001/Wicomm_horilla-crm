@@ -9,18 +9,16 @@ This module provides middleware for:
 # Standard library imports
 import logging
 
-# Django imports
 # Third-party imports (Django)
-from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
 
 from horilla.http import HttpNotFound, HttpResponse, HttpResponseNotAllowed
 from horilla.menu.sub_section_menu import sub_section_menu as menu_registry
 from horilla.shortcuts import redirect, render
-
-# First-party imports (Horilla)
-# First party imports (Horilla)
 from horilla.urls import Resolver404, resolve
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 
 # Local imports
 from .models import Company

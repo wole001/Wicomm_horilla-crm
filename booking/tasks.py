@@ -12,7 +12,11 @@ from celery import shared_task
 # Third-party imports (Django)
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives, get_connection
-from django.utils import timezone
+
+# First party imports (Horilla)
+from horilla.contrib.mail.models import HorillaMailConfiguration
+from horilla.urls import reverse_lazy
+from horilla.utils import timezone
 
 
 def _format_for_booker(booking):
@@ -42,9 +46,6 @@ def _format_for_host(booking):
     end_str = local_end.strftime("%I:%M %p")
     return f"{start_str} – {end_str} ({tz_label})"
 
-
-from horilla.contrib.mail.models import HorillaMailConfiguration
-from horilla.urls import reverse_lazy
 
 logger = logging.getLogger(__name__)
 

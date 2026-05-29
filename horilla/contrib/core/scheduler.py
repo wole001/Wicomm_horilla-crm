@@ -17,7 +17,9 @@ alongside the Django application.
 # Third-party imports (Django)
 from apscheduler.schedulers.background import BackgroundScheduler
 from django.core.management import call_command
-from django.utils import timezone
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 
 # Local imports
 from .models import RecycleBin, RecycleBinPolicy

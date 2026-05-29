@@ -3,7 +3,6 @@
 # Third-party imports (Django)
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.utils import timezone
 from django.views.generic import TemplateView
 
 from horilla.contrib.generics.views import HorillaListView, HorillaNavView, HorillaView
@@ -11,12 +10,13 @@ from horilla.contrib.generics.views import HorillaListView, HorillaNavView, Hori
 # First party imports (Horilla)
 from horilla.contrib.notifications.methods import create_notification
 from horilla.db import models as db_models
-
-# First party imports (Horilla)
 from horilla.db.models import Q
 from horilla.http import Http404, HttpResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse, reverse_lazy
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.translation import gettext_lazy as _
 

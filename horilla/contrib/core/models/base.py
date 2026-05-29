@@ -13,7 +13,6 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.utils import timezone
 from django.utils.html import format_html
 
 # Third-party imports (Django)
@@ -22,12 +21,13 @@ from djmoney.settings import CURRENCY_CHOICES
 
 from horilla.apps import apps
 from horilla.contrib.utils.middlewares import _thread_local
-
-# First party imports (Horilla)
 from horilla.db import models
 from horilla.extension import ExtensionModelBase
 from horilla.registry.permission_registry import permission_exempt_model
 from horilla.urls import reverse_lazy
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.choices import (
     DATE_FORMAT_CHOICES,
     DATETIME_FORMAT_CHOICES,

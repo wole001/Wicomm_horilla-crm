@@ -8,14 +8,12 @@ import ast
 import logging
 from datetime import date, datetime, timedelta
 
-# Third-party imports (Django)
-from django.utils import timezone as django_tz
-
 from horilla.db.models import CharField, DateField, DateTimeField, ForeignKey
-
-# First party imports (Horilla)
 from horilla.http import QueryDict
 from horilla.shortcuts import redirect
+
+# First party imports (Horilla)
+from horilla.utils import timezone as django_tz
 from horilla.utils.translation import gettext_lazy as _
 
 # Local imports

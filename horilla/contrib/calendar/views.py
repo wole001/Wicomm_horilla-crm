@@ -7,12 +7,10 @@ import json
 # Third-party imports (Django)
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.utils import timezone
 from django.utils.functional import cached_property  # type: ignore
 from django.views import View
 from django.views.generic import TemplateView
 
-# First-party imports (Horilla)
 from horilla.apps import apps
 from horilla.contrib.activity.models import Activity
 from horilla.contrib.core.utils import get_user_field_permission
@@ -31,6 +29,9 @@ from horilla.contrib.utils.middlewares import _thread_local
 from horilla.http import HttpResponse, JsonResponse
 from horilla.shortcuts import render
 from horilla.urls import reverse_lazy
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.decorators import (
     htmx_required,
     method_decorator,

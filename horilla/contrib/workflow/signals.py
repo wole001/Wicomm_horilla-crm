@@ -9,13 +9,13 @@ feature key and fires matching active WorkflowRules.
 import logging
 
 # Third-party imports (Django)
-from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.utils.middlewares import _thread_local
 
-# First-party imports (Horilla)
+# First party imports (Horilla)
+from horilla.db.models.signals import post_save
 from horilla.registry.feature import FEATURE_REGISTRY
 
 # Local imports

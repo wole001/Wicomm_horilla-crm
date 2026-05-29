@@ -15,12 +15,12 @@ from django.contrib import messages
 from django.core.cache import cache
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.core.mail.backends.smtp import EmailBackend
-from django.utils import timezone
 from requests_oauthlib import OAuth2Session
 
 from horilla.contrib.utils.middlewares import _thread_local
 
 # First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.translation import gettext_lazy as _
 
 # Local imports

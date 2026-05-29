@@ -14,11 +14,9 @@ from urllib.parse import urlencode
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import redirect_to_login
-from django.utils import timezone
 from django.utils.html import format_html
 from django.views.generic import DetailView, TemplateView, View
 
-# First-party / Horilla imports
 from horilla.auth.models import User
 from horilla.contrib.generics.views import (
     HorillaListView,
@@ -31,6 +29,9 @@ from horilla.contrib.utils.middlewares import _thread_local
 from horilla.http import HttpNotFound, HttpResponse, RefreshResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse, reverse_lazy
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.decorators import (
     htmx_required,
     method_decorator,

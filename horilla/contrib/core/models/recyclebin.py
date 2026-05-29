@@ -10,13 +10,13 @@ from datetime import date, datetime
 # Django imports
 # Third-party imports (Django)
 from django.conf import settings
-from django.utils import timezone
 
 from horilla.contrib.utils.middlewares import _thread_local
-
-# First party imports (Horilla)
 from horilla.db import models
 from horilla.urls import reverse_lazy
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.translation import gettext_lazy as _
 
 # Local imports

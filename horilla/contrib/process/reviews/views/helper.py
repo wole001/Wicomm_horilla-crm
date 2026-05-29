@@ -3,9 +3,10 @@ helper view for review job
 """
 
 # Third-party imports (Django)
-from django.utils import timezone
 
 # First party imports (Horilla)
+from horilla.utils import timezone
+
 # Local imports
 from ..models import ReviewJob
 

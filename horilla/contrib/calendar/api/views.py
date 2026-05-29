@@ -5,8 +5,6 @@ This module mirrors core/accounts API patterns including search, filtering,
 bulk update, bulk delete, permissions, and documentation.
 """
 
-# Third-party imports (Django)
-from django.utils import timezone
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
@@ -17,9 +15,10 @@ from rest_framework.response import Response
 
 from horilla.contrib.core.api.docs import BULK_DELETE_DOCS, BULK_UPDATE_DOCS
 from horilla.contrib.core.api.mixins import BulkOperationsMixin, SearchFilterMixin
+from horilla.contrib.core.api.permissions import IsCompanyMember
 
 # First party imports (Horilla)
-from horilla.contrib.core.api.permissions import IsCompanyMember
+from horilla.utils import timezone
 
 # Local imports
 from ..models import UserAvailability, UserCalendarPreference

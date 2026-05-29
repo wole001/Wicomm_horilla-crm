@@ -10,7 +10,6 @@ from urllib.parse import urlencode
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import redirect_to_login
-from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
 
@@ -24,11 +23,12 @@ from horilla.contrib.generics.views import (
     HorillaTabView,
 )
 from horilla.db.models import Case, CharField, Q, Value, When
-
-# First party imports (Horilla)
 from horilla.http import HttpResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse_lazy
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.decorators import (
     htmx_required,
     method_decorator,

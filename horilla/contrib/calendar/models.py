@@ -6,12 +6,13 @@ from django.utils import timezone
 
 from horilla.contrib.core.models import HorillaContentType, HorillaCoreModel
 from horilla.contrib.utils.middlewares import _thread_local
-
-# First party imports (Horilla)
 from horilla.db import models
 from horilla.registry.limiters import limit_content_types
 from horilla.registry.permission_registry import permission_exempt_model
 from horilla.urls import reverse_lazy
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.choices import OPERATOR_CHOICES
 from horilla.utils.translation import gettext_lazy as _
 

@@ -10,7 +10,9 @@ import logging
 
 # Third-party imports (Django)
 from celery import shared_task
-from django.utils import timezone
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 
 logger = logging.getLogger(__name__)
 

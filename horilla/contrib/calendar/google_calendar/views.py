@@ -24,10 +24,12 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from requests_oauthlib import OAuth2Session
 
-# First party imports (Horilla)
 from horilla.http import HttpResponse
 from horilla.shortcuts import redirect, render
 from horilla.urls import reverse, reverse_lazy
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.decorators import method_decorator, permission_required_or_denied
 from horilla.utils.translation import gettext_lazy as _
 
@@ -67,7 +69,6 @@ class GoogleCalendarSettingsView(LoginRequiredMixin, View):
     """
 
     def _render(self, request, form=None, sync_direction_form=None):
-        from django.utils import timezone
 
         config = _get_or_create_config(request.user)
         # Compute the exact redirect URI the user should register in Google Cloud Console
@@ -470,7 +471,6 @@ def _maybe_renew_watch(config, webhook_url, expiration_ms_str):
     expiration_ms_str — X-Goog-Channel-Expiration header value (epoch ms string).
     Falls back to config.watch_expiration if the header is absent or unparseable.
     """
-    from django.utils import timezone
 
     expiry = None
     if expiration_ms_str:

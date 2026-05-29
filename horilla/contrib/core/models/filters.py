@@ -9,15 +9,15 @@ import logging
 
 # Third-party imports (Django)
 from django.conf import settings
-from django.utils import timezone
 
 from horilla.apps import apps
 from horilla.contrib.utils.middlewares import _thread_local
 from horilla.core.exceptions import ValidationError
-
-# First party imports (Horilla)
 from horilla.db import models
 from horilla.registry.permission_registry import permission_exempt_model
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger(__name__)

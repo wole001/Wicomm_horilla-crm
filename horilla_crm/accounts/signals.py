@@ -1,14 +1,15 @@
 """Signal handlers for accounts module."""
 
 # Third-party imports (Django)
-from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-# First party imports (Horilla)
 from horilla.auth.models import User
 from horilla.contrib.core.signals import company_currency_changed
 from horilla.contrib.keys.models import ShortcutKey
 from horilla.contrib.keys.utils import resolve_page_url
+
+# First party imports (Horilla)
+from horilla.db.models.signals import post_save
 
 # First-party / Horilla apps
 from horilla_crm.accounts.models import Account

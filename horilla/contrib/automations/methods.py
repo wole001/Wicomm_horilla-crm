@@ -10,10 +10,8 @@ from urllib.parse import urlencode, urlparse
 # Third-party imports (Django)
 from django.db import transaction
 from django.template import engines
-from django.utils import timezone
 from django.utils.dateparse import parse_date, parse_datetime
 
-# First party imports (Horilla)
 from horilla.auth.models import User
 from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.mail.models import HorillaMail, HorillaMailConfiguration
@@ -21,6 +19,9 @@ from horilla.contrib.mail.services import HorillaMailManager
 from horilla.contrib.notifications.methods import create_notification
 from horilla.contrib.utils.methods import get_section_info_for_model
 from horilla.contrib.utils.middlewares import _thread_local
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 
 # Local imports
 from .models import HorillaAutomation

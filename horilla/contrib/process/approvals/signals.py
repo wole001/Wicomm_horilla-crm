@@ -3,16 +3,16 @@
 # Third-party imports (Django)
 from django.contrib import messages
 from django.db import transaction
-from django.db.models.signals import post_delete, post_save, pre_save
 
 from horilla.apps import apps as horilla_apps
 from horilla.contrib.core.models.base import HorillaContentType
 from horilla.contrib.generics.views.helpers.edit_field import UpdateFieldView
 from horilla.contrib.generics.views.list import HorillaListView
 from horilla.contrib.utils.middlewares import _thread_local
-from horilla.http import HttpResponse
 
 # First party imports (Horilla)
+from horilla.db.models.signals import post_delete, post_save, pre_save
+from horilla.http import HttpResponse
 from horilla.registry.feature import FEATURE_REGISTRY
 from horilla.utils.translation import gettext_lazy as _
 

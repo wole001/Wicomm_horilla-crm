@@ -16,19 +16,19 @@ from colorfield.fields import ColorField
 from django.conf import settings
 from django.core.validators import EmailValidator
 from django.db import transaction
-from django.db.models.signals import post_delete
 from django.dispatch import receiver
-from django.utils import timezone
 from django_countries.fields import CountryField
 
 from horilla.contrib.core.models import Company, HorillaCoreModel
 from horilla.contrib.mail.models import HorillaMailConfiguration
 from horilla.contrib.utils.methods import render_template
 from horilla.core.exceptions import ValidationError
-
-# First-party / Horilla imports
 from horilla.db import models
+from horilla.db.models.signals import post_delete
 from horilla.urls import reverse_lazy
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger(__name__)

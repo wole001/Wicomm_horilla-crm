@@ -13,15 +13,15 @@ from zoneinfo import ZoneInfo
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.template import Context, Template
-from django.utils import timezone
 from django.views import View
 
 from horilla.apps import apps
-
-# First party imports (Horilla)
 from horilla.db import models
 from horilla.http import HttpResponse
 from horilla.shortcuts import get_object_or_404, render
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.translation import gettext_lazy as _
 

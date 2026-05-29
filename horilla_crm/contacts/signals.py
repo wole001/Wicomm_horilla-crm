@@ -7,11 +7,13 @@ import threading
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-# First-party / Horilla imports
 from horilla.apps import apps
 from horilla.auth.models import User
 from horilla.contrib.keys.models import ShortcutKey
 from horilla.contrib.keys.utils import resolve_page_url
+
+# First party imports (Horilla)
+from horilla.db.models.signals import post_save
 
 # First-party / Horilla apps
 from horilla_crm.contacts.models import Contact, ContactAccountRelationship

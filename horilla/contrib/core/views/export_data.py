@@ -15,9 +15,7 @@ from zoneinfo import ZoneInfo
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.fields.related import ManyToManyField
-from django.utils import timezone
 
-# Django imports (third-party)
 # Third-party imports (Django)
 from django.utils.functional import cached_property
 from django.utils.text import slugify
@@ -30,8 +28,6 @@ from openpyxl.styles import Alignment, Font, PatternFill
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
-# First-party (Horilla)
-# First party imports (Horilla)
 from horilla.apps import apps
 from horilla.contrib.generics.views import (
     HorillaListView,
@@ -42,6 +38,9 @@ from horilla.db.models import ForeignKey
 from horilla.http import HttpResponse
 from horilla.registry.feature import FEATURE_REGISTRY
 from horilla.shortcuts import render
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.decorators import (
     htmx_required,
     method_decorator,

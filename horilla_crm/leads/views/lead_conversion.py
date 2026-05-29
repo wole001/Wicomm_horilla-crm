@@ -7,14 +7,14 @@ from dateutil.relativedelta import relativedelta
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
-from django.utils import timezone
 from django.views.generic import FormView
 
 from horilla.http import Http404, HttpResponse
 from horilla.shortcuts import get_object_or_404, render
-
-# First-party / Horilla imports
 from horilla.urls import reverse
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.translation import gettext_lazy as _
 from horilla_crm.accounts.models import Account

@@ -14,12 +14,13 @@ from datetime import timedelta
 # Third-party imports (Django)
 from celery import shared_task
 from dateutil.relativedelta import relativedelta
-from django.utils import timezone
 
-# First party imports (Horilla)
 from horilla.auth.models import User
 from horilla.contrib.core.models import Company, HorillaContentType
 from horilla.contrib.utils.middlewares import _thread_local
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 
 from .methods import (
     evaluate_automation_conditions,

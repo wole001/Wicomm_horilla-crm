@@ -9,7 +9,6 @@ import threading
 
 # Third-party imports (Django)
 from django.db import transaction
-from django.db.models.signals import post_save, pre_save
 from django.dispatch import Signal, receiver
 from django.template import engines
 
@@ -23,10 +22,12 @@ from horilla.contrib.notifications.methods import create_notification
 from horilla.contrib.utils.middlewares import _thread_local
 from horilla.core.exceptions import FieldDoesNotExist
 from horilla.db.models import Count
-from horilla.shortcuts import render
 
-# First-party / Horilla imports
+# First party imports (Horilla)
+from horilla.db.models.signals import post_save, pre_save
+from horilla.shortcuts import render
 from horilla.urls import reverse_lazy
+from horilla.utils import timezone
 from horilla_crm.leads.models import (
     Lead,
     LeadAssignmentCondition,
@@ -262,8 +263,6 @@ def _pick_round_robin(users_qs):
 def _send_assignment_email(condition, lead, assigned_user):
     """Send assignment email to the assigned user using the condition's mail template."""
     try:
-        from django.utils import timezone
-
         from horilla.contrib.core.models import HorillaContentType
         from horilla.contrib.mail.models import HorillaMail, HorillaMailConfiguration
         from horilla.contrib.mail.services import HorillaMailManager

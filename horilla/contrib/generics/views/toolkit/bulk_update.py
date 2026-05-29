@@ -16,15 +16,15 @@ from auditlog.models import LogEntry
 
 # Third-party imports (Django)
 from django.contrib import messages
-from django.utils import timezone
 
 from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.core.utils import get_editable_fields
-
-# First party imports (Horilla)
 from horilla.db.models import Q
 from horilla.http import HttpResponse
 from horilla.shortcuts import render
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 
 logger = logging.getLogger(__name__)
 

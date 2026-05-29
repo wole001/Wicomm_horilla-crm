@@ -14,16 +14,17 @@ from django.core.cache import cache
 from django.db import transaction
 
 # Third-party imports (Django)
-from django.db.models.signals import post_delete, post_migrate, post_save, pre_save
 from django.dispatch import Signal, receiver
-from django.utils import timezone
 from django.utils.encoding import force_str
 
-# First party imports (Horilla)
 from horilla.apps import apps
 from horilla.auth.models import User
 from horilla.contrib.utils.middlewares import _thread_local
 from horilla.db.models import Q
+from horilla.db.models.signals import post_delete, post_migrate, post_save, pre_save
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 
 from .models import (
     Company,

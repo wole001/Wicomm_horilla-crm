@@ -16,6 +16,7 @@ Layout under `horilla/utils/` matches the repository (after the package is used 
 horilla/utils/
 ├── decorators/       # View decorators (permissions, HTMX, DB init). See docs below.
 ├── translation/      # Re-exports Django translation API under one import path.
+├── timezone.py       # Re-exports django.utils.timezone (now, localtime, make_aware, …)
 ├── branding.py       # DEFAULTS + load_branding() from optional settings.BRANDING_MODULE
 ├── choices.py        # TIMEZONE_CHOICES, LANGUAGE_CHOICES, format/operator tuples, FIELD_TYPE_MAP, …
 ├── upload.py         # upload_path(instance, filename) for namespaced FileField paths
@@ -27,6 +28,7 @@ horilla/utils/
 |------|------|
 | `decorators/` | `permission_required`, `htmx_required`, `db_initialization`, etc. Documented in [decorators.md](./decorators.md). |
 | `translation/` | `gettext_lazy`, `gettext`, `activate`, … from Django. Documented in [translation.md](./translation.md). |
+| `timezone.py` | `now`, `localtime`, `make_aware`, `UTC`, … from Django. Use `from horilla.utils import timezone`. |
 | `branding.py` | `DEFAULTS` (title, login copy, logo paths) and `load_branding()` merging overrides from `BRANDING_MODULE`. |
 | `choices.py` | Shared `(value, label)` tuples and maps (languages, date/time formats, operators, field types, `BLOCKED_EXTENSIONS`). |
 | `upload.py` | Builds `app_label/model_name/[field_name/]slug-uuid.ext` paths to avoid collisions. |
@@ -40,6 +42,19 @@ horilla/utils/
 - [Decorators](./decorators.md) — `horilla.utils.decorators`
 - [Translation](./translation.md) — `horilla.utils.translation`
 
+### Timezone (`horilla.utils.timezone`)
+
+Prefer Horilla imports over `django.utils.timezone`:
+
+```python
+from horilla.utils import timezone
+
+now = timezone.now()
+aware = timezone.make_aware(naive_dt)
+```
+
+Also available as named imports: `from horilla.utils.timezone import now, localtime, UTC`.
+
 ---
 
 ## Quick import examples
@@ -51,4 +66,5 @@ from horilla.utils.upload import upload_path
 from horilla.utils.version import collect_all_versions, get_module_version_info
 from horilla.utils.decorators import permission_required, htmx_required
 from horilla.utils.translation import gettext_lazy as _
+from horilla.utils import timezone
 ```

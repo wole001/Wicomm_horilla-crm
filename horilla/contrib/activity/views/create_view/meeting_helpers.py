@@ -3,9 +3,11 @@ Helpers for meeting URL generation and invite email sending.
 Used by MeetingsCreateForm and ActivityCreateView (via bridge pattern).
 """
 
+# Standard library imports
 import logging
 
-from django.utils import timezone
+# First party imports (Horilla)
+from horilla.utils import timezone
 
 logger = logging.getLogger(__name__)
 

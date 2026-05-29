@@ -7,12 +7,12 @@ import re
 
 # Third-party imports (Django)
 from django.conf import settings
-from django.utils import timezone
 
 from horilla.contrib.utils.middlewares import _thread_local
+from horilla.urls import reverse
 
 # First party imports (Horilla)
-from horilla.urls import reverse
+from horilla.utils import timezone
 
 # Local imports
 from .models import HorillaMail

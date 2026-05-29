@@ -10,16 +10,16 @@ from functools import cached_property
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import cache
-from django.utils import timezone
 from django.views import View
 from requests_oauthlib import OAuth2Session
 
 from horilla.contrib.generics.views import HorillaSingleFormView
 from horilla.http import HttpResponse, RedirectResponse
 from horilla.shortcuts import redirect
+from horilla.urls import reverse_lazy
 
 # First party imports (Horilla)
-from horilla.urls import reverse_lazy
+from horilla.utils import timezone
 from horilla.utils.decorators import (
     htmx_required,
     method_decorator,

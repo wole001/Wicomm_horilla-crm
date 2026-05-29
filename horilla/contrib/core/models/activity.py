@@ -1,16 +1,15 @@
 """
 Model to track recently viewed items by users."""
 
-# Django imports
 # Third-party imports (Django)
 from django.conf import settings
-from django.utils import timezone
 
-# First-party imports (Horilla)
-# First party imports (Horilla)
 from horilla.db import models
 from horilla.menu.sub_section_menu import sub_section_menu
 from horilla.registry.permission_registry import permission_exempt_model
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.translation import gettext_lazy as _
 
 # Local imports

@@ -7,16 +7,17 @@ from datetime import datetime
 # Third-party imports (Django)
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.utils import timezone
 from django.views import View
 
-# First party imports (Horilla)
 from horilla.apps import apps
 from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.generics.views import HorillaSingleDeleteView
 from horilla.contrib.utils.middlewares import _thread_local
 from horilla.http import HttpResponse
 from horilla.shortcuts import get_object_or_404, render
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.decorators import (
     htmx_required,
     method_decorator,

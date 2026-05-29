@@ -11,11 +11,10 @@ import threading
 from datetime import datetime, timedelta
 from datetime import timezone as dt_timezone
 
-# Third-party imports (Django)
-from django.utils import timezone
+from horilla.contrib.activity.models import Activity
 
 # First party imports (Horilla)
-from horilla.contrib.activity.models import Activity
+from horilla.utils import timezone
 
 # Local imports
 from ..models import GoogleCalendarConfig

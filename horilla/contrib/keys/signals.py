@@ -6,12 +6,13 @@ Signals for the keys app
 import logging
 
 # Third-party imports (Django)
-from django.db.models.signals import post_migrate, post_save
 from django.dispatch import receiver
 
-# First party imports (Horilla)
 from horilla.apps import apps
 from horilla.auth.models import User
+
+# First party imports (Horilla)
+from horilla.db.models.signals import post_migrate, post_save
 from horilla.urls import NoReverseMatch, reverse_lazy
 
 # Local imports

@@ -5,7 +5,9 @@ from datetime import datetime
 
 # Third-party imports (Django)
 from dateutil import parser as dateutil_parser
-from django.utils import timezone
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 
 # Local imports
 from ._registry import register

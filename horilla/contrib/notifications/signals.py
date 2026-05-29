@@ -7,10 +7,10 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
 # Third-party imports (Django)
-from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 # First party imports (Horilla)
+from horilla.db.models.signals import post_save
 from horilla.urls import reverse
 
 # Local imports

@@ -9,10 +9,8 @@ from functools import cached_property
 # Third-party imports (Django)
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.utils import timezone
 from django.views.generic import FormView, View
 
-# First-party / Horilla imports
 from horilla.apps import apps
 from horilla.contrib.generics.views import (
     HorillaSingleDeleteView,
@@ -22,6 +20,9 @@ from horilla.contrib.generics.views.multi_form import HorillaMultiStepFormView
 from horilla.http import HttpResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse_lazy
+
+# First party imports (Horilla)
+from horilla.utils import timezone
 from horilla.utils.decorators import (
     htmx_required,
     method_decorator,

@@ -20,7 +20,6 @@ from celery import shared_task
 
 # Third-party imports (Django)
 from django.core.mail import get_connection
-from django.utils import timezone
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill
 from reportlab.lib import colors
@@ -29,9 +28,10 @@ from reportlab.pdfgen import canvas
 
 from horilla.apps import apps
 from horilla.contrib.utils.middlewares import _thread_local
+from horilla.db import models
 
 # First party imports (Horilla)
-from horilla.db import models
+from horilla.utils import timezone
 from horilla.utils.translation import gettext as _
 
 # Local imports
