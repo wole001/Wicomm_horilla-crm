@@ -701,7 +701,6 @@ class CustomOppStagesFormView(LoginRequiredMixin, View):
         )
 
 
-@method_decorator(csrf_exempt, name="dispatch")
 @method_decorator(htmx_required, name="dispatch")
 @method_decorator(
     permission_required_or_denied("opportunities.add_opportunitystage"), name="dispatch"
@@ -883,8 +882,8 @@ class SaveCustomOppStagesView(LoginRequiredMixin, View):
             )
 
 
-@method_decorator(htmx_required, name="dispatch")
 @method_decorator(csrf_exempt, name="dispatch")
+@method_decorator(htmx_required, name="dispatch")
 class CreateOppStageGroupView(LoginRequiredMixin, View):
     """View to create opportunity stage group for a company."""
 

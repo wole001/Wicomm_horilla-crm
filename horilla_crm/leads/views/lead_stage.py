@@ -525,8 +525,7 @@ class CustomStagesFormView(LoginRequiredMixin, View):
         )
 
 
-@method_decorator(csrf_exempt, name="dispatch")
-# @method_decorator(htmx_required(), name="dispatch")
+@method_decorator(htmx_required(), name="dispatch")
 @method_decorator(
     permission_required_or_denied("leads.add_leadstatus"), name="dispatch"
 )
@@ -677,7 +676,6 @@ class SaveCustomStagesView(LoginRequiredMixin, View, ProgressStepsMixin):
             )
 
 
-@method_decorator(csrf_exempt, name="dispatch")
 @method_decorator(htmx_required(), name="dispatch")
 @method_decorator(
     permission_required_or_denied("leads.add_leadstatus"), name="dispatch"
@@ -717,7 +715,6 @@ class AddStageView(LoginRequiredMixin, View):
         )
 
 
-@method_decorator(csrf_exempt, name="dispatch")
 @method_decorator(htmx_required(), name="dispatch")
 @method_decorator(
     permission_required_or_denied("leads.add_leadstatus"), name="dispatch"

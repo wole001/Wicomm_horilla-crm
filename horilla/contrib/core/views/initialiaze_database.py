@@ -248,7 +248,6 @@ class InitializeCompanyFormView(
         return response
 
 
-@method_decorator(csrf_exempt, name="dispatch")
 class InitializeRoleView(LoginRequiredMixin, View, ProgressStepsMixin):
     """
     View to handle the initial role setup process.

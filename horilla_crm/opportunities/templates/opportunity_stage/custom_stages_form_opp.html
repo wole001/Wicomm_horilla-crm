@@ -12,6 +12,7 @@
             hx-select="{{hx_select}}"
         {% endif %}
     >
+        {% csrf_token %}
         <div id="stages-container">
             {% with stages=company_stages|lookup:company.id %}
                 {% for stage in stages.stages|default:default_stages %}
