@@ -321,7 +321,7 @@ class MetricFieldChoicesView(View):
         - Sum/Average/Minimum/Maximum of each numeric field on the model.
         Only active when component_type == 'kpi'.
         """
-        component_type = (request.GET.get("component_type") or "").strip()
+        _component_type = (request.GET.get("component_type") or "").strip()
 
         module = request.GET.get("module")
         current_metric = (request.GET.get("metric_type") or "").strip()

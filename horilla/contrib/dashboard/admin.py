@@ -20,9 +20,13 @@ admin.site.register(DefaultHomeLayoutOrder)
 
 @admin.register(Dashboard)
 class DashboardAdmin(admin.ModelAdmin):
+    """Admin configuration for Dashboard."""
+
     filter_horizontal = ("favourited_by",)
 
 
 @admin.register(DashboardFolder)
 class DashboardFolderAdmin(admin.ModelAdmin):
+    """Admin configuration for DashboardFolder."""
+
     filter_horizontal = ("favourited_by",)

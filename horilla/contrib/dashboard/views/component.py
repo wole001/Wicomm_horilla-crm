@@ -708,6 +708,7 @@ class ChartViewToDashboardForm(LoginRequiredMixin, FormView):
     view_id = "chart-view-to-dashboard"
 
     def dispatch(self, request, *args, **kwargs):
+        """Require dashboard add/change permission or superuser before dispatch."""
         if not getattr(request.user, "is_superuser", False) and not (
             request.user.has_perm("dashboard.change_dashboard")
             or request.user.has_perm("dashboard.add_dashboard")
@@ -716,11 +717,13 @@ class ChartViewToDashboardForm(LoginRequiredMixin, FormView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
+        """Pass the current user into the dashboard pick form."""
         kwargs = super().get_form_kwargs()
         kwargs["user"] = self.request.user
         return kwargs
 
     def get_context_data(self, **kwargs):
+        """Build single-form modal context for adding a chart view to a dashboard."""
         context = super().get_context_data(**kwargs)
         form_url = reverse("dashboard:chart_view_to_dashboard")
         query_string = ""
@@ -862,7 +865,7 @@ class ReorderComponentsView(LoginRequiredMixin, View):
 
             # Save per-user layout order in the same model as default home
             with transaction.atomic():
-                layout_order, created = DefaultHomeLayoutOrder.objects.get_or_create(
+                layout_order, _created = DefaultHomeLayoutOrder.objects.get_or_create(
                     user=request.user,
                     dashboard=dashboard,
                     defaults={"order": {"kpi": [], "components": []}},
