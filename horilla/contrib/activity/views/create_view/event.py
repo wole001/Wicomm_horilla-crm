@@ -67,6 +67,7 @@ class EventCreateForm(
         return super().get(request, *args, **kwargs)
 
     def get_initial(self):
+        """Set initial event form values including all-day toggle and related record."""
         initial = super().get_initial()
         if self.request.method == "POST":
             initial["is_all_day"] = self.request.POST.get("is_all_day") == "on"

@@ -79,6 +79,7 @@ class TaskCreateForm(
         return super().get(request, *args, **kwargs)
 
     def get_initial(self):
+        """Set initial task form values including related record, owner, and activity type."""
         initial = super().get_initial()
         object_id = self.request.GET.get("object_id")
         model_name = self.request.GET.get("model_name")

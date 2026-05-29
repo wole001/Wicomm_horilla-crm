@@ -119,6 +119,7 @@ class ActivityCreateView(LoginRequiredMixin, HorillaSingleFormView):
     }
 
     def get_initial(self):
+        """Set initial activity type, related record, toggles, and calendar date/time from request."""
         initial = super().get_initial()
         is_create = not (self.kwargs.get("pk") or self.object)
 
@@ -354,6 +355,7 @@ class ActivityCreateView(LoginRequiredMixin, HorillaSingleFormView):
         return obj, error_response
 
     def post(self, request, *args, **kwargs):
+        """Re-render the form when the is_online toggle is changed via HTMX."""
         if request.POST.get("_toggle_field") == "is_online":
             self.object = getattr(self, "object", None)
             form = self.get_form()

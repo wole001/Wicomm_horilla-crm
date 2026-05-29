@@ -39,6 +39,7 @@ class CallCreateForm(
         return reverse_lazy("activity:call_create_form")
 
     def get_initial(self):
+        """Set initial call log defaults including duration, related record, and owner."""
         initial = super().get_initial()
         object_id = self.request.GET.get("object_id")
         model_name = self.request.GET.get("model_name")

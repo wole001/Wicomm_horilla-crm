@@ -40,6 +40,7 @@ class MeetingsCreateForm(
         return reverse_lazy("activity:meeting_create_form")
 
     def get_initial(self):
+        """Set initial meeting form values including all-day/online toggles and related record."""
         initial = super().get_initial()
         if self.request.method == "POST":
             initial["is_all_day"] = self.request.POST.get("is_all_day") == "on"
@@ -140,6 +141,7 @@ class MeetingsCreateForm(
         return context
 
     def post(self, request, *args, **kwargs):
+        """Re-render the form when the is_online toggle is changed via HTMX."""
         if request.POST.get("_toggle_field") == "is_online":
             self.object = None
             pk = self.kwargs.get("pk")

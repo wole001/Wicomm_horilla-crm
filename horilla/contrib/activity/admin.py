@@ -13,4 +13,6 @@ from .models import Activity
 
 @admin.register(Activity)
 class ActivityAdmin(admin.ModelAdmin):
+    """Admin configuration for Activity."""
+
     filter_horizontal = ("assigned_to", "participants")
