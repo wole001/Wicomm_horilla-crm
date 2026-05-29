@@ -108,7 +108,7 @@
                         hx-get="{% url 'generics:notes_attachment_edit' object.pk %}"
                         hx-target="#modalBox"
                         hx-on:click="openModal();"
-                        class="w-24 justify-center px-4 py-2 bg-primary-600 text-white rounded-md text-xs flex items-center gap-2 hover:bg-primary-800 transition duration-300 disabled:cursor-not-allowed"
+                        class="w-24 justify-center px-4 py-2 bg-primary-600 text-white rounded-md text-xs flex items-center gap-2 hover:bg-primary-800 transition duration-300 cursor-pointer disabled:cursor-not-allowed"
                     >
                         <img
                             src="{% static 'assets/icons/edit_white.svg' %}"
@@ -128,7 +128,7 @@
                         hx-on:click="openDeleteModeModal()"
                         hx-vals='{"check_dependencies" : "true"}'
                         title="{% trans 'Delete Attachment' %}"
-                        class="w-24 justify-center px-4 py-2 bg-[white] rounded-md text-xs flex items-center gap-2 border border-primary-500 hover:border-primary-600 transition duration-300 disabled:cursor-not-allowed text-primary-600"
+                        class="w-24 justify-center px-4 py-2 bg-[white] rounded-md text-xs flex items-center gap-2 border border-primary-500 hover:border-primary-600 transition duration-300 cursor-pointer disabled:cursor-not-allowed text-primary-600"
                     >
                         <img
                             src="{% static 'assets/icons/a4.svg' %}"

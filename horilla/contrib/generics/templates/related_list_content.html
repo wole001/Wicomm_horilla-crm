@@ -7,7 +7,7 @@
                 hx-get="{{ object|get_add_url:related_list }}?id={{ object.id }}"
                 hx-target="#modalBox"
                 onclick="event.stopPropagation();openModal()"
-                class="text-xs px-4 py-1.5 bg-primary-600 rounded-md hover:bg-primary-800 transition duration-300 text-[white]"
+                class="text-xs px-4 py-1.5 bg-primary-600 rounded-md hover:bg-primary-800 transition duration-300 text-[white] cursor-pointer"
             >
                 {% if related_list.button_name %}
                     {{ related_list.button_name }}
