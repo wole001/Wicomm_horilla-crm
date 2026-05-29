@@ -298,6 +298,7 @@ class BookingToggleRescheduleCutoffView(LoginRequiredMixin, View):
     """Return reschedule_cutoff_days field based on allow_reschedule state."""
 
     def post(self, request, *args, **kwargs):
+        """Re-render the reschedule cutoff field partial based on toggle state."""
         allow = request.POST.get("allow_reschedule") == "on"
         value = request.POST.get("reschedule_cutoff_days", "1")
         return render(
@@ -312,6 +313,7 @@ class BookingToggleCancelCutoffView(LoginRequiredMixin, View):
     """Return cancel_cutoff_days field based on allow_cancel state."""
 
     def post(self, request, *args, **kwargs):
+        """Re-render the cancel cutoff field partial based on toggle state."""
         allow = request.POST.get("allow_cancel") == "on"
         value = request.POST.get("cancel_cutoff_days", "1")
         return render(

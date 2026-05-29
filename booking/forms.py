@@ -24,6 +24,7 @@ class ColorPickerWidget(forms.TextInput):
         self.attrs["type"] = "color"  # ensures HorillaModelForm skips class injection
 
     def render(self, name, value, attrs=None, renderer=None):
+        """Render a native color input styled to match Horilla form fields."""
         display_value = value or "#e54f38"
         final_attrs = self.build_attrs(self.attrs, attrs or {})
         input_id = final_attrs.get("id", f"id_{name}")
