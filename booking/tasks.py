@@ -4,11 +4,41 @@ Celery tasks for horilla_booking — booking reminder emails.
 
 import logging
 from datetime import timedelta
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from celery import shared_task
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.utils import timezone
+
+
+def _format_for_booker(booking):
+    """Return formatted start/end strings in the booker's own timezone."""
+    try:
+        tz = (
+            ZoneInfo(booking.booker_timezone)
+            if booking.booker_timezone
+            else timezone.get_current_timezone()
+        )
+    except (ZoneInfoNotFoundError, KeyError):
+        tz = timezone.get_current_timezone()
+    local_start = booking.start_datetime.astimezone(tz)
+    local_end = booking.end_datetime.astimezone(tz)
+    tz_label = str(tz)
+    start_str = local_start.strftime("%A, %B %d, %Y at %I:%M %p")
+    end_str = local_end.strftime("%I:%M %p")
+    return f"{start_str} – {end_str} ({tz_label})"
+
+
+def _format_for_host(booking):
+    """Return formatted start/end strings in the server/host timezone."""
+    local_start = timezone.localtime(booking.start_datetime)
+    local_end = timezone.localtime(booking.end_datetime)
+    tz_label = str(timezone.get_current_timezone())
+    start_str = local_start.strftime("%A, %B %d, %Y at %I:%M %p")
+    end_str = local_end.strftime("%I:%M %p")
+    return f"{start_str} – {end_str} ({tz_label})"
+
 
 from horilla.contrib.mail.models import HorillaMailConfiguration
 from horilla.urls import reverse_lazy
@@ -75,9 +105,7 @@ def _send_reminder_email(booking):
     company = booking.company
     mail_config = _get_mail_config(company)
 
-    start_str = timezone.localtime(booking.start_datetime).strftime(
-        "%A, %B %d, %Y at %I:%M %p"
-    )
+    start_str = _format_for_booker(booking)
 
     if page.is_online and booking.meeting_url:
         location_line = f'<p>&#128279; <strong>Join:</strong> <a href="{booking.meeting_url}">{booking.meeting_url}</a></p>'
@@ -142,11 +170,7 @@ def send_booking_confirmation_email(booking, cancel_url="", reschedule_url=""):
     company = booking.company
     mail_config = _get_mail_config(company)
 
-    local_start = timezone.localtime(booking.start_datetime)
-    local_end = timezone.localtime(booking.end_datetime)
-    start_str = local_start.strftime("%A, %B %d, %Y at %I:%M %p")
-    end_str = local_end.strftime("%I:%M %p")
-    time_line = f"{start_str} – {end_str}"
+    time_line = _format_for_booker(booking)
 
     host_name = page.host.get_full_name() or page.host.username
     meeting_url = booking.meeting_url or ""
@@ -280,9 +304,7 @@ def send_status_change_email(booking, new_status):
         "pending": "Rescheduled",
     }
     label = status_labels.get(new_status, new_status.title())
-    start_str = timezone.localtime(booking.start_datetime).strftime(
-        "%B %d, %Y at %I:%M %p"
-    )
+    start_str = _format_for_booker(booking)
     company_name = str(company) if company else "Horilla CRM"
 
     # Pick the right template based on status

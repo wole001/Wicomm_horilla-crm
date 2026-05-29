@@ -284,6 +284,12 @@ class Booking(HorillaCoreModel):
         blank=True,
         verbose_name=_("Cancellation Reason"),
     )
+    booker_timezone = models.CharField(
+        max_length=100,
+        blank=True,
+        default="",
+        verbose_name=_("Booker Timezone"),
+    )
     activity = models.OneToOneField(
         "activity.Activity",
         on_delete=models.SET_NULL,

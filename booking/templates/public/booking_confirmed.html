@@ -36,9 +36,12 @@
                 <span class="text-gray-500">{% trans "Meeting" %}</span>
                 <span class="font-medium text-gray-900">{{ page.title }}</span>
             </div>
-            <div class="flex justify-between">
-                <span class="text-gray-500">{% trans "Date & Time" %}</span>
-                <span class="font-medium text-gray-900">{{ booking.start_datetime|date:"N j, Y" }} {% trans "at" %} {{ booking.start_datetime|time:"H:i" }}</span>
+            <div class="flex justify-between items-start gap-4">
+                <span class="text-gray-500 shrink-0">{% trans "Date & Time" %}</span>
+                <span class="font-medium text-gray-900 text-right">
+                    {{ local_start_str }}<br>
+                    <span class="text-xs font-normal text-gray-400">{{ booker_tz }}</span>
+                </span>
             </div>
             <div class="flex justify-between">
                 <span class="text-gray-500">{% trans "Duration" %}</span>

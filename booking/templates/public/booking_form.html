@@ -84,15 +84,13 @@
 
         /* ── Date strip ── */
         .date-card {
-            min-width: 68px;
             cursor: pointer;
             border: 2px solid #e5e7eb;
             border-radius: 12px;
-            padding: 10px 6px;
+            padding: 8px 4px;
             text-align: center;
             transition: all .15s;
             user-select: none;
-            flex-shrink: 0;
         }
         .date-card:hover  { border-color: var(--brand); }
         .date-card:hover .dc-day,
@@ -103,6 +101,37 @@
         .date-card.active .dc-num,
         .date-card.active .dc-mon { color: #fff; }
         .date-card.disabled { opacity: .32; cursor: default; pointer-events: none; }
+        .date-card.full {
+            border-color: #fca5a5;
+            background-color: #fff5f5;
+            cursor: default;
+            pointer-events: auto;
+        }
+        .date-card.full .dc-day,
+        .date-card.full .dc-num,
+        .date-card.full .dc-mon { color: #ef4444; }
+        #dc-global-tooltip {
+            display: none;
+            position: fixed;
+            background: #1f2937;
+            color: #fff;
+            font-size: .72rem;
+            white-space: nowrap;
+            padding: 5px 10px;
+            border-radius: 6px;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translateX(-50%);
+        }
+        #dc-global-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: #1f2937;
+        }
         .dc-day { font-size: .68rem; color: #9ca3af; margin-bottom: 4px; }
         .dc-num { font-size: 1.25rem; font-weight: 700; color: #111827; line-height: 1; }
         .dc-mon { font-size: .68rem; color: #9ca3af; margin-top: 4px; }
@@ -122,6 +151,13 @@
         }
         .slot-btn:hover  { border-color: var(--brand); color: var(--brand); }
         .slot-btn.active { border-color: var(--brand); background: var(--brand); color: #fff; }
+        .slot-btn.booked {
+            border-color: #fca5a5;
+            background-color: #fff5f5;
+            color: #ef4444;
+            cursor: default;
+            pointer-events: auto;
+        }
 
         /* ── Format toggle (12hr / 24hr) ── */
         .fmt-toggle {
@@ -317,14 +353,14 @@
 
             <!-- Date strip with prev/next arrows -->
             <div class="flex items-center gap-2">
-                <button id="prev-date-btn" type="button" onclick="shiftDates(-1)"
+                <button id="prev-date-btn" type="button" onclick="shiftDates(-7)"
                     class="w-8 h-8 shrink-0 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-30 disabled:pointer-events-none">
                     <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                     </svg>
                 </button>
-                <div id="date-strip" class="flex gap-2 flex-1 overflow-hidden"></div>
-                <button id="next-date-btn" type="button" onclick="shiftDates(1)"
+                <div id="date-strip" class="grid grid-cols-7 gap-2 flex-1"></div>
+                <button id="next-date-btn" type="button" onclick="shiftDates(7)"
                     class="w-8 h-8 shrink-0 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-30 disabled:pointer-events-none">
                     <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -491,16 +527,18 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-const SLOTS_URL    = "{% url 'booking:available_slots' page.slug %}";
-const DURATION_MIN = {{ page.duration }};
-const BOOKING_WIN  = {{ page.booking_window }};
-const ADVANCE_MIN  = {{ page.advance_notice }};
-const AVAIL_DAYS   = {{ available_days_json|safe }};
+const SLOTS_URL          = "{% url 'booking:available_slots' page.slug %}";
+const DURATION_MIN       = {{ page.duration }};
+const BOOKING_WIN        = {{ page.booking_window }};
+const ADVANCE_MIN        = {{ page.advance_notice }};
+const AVAIL_DAYS         = {{ available_days_json|safe }};
+const FULLY_BOOKED_DATES = new Set({{ fully_booked_dates_json|safe }});
 
 let currentYear, currentMonth;
 let selectedDate = null;
 let selectedTime = null;
 let allSlots     = [];
+let bookedSlots  = [];
 let timeFmt      = '12';   // '12' or '24'
 
 // ── Timezone ─────────────────────────────────────────────────────
@@ -551,39 +589,58 @@ function isDateAvailable(iso) {
     return AVAIL_DAYS.includes(DAY_KEYS[d.getDay()]);
 }
 
-const VISIBLE    = 6;   // cards shown at once
+const VISIBLE    = 14;  // cards shown at once (7 per row × 2 rows)
 let   dateOffset = 0;   // 0-based index of first visible day in month
 
 // ── Date strip ───────────────────────────────────────────────────
 function renderDateStrip() {
     const strip = document.getElementById("date-strip");
     strip.innerHTML = "";
-    const days = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-    for (let i = dateOffset; i < dateOffset + VISIBLE; i++) {
-        const day = i + 1;
-        const d   = new Date(currentYear, currentMonth, day);
+    for (let i = 0; i < VISIBLE; i++) {
+        // Use Date arithmetic so days beyond month-end overflow into next month
+        const d   = new Date(currentYear, currentMonth, dateOffset + 1 + i);
         const iso = toIso(d);
         const ok  = isDateAvailable(iso);
+        const full = ok && FULLY_BOOKED_DATES.has(iso);
         const card = document.createElement("div");
-        card.className = "date-card" + (ok ? "" : " disabled");
+        if (full) {
+            card.className = "date-card full";
+        } else {
+            card.className = "date-card" + (ok ? "" : " disabled");
+        }
         if (iso === selectedDate) card.classList.add("active");
         card.innerHTML =
             `<div class="dc-day">${WEEKDAY_SHORT[d.getDay()]}</div>` +
             `<div class="dc-num">${d.getDate()}</div>` +
             `<div class="dc-mon">${MONTH_NAMES[d.getMonth()].slice(0,3)}</div>`;
-        if (ok) card.onclick = () => onDateClick(iso, d);
+        if (ok && !full) {
+            card.onclick = () => onDateClick(iso, d);
+        } else if (full) {
+            const tip = document.getElementById("dc-global-tooltip");
+            card.addEventListener("mouseenter", () => {
+                const r = card.getBoundingClientRect();
+                tip.textContent = "No slots available for this day";
+                tip.style.left = (r.left + r.width / 2) + "px";
+                tip.style.top  = (r.top - 10) + "px";
+                tip.style.transform = "translateX(-50%) translateY(-100%)";
+                tip.style.display = "block";
+            });
+            card.addEventListener("mouseleave", () => { tip.style.display = "none"; });
+        }
         strip.appendChild(card);
     }
 
+    // Update month label to reflect the first visible date
+    const firstVisible = new Date(currentYear, currentMonth, dateOffset + 1);
     document.getElementById("month-label").textContent =
-        `${MONTH_NAMES[currentMonth]} ${currentYear}`;
+        `${MONTH_NAMES[firstVisible.getMonth()]} ${firstVisible.getFullYear()}`;
 
     const now = new Date();
     const atFirstMonth = currentYear === now.getFullYear() && currentMonth <= now.getMonth();
     document.getElementById("prev-month-btn").disabled = atFirstMonth && dateOffset <= 0;
     document.getElementById("prev-date-btn").disabled  = atFirstMonth && dateOffset <= 0;
-    document.getElementById("next-date-btn").disabled  = dateOffset + VISIBLE >= days;
+    document.getElementById("next-date-btn").disabled  = false;
 }
 
 function shiftDates(delta) {
@@ -597,8 +654,13 @@ function changeMonth(delta) {
     if (currentMonth > 11) { currentMonth = 0; currentYear++; }
     if (currentMonth < 0)  { currentMonth = 11; currentYear--; }
     const now = new Date();
-    dateOffset = (currentYear === now.getFullYear() && currentMonth === now.getMonth())
-        ? now.getDate() - 1 : 0;
+    if (currentYear === now.getFullYear() && currentMonth === now.getMonth()) {
+        const todayDow = now.getDay();
+        const daysToMonday = (todayDow === 0) ? 6 : todayDow - 1;
+        dateOffset = Math.max(0, now.getDate() - 1 - daysToMonday - 7);
+    } else {
+        dateOffset = 0;
+    }
     renderDateStrip();
 }
 
@@ -620,7 +682,7 @@ function loadSlots(iso) {
             style="border-top-color:var(--brand);"></div></div>`;
     fetch(`${SLOTS_URL}?date=${iso}`)
         .then(r => r.json())
-        .then(data => { allSlots = data.slots || []; renderSlots(); })
+        .then(data => { allSlots = data.slots || []; bookedSlots = data.booked_slots || []; renderSlots(); })
         .catch(() => {
             c.innerHTML = `<p class="text-center text-sm text-red-400 py-6">Failed to load slots.</p>`;
         });
@@ -646,19 +708,39 @@ function fmtTime(hhmm) {
 
 function renderSlots() {
     const c = document.getElementById("slots-container");
-    if (!allSlots.length) {
+    if (!allSlots.length && !bookedSlots.length) {
         c.innerHTML = `<p class="text-center text-sm text-gray-400 py-8">No available slots for this date.</p>`;
         return;
     }
+    const tip = document.getElementById("dc-global-tooltip");
     const grid = document.createElement("div");
     grid.className = "grid grid-cols-4 gap-2";
-    allSlots.forEach(slot => {
+
+    const bookedSet = new Set(bookedSlots);
+    const allMerged = [...allSlots, ...bookedSlots].sort();
+
+    allMerged.forEach(slot => {
+        const isBooked = bookedSet.has(slot);
         const btn = document.createElement("div");
-        btn.className = "slot-btn" + (slot === selectedTime ? " active" : "");
+        if (isBooked) {
+            btn.className = "slot-btn booked";
+            btn.addEventListener("mouseenter", () => {
+                const r = btn.getBoundingClientRect();
+                tip.textContent = "This slot is already booked";
+                tip.style.left = (r.left + r.width / 2) + "px";
+                tip.style.top  = (r.top - 10) + "px";
+                tip.style.transform = "translateX(-50%) translateY(-100%)";
+                tip.style.display = "block";
+            });
+            btn.addEventListener("mouseleave", () => { tip.style.display = "none"; });
+        } else {
+            btn.className = "slot-btn" + (slot === selectedTime ? " active" : "");
+            btn.onclick = () => onSlotClick(slot);
+        }
         btn.textContent = fmtTime(slot);
-        btn.onclick = () => onSlotClick(slot);
         grid.appendChild(btn);
     });
+
     c.innerHTML = "";
     c.appendChild(grid);
 }
@@ -710,7 +792,10 @@ function goStep(n) {
     const now    = new Date();
     currentYear  = now.getFullYear();
     currentMonth = now.getMonth();
-    dateOffset   = now.getDate() - 1;   // start from today
+    // Start from the Monday 2 weeks back so today's week appears in row 2
+    const todayDow = now.getDay(); // 0=Sun,1=Mon,...,6=Sat
+    const daysToMonday = (todayDow === 0) ? 6 : todayDow - 1;
+    dateOffset = Math.max(0, now.getDate() - 1 - daysToMonday - 7);
     buildTimezoneSelect();
     renderDateStrip();
     goStep(1);
@@ -724,5 +809,6 @@ function goStep(n) {
 })();
 </script>
 
+<div id="dc-global-tooltip"></div>
 </body>
 </html>

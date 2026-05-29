@@ -137,6 +137,10 @@ def get_available_slots(page, target_date: date) -> list[time]:
         ).values_list("start_datetime", "end_datetime")
     )
 
+    # If max_per_day is set and already reached, hide the entire date
+    if page.max_per_day and len(existing) >= page.max_per_day:
+        return []
+
     advance_cutoff = now + timedelta(minutes=page.advance_notice)
     tz = timezone.get_current_timezone()
 
@@ -176,12 +180,90 @@ def get_available_slots(page, target_date: date) -> list[time]:
         if not overlaps and not host_blocked:
             slots.append(current.time())
 
-        if page.max_per_day and len(slots) >= page.max_per_day:
-            break
-
         current += timedelta(minutes=step_minutes)
 
     return slots
+
+
+def get_all_slots(page, target_date: date) -> dict:
+    """
+    Return all time slots for target_date split into 'available' and 'booked' lists.
+    Booked slots are those that overlap an existing pending/confirmed booking.
+    Slots blocked by advance_notice or host unavailability are excluded entirely.
+    """
+    today = timezone.localdate()
+    now = timezone.now()
+    max_date = today + timedelta(days=page.booking_window)
+
+    if target_date < today or target_date > max_date:
+        return {"available": [], "booked": []}
+
+    schedule = page.shift_hour or page.business_hour
+    if not schedule:
+        return {"available": [], "booked": []}
+
+    bh = page.business_hour
+    if bh and _is_holiday(bh, target_date):
+        return {"available": [], "booked": []}
+
+    day_code = _WEEKDAY_CODE[target_date.weekday()]
+    start_time, end_time = _get_day_hours(schedule, day_code)
+    if start_time is None or end_time is None:
+        return {"available": [], "booked": []}
+
+    step_minutes = page.duration + page.buffer_after
+    if step_minutes <= 0:
+        step_minutes = page.duration or 30
+
+    existing = list(
+        page.bookings.filter(
+            start_datetime__date=target_date,
+            status__in=["pending", "confirmed"],
+        ).values_list("start_datetime", "end_datetime")
+    )
+
+    advance_cutoff = now + timedelta(minutes=page.advance_notice)
+    tz = timezone.get_current_timezone()
+
+    all_users = [page.host_id] + list(page.participants.values_list("id", flat=True))
+    host_unavailable = _get_unavailability_for_users(all_users, target_date, tz)
+
+    available = []
+    booked = []
+    current = datetime.combine(target_date, start_time)
+    end_boundary = datetime.combine(target_date, end_time)
+
+    while True:
+        slot_end = current + timedelta(minutes=page.duration)
+        if slot_end > end_boundary:
+            break
+
+        current_aware = timezone.make_aware(current, tz)
+        slot_end_aware = timezone.make_aware(slot_end, tz)
+
+        if current_aware < advance_cutoff:
+            current += timedelta(minutes=step_minutes)
+            continue
+
+        host_blocked = any(
+            current_aware < u_end and slot_end_aware > u_start
+            for u_start, u_end in host_unavailable
+        )
+
+        if not host_blocked:
+            # A slot is "booked" when an existing booking starts within this slot's window
+            overlaps = any(
+                bstart >= current_aware and bstart < slot_end_aware
+                for bstart, bend in existing
+            )
+            if overlaps:
+                booked.append(current.strftime("%H:%M"))
+            else:
+                available.append(current.strftime("%H:%M"))
+
+        current += timedelta(minutes=step_minutes)
+
+    return {"available": available, "booked": booked}
 
 
 def get_available_dates(page, year: int, month: int) -> list[date]:

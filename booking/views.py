@@ -646,19 +646,22 @@ class AvailableSlotView(View):
     """
 
     def get(self, request, slug):
-        """Return available time slots as JSON for the requested date."""
+        """Return available and booked time slots as JSON for the requested date."""
+        from .utils import get_all_slots
+
         page = get_object_or_404(BookingPage, slug=slug, is_active=True)
         date_str = request.GET.get("date", "")
-        slots = []
+        result = {"slots": [], "booked_slots": []}
         if date_str:
             try:
                 selected_date = date.fromisoformat(date_str)
-                slot_times = get_available_slots(page, selected_date)
-                slots = [s.strftime("%H:%M") for s in slot_times]
+                data = get_all_slots(page, selected_date)
+                result["slots"] = data["available"]
+                result["booked_slots"] = data["booked"]
             except ValueError:
                 pass
 
-        return JsonResponse({"slots": slots})
+        return JsonResponse(result)
 
 
 class PublicBookingView(View):
@@ -683,6 +686,32 @@ class PublicBookingView(View):
         ]
         return json.dumps(avail)
 
+    def _fully_booked_dates_json(self, page):
+        """Return a JSON array of ISO date strings that are within the booking window
+        but have no available slots (all slots taken or max_per_day reached)."""
+        import calendar as _cal
+
+        from .utils import _WEEKDAY_CODE, _get_day_hours, get_available_slots
+
+        today = timezone.localdate()
+        max_date = today + timedelta(days=page.booking_window)
+        schedule = page.shift_hour or page.business_hour
+        if not schedule:
+            return json.dumps([])
+
+        fully_booked = []
+        current = today
+        while current <= max_date:
+            day_code = _WEEKDAY_CODE[current.weekday()]
+            start_time, end_time = _get_day_hours(schedule, day_code)
+            if start_time is not None and end_time is not None:
+                slots = get_available_slots(page, current)
+                if not slots:
+                    fully_booked.append(current.isoformat())
+            current += timedelta(days=1)
+
+        return json.dumps(fully_booked)
+
     def get(self, request, slug):
         """Render the public booking page with calendar and slot picker."""
         page = get_object_or_404(BookingPage, slug=slug, is_active=True)
@@ -694,6 +723,7 @@ class PublicBookingView(View):
                 now.date() + timedelta(days=page.booking_window)
             ).isoformat(),
             "available_days_json": self._available_days_json(page),
+            "fully_booked_dates_json": self._fully_booked_dates_json(page),
         }
         return render(request, self.template_name, ctx)
 
@@ -719,28 +749,31 @@ class PublicBookingView(View):
         start_dt = None
         if booking_date_str and booking_time_str and not errors:
             try:
-                import pytz
+                from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
                 local_dt = datetime.fromisoformat(
                     f"{booking_date_str}T{booking_time_str}"
                 )
                 try:
                     tz = (
-                        pytz.timezone(tz_name)
+                        ZoneInfo(tz_name)
                         if tz_name
                         else timezone.get_current_timezone()
                     )
-                except Exception:
+                except (ZoneInfoNotFoundError, KeyError):
                     tz = timezone.get_current_timezone()
-                start_dt = timezone.make_aware(local_dt, tz)
+                start_dt = local_dt.replace(tzinfo=tz)
             except ValueError:
                 errors["booking_time"] = _("Invalid date or time.")
 
         if start_dt and not errors:
-            selected_date = start_dt.date()
+            # Convert the booked start time to server tz to compare against generated slots
+            server_tz = timezone.get_current_timezone()
+            start_in_server_tz = start_dt.astimezone(server_tz)
+            selected_date = start_in_server_tz.date()
             available_slots = get_available_slots(page, selected_date)
             slot_times = [s.strftime("%H:%M") for s in available_slots]
-            if booking_time_str not in slot_times:
+            if start_in_server_tz.strftime("%H:%M") not in slot_times:
                 errors["booking_time"] = _(
                     "That slot is no longer available. Please choose another."
                 )
@@ -789,6 +822,7 @@ class PublicBookingView(View):
             status="pending",
             answers=answers,
             company=page.company,
+            booker_timezone=tz_name,
         )
 
         if page.is_online and page.meeting_provider:
@@ -843,12 +877,28 @@ class PublicBookingView(View):
             )
         )
 
+        from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+
+        try:
+            booker_tz = (
+                ZoneInfo(tz_name) if tz_name else timezone.get_current_timezone()
+            )
+        except (ZoneInfoNotFoundError, KeyError):
+            booker_tz = timezone.get_current_timezone()
+
+        local_start = booking.start_datetime.astimezone(booker_tz)
+        local_end = booking.end_datetime.astimezone(booker_tz)
+        local_start_str = local_start.strftime("%B %d, %Y at %I:%M %p")
+        local_end_str = local_end.strftime("%I:%M %p")
+
         return render(
             request,
             "public/booking_confirmed.html",
             {
                 "page": page,
                 "booking": booking,
+                "local_start_str": f"{local_start_str} – {local_end_str}",
+                "booker_tz": str(booker_tz),
                 "cancel_url": cancel_url,
                 "reschedule_url": reschedule_url,
                 "public_url": public_url,
