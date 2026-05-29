@@ -13,6 +13,17 @@ urlpatterns = [
         views.MeetingIntegrationSettingsView.as_view(),
         name="meeting_integration_settings",
     ),
+    # Admin: read-only list views for allowed users / roles
+    path(
+        "integration/allowed-users/",
+        views.MeetingAllowedUsersListView.as_view(),
+        name="meeting_allowed_users_list",
+    ),
+    path(
+        "integration/allowed-roles/",
+        views.MeetingAllowedRolesListView.as_view(),
+        name="meeting_allowed_roles_list",
+    ),
     # Admin: access edit modals
     path(
         "integration/access-roles/",

@@ -10,10 +10,11 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 
+from horilla.contrib.generics.views import HorillaListView
 from horilla.contrib.generics.views.single_form import HorillaSingleFormView
 
 # First party imports (Horilla)
-from horilla.http import HttpResponse
+from horilla.http import HttpResponse, HttpResponseRedirect
 from horilla.shortcuts import redirect, render
 from horilla.urls import reverse, reverse_lazy
 from horilla.utils.decorators import (
@@ -71,6 +72,7 @@ class MeetingIntegrationSettingsView(LoginRequiredMixin, View):
         permission_required_or_denied("meeting.change_meetingintegrationsetting")
     )
     def dispatch(self, *args, **kwargs):
+        """Require meeting integration settings change permission before dispatch."""
         return super().dispatch(*args, **kwargs)
 
     def _render(self, request, form=None):
@@ -134,6 +136,96 @@ class MeetingIntegrationSettingsView(LoginRequiredMixin, View):
         return self._render(request)
 
 
+class MeetingAllowedUsersListView(LoginRequiredMixin, HorillaListView):
+    """HorillaListView — allowed users for meeting integration (read-only modal)."""
+
+    from horilla.auth.models import User as _User
+
+    model = _User
+    view_id = "meeting-allowed-users-list"
+    template_name = "meeting/allowed_users_modal.html"
+    search_url = reverse_lazy("meeting:meeting_allowed_users_list")
+    save_to_list_option = False
+    bulk_select_option = False
+    table_width = False
+    table_auto = True
+    enable_sorting = False
+    export_data = False
+    actions = []
+    action_method = ""
+    table_height_as_class = "h-[calc(60vh-80px)]"
+    columns = [
+        (_("Full Name"), "get_full_name"),
+        (_("Role"), "role__role_name"),
+        (_("Email"), "email"),
+    ]
+
+    @method_decorator(
+        permission_required_or_denied("meeting.change_meetingintegrationsetting")
+    )
+    def dispatch(self, *args, **kwargs):
+        """Require meeting integration settings change permission before dispatch."""
+        return super().dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        from horilla.auth.models import User
+
+        company = _get_active_company(self.request)
+        setting = MeetingIntegrationSetting.get_for_company(company)
+        allowed_ids = setting.allowed_users.values_list("pk", flat=True)
+        return User.objects.filter(company=company, is_active=True, pk__in=allowed_ids)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["visible_actions"] = []
+        context["action_method"] = ""
+        return context
+
+
+class MeetingAllowedRolesListView(LoginRequiredMixin, HorillaListView):
+    """HorillaListView — allowed roles for meeting integration (read-only modal)."""
+
+    from horilla.contrib.core.models import Role as _Role
+
+    model = _Role
+    view_id = "meeting-allowed-roles-list"
+    template_name = "meeting/allowed_roles_modal.html"
+    search_url = reverse_lazy("meeting:meeting_allowed_roles_list")
+    save_to_list_option = False
+    bulk_select_option = False
+    table_width = False
+    table_auto = True
+    enable_sorting = False
+    export_data = False
+    actions = []
+    action_method = ""
+    table_height_as_class = "h-[calc(60vh-80px)]"
+    columns = [
+        (_("Role Name"), "role_name"),
+    ]
+
+    @method_decorator(
+        permission_required_or_denied("meeting.change_meetingintegrationsetting")
+    )
+    def dispatch(self, *args, **kwargs):
+        """Require meeting integration settings change permission before dispatch."""
+        return super().dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["visible_actions"] = []
+        context["action_method"] = ""
+        return context
+
+    def get_queryset(self):
+        from horilla.contrib.core.models import Role
+
+        company = _get_active_company(self.request)
+        setting = MeetingIntegrationSetting.get_for_company(company)
+        allowed_ids = setting.allowed_roles.values_list("pk", flat=True)
+        return Role.objects.filter(company=company, pk__in=allowed_ids)
+
+
 @method_decorator(htmx_required, name="dispatch")
 class MeetingAccessRolesView(LoginRequiredMixin, HorillaSingleFormView):
     """Modal form: select which roles can access meeting integration."""
@@ -150,12 +242,14 @@ class MeetingAccessRolesView(LoginRequiredMixin, HorillaSingleFormView):
         permission_required_or_denied("meeting.change_meetingintegrationsetting")
     )
     def dispatch(self, *args, **kwargs):
+        """Require meeting integration settings change permission before dispatch."""
         return super().dispatch(*args, **kwargs)
 
     def _get_m2m_picker_info(self):
         return {}
 
     def get_form(self, form_class=None):
+        """Scope allowed_roles queryset and initial values to the active company."""
         form = super().get_form(form_class)
         company = _get_active_company(self.request)
         setting = MeetingIntegrationSetting.get_for_company(company)
@@ -207,9 +301,11 @@ class MeetingAccessUsersView(LoginRequiredMixin, HorillaSingleFormView):
         permission_required_or_denied("meeting.change_meetingintegrationsetting")
     )
     def dispatch(self, *args, **kwargs):
+        """Require meeting integration settings change permission before dispatch."""
         return super().dispatch(*args, **kwargs)
 
     def get_form(self, form_class=None):
+        """Scope allowed_users queryset and initial values to the active company."""
         form = super().get_form(form_class)
         company = _get_active_company(self.request)
         setting = MeetingIntegrationSetting.get_for_company(company)
@@ -335,8 +431,8 @@ class MeetingUserSettingsView(LoginRequiredMixin, View):
         if provider == "zoom" and action == "save_credentials":
             from horilla.contrib.meeting.models import ZoomOAuthConfig
 
-            cfg, _created = ZoomOAuthConfig.objects.get_or_create(
-                user=request.user, defaults={"company": company}
+            cfg, _created = ZoomOAuthConfig.all_objects.get_or_create(
+                user=request.user, company=company
             )
             cfg.client_id = request.POST.get("client_id", "").strip()
             cfg.client_secret = request.POST.get("client_secret", "").strip()
@@ -387,8 +483,8 @@ class MeetingUserSettingsView(LoginRequiredMixin, View):
         if provider == "ms_teams" and action == "save_credentials":
             from horilla.contrib.meeting.models import MicrosoftTeamsOAuthConfig
 
-            cfg, _created = MicrosoftTeamsOAuthConfig.objects.get_or_create(
-                user=request.user, defaults={"company": company}
+            cfg, _created = MicrosoftTeamsOAuthConfig.all_objects.get_or_create(
+                user=request.user, company=company
             )
             cfg.client_id = request.POST.get("client_id", "").strip()
             cfg.client_secret = request.POST.get("client_secret", "").strip()
@@ -573,7 +669,6 @@ class ZoomAuthorizeView(LoginRequiredMixin, View):
             )
             return redirect(reverse("meeting:meeting_user_settings"))
         auth_url = start_oauth(request)
-        from django.http import HttpResponseRedirect
 
         return HttpResponseRedirect(auth_url)
 
@@ -585,7 +680,7 @@ class ZoomCallbackView(View):
         """Exchange the callback for tokens, set flash messages, then return to settings."""
         from horilla.contrib.meeting.oauth.zoom import handle_callback
 
-        config, error = handle_callback(request)
+        _config, error = handle_callback(request)
         if error:
             messages.error(request, f"Zoom OAuth error: {error}")
         else:
@@ -616,7 +711,6 @@ class TeamsAuthorizeView(LoginRequiredMixin, View):
             )
             return redirect(reverse("meeting:meeting_user_settings"))
         auth_url = start_oauth(request)
-        from django.http import HttpResponseRedirect
 
         return HttpResponseRedirect(auth_url)
 
@@ -628,7 +722,7 @@ class TeamsCallbackView(View):
         """Complete the OAuth dance, set flash messages, then return to settings."""
         from horilla.contrib.meeting.oauth.teams import handle_callback
 
-        config, error = handle_callback(request)
+        _config, error = handle_callback(request)
         if error:
             messages.error(request, f"Teams OAuth error: {error}")
         else:
