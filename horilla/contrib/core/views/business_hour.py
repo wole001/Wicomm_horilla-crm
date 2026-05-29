@@ -298,13 +298,21 @@ class BusinessHourHolidayModalView(LoginRequiredMixin, TemplateView):
 
     template_name = "settings/business_hour/business_hour_holiday_modal.html"
 
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get("pk")
+        try:
+            BusinessHour.objects.get(pk=pk)
+        except BusinessHour.DoesNotExist:
+            messages.error(request, _("The requested record does not exist."))
+            return HttpResponse(
+                "<script>closeDetailModal();closeContentModal();$('#reloadBusinessHourCardButton').click();</script>"
+            )
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         pk = self.kwargs.get("pk")
-        try:
-            context["business_hour"] = BusinessHour.objects.get(pk=pk)
-        except BusinessHour.DoesNotExist:
-            context["business_hour"] = None
+        context["business_hour"] = BusinessHour.objects.get(pk=pk)
         return context
 
 
@@ -339,6 +347,19 @@ class BusinessHourHolidayReadonlyDetailView(HolidayDetailView):
     """Read-only holiday detail view opened from the business hour holiday list."""
 
     actions = []
+
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        if not self.instance:
+            return HttpResponse(
+                "<script>"
+                "closeDetailModal();"
+                "$('#reloadHolidayModalButton').click();"
+                "$('#reloadBusinessHourCardButton').click();"
+                "$('#reloadMessagesButton').click();"
+                "</script>"
+            )
+        return response
 
 
 @method_decorator(htmx_required, name="dispatch")
