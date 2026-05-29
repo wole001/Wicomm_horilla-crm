@@ -15,7 +15,6 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.utils.html import format_html
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView, View
 
 # First-party / Horilla imports
@@ -882,7 +881,6 @@ class SaveCustomOppStagesView(LoginRequiredMixin, View):
             )
 
 
-@method_decorator(csrf_exempt, name="dispatch")
 @method_decorator(htmx_required, name="dispatch")
 class CreateOppStageGroupView(LoginRequiredMixin, View):
     """View to create opportunity stage group for a company."""

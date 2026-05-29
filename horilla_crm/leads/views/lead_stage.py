@@ -6,7 +6,6 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.utils.functional import cached_property
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView, View
 
 # First party / Horilla imports
@@ -767,7 +766,6 @@ class RemoveStageView(LoginRequiredMixin, View):
         )
 
 
-@method_decorator(csrf_exempt, name="dispatch")
 @method_decorator(htmx_required(), name="dispatch")
 class CreateStageGroupView(LoginRequiredMixin, View, ProgressStepsMixin):
     """View to handle saving custom lead stages during database setup."""

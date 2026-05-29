@@ -10,7 +10,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 from django.utils.functional import cached_property  # type: ignore
 from django.views import View
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
 # First-party imports (Horilla)
@@ -289,7 +288,6 @@ class CalendarView(LoginRequiredMixin, TemplateView):
         return context
 
 
-@method_decorator(csrf_exempt, name="dispatch")
 class SaveCalendarPreferencesView(LoginRequiredMixin, View):
     """View to save user calendar preferences via AJAX."""
 
