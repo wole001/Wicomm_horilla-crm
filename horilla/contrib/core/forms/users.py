@@ -37,7 +37,16 @@ class UserFormClass(HorillaMultiStepForm):
 
         model = User
         fields = "__all__"
-        # exclude = ['profile']
+        exclude = [
+            "password",
+            "last_login",
+            "date_joined",
+            "is_superuser",
+            "username",
+            "is_staff",
+            "number_grouping",
+        ]
+        keep_on_form = ["company", "is_active"]
 
     step_fields = {
         1: [
@@ -110,31 +119,45 @@ class UserFormClass(HorillaMultiStepForm):
 class UserFormSingle(HorillaModelForm):
     """Form class for User model."""
 
+    field_order = [
+        "profile",
+        "email",
+        "first_name",
+        "last_name",
+        "contact_number",
+        "country",
+        "state",
+        "city",
+        "zip_code",
+        "department",
+        "role",
+        "company",
+        "language",
+        "time_zone",
+        "date_format",
+        "time_format",
+        "date_time_format",
+        "currency",
+        "is_active",
+    ]
+
     class Meta:
         """Meta options for UserFormSingle."""
 
         model = User
-        fields = [
-            "profile",
-            "email",
-            "first_name",
-            "last_name",
-            "contact_number",
-            "is_active",
-            "country",
-            "state",
-            "city",
-            "zip_code",
-            "department",
-            "role",
-            "company",
-            "language",
-            "time_zone",
-            "date_format",
-            "time_format",
-            "date_time_format",
-            "currency",
+        fields = "__all__"
+        exclude = [
+            "password",
+            "last_login",
+            "date_joined",
+            "is_superuser",
+            "username",
+            "is_staff",
+            "number_grouping",
+            "groups",
+            "user_permissions",
         ]
+        keep_on_form = ["company", "is_active"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
