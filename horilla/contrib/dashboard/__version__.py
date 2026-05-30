@@ -8,11 +8,16 @@ application registry and UI.
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.1"
+__version__ = "1.11.1"
 __module_name__ = "Dashboards"
 __release_date__ = ""
 __description__ = _("Module for building and customizing interactive dashboards.")
 __icon__ = "assets/icons/icon6.svg"
+
+__1_11_1__ = _(
+    "Removed redundant fields attributes superseded by form_class on dashboard action "
+    "views, and added admin and component view docstrings for pylint compliance."
+)
 
 __1_10_1__ = _(
     "Dashboard forms aligned with HorillaModelForm layout: field_order and "

@@ -2,11 +2,22 @@
 
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.0"
+__version__ = "1.11.1"
 __module_name__ = "CRM"
 __release_date__ = ""
 __description__ = _("CRM module for managing leads, contacts, and opportunities.")
 __icon__ = "assets/icons/icon2.svg"
+
+__1_11_1__ = _(
+    "Lead and opportunity stage saving now validates first and uses update-or-create "
+    "instead of delete-and-recreate, so stages still referenced by leads or opportunities "
+    "are no longer deleted (preventing ProtectedError on the PROTECT FKs). CSRF protection "
+    "restored on stage-group and custom-stage views with csrf_token added to the HTMX "
+    "forms. Fixed KeyError on multi-step create forms by removing direct created_by / "
+    "updated_by access stripped by HorillaMultiStepForm. Removed redundant fields "
+    "attributes superseded by form_class on forecast, assignment-rule, opportunity-team, "
+    "and scoring-rule single-form views, plus docstring coverage for pylint compliance."
+)
 
 __1_10_0__ = _(
     "Aligned with platform 1.10: imports and integrations target contrib packages "

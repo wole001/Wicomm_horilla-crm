@@ -2,7 +2,6 @@
 
 # Third-party imports (Django)
 from django.conf import settings
-from django.utils import timezone
 
 from horilla.contrib.core.models import HorillaContentType, HorillaCoreModel
 from horilla.contrib.utils.middlewares import _thread_local

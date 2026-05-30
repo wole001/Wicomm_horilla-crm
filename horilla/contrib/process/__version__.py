@@ -5,13 +5,20 @@ Version information for the Process Builder
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.0"
+__version__ = "1.11.1"
 __module_name__ = "Process Builder"
 __release_date__ = ""
 __description__ = _(
     "Module for managing the process, including approval processes and review processes."
 )
 __icon__ = "assets/icons/process-management.svg"
+
+__1_11_1__ = _(
+    'ApprovalRuleForm refactored to fields="__all__" with field_order, dropping the '
+    "unused process_config field and the redundant view fields list. Fixed a KeyError on "
+    "review-process create by adding keep_on_form for is_active. Migrated signal imports "
+    "to the horilla.db.models.signals shim and added docstrings for pylint compliance."
+)
 
 __1_10_0__ = _(
     "Release 1.10: Process Builder consolidated under contrib.process with approvals "

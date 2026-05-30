@@ -5,11 +5,16 @@ Version and metadata information for the keys module.
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.0"
+__version__ = "1.11.1"
 __module_name__ = "Short Keys"
 __release_date__ = ""
 __description__ = _("Module providing customizable keyboard shortcuts.")
 __icon__ = "keys/assets/icons/icon3.svg"
+
+__1_11_1__ = _(
+    "Migrated signal and timezone imports to the horilla shims, standardized first-party "
+    "import groups, and added docstrings for pylint compliance; shortcuts unchanged."
+)
 
 __1_10_0__ = _(
     "Release 1.10: keyboard shortcuts ship under contrib with app label keys. "

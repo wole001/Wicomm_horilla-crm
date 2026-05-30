@@ -3,8 +3,10 @@ mail signals module
 """
 
 # Third-party imports (Django)
-from django.db.models.signals import post_delete
 from django.dispatch import receiver
+
+# First party imports (Horilla)
+from horilla.db.models.signals import post_delete
 
 # Local imports
 from .models import HorillaMailAttachment

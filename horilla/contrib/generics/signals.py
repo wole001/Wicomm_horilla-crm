@@ -5,13 +5,14 @@ Defines signal receivers to keep caches and related state in sync.
 """
 
 from django.core.cache import cache
-from django.db.models.signals import post_delete
 
 # Third-party imports (Django)
 from django.dispatch import receiver
 
-# First party imports (Horilla)
 from horilla.contrib.core.models import ListColumnVisibility
+
+# First party imports (Horilla)
+from horilla.db.models.signals import post_delete
 
 # Define your horilla.contrib.generics signals here
 

@@ -2,7 +2,7 @@
 
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.11.0"
+__version__ = "1.11.1"
 __module_name__ = _("Booking")
 __release_date__ = ""
 __description__ = _(
@@ -11,6 +11,13 @@ __description__ = _(
     "confirmation, reminder, reschedule, and cancellation emails."
 )
 __icon__ = "/assets/icons/calendar.svg"
+
+__1_11_1__ = _(
+    "Improved booking calendar UX with timezone-aware slot display and confirmation "
+    "rendering. Fixed the public date-strip to read date-object properties instead of "
+    "stale outer-scope month/day variables. Adopted the horilla.utils.timezone shim and "
+    "standardized first-party import groups across booking models, tasks, utils, and views."
+)
 
 __1_11_0__ = _(
     "Select2 timezone picker and clearer public scheduling layout. "

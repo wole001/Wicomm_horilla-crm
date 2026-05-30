@@ -4,7 +4,6 @@
 import logging
 
 # Third-party imports (Django)
-from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import receiver
 
 from horilla.auth.models import User

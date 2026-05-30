@@ -4,7 +4,6 @@
 import threading
 
 # Third-party imports (Django)
-from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from horilla.apps import apps

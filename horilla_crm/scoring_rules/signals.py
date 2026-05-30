@@ -8,7 +8,6 @@ import logging
 
 # Third-party imports (Django)
 from django.db import transaction
-from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 
 from horilla.apps import apps

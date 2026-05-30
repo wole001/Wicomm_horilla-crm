@@ -2,13 +2,26 @@
 
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "1.11.0"
+__version__ = "1.11.1"
 __module_name__ = _("Core System")
 __release_date__ = ""
 __description__ = _(
     "Core system providing authentication, configuration, utilities, and platform-level services."
 )
 __icon__ = "assets/icons/logo.png"
+
+__1_11_1__ = _(
+    "Custom CSRF failure view and csrf_failure.html for DEBUG=False. CSRF protection "
+    "restored on state-mutating stage and calendar-preference views. FiscalYear, "
+    'RegionalFormatting, Company, and User forms switched to fields="__all__" with '
+    "field_order and keep_on_form so HorillaModelForm base fields are no longer dropped, "
+    "with sensitive user fields excluded. Business Hour add-button hides without reload, "
+    "and BusinessHourHolidayModalView is guarded for deleted records. Generics skip M2M "
+    "relations in bulk-delete to avoid ProtectedError and add cursor-pointer to note, "
+    "attachment, and related-list actions. Added horilla.utils.timezone and "
+    "horilla.db.models.signals shims, standardized first-party import groups, and broad "
+    "docstring coverage for pylint compliance."
+)
 
 __1_11_0__ = _(
     "Workflow automation engine (rules, conditions, actions, Celery time triggers, "

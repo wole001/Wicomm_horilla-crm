@@ -2,7 +2,7 @@
 
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.11.0"
+__version__ = "1.11.1"
 __module_name__ = _("Workflow")
 __release_date__ = ""
 __description__ = _(
@@ -11,6 +11,11 @@ __description__ = _(
     "scheduled relative to record or rule dates."
 )
 __icon__ = "assets/icons/automation.svg"
+
+__1_11_1__ = _(
+    "Migrated signal imports to the horilla.db.models.signals shim and standardized "
+    "first-party import groups; behavior unchanged."
+)
 
 __1_11_0__ = _(
     "Workflow automation engine: WorkflowRule / WorkflowCondition / WorkflowAction models, "

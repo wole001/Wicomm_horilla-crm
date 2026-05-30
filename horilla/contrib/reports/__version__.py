@@ -3,13 +3,18 @@
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.1"
+__version__ = "1.11.1"
 __module_name__ = "Reports"
 __release_date__ = ""
 __description__ = _(
     "Module for creating and customizing reports across all system modules."
 )
 __icon__ = "assets/icons/icon5.svg"
+
+__1_11_1__ = _(
+    "Removed redundant fields attributes superseded by form_class on report CRUD views, "
+    "standardized first-party import groups, and added docstrings for pylint compliance."
+)
 
 __1_10_1__ = _(
     "Report forms aligned with HorillaModelForm layout: field_order and "

@@ -3,13 +3,18 @@
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.1"
+__version__ = "1.11.1"
 __module_name__ = "Duplicate Control"
 __release_date__ = ""
 __description__ = _(
     "Module for detecting potential duplicate records and supporting merge workflows."
 )
 __icon__ = "assets/icons/clone.svg"
+
+__1_11_1__ = _(
+    "Standardized first-party import groups and aligned with the platform 1.11.1 release; "
+    "rules, criteria, and merge behavior unchanged."
+)
 
 __1_10_1__ = _(
     "Duplicate rule forms aligned with HorillaModelForm layout: field_order and "

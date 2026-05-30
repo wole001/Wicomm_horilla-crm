@@ -3,10 +3,8 @@
 # Standard library imports
 import logging
 
-# Third-party imports (Django)
-from django.db.models.signals import post_save
-
 # First party imports (Horilla)
+from horilla.db.models.signals import post_save
 from horilla.registry.feature import FEATURE_CONFIG, FEATURE_REGISTRY
 
 # Local imports

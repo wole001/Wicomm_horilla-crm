@@ -8,11 +8,17 @@ application registry and UI.
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.2"
+__version__ = "1.11.1"
 __module_name__ = "Calendar"
 __release_date__ = ""
 __description__ = _("Module for managing calendar events and schedules.")
 __icon__ = "assets/icons/calendar-red.svg"
+
+__1_11_1__ = _(
+    "Restored CSRF protection on SaveCalendarPreferencesView (removed @csrf_exempt). "
+    "Migrated signal and timezone imports to the horilla shims and standardized "
+    "first-party import groups; behavior unchanged."
+)
 
 __1_10_2__ = _(
     "Custom calendar form aligned with HorillaModelForm layout: field_order, "

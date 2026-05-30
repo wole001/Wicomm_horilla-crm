@@ -3,13 +3,18 @@
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.1"
+__version__ = "1.11.1"
 __module_name__ = "Automations"
 __release_date__ = ""
 __description__ = _(
     "Module for automating mail and notifications based on model events and conditions."
 )
 __icon__ = "assets/icons/automation.svg"
+
+__1_11_1__ = _(
+    "Migrated signal and timezone imports to the horilla shims, standardized first-party "
+    "import groups, and added docstrings for pylint compliance; behavior unchanged."
+)
 
 __1_10_1__ = _(
     "Celery Beat schedule entries now use the fully qualified task path so "

@@ -3,7 +3,6 @@ This module registers Floating, Settings, My Settings, and Main Section menus
 for the Horilla CRM Leads app
 """
 
-from horilla.contrib.core.menu import BaseSettings
 from horilla.menu import (
     MAIN_CONTENT_HX_ATTRS,
     floating_menu,

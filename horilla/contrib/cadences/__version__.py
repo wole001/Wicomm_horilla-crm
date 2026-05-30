@@ -5,13 +5,18 @@ Version information for the cadences app
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.1"
+__version__ = "1.11.1"
 __module_name__ = "Cadences"
 __release_date__ = ""
 __description__ = _(
     "Module for managing cadence workflows and runtime activity sequences."
 )
 __icon__ = "cadences/assets/icons/cadence.svg"
+
+__1_11_1__ = _(
+    "Migrated signal and timezone imports to the horilla shims, standardized first-party "
+    "import groups, and added class and method docstrings for pylint compliance."
+)
 
 __1_10_1__ = _(
     "Cadence forms aligned with HorillaModelForm layout: field_order, "

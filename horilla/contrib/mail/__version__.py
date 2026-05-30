@@ -3,13 +3,21 @@
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.1"
+__version__ = "1.11.1"
 __module_name__ = "Mail"
 __release_date__ = ""
 __description__ = _(
     "Module for managing incoming and outgoing emails through mail servers and Outlook."
 )
 __icon__ = "assets/icons/icon1.svg"
+
+__1_11_1__ = _(
+    "Security: fixed SSTI information disclosure and IDOR in the preview endpoint by "
+    "blocking dangerous template paths and adding a per-object permission check. "
+    "HorillaMail permissions replaced admin-config perms with correct add/view/change/"
+    "delete own-record permissions across all mail views and the activity email tab. "
+    "Standardized first-party imports and added docstrings for pylint compliance."
+)
 
 __1_10_1__ = _(
     "Mail forms aligned with HorillaModelForm / ModelForm layout: field_order, "

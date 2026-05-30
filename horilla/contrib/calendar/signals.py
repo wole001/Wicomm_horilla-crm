@@ -12,8 +12,10 @@ import threading
 import time
 
 # Third-party imports (Django)
-from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
+
+# First party imports (Horilla)
+from horilla.db.models.signals import post_delete, post_save
 
 # ---------------------------------------------------------------------------
 # Single-worker Google push queue

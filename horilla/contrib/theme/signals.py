@@ -5,13 +5,13 @@ Signals for the theme app
 # themes/signals.py
 # Define your theme signals here
 
-from django.db.models.signals import post_migrate
-
 # Third-party imports (Django)
 from django.dispatch import receiver
 
-# First party imports (Horilla)
 from horilla.contrib.core.signals import pre_login_render_signal, pre_logout_signal
+
+# First party imports (Horilla)
+from horilla.db.models.signals import post_migrate
 
 from .models import HorillaColorTheme
 

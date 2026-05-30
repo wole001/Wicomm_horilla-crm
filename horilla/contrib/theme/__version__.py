@@ -5,13 +5,19 @@ Version and metadata information for the theme module.
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.10.0"
+__version__ = "1.11.1"
 __module_name__ = "Theme Manager"
 __release_date__ = ""
 __description__ = _(
     "Module providing customizable color themes and UI personalization."
 )
 __icon__ = "theme/assets/icons/theme.svg"
+
+__1_11_1__ = _(
+    "Migrated signal imports to the horilla.db.models.signals shim, standardized "
+    "first-party import groups, and added docstrings for pylint compliance; "
+    "theme behavior unchanged."
+)
 
 __1_10_0__ = _(
     "Release 1.10: theme management ships under contrib with app label theme. "
