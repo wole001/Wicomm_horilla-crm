@@ -2,16 +2,14 @@
 Models for the theme app
 """
 
-from django.core.validators import RegexValidator
-
 # Create your theme models here.
 # Third-party imports (Django)
-from django.db import transaction
+from django.core.validators import RegexValidator
 
 from horilla.contrib.core.models import HorillaCoreModel
 
 # First party imports (Horilla)
-from horilla.db import models
+from horilla.db import models, transaction
 from horilla.utils.translation import gettext_lazy as _
 
 

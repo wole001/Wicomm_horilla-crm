@@ -42,7 +42,7 @@ def send_meeting_reminders():
         )
 
         # Fire only within this minute's window (now <= remind_at < now + 1 min)
-        if not (remind_at >= now and remind_at < now + timezone.timedelta(minutes=1)):
+        if not now <= remind_at < now + timezone.timedelta(minutes=1):
             continue
 
         _send_reminder_for_meeting(meeting)

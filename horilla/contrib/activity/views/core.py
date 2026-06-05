@@ -96,7 +96,7 @@ def get_fields_for(activity_type, view="both"):
     view="tab"     → only fields marked "tab" or "both"
     """
     fields = ACTIVITY_TYPE_SPECIFIC_FIELDS.get(activity_type, [])
-    return [field for field, scope in fields if scope == view or scope == "both"]
+    return [field for field, scope in fields if scope in (view, "both")]
 
 
 def get_activity_detail_view_fields(activity_type):

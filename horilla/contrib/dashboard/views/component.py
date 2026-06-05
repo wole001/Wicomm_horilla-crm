@@ -9,7 +9,6 @@ from django import forms
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from django.db import transaction
 from django.utils.functional import cached_property
 from django.views.generic import View
 from django.views.generic.edit import FormView
@@ -25,6 +24,7 @@ from horilla.contrib.generics.views import (
 )
 from horilla.contrib.reports.models import Report
 from horilla.contrib.utils.middlewares import _thread_local
+from horilla.db import transaction
 from horilla.http import HttpResponse, JsonResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse, reverse_lazy

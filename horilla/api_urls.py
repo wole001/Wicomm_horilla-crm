@@ -68,7 +68,7 @@ def collect_api_paths():
                     pattern = path_info["pattern"]
                     view_or_include = path_info["view_or_include"]
                     name = path_info.get("name")
-                    namespace = path_info.get("namespace", app_config.name)
+                    # namespace = path_info.get("namespace", app_config.name)
 
                     # Normalize pattern to ensure single trailing slash
                     if not isinstance(pattern, str):
@@ -167,7 +167,7 @@ def get_app_verbose_name_from_view(view):
         # Extract app name from module path
         # Examples:
         # 'activity.api.views' -> 'activity'
-        parts = module_path.split(".")
+        # parts = module_path.split(".")
 
         # Try to find matching app config by checking all installed apps
         # Match the longest possible app name prefix

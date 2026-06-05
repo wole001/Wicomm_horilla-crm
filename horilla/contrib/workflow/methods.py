@@ -8,7 +8,6 @@ import sys
 import threading
 
 # Third-party imports (Django)
-from django.db import connection, transaction
 from django.template import engines
 
 from horilla.auth.models import User
@@ -24,6 +23,7 @@ from horilla.contrib.mail.models import (
 from horilla.contrib.mail.services import HorillaMailManager
 from horilla.contrib.notifications.methods import create_notification
 from horilla.contrib.utils.middlewares import _thread_local
+from horilla.db import connection, transaction
 
 # First party imports (Horilla)
 from horilla.utils import timezone

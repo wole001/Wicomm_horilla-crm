@@ -9,7 +9,7 @@ from datetime import timedelta
 # Third-party imports (Django)
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db import close_old_connections, transaction
+from django.db import close_old_connections
 from django.template import Context, Template
 from django.views.generic import TemplateView
 
@@ -24,6 +24,7 @@ from horilla.contrib.mail.services import HorillaMailManager
 from horilla.contrib.notifications.methods import create_notification
 from horilla.contrib.notifications.models import NotificationTemplate
 from horilla.contrib.utils.middlewares import _thread_local
+from horilla.db import transaction
 from horilla.db.models import Q
 from horilla.http import HttpNotFound, HttpResponse, HttpResponseRedirect
 from horilla.shortcuts import get_object_or_404

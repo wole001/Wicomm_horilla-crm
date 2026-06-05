@@ -8,13 +8,13 @@ import sys
 
 # Third-party imports (Django)
 from django.conf import settings
-from django.db import connection
 from django.dispatch import receiver
 
 from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.utils.middlewares import _thread_local
 
 # First party imports (Horilla)
+from horilla.db import connection
 from horilla.db.models.signals import post_save, pre_delete
 from horilla.registry.feature import FEATURE_REGISTRY
 

@@ -8,7 +8,6 @@ import threading
 from urllib.parse import urlencode, urlparse
 
 # Third-party imports (Django)
-from django.db import transaction
 from django.template import engines
 from django.utils.dateparse import parse_date, parse_datetime
 
@@ -19,6 +18,7 @@ from horilla.contrib.mail.services import HorillaMailManager
 from horilla.contrib.notifications.methods import create_notification
 from horilla.contrib.utils.methods import get_section_info_for_model
 from horilla.contrib.utils.middlewares import _thread_local
+from horilla.db import transaction
 
 # First party imports (Horilla)
 from horilla.utils import timezone

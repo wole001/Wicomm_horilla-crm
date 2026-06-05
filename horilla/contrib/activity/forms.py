@@ -296,7 +296,6 @@ class LogCallForm(OwnerQuerysetMixin, HorillaModelForm):
         "owner",
         "call_purpose",
         "call_type",
-        "call_duration_display",
         "status",
         "notes",
         "activity_type",
@@ -325,6 +324,7 @@ class LogCallForm(OwnerQuerysetMixin, HorillaModelForm):
             "task_priority",
             "due_datetime",
             "recipient_email",
+            "call_duration_display",
             "call_duration_seconds",
             "google_event_id",
             "external_participants",
@@ -343,39 +343,6 @@ class LogCallForm(OwnerQuerysetMixin, HorillaModelForm):
             "content_type": forms.HiddenInput(),
             "activity_type": forms.HiddenInput(),
         }
-
-    def clean_call_duration_display(self):
-        """
-        Clean and validate the call_duration_display field
-        """
-        display = self.cleaned_data.get("call_duration_display")
-        if display:
-            parts = display.split(":")
-            if len(parts) != 3:
-                raise ValidationError("Duration must be in HH:MM:SS format")
-            try:
-                h, m, s = map(int, parts)
-            except ValueError as exc:
-                raise ValidationError(
-                    "Hours, minutes, and seconds must be integers"
-                ) from exc
-            if h < 0 or not 0 <= m < 60 or not 0 <= s < 60:
-                raise ValidationError(
-                    "Hours must be >= 0; minutes and seconds must be between 00 and 59"
-                )
-        return display
-
-    def clean(self):
-        cleaned_data = super().clean()
-        display = cleaned_data.get("call_duration_display")
-
-        if display:
-            try:
-                h, m, s = map(int, display.split(":"))
-                cleaned_data["call_duration_seconds"] = h * 3600 + m * 60 + s
-            except Exception:
-                self.add_error("call_duration_display", "Invalid HH:MM:SS format")
-        return cleaned_data
 
 
 class EventForm(OwnerQuerysetMixin, HorillaModelForm):
@@ -526,7 +493,6 @@ class ActivityCreateForm(OwnerQuerysetMixin, HorillaModelForm):
         "due_datetime",
         "call_type",
         "call_purpose",
-        "call_duration_display",
         "reminder",
         "mail_template",
         "description",

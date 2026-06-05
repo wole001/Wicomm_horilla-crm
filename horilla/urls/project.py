@@ -41,3 +41,8 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# After all AppConfig.ready() hooks (extension apps may load after CRM).
+from horilla.extension.bootstrap import bootstrap_extensions
+
+bootstrap_extensions()

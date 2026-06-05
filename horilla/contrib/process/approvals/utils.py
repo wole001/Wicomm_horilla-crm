@@ -6,7 +6,7 @@ import threading
 from decimal import Decimal
 
 # Third-party imports (Django)
-from django.db import close_old_connections, transaction
+from django.db import close_old_connections
 from django.utils.dateparse import parse_date, parse_datetime
 
 # First party imports (Horilla)
@@ -19,6 +19,7 @@ from horilla.contrib.process.integration import (
 from horilla.contrib.utils.middlewares import _thread_local
 from horilla.core.exceptions import ValidationError
 from horilla.db import models as db_models
+from horilla.db import transaction
 
 # Local imports
 from .models import ApprovalInstance, ApprovalProcessRule

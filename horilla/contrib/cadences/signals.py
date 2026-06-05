@@ -9,7 +9,6 @@ import sys
 from datetime import timedelta
 
 # Third-party imports (Django)
-from django.db import transaction
 from django.dispatch import receiver
 
 from horilla.contrib.activity.models import Activity
@@ -21,6 +20,7 @@ from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.mail.models import HorillaMail, HorillaMailConfiguration
 from horilla.contrib.mail.services import HorillaMailManager
 from horilla.contrib.utils.middlewares import _thread_local
+from horilla.db import transaction
 from horilla.db.models.signals import post_save, pre_save
 
 # First party imports (Horilla)

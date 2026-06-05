@@ -7,10 +7,10 @@ import json
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
-from django.db import transaction
 from django.views import View
 
 # First party imports (Horilla)
+from horilla.db import transaction
 from horilla.http import HttpResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse

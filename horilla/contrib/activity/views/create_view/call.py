@@ -44,8 +44,6 @@ class CallCreateForm(
         object_id = self.request.GET.get("object_id")
         model_name = self.request.GET.get("model_name")
         pk = self.kwargs.get("pk") or self.request.GET.get("id")
-        if not pk:
-            initial["call_duration_display"] = "00:00:00"
         if object_id and model_name:
             initial["object_id"] = object_id
             content_type = HorillaContentType.objects.get(model=model_name.lower())
