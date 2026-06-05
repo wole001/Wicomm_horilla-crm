@@ -1,9 +1,11 @@
 """Filters for Lead and LeadStatus models."""
 
+# First party imports (Horilla)
 from horilla.contrib.core.mixins import OwnerFiltersetMixin
 from horilla.contrib.generics.filters import HorillaFilterSet
 
-from ..leads.models import Lead, LeadAssignmentRule, LeadStatus
+# Local imports
+from .models import Lead, LeadAssignmentRule, LeadStatus
 
 
 class LeadFilter(OwnerFiltersetMixin, HorillaFilterSet):

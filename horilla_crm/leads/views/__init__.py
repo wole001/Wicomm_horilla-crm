@@ -1,21 +1,16 @@
 """Aggregate view modules for the `leads.views` package."""
 
+# Local imports
 from horilla_crm.leads.views.core import (
     LeadView,
     LeadNavbar,
     LeadListView,
     LeadCardView,
     LeadDetailView,
-    LeadsDetailTab,
-    LeadsDetailViewTabView,
-    LeadsActivityTabView,
-    LeadRelatedLists,
     LeadGroupByView,
     LeadChartView,
     LeadKanbanView,
     LeadSplitView,
-    LeadsHistoryTabView,
-    LeadsNotesAndAttachments,
     LeadTimelineView,
 )
 from horilla_crm.leads.views.lead_stage import (
@@ -73,6 +68,14 @@ from horilla_crm.leads.views.assignment_rule import (
     ToggleAssignToFieldView,
     ToggleNotifyMethodFieldView,
 )
+from horilla_crm.leads.views.detail_tabs import (
+    LeadsDetailTab,
+    LeadsDetailViewTabView,
+    LeadsActivityTabView,
+    LeadRelatedLists,
+    LeadsHistoryTabView,
+    LeadsNotesAndAttachments,
+)
 
 __all__ = [
     # Core Views
@@ -81,16 +84,10 @@ __all__ = [
     "LeadListView",
     "LeadCardView",
     "LeadDetailView",
-    "LeadsDetailTab",
-    "LeadsDetailViewTabView",
-    "LeadsActivityTabView",
-    "LeadRelatedLists",
     "LeadGroupByView",
     "LeadChartView",
     "LeadKanbanView",
     "LeadSplitView",
-    "LeadsHistoryTabView",
-    "LeadsNotesAndAttachments",
     "LeadTimelineView",
     # Lead Stage Views
     "LeadsStageView",
@@ -143,4 +140,11 @@ __all__ = [
     "AssignmentConditionDeleteView",
     "ToggleAssignToFieldView",
     "ToggleNotifyMethodFieldView",
+    # Detail Tabs Views
+    "LeadsDetailTab",
+    "LeadsDetailViewTabView",
+    "LeadsActivityTabView",
+    "LeadRelatedLists",
+    "LeadsHistoryTabView",
+    "LeadsNotesAndAttachments",
 ]

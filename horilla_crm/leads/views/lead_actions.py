@@ -4,12 +4,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.functional import cached_property
 
-# First-party / Horilla imports
 from horilla.contrib.generics.views import (
     HorillaMultiStepFormView,
     HorillaSingleDeleteView,
     HorillaSingleFormView,
 )
+
+# First party imports (Horilla)
 from horilla.http import HttpResponse
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import (
@@ -19,7 +20,7 @@ from horilla.utils.decorators import (
 )
 from horilla.utils.translation import gettext_lazy as _
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.leads.forms import LeadFormClass, LeadSingleForm
 from horilla_crm.leads.models import Lead, LeadStatus
 

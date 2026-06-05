@@ -1,8 +1,11 @@
 """Admin configuration for the leads app in Horilla CRM."""
 
+# Third-party imports (Django)
+# Third-party imports (other)
 from auditlog.models import LogEntry
 from django.contrib import admin
 
+# Local imports
 from .models import (
     EmailToLeadConfig,
     Lead,

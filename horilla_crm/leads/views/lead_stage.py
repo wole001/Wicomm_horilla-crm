@@ -1,14 +1,13 @@
 """Lead Stage Views"""
 
-# Third party imports (Django)
+# Third-party imports (Django)
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db import transaction
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView, View
 
-# First party / Horilla imports
+# First party imports (Horilla)
 from horilla.auth.models import User
 from horilla.contrib.core.models import Company
 from horilla.contrib.core.progress import BASE_STEPS, ProgressStepsMixin
@@ -21,6 +20,7 @@ from horilla.contrib.generics.views import (
     HorillaView,
 )
 from horilla.contrib.utils.middlewares import _thread_local
+from horilla.db import transaction
 from horilla.http import HttpNotFound, HttpResponse, JsonResponse
 from horilla.shortcuts import get_object_or_404, redirect, render
 from horilla.urls import reverse_lazy
@@ -32,13 +32,11 @@ from horilla.utils.decorators import (
 )
 from horilla.utils.translation import gettext_lazy as _
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.leads.filters import LeadStatusFilter
 from horilla_crm.leads.forms import LeadStatusForm
 from horilla_crm.leads.models import LeadStatus
 from horilla_crm.leads.signals import lead_stage_created
-
-# Local imports
 
 
 class LeadsStageView(LoginRequiredMixin, HorillaView):

@@ -8,26 +8,25 @@ import logging
 import threading
 
 # Third-party imports (Django)
-from django.db import transaction
 from django.dispatch import Signal, receiver
 from django.template import engines
 
+# First party imports (Horilla)
 from horilla.auth.models import User
-
-# First-party / Horilla apps
 from horilla.contrib.core.signals import company_created, company_currency_changed
 from horilla.contrib.keys.models import ShortcutKey
 from horilla.contrib.keys.utils import resolve_page_url
 from horilla.contrib.notifications.methods import create_notification
 from horilla.contrib.utils.middlewares import _thread_local
 from horilla.core.exceptions import FieldDoesNotExist
+from horilla.db import transaction
 from horilla.db.models import Count
-
-# First party imports (Horilla)
 from horilla.db.models.signals import post_save, pre_save
 from horilla.shortcuts import render
 from horilla.urls import reverse_lazy
 from horilla.utils import timezone
+
+# Local imports
 from horilla_crm.leads.models import (
     Lead,
     LeadAssignmentCondition,
@@ -220,7 +219,6 @@ def _eval_condition_criteria(condition, lead):
     """
     criteria_qs = condition.criteria.all().order_by("created_at")
     if not criteria_qs.exists():
-        return True
         return True
 
     result = None

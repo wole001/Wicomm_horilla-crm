@@ -11,13 +11,15 @@ from horilla.contrib.mail.models import HorillaMailTemplate
 from horilla.contrib.notifications.models import NotificationTemplate
 from horilla.contrib.utils.methods import render_template
 
-# First-party / Horilla imports
+# First party imports (Horilla)
 from horilla.core.exceptions import ValidationError
 from horilla.db import models
 from horilla.registry.permission_registry import permission_exempt_model
 from horilla.urls import reverse_lazy
 from horilla.utils.choices import OPERATOR_CHOICES
 from horilla.utils.translation import gettext_lazy as _
+
+# Local imports
 from horilla_crm.leads.models.base import Lead
 
 NOTIFY_METHOD_CHOICES = [

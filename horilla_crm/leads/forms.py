@@ -6,24 +6,21 @@ import logging
 # Third-party imports (Django)
 from django import forms
 
-# Third-party imports (Django)
-from django.db.models import Q
-
-# First-party / Horilla imports
+# First party imports (Horilla)
 from horilla.auth.models import User
 from horilla.contrib.core.mixins import OwnerQuerysetMixin
 from horilla.contrib.generics.forms import HorillaModelForm, HorillaMultiStepForm
 from horilla.contrib.mail.models import HorillaMailConfiguration, HorillaMailTemplate
 from horilla.contrib.notifications.models import NotificationTemplate
+from horilla.db.models import Q
 from horilla.urls import reverse, reverse_lazy
 from horilla.utils.choices import get_subdivision_choices
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.accounts.models import Account
 from horilla_crm.contacts.models import Contact
 from horilla_crm.opportunities.models import Opportunity
 
-# Local application imports
 from .models import (
     EmailToLeadConfig,
     Lead,

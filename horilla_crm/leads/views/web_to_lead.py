@@ -14,11 +14,10 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, FormView, TemplateView
 
+# First party imports (Horilla)
 from horilla.auth.models import User
 from horilla.http import HttpNotFound, HttpResponse, RedirectResponse
 from horilla.shortcuts import render
-
-# First-party / Horilla imports
 from horilla.urls import reverse, reverse_lazy
 from horilla.utils.decorators import (
     htmx_required,
@@ -26,7 +25,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 
-# Local application imports
+# Local imports
 from horilla_crm.leads.models import Lead, LeadCaptureForm, LeadStatus
 
 # Fields to exclude from web-to-lead form builder (avoid repeating in views)

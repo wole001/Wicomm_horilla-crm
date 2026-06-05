@@ -1,5 +1,6 @@
 """Leads app configuration."""
 
+# First party imports (Horilla)
 from horilla.apps import AppLauncher
 from horilla.utils.translation import gettext_lazy as _
 

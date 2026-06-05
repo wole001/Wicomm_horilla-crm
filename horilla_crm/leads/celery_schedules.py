@@ -1,5 +1,6 @@
 """Celery beat schedules for CRM leads module."""
 
+# Third-party imports (other)
 from celery.schedules import crontab
 
 HORILLA_CRM_BEAT_SCHEDULE = {

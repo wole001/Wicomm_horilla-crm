@@ -5,15 +5,12 @@ Views for managing lead assignment rules, which define how leads are automatical
 # Standard library imports
 import logging
 
+# Third-party imports (Django)
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-
-# Third party imports (Django)
-from django.db.models import Q
 from django.utils.functional import cached_property
 from django.views.generic import DetailView, TemplateView, View
 
-# First party / Horilla imports
 from horilla.contrib.generics.views import (
     HorillaListView,
     HorillaNavView,
@@ -23,6 +20,9 @@ from horilla.contrib.generics.views import (
 )
 from horilla.contrib.mail.models import HorillaMailTemplate
 from horilla.contrib.notifications.models import NotificationTemplate
+
+# First party imports (Horilla)
+from horilla.db.models import Q
 from horilla.http import HttpNotFound, HttpResponse, RefreshResponse
 from horilla.urls import reverse, reverse_lazy
 from horilla.utils.decorators import (
@@ -33,7 +33,7 @@ from horilla.utils.decorators import (
 )
 from horilla.utils.translation import gettext_lazy as _
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.leads.filters import LeadAssignmentFilter
 from horilla_crm.leads.forms import AssignmentRuleConditionForm as ConditionForm
 from horilla_crm.leads.models import (
@@ -155,7 +155,7 @@ class LeadAssignmentListView(LoginRequiredMixin, HorillaListView):
         attrs = {}
         if self.request.user.has_perm("leads.view_leadassignmentrule"):
             attrs = {
-                "hx-get": f"{{get_detail_url}}",
+                "hx-get": "{get_detail_url}",
                 "hx-target": "#lead-assignment-view",
                 "hx-swap": "outerHTML",
                 "hx-push-url": "true",

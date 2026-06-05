@@ -2,6 +2,7 @@
 init file for leads models
 """
 
+# Local imports
 from horilla_crm.leads.models.base import (
     LeadStatus,
     Lead,

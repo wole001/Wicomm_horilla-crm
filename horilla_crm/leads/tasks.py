@@ -7,14 +7,14 @@ import imaplib
 import logging
 from datetime import datetime
 
-# Third-party imports
+# Third-party imports (other)
 import requests
 from celery import shared_task
 
-# First-party / Horilla imports
+# First party imports (Horilla)
 from horilla.contrib.mail.views.outlook import refresh_outlook_token
 
-# Local application imports
+# Local imports
 from horilla_crm.leads.models import EmailToLeadConfig, Lead, LeadStatus
 
 logger = logging.getLogger(__name__)

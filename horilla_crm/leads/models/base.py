@@ -9,25 +9,24 @@ relationships, constraints, and behaviors.
 # Standard library imports
 import logging
 
-# Third-party imports
+# Third-party imports (other)
 from colorfield.fields import ColorField
 
 # Third-party imports (Django)
 from django.conf import settings
 from django.core.validators import EmailValidator
-from django.db import transaction
 from django.dispatch import receiver
 from django_countries.fields import CountryField
 
 from horilla.contrib.core.models import Company, HorillaCoreModel
 from horilla.contrib.mail.models import HorillaMailConfiguration
 from horilla.contrib.utils.methods import render_template
-from horilla.core.exceptions import ValidationError
-from horilla.db import models
-from horilla.db.models.signals import post_delete
-from horilla.urls import reverse_lazy
 
 # First party imports (Horilla)
+from horilla.core.exceptions import ValidationError
+from horilla.db import models, transaction
+from horilla.db.models.signals import post_delete
+from horilla.urls import reverse_lazy
 from horilla.utils import timezone
 from horilla.utils.translation import gettext_lazy as _
 

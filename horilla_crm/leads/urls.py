@@ -1,6 +1,9 @@
 """URL configurations for the leads app."""
 
+# First party imports (Horilla)
 from horilla.urls import path
+
+# Local imports
 from horilla_crm.leads import views
 
 app_name = "leads"

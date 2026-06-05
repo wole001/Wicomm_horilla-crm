@@ -1,6 +1,6 @@
 """Internationalization strings for CRM leads module."""
 
-# First-party / Horilla imports
+# First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
 _("CRM")
