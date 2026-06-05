@@ -467,6 +467,14 @@ function initSidebar() {
 
     if (!sideMenu || !toggleBtn || !arrowIcon || !mainContent) return;
 
+    // Remove the pre-paint CSS override so JS classes take over without flash
+    document.documentElement.removeAttribute("data-sidebar-collapsed");
+
+    // Suppress transition briefly so the initial state applies instantly
+    sideMenu.style.transition = "none";
+    requestAnimationFrame(() => { sideMenu.style.transition = ""; });
+
+    const STORAGE_KEY = "sidebarCollapsed";
     let isCollapsed = false;
 
     function collapseMenu() {
@@ -495,11 +503,29 @@ function initSidebar() {
     }
 
     toggleBtn.onclick = () => {
-        isCollapsed ? expandMenu() : collapseMenu();
+        if (isCollapsed) {
+            expandMenu();
+        } else {
+            collapseMenu();
+        }
+        // Persist user's manual choice only on wide screens
+        if (window.innerWidth >= 992) {
+            localStorage.setItem(STORAGE_KEY, isCollapsed ? "true" : "false");
+        }
     };
 
     function adjustSidebar() {
-        window.innerWidth < 992 ? collapseMenu() : expandMenu();
+        if (window.innerWidth < 992) {
+            collapseMenu();
+        } else {
+            // Restore user's saved preference on wide screens
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved === "true") {
+                collapseMenu();
+            } else {
+                expandMenu();
+            }
+        }
     }
 
     adjustSidebar();
