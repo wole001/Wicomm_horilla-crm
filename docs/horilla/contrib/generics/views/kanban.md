@@ -113,7 +113,7 @@ Works only when:
 Flow:
 
 1. Parse `column_order` JSON list.
-2. Use transaction with temporary offset (`max(order)+1000`) to avoid unique order collisions.
+2. Use `transaction.atomic()` with temporary offset (`max(order)+1000`) to avoid unique order collisions. In `kanban.py`: `from horilla.db import transaction` under `# First party imports (Horilla)`; `IntegrityError` stays `from django.db` in the Django block.
 3. Assign temporary order, then compact to 0..N in requested order.
 4. Recompute queryset/context and render `partials/kanban_blocks.html`.
 5. Return with `HX-Push-Url`.

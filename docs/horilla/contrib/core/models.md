@@ -31,11 +31,15 @@ project_root/
 
 ## 🧩 1. ORM Abstraction Layer (`horilla.db`)
 
-### ❌ Avoid direct Django usage
+Horilla centralizes Django database imports under **`horilla.db`** so app code does not scatter `django.db` imports. Use it for models, transactions, and the default DB connection handle.
+
+### ❌ Avoid direct Django usage in app code
 
 ```python
 from django.db import models
-````
+from django.db import transaction
+from django.db import connection
+```
 
 ---
 
@@ -43,7 +47,11 @@ from django.db import models
 
 ```python id="a1k2xp"
 from horilla.db import models
+from horilla.db import transaction
+from horilla.db import connection
 ```
+
+`transaction` and `connection` are re-exports of Django’s modules (same API: `transaction.atomic()`, `transaction.on_commit()`, `connection.cursor()`, etc.).
 
 ---
 
@@ -52,10 +60,51 @@ from horilla.db import models
 ```python id="b3m8qz"
 # horilla/db/__init__.py
 
+from django.db import connection, transaction
+
 from horilla.db import models
 
-__all__ = ["models"]
+__all__ = ["connection", "models", "transaction"]
 ```
+
+Only **`horilla/db/__init__.py`** should import `connection` and `transaction` from `django.db` directly; all other Horilla apps import from `horilla.db`.
+
+---
+
+## 🔁 Transactions and connections
+
+| Import | Use when |
+|--------|----------|
+| `from horilla.db import transaction` | Wrap writes in `transaction.atomic()`, schedule `transaction.on_commit()` callbacks |
+| `from horilla.db import connection` | Raw SQL, schema introspection, or vendor-specific checks via `connection` |
+
+Example:
+
+```python
+from horilla.db import transaction
+
+with transaction.atomic():
+    obj.save()
+    transaction.on_commit(lambda: notify_async(obj.pk))
+```
+
+When a module also needs other `django.db` symbols (e.g. `IntegrityError`, `close_old_connections`), import those from `django.db` only — not `transaction` or `connection`.
+
+### Import placement (file layout)
+
+Place **all** `horilla.*` imports (including `horilla.db`) under `# First party imports (Horilla)`, not under `# Third-party imports (Django)`. See [docs/coding_rule.md](../../../coding_rule.md#import-order-and-section-comments).
+
+```python
+# Third-party imports (Django)
+from django.dispatch import receiver
+
+# First party imports (Horilla)
+from horilla.db import models, transaction
+from horilla.db.models.signals import post_save
+from horilla.contrib.core.models import HorillaCoreModel  # horilla.contrib.* last
+```
+
+Signals, views (`load_data.py`, `import_data/step4.py`), CRM modules (`horilla_crm/leads/signals.py`), and inventory helpers (`horilla_inventory/stock/methods.py`) follow this layout.
 
 ---
 
@@ -76,8 +125,27 @@ __all__ = list(_django_models.__all__) + ["GenericForeignKey"]
 
 * All Django model fields
 * Custom `GenericForeignKey`
+* Model signals via **`horilla.db.models.signals`** (re-export of `django.db.models.signals`)
 
 ---
+
+## 📡 Model signals (`horilla.db.models.signals`)
+
+Prefer Horilla imports for ORM signal receivers (same pattern as `horilla.http`, `horilla.shortcuts`):
+
+```python
+from horilla.db.models.signals import post_save, pre_save, post_delete
+```
+
+For namespace-style `.connect()` registration:
+
+```python
+from horilla.db.models import signals
+
+signals.post_save.connect(my_handler, sender=MyModel)
+```
+
+Do **not** import from `django.db.models.signals` in new Horilla app code.
 
 ## 🔧 Custom GenericForeignKey
 
@@ -289,6 +357,8 @@ def full_histories(self)
 
 ```python id="a0h4dg"
 from django.db import models
+from django.db import transaction
+from django.db import connection
 from django.contrib.contenttypes.fields import GenericForeignKey
 ```
 
@@ -298,6 +368,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 
 ```python id="p6t8zx"
 from horilla.db import models
+from horilla.db import transaction
+from horilla.db import connection
 ```
 
 ```python id="q1w4er"
@@ -322,7 +394,9 @@ from horilla_core.models import Company
 
 | Feature           | Django   | Horilla     |
 | ----------------- | -------- | ----------- |
-| Model import      | Direct   | Centralized |
+| Model import      | Direct   | Centralized (`horilla.db.models`) |
+| Transactions      | `django.db.transaction` | `horilla.db.transaction` (re-export) |
+| DB connection     | `django.db.connection` | `horilla.db.connection` (re-export) |
 | GenericForeignKey | Limited  | Extended    |
 | Proxy ContentType | ❌        | ✅           |
 | Base model        | Manual   | Built-in    |

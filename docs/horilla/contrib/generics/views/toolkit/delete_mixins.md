@@ -307,7 +307,7 @@ This separation keeps action controller logic in `delete.py` and mutation primit
 ## Transaction and safety considerations
 
 - mixin methods generally do not open transactions themselves.
-- delete view wraps critical action branches in `transaction.atomic()`.
+- delete view wraps critical action branches in `transaction.atomic()`; `delete.py` imports `transaction` from `horilla.db` in the **First party imports (Horilla)** section (see [coding_rule.md](../../../../../coding_rule.md#import-order-and-section-comments)).
 - exclusion list prevents accidental operations on system/helper models.
 - many queries use `all_objects` when available, ensuring soft-deleted rows are considered where intended.
 

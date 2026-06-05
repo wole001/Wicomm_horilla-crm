@@ -136,7 +136,7 @@ The metaclass `ExtensionModelBase` lives in `horilla/extension/`. It is **wired 
 
 ```python
 # horilla/contrib/core/models/base.py
-from horilla.extension.metaclass import ExtensionModelBase
+from horilla.extension import ExtensionModelBase
 
 class HorillaCoreModel(models.Model, metaclass=ExtensionModelBase):
     class Meta:
@@ -219,11 +219,18 @@ All `_inherit` code lives in **one** subpackage:
 horilla/
 ├── __init__.py                 # do not import horilla.extension here (see §4.5)
 └── extension/
-    ├── __init__.py             # public API + autodetector patch
-    ├── registry.py             # INJECTION_MAP
-    ├── migration_ops.py        # InjectField
-    ├── autodetect.py           # HorillaAutodetector
-    └── metaclass.py            # ExtensionModelBase (metaclass only)
+    ├── __init__.py             # re-exports model API + autodetector patch
+    ├── models/
+    │   ├── registry.py         # INJECTION_MAP
+    │   ├── migration_ops.py    # InjectField
+    │   ├── autodetect.py       # HorillaAutodetector
+    │   └── metaclass.py        # ExtensionModelBase (metaclass only)
+    └── forms/                  # _inherit_form (see forms/inherit.md)
+        ├── registry.py
+        ├── metaclass.py
+        ├── compose.py
+        ├── resolve.py
+        └── bootstrap.py
 ```
 
 `HorillaCoreModel` in `horilla/contrib/core/models/base.py` is updated to use `metaclass=ExtensionModelBase`.
@@ -241,11 +248,12 @@ horilla/
 
 | Module | Responsibility |
 |--------|----------------|
-| `registry.py` | `INJECTION_MAP` — no Django imports |
-| `migration_ops.py` | `InjectField` custom operation (DDL on target, state in extension app) |
-| `autodetect.py` | `HorillaAutodetector` |
-| `metaclass.py` | `ExtensionModelBase`, `EXTENSION_REGISTRY` |
-| `__init__.py` | Public exports; patches `makemigrations` / `migrate` autodetector |
+| `models/registry.py` | `INJECTION_MAP` — no Django imports |
+| `models/migration_ops.py` | `InjectField` custom operation (DDL on target, state in extension app) |
+| `models/autodetect.py` | `HorillaAutodetector` |
+| `models/metaclass.py` | `ExtensionModelBase`, `EXTENSION_REGISTRY` |
+| `extension/__init__.py` | Re-exports model API; patches `makemigrations` / `migrate` autodetector |
+| `forms/*` | `_inherit_form` registry, composition, `resolve_form_class()` |
 | `contrib/core/models/base.py` | `HorillaCoreModel(..., metaclass=ExtensionModelBase)` |
 
 ### 4.4 Public API
@@ -274,7 +282,7 @@ Do **not** import `horilla.extension` from `horilla/__init__.py`: loading settin
 
 Instead, **`CoreConfig.ready()`** (`horilla/contrib/core/apps.py`) imports `horilla.extension`, which patches `makemigrations` / `migrate`.
 
-The metaclass module (`horilla/extension/metaclass.py`) uses Django’s `Field` base only — not `from horilla.db import models` — so `HorillaCoreModel` can load during app registry population without triggering that cycle.
+The metaclass module (`horilla/extension/models/metaclass.py`) uses Django’s `Field` base only — not `from horilla.db import models` — so `HorillaCoreModel` can load during app registry population without triggering that cycle.
 
 ```python
 # horilla/contrib/core/apps.py — CoreConfig.ready()
@@ -287,12 +295,12 @@ def ready(self):
 
 | Horilla HRMS (flat) | Horilla CRM |
 |---------------------|-------------|
-| `horilla/extension_registry.py` | `horilla/extension/registry.py` |
-| `horilla/migration_ops.py` | `horilla/extension/migration_ops.py` |
-| `horilla/autodetect.py` | `horilla/extension/autodetect.py` |
-| Metaclass on `HorillaModel` in `horilla/models.py` | `horilla/extension/metaclass.py` + applied to `HorillaCoreModel` in `base.py` |
+| `horilla/extension_registry.py` | `horilla/extension/models/registry.py` |
+| `horilla/migration_ops.py` | `horilla/extension/models/migration_ops.py` |
+| `horilla/autodetect.py` | `horilla/extension/models/autodetect.py` |
+| Metaclass on `HorillaModel` in `horilla/models.py` | `horilla/extension/models/metaclass.py` + applied to `HorillaCoreModel` in `base.py` |
 | Patch | `CoreConfig.ready()` imports `horilla.extension` |
-| Metaclass import | `horilla/extension/metaclass.py` uses Django `Field` only (no `horilla.db` at import time) |
+| Metaclass import | `horilla/extension/models/metaclass.py` uses Django `Field` only (no `horilla.db` at import time) |
 
 ---
 
@@ -306,6 +314,7 @@ def ready(self):
 | `_inherit` / `INJECTION_MAP` / `InjectField` | **Not present** |
 | Base business model | `HorillaCoreModel` (`horilla/contrib/core/models/base.py`) |
 | Model imports | `from horilla.db import models` (required) |
+| Transactions / connection | `from horilla.db import transaction`, `connection` (required in app code; re-exported in `horilla/db/__init__.py`) |
 | App bootstrap | `AppLauncher` + `auto_import_modules` |
 | Django version | **6.0** (`requirements.txt`) |
 | Forms | `HorillaModelForm` / `HorillaMultiStepForm` |
@@ -318,6 +327,8 @@ def ready(self):
 | `HorillaModel` | `HorillaCoreModel` (abstract) |
 | `from horilla.models import HorillaModel` | `from horilla.contrib.core.models import HorillaCoreModel` |
 | `from django.db import models` | `from horilla.db import models` |
+| `from django.db import transaction` | `from horilla.db import transaction` |
+| `from django.db import connection` | `from horilla.db import connection` |
 | `_inherit = "employee.Employee"` | `_inherit = "leads.Lead"` |
 | Metaclass on `HorillaModel` | Metaclass on `HorillaCoreModel` — **same pattern** |
 
@@ -333,7 +344,7 @@ Apply the **metaclass** (not the model class) to `HorillaCoreModel`:
 
 ```python
 # ✅ Correct
-from horilla.extension.metaclass import ExtensionModelBase
+from horilla.extension import ExtensionModelBase
 
 class HorillaCoreModel(models.Model, metaclass=ExtensionModelBase):
     class Meta:
@@ -536,7 +547,8 @@ Pulling upstream CRM updates does not conflict with extension migrations because
 - [ ] `horilla_crm_extensions_demo` (or `testapp`) with `LeadExtension`
 - [ ] `AppLauncher` + `auto_import_modules = ["models"]`
 - [ ] Verify `makemigrations` / `migrate` / `migrate … zero`
-- [ ] `docs/horilla/extension/inherit.md` — build guide
+- [ ] `docs/horilla/extension/models/inherit.md` — model `_inherit` guide
+- [ ] `docs/horilla/extension/forms/inherit.md` — form `_inherit_form` guide
 
 ### Phase 3 — Integration hardening (2–3 days)
 
@@ -557,7 +569,7 @@ Pulling upstream CRM updates does not conflict with extension migrations because
 
 ### Phase 5 — End-user documentation (1 day)
 
-Publish `docs/horilla/extension/inherit.md`:
+Publish `docs/horilla/extension/models/inherit.md` and `docs/horilla/extension/forms/inherit.md`:
 
 - When to use `_inherit` vs `additional_info`
 - Extension app setup (`AppLauncher`, `INSTALLED_APPS` order)
@@ -616,7 +628,8 @@ gantt
 | `horilla/contrib/core/models/base.py` | Update — add `metaclass=ExtensionModelBase` |
 | `horilla/contrib/core/models/__init__.py` | Update — keep public exports aligned with `base.py` |
 | `horilla/contrib/core/apps.py` | Update — `CoreConfig.ready()` imports `horilla.extension` |
-| `docs/horilla/extension/inherit.md` | Create |
+| `docs/horilla/extension/models/inherit.md` | Create — extension overview + model `_inherit` |
+| `docs/horilla/extension/forms/inherit.md` | Create — form `_inherit_form` |
 | `horilla_crm_extensions_demo/` | Optional reference app |
 
 ---
@@ -653,7 +666,7 @@ gantt
 - [ ] `HorillaModelForm(fields="__all__")` renders and validates injected fields
 - [ ] `migrate <extension_app> zero` drops columns cleanly
 - [ ] `python manage.py check` passes
-- [ ] `docs/horilla/extension/inherit.md` published
+- [ ] `docs/horilla/extension/models/inherit.md` and `forms/inherit.md` published
 - [ ] No duplicate implementation at `horilla/` package root
 
 ---

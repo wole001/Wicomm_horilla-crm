@@ -11,6 +11,15 @@ It combines Django’s `DeleteView` with mixins from `horilla_generics.views.too
 
 Actual dependency scanning and helpers live in those mixins; this file wires them into HTTP GET/POST and templates under `partials/single_delete/`.
 
+### Imports (`delete.py`)
+
+| Symbol | Import |
+|--------|--------|
+| `transaction` | `from horilla.db import transaction` under `# First party imports (Horilla)` |
+| `DeleteView`, `messages` | `django.*` under `# Third-party imports (Django)` |
+
+Do not place `horilla.db` imports in the Django block. See [coding_rule.md](../../../../coding_rule.md#import-order-and-section-comments).
+
 ---
 
 ## Class: `HorillaSingleDeleteView`
@@ -120,6 +129,7 @@ Set `check_delete_permission = False` only if you enforce permissions elsewhere.
 
 2. **`check_dependencies == "false"` and `delete_mode` set**
    → `transaction.atomic()` → `_delete_main_object(delete_mode, user)` → success message → `get_post_delete_response()`.
+   (`transaction` is imported via `from horilla.db import transaction` in `delete.py`.)
    On failure (e.g. company context) → message + reload script.
 
 3. **`action == "check_dependencies_with_mode"`**

@@ -221,20 +221,75 @@ These builders standardize widget attrs and reduce repeated widget setup code.
 
 ---
 
+## Automatic phone field widget injection
+
+## `_apply_phone_fields()`
+
+Auto-applies `PhoneField` (country-code Select2 + number input) to any `CharField` whose name matches the active phone field name set.
+
+Called at the end of `__init__` in both `HorillaModelForm` and `HorillaMultiStepForm` — no per-form setup required.
+
+### Default field names
+
+```python
+_DEFAULT_PHONE_FIELD_NAMES = {
+    "phone", "mobile", "contact_number", "phone_number", "mobile_number",
+    "secondary_phone", "assistant_phone", "fax", "whatsapp", "telephone",
+    "cell", "cell_number", "alt_phone", "alternate_phone",
+}
+```
+
+### Subclass override: `phone_fields`
+
+Declare `phone_fields` on any subclass to control which fields get the phone widget:
+
+```python
+# Add extra field names on top of the defaults
+class MyForm(HorillaModelForm):
+    phone_fields = ["work_phone", "home_phone"]
+
+# Opt out entirely — no phone widgets on this form
+class MyForm(HorillaModelForm):
+    phone_fields = []
+```
+
+Rules:
+
+| `phone_fields` value | Active set |
+|---|---|
+| Not declared (default) | `_DEFAULT_PHONE_FIELD_NAMES` |
+| `["work_phone"]` | `_DEFAULT_PHONE_FIELD_NAMES` ∪ `{"work_phone"}` |
+| `[]` | None — method returns early, no phone widgets applied |
+
+### Behavior per field
+
+For each matching field the method:
+
+1. skips if already a `PhoneField` (idempotent)
+2. skips if not a plain `CharField` (FK, M2M, etc. are left untouched)
+3. reads the current instance value (edit mode) and sets it as `initial`
+4. replaces the field with a new `PhoneField` preserving `label` and `required`
+
+Storage format is `+XX NNNNNN` in the existing `CharField` — **no migration needed**.
+
+---
+
 ## Integration in form classes
 
 `HorillaModelForm` and `HorillaMultiStepForm` typically use this mixin to:
 
 - remove disallowed fields early,
 - enforce readonly integrity during cleaning,
-- apply unified attrs on dynamic FK/M2M/date/time widgets.
+- apply unified attrs on dynamic FK/M2M/date/time widgets,
+- auto-apply phone widgets to phone-named fields.
 
 Typical pattern:
 
 1. initialize fields and permissions
 2. call `_remove_fields_by_permission(...)`
-3. build/assign widget attrs via builder helpers
-4. in `clean()`, call `_enforce_readonly_in_cleaned_data(cleaned_data)`
+3. call `_apply_phone_fields()`
+4. build/assign widget attrs via builder helpers
+5. in `clean()`, call `_enforce_readonly_in_cleaned_data(cleaned_data)`
 
 ---
 
@@ -260,13 +315,16 @@ class MyForm(HorillaFormMixin, forms.ModelForm):
 
 ## Caveats
 
-- readonly enforcement runs only in edit mode; create/duplicate rely on field removal/visibility decisions.
+- Readonly enforcement runs only in edit mode; create/duplicate rely on field removal/visibility decisions.
 - M2M/FK comparison logic assumes submitted cleaned values are model instances (typical Django behavior).
 - `data-parent-model` is added only for class name `DynamicForm`; custom dynamic class names may need override.
-- widget class constants are global; project-specific theme changes may require updating these shared strings.
+- Widget class constants are global; project-specific theme changes may require updating these shared strings.
+- `_apply_phone_fields()` only replaces plain `CharField` instances. Fields already typed as something other than `CharField` (e.g. custom field classes) are skipped silently.
+- `phone_fields = []` on a subclass opts out completely for that form, including all defaults. Use a specific list if you only want to suppress one field while keeping others.
+- `_apply_phone_fields()` is called after `_remove_fields_by_permission()`, so fields already removed by permission rules are not affected.
 
 ---
 
 ## Summary
 
-`form_class_mixin.py` is the shared policy and widget utility layer for Horilla forms. It enforces field-permission behavior consistently, protects readonly fields from tampering, and standardizes complex widget attribute construction across single-step and multi-step form implementations.
+`form_class_mixin.py` is the shared policy and widget utility layer for Horilla forms. It enforces field-permission behavior consistently, protects readonly fields from tampering, standardizes complex widget attribute construction across single-step and multi-step form implementations, and automatically applies country-code phone widgets to phone-named fields across the entire form system.

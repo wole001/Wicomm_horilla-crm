@@ -160,6 +160,14 @@ Always calls:
 
 to wire content-type-driven condition updates.
 
+## 4a) Phone field widget injection
+
+Calls `_apply_phone_fields()` (inherited from `HorillaFormMixin`).
+
+Replaces any `CharField` whose name is in the active phone field set (`phone`, `mobile`, `contact_number`, `fax`, etc.) with `PhoneField` — a Select2 country-code dropdown paired with a number text input. Stored value format: `+XX NNNNNN`.
+
+No migration required. Subclasses can extend or disable via `phone_fields` class attribute — see `form_class_mixin.md`.
+
 ## 5) Per-field widget/permission pass
 
 For each form field:

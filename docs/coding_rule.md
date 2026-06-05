@@ -1,0 +1,474 @@
+Repository coding rules. Add new topics as additional `##` sections below.
+
+---
+
+## Avoid direct Django usage
+
+Horilla re-exports common Django APIs under `horilla.*` packages so app code has one consistent import path.
+
+**Rule:** If Horilla exposes the symbol (see table below), import from Horilla. If not, import from Django or the third-party package as usual.
+
+| Situation | Import from |
+|-----------|-------------|
+| Symbol listed in a Horilla package below | `horilla.<package>` |
+| Symbol not re-exported by Horilla | `django.*` (or third-party) |
+| Code that implements the re-export | `django.*` only inside the Horilla wrapper module |
+
+### Horilla import map (use these instead of Django)
+
+#### Database & ORM
+
+| Import from | Instead of | Symbols (common) |
+|-------------|------------|------------------|
+| `horilla.db` | `django.db` | `models`, `transaction`, `connection` |
+| `horilla.db.models.signals` | `django.db.models.signals` | `post_save`, `pre_save`, `post_delete`, `m2m_changed`, … |
+| `horilla.db.models` | `django.db.models` | `Q`, `F`, `Count`, `ForeignKey`, … (via `horilla.db.models` re-export) |
+
+Details: [docs/horilla/contrib/core/models.md](horilla/contrib/core/models.md)
+
+#### HTTP, views, URLs
+
+| Import from | Instead of | Symbols (common) |
+|-------------|------------|------------------|
+| `horilla.http` | `django.http` | `HttpResponse`, `JsonResponse`, `QueryDict`, `Http404`, `StreamingHttpResponse`, `HttpNotFound`, `RedirectResponse`, … |
+| `horilla.shortcuts` | `django.shortcuts` | `redirect`, `render`, `get_object_or_404` |
+| `horilla.urls` | `django.urls` | `path`, `re_path`, `include`, `reverse`, `reverse_lazy`, `resolve` |
+
+Details: [docs/horilla/http/http.md](horilla/http/http.md), [docs/horilla/shortcuts/shortcuts.md](horilla/shortcuts/shortcuts.md), [docs/horilla/urls/urls.md](horilla/urls/urls.md)
+
+#### Apps, auth, exceptions
+
+| Import from | Instead of | Symbols (common) |
+|-------------|------------|------------------|
+| `horilla.apps` | `django.apps` | `AppLauncher`, `AppConfig`, `apps` (registry) |
+| `horilla.auth.models` | `django.contrib.auth.models` | `User` (wraps `AUTH_USER_MODEL`) |
+| `horilla.core.exceptions` | `django.core.exceptions` | `ValidationError`, `PermissionDenied`, `ObjectDoesNotExist`, … |
+
+Details: [docs/horilla/apps/apps.md](horilla/apps/apps.md), [docs/horilla/contrib/core/user_model.md](horilla/contrib/core/user_model.md), [docs/horilla/core/exceptions.md](horilla/core/exceptions.md)
+
+#### Utilities (i18n, time, decorators)
+
+| Import from | Instead of | Symbols (common) |
+|-------------|------------|------------------|
+| `horilla.utils.translation` | `django.utils.translation` | `gettext_lazy`, `gettext`, `ngettext_lazy`, `activate`, `override`, … |
+| `horilla.utils` or `horilla.utils.timezone` | `django.utils.timezone` | `timezone.now()`, `make_aware`, `localtime`, `UTC`, … |
+| `horilla.utils.decorators` | `django.utils.decorators` + custom | `method_decorator`, `permission_required`, `htmx_required`, `db_initialization`, … |
+
+Details: [docs/horilla/utils/translation.md](horilla/utils/translation.md), [docs/horilla/utils/utils.md](horilla/utils/utils.md), [docs/horilla/utils/decorators.md](horilla/utils/decorators.md)
+
+#### Framework types (not Django re-exports — still use Horilla)
+
+| Import from | Role |
+|-------------|------|
+| `horilla.contrib.core.models` | `HorillaCoreModel`, `CompanyFilteredManager`, … |
+| `horilla.contrib.generics` | `HorillaListView`, `HorillaModelForm`, … |
+| `horilla.menu` | `floating_menu`, `main_section_menu`, … |
+| `horilla.registry.feature` | `register_model_for_feature`, `FEATURE_REGISTRY` |
+
+When adding a new Horilla wrapper, document it under `docs/horilla/<package>/` and add a row to the tables above.
+
+### Examples
+
+```python
+# ❌ Avoid when Horilla re-exports the symbol
+from django.db import models, transaction
+from django.http import HttpResponse
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
+from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
+from django.apps import apps
+
+# ✅ Prefer — Horilla import map
+from horilla.db import models, transaction
+from horilla.http import HttpResponse
+from horilla.urls import reverse_lazy
+from horilla.shortcuts import render, redirect
+from horilla.utils.translation import gettext_lazy as _
+from horilla.utils import timezone
+from horilla.core.exceptions import ValidationError
+from horilla.auth.models import User
+from horilla.apps import apps, AppLauncher
+from horilla.utils.decorators import permission_required, htmx_required
+
+# ✅ OK — not wrapped by Horilla (use Django directly)
+from django.db import IntegrityError, migrations
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import close_old_connections
+```
+
+### Still import from Django when Horilla does not wrap it
+
+Examples (not exhaustive):
+
+- `LoginRequiredMixin`, `DeleteView`, other CBV bases not re-exported
+- `IntegrityError`, `migrations`, `close_old_connections`
+- Third-party: `djmoney`, `rest_framework`, Channels, etc.
+- Migration files: `from django.db import migrations`
+
+### Exceptions (intentional `django.*` imports)
+
+- **Migrations** — `from django.db import migrations` in `migrations/*.py` only.
+- **Early bootstrap** — e.g. `horilla/extension/models/metaclass.py` uses Django `Field` only (no `horilla.db` at import time) to avoid `AppRegistryNotReady`; see [docs/Plan_HORILLA_INHERIT_MIGRATION.md](Plan_HORILLA_INHERIT_MIGRATION.md).
+- **Re-export implementation** — only the Horilla wrapper module (e.g. `horilla/db/__init__.py`, `horilla/http/__init__.py`) may import the symbol from Django.
+- **Gaps** — any symbol not in the Horilla package’s `__all__` / docs stays on Django.
+
+### Import order and section comments
+
+Group imports in this order. Use the **exact** section headers below so reviewers and tools can scan files consistently.
+
+| Order | Section header | What goes here |
+|-------|----------------|----------------|
+| 1 | `# Standard library imports` | `import os`, `from pathlib import Path`, … |
+| 2 | `# Third-party imports (Django)` | `django.*` only (symbols **not** re-exported by Horilla) |
+| 3 | `# Third-party imports (other)` | Optional — `rest_framework`, `djmoney`, `celery`, … |
+| 4 | `# First party imports (Horilla)` | **Every** `from horilla…` / `import horilla…` import |
+| 5 | `# Local imports` | Same-app modules — relative imports (`.models`, `.forms`) or `horilla_crm.*` / client extension apps |
+
+**Mandatory:** Any import whose top-level package is `horilla` (`horilla.db`, `horilla.contrib.*`, `horilla_crm` does **not** apply — that is CRM app code, usually under **Local imports**) must appear only under `# First party imports (Horilla)`, never under Django or third-party blocks.
+
+Within **stdlib**, **Django**, and **other** sections, sort imports alphabetically by module path.
+
+Within **`# First party imports (Horilla)`**, use **two sub-blocks** (do not mix):
+
+| Sub-order | Packages | Notes |
+|-----------|----------|--------|
+| **1 — Platform** | `horilla.apps`, `horilla.auth`, `horilla.core`, `horilla.db`, `horilla.http`, `horilla.menu`, `horilla.registry`, `horilla.shortcuts`, `horilla.urls`, `horilla.utils`, … | Top-level Horilla infrastructure — **not** `horilla.contrib` |
+| **2 — Contrib apps** | `horilla.contrib.*` | Always **last** in the Horilla block; contrib is a bundle of horilla apps (core, generics, mail, …) |
+
+Sort **alphabetically by full module path** inside each sub-block. Typical platform order (all before any `horilla.contrib` line):
+
+```text
+horilla.apps → horilla.auth → horilla.core → horilla.db → horilla.http → horilla.menu
+→ horilla.registry → horilla.shortcuts → horilla.urls → horilla.utils → …
+```
+
+#### Example (correct)
+
+```python
+# Standard library imports
+import json
+import logging
+
+# Third-party imports (Django)
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import IntegrityError
+from django.views.generic import View
+
+# Third-party imports (other)
+from djmoney.models.fields import MoneyField
+
+# First party imports (Horilla)
+from horilla.apps import apps
+from horilla.auth.models import User
+from horilla.db import models, transaction
+from horilla.http import HttpResponse
+from horilla.shortcuts import redirect, render
+from horilla.urls import reverse_lazy
+from horilla.utils import timezone
+from horilla.utils.decorators import permission_required
+from horilla.utils.translation import gettext_lazy as _
+from horilla.contrib.core.models import HorillaCoreModel
+from horilla.contrib.generics.views import HorillaListView
+
+# Local imports
+from .models import Lead
+```
+
+#### Anti-pattern (wrong)
+
+```python
+# Third-party imports (Django)
+from django.contrib.auth.mixins import LoginRequiredMixin
+from horilla.db import transaction  # ❌ horilla.* must not be in Django block
+
+# First party imports (Horilla)
+from horilla.contrib.generics.views import HorillaListView  # ❌ contrib before platform
+from horilla.db import models
+```
+
+Use `# First party imports (Horilla)` (not `First party / Horilla` or other variants) in new and touched files.
+
+See also [.claude/rules/horilla-coding-style.md](../.claude/rules/horilla-coding-style.md).
+
+### Reviewer checklist
+
+- [ ] All `horilla.*` imports are under `# First party imports (Horilla)` only.
+- [ ] Within First party: platform (`horilla.db`, `horilla.auth`, `horilla.http`, …) before `horilla.contrib.*`.
+- [ ] Django block contains only `django.*` (and no `horilla.*`).
+- [ ] Database: `models`, `transaction`, `connection`, and model signals use `horilla.db` / `horilla.db.models.signals`.
+- [ ] HTTP/views: responses and shortcuts use `horilla.http` / `horilla.shortcuts` when listed above.
+- [ ] URLs: `path`, `reverse`, `reverse_lazy` use `horilla.urls`.
+- [ ] i18n / time / decorators: use `horilla.utils.translation`, `horilla.utils.timezone` (or `from horilla.utils import timezone`), `horilla.utils.decorators`.
+- [ ] User model and registry: `horilla.auth.models.User`, `horilla.apps.apps` — not `django.contrib.auth.models.User`.
+- [ ] Exceptions: `horilla.core.exceptions` — not `django.core.exceptions` for re-exported types.
+- [ ] New direct `django.*` imports are justified (not in Horilla map) or documented.
+
+---
+
+## Naming
+
+Conventions for **functions**, **classes**, and **variables**. Follow PEP 8 unless a rule below overrides it.
+
+**Related docs**
+
+- Import map and section headers: [Avoid direct Django usage](#avoid-direct-django-usage) (same file)
+- Extension system: [docs/horilla/extension/inherit.md](docs/horilla/extension/inherit.md)
+- ORM / `horilla.db`: [docs/horilla/contrib/core/models.md](docs/horilla/contrib/core/models.md)
+- Commit format: [CLAUDE.md](CLAUDE.md) (`[ADD/FIX/UPDT/REMOVE] SECTION: description`)
+
+### General Python style
+
+| Kind | Style | Example |
+|------|--------|---------|
+| **Classes** | `PascalCase` | `LeadListView`, `FormExtension` |
+| **Functions / methods** | `snake_case` | `resolve_list_view_class`, `bootstrap_extensions` |
+| **Variables / attributes** | `snake_case` | `target_path`, `composed_map` |
+| **Constants** | `UPPER_SNAKE_CASE` | `LIST_EXTENSION_REGISTRY`, `FORM_COMPOSED_MAP` |
+| **Modules / packages** | `snake_case` | `metaclass.py`, `horilla_crm` |
+| **Private (module)** | Leading `_` | `_patch_migration_autodetectors` |
+| **Django apps** | `snake_case` package name | `my_lead_extensions`, `horilla_crm.leads` |
+
+Avoid abbreviations unless they are domain-standard (`pk`, `fk`, `url`, `htmx`).
+
+### The `Horilla` prefix — when to use it
+
+The package is already named `horilla`. **Do not repeat `Horilla` in every symbol** inside `horilla/` when the import path or base class already makes the context clear.
+
+#### Omit redundant `Horilla` (preferred inside `horilla/`)
+
+Use short, domain-specific names:
+
+| Do | Do not |
+|----|--------|
+| `ListExtension` | `HorillaListExtension` |
+| `DetailExtension` | `HorillaDetailExtension` |
+| `FormExtension` | `HorillaFormExtension` |
+| `bootstrap_extensions()` | `bootstrap_horilla_extensions()` |
+| `_is_list_extension` | `_is_horilla_list_extension` |
+| `_is_form_extension` | `_is_horilla_form_extension` |
+| `apply_list_extensions()` | `apply_horilla_list_extensions()` |
+
+#### Keep `Horilla` for established framework types
+
+These names are public API across apps and templates. **Do not rename** for consistency with generics, core, and docs:
+
+| Keep as-is | Role |
+|------------|------|
+| `HorillaCoreModel` | Base model (`horilla.contrib.core`) |
+| `HorillaListView`, `HorillaDetailView`, … | Generic CBVs (`horilla.contrib.generics`) |
+| `HorillaModelForm`, `HorillaFormMixin` | Form stack |
+| `HorillaFilterSet` | Filters |
+| `HorillaUser` | Auth user model |
+
+**Rule of thumb:** If the symbol lives in `horilla.contrib.*` and is imported by many CRM apps, it likely keeps the `Horilla` prefix. If it lives in `horilla.extension.*` or other internal platform code added for extensions, prefer the short name.
+
+#### Client / third-party extension apps
+
+Extension apps (e.g. `my_lead_extensions`) sit **outside** `horilla/`:
+
+- **Classes:** describe the target + role — `LeadListExtension`, `LeadSingleFormExtension`, `LeadExtension` (model).
+- **Do not** prefix every class with `Horilla` — the app is already Horilla-specific.
+- **Functions:** `snake_case` helpers — `_clean_industry_code_value`, `_make_industry_optional` (module-private with `_`).
+
+### Classes
+
+#### Views and forms (CRM modules)
+
+```python
+# Good — matches horilla_crm patterns
+class LeadListView(LoginRequiredMixin, HorillaListView):
+    ...
+
+class LeadSingleForm(HorillaModelForm):
+    ...
+```
+
+#### Extension registration classes
+
+Subclass the platform base and set the registration attribute on the class body:
+
+```python
+from horilla.extension.list import ListExtension
+
+class LeadListExtension(ListExtension):
+    _inherit_list = "horilla_crm.leads.views.core.LeadListView"
+    columns_insert = [("industry", "industry_code")]
+```
+
+```python
+# Kanban — see docs/horilla/extension/kanban/inherit.md
+from horilla.extension.kanban import KanbanExtension
+
+class LeadKanbanExtension(KanbanExtension):
+    _inherit_kanban = "horilla_crm.leads.views.core.LeadKanbanView"
+```
+
+```python
+# Detail — see docs/horilla/extension/detail/inherit.md
+from horilla.extension.detail import DetailExtension
+
+class LeadDetailExtension(DetailExtension):
+    _inherit_detail = "horilla_crm.leads.views.core.LeadDetailView"
+```
+
+```python
+from horilla.extension.forms import FormExtension
+
+class LeadSingleFormExtension(FormExtension):
+    _inherit_form = "horilla_crm.leads.forms.LeadSingleForm"
+```
+
+```python
+from horilla.extension.filter import FilterExtension
+
+class LeadFilterExtension(FilterExtension):
+    _inherit_filter = "horilla_crm.leads.filters.LeadFilter"
+    search_fields_append = ["industry_code"]
+```
+
+```python
+from horilla.extension.nav import NavExtension
+
+class LeadNavbarExtension(NavExtension):
+    _inherit_nav = "horilla_crm.leads.views.core.LeadNavbar"
+    column_selector_exclude_fields_append = ["industry_code"]
+```
+
+```python
+from horilla.contrib.core.models import HorillaCoreModel
+
+class LeadExtension(HorillaCoreModel):
+    _inherit = "leads.Lead"
+```
+
+#### Composed runtime classes
+
+Platform-generated classes may carry **marker attributes** (do not use these names on hand-written classes):
+
+| Attribute | Meaning |
+|-----------|---------|
+| `__horilla_list_composed__` | Composed list view |
+| `__horilla_list_path__` | Original list view import path |
+| `__wrapped_list_view__` | Core list view behind composed list |
+| `__horilla_kanban_composed__` | Composed kanban view |
+| `__horilla_kanban_path__` | Original kanban view import path |
+| `__wrapped_kanban_view__` | Core kanban view behind composed kanban |
+| `__horilla_detail_composed__` | Composed detail view |
+| `__horilla_detail_path__` | Original detail view import path |
+| `__wrapped_detail_view__` | Core detail view behind composed detail |
+| `__horilla_composed__` | Composed form |
+| `__horilla_form_path__` | Original form import path |
+| `__horilla_filter_path__` | Original filterset import path |
+| `__wrapped_filter__` | Core filterset behind composed filter |
+| `__horilla_nav_composed__` | Composed nav view |
+| `__horilla_nav_path__` | Original nav view import path |
+| `__wrapped_nav_view__` | Core nav view behind composed nav |
+
+#### App config
+
+```python
+class MyLeadExtensionsConfig(AppLauncher):  # PascalCase + Config suffix
+    name = "my_lead_extensions"
+```
+
+### Functions
+
+| Rule | Example |
+|------|---------|
+| **Verbs** for actions | `apply_list_extensions`, `resolve_form_class`, `compose_list_view_class` |
+| **get_** for accessors | `get_list_extensions`, `get_form_extensions`, `get_filter_extensions` |
+| **get_filterset_class** on list views | Resolves composed filterset (`LeadFilterExtended`) |
+| **is_ / has_** for booleans | `is_composed_view`, checks in validators |
+| **setup_*_extension** for extension hooks | `setup_list_view_extension`, `setup_nav_view_extension`, `setup_filter_extension` |
+| **clean_<field>** on forms | `clean_industry_code` |
+| **No** `Horilla` in new platform helpers under `horilla/extension/` | `bootstrap_extensions()` not `bootstrap_horilla_extensions()` |
+
+Module-level “script” helpers in extension apps may use a leading `_` if not part of the public API.
+
+### Variables and attributes
+
+#### Registration and hook attributes (extensions)
+
+Use the **declared hook names** exactly — the metaclass reads these class attributes:
+
+| Mechanism | Registration key | Hook examples |
+|-----------|------------------|---------------|
+| Model | `_inherit` | field names on class body |
+| Form | `_inherit_form` | `field_order_insert`, `step_fields_append`, `fields_append` |
+| Filter | `_inherit_filter` | `exclude_append` (filter panel dropdown), `search_fields_append`, `fields_append` |
+| Nav | `_inherit_nav` | `actions_append`, `custom_view_type_update`, `column_selector_exclude_fields_append` |
+| List | `_inherit_list` | `columns_insert`, `bulk_update_fields_append` |
+
+Optional on extension classes:
+
+- `_extension_priority` — `int`, lower runs earlier in merge order.
+
+#### Django model / view conventions
+
+| Use | Name |
+|-----|------|
+| Model Meta | `class Meta:` with `verbose_name`, `ordering` |
+| Managers | `objects` (company-filtered), `all_objects` (unfiltered) |
+| Owner filtering | `OWNER_FIELDS = ["lead_owner"]` |
+| URL names | `snake_case` — `lead_list`, `lead_detail` |
+| `app_name` | package segment — `leads`, `opportunities` |
+
+#### Registries and maps (platform)
+
+`UPPER_SNAKE_CASE` for module-level registries:
+
+- `LIST_EXTENSION_REGISTRY`, `LIST_COMPOSED_MAP`
+- `FORM_EXTENSION_REGISTRY`, `FORM_COMPOSED_MAP`
+- `INJECTION_MAP` (model field injection)
+
+#### Request / instance state
+
+`snake_case` on `self` — `self.request`, `self.object`, `self.columns`.
+
+### Import paths and string references
+
+Extension `_inherit_*` values are **full dotted paths** to an existing class:
+
+```python
+_inherit_list = "horilla_crm.leads.views.core.LeadListView"
+_inherit_form = "horilla_crm.leads.forms.LeadSingleForm"
+_inherit = "leads.Lead"  # app_label.ModelName for models only
+```
+
+- Use the real module path from the codebase (MCP `search_codebase` / `get_url_map` before guessing).
+- Model `_inherit` uses `"app_label.ModelName"`, not the full module path.
+
+### Naming — reviewer checklist
+
+- [ ] New code under `horilla/extension/` avoids redundant `Horilla*` on classes and functions.
+- [ ] Public framework types in `horilla.contrib.*` keep existing `Horilla*` names.
+- [ ] Extension apps use `*Extension` class names and `_inherit` / `_inherit_form` / `_inherit_list`.
+- [ ] Functions and variables are `snake_case`; constants are `UPPER_SNAKE_CASE`.
+- [ ] No new `HorillaHorilla*` or duplicated prefix typos.
+- [ ] Client-only apps are registered via `local_settings.py` (`INSTALLED_APPS += [...]`), not by editing `horilla/settings/base.py` unless you are core maintainers.
+
+### Naming — examples
+
+```python
+# Platform (horilla/extension/bootstrap.py)
+def bootstrap_extensions() -> None: ...
+
+# Platform (horilla/extension/list/metaclass.py)
+class ListExtension: ...
+
+# CRM view (horilla_crm)
+class LeadListView(LoginRequiredMixin, HorillaListView): ...
+
+# Client extension (my_lead_extensions/lists.py)
+class LeadListExtension(ListExtension):
+    _inherit_list = "horilla_crm.leads.views.core.LeadListView"
+```
+
+When in doubt: **match the nearest existing file in the same package**, then check [docs/horilla/extension/inherit.md](docs/horilla/extension/inherit.md).
+
+---
+
+_Add further rule sections here as `## <Topic>` (e.g. Views, Migrations). See also [Avoid direct Django usage](#avoid-direct-django-usage)._

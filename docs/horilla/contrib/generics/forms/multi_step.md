@@ -97,7 +97,19 @@ Calls:
 
 inherited from `HorillaFormMixin`.
 
-## 8) Apply step visibility rules
+## 8) Apply phone field widgets
+
+Calls:
+
+- `_apply_phone_fields()`
+
+inherited from `HorillaFormMixin`.
+
+Replaces any `CharField` whose name matches the active phone field set (e.g. `phone`, `mobile`, `contact_number`, `fax`, etc.) with `PhoneField` — a country-code Select2 selector + number text input that stores `+XX NNNNNN` in the existing column, no migration required.
+
+Subclasses can extend or disable this via the `phone_fields` class attribute. See `form_class_mixin.md` for full details.
+
+## 9) Apply step visibility rules
 
 For current step:
 
@@ -106,7 +118,7 @@ For current step:
 - required flags recalculated using model field metadata
 - file fields get special required logic based on existing/new/stored files.
 
-## 9) Apply readonly widget state from `field_permissions`
+## 10) Apply readonly widget state from `field_permissions`
 
 Readonly behavior differs by field type:
 
@@ -248,6 +260,7 @@ Inherited helpers provide shared policy:
 - `_remove_fields_by_permission`
 - `_is_field_mandatory`
 - `_enforce_readonly_in_cleaned_data`
+- `_apply_phone_fields` — auto-replaces phone-named `CharField`s with `PhoneField`
 - select/date/time attr builders
 
 `HorillaMultiStepForm` adds step/session/file semantics on top of that common layer.

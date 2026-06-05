@@ -7,7 +7,7 @@
 It re-exports form classes from internal submodules so callers can import from a single namespace:
 
 ```python
-from horilla_generics.forms import HorillaModelForm, HorillaMultiStepForm
+from horilla_generics.forms import HorillaModelForm, HorillaMultiStepForm, PhoneField
 ```
 
 instead of importing each submodule directly.
@@ -19,7 +19,7 @@ instead of importing each submodule directly.
 The module imports and re-exports from internal submodules:
 
 - `horilla_generics.forms.constants` — `HORILLA_FORM_EXCLUDE`
-- `horilla_generics.forms.generics` — helper/config forms
+- `horilla_generics.forms.generics` — helper/config forms and widgets
 - `horilla_generics.forms.multi_step` — `HorillaMultiStepForm`
 - `horilla_generics.forms.single_step` — `HorillaModelForm`
 
@@ -28,6 +28,8 @@ This exposes:
 - `HorillaModelForm` (single-step base form)
 - `HorillaMultiStepForm` (wizard/multi-step base form)
 - `HORILLA_FORM_EXCLUDE` (core field exclude list)
+- `PhoneWidget` — country-code Select2 + number input widget
+- `PhoneField` — `MultiValueField` that compresses to `+XX NNNNNN` in a CharField
 - generic helper forms from `generics.py` (e.g., settings/selection/helper forms)
 
 ---
