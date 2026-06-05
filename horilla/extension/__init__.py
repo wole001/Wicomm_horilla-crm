@@ -1,17 +1,19 @@
 """
-Horilla _inherit model extension system.
+Horilla extension package: model _inherit and form _inherit_form.
 
 Patches makemigrations and migrate to use HorillaAutodetector so injected fields
 generate migrations in extension apps, not in core CRM apps.
 """
 
-from horilla.extension.autodetect import HorillaAutodetector
-from horilla.extension.metaclass import (
+from horilla.extension.models import (
     EXTENSION_REGISTRY,
+    INJECTION_MAP,
+    AlterInjectedField,
     ExtensionModelBase,
+    HorillaAutodetector,
+    InjectField,
+    RemoveInjectedField,
 )
-from horilla.extension.migration_ops import AlterInjectedField, InjectField, RemoveInjectedField
-from horilla.extension.registry import INJECTION_MAP
 
 __all__ = [
     "HorillaAutodetector",
