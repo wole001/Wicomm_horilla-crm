@@ -4,9 +4,9 @@ Opportunities module models.
 
 # Third-party imports (Django)
 from django.core.validators import EmailValidator, MaxValueValidator, MinValueValidator
-from django.db import transaction
 from django.dispatch import receiver
 
+# First party imports (Horilla)
 from horilla import settings
 from horilla.contrib.core.models import (
     Company,
@@ -17,15 +17,13 @@ from horilla.contrib.core.models import (
 from horilla.contrib.utils.methods import render_template
 from horilla.contrib.utils.middlewares import _thread_local
 from horilla.core.exceptions import ValidationError
-from horilla.db import models
-
-# First party imports (Horilla)
+from horilla.db import models, transaction
 from horilla.db.models.signals import post_delete, pre_save
 from horilla.registry.permission_registry import permission_exempt_model
 from horilla.urls import reverse_lazy
 from horilla.utils.translation import gettext_lazy as _
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.accounts.models import Account
 from horilla_crm.campaigns.models import Campaign
 from horilla_crm.contacts.models import Contact

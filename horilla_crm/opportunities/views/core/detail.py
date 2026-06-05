@@ -13,13 +13,15 @@ from horilla.contrib.generics.views import (
     HorillaHistorySectionView,
     HorillaNotesAttachementSectionView,
 )
+
+# First party imports (Horilla)
 from horilla.db.models import ForeignKey
 from horilla.http import Http404
-
-# First-party / Horilla imports
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import method_decorator, permission_required_or_denied
 from horilla.utils.translation import gettext_lazy as _
+
+# Local imports
 from horilla_crm.opportunities.models import Opportunity
 
 from .base import OpportunityListView

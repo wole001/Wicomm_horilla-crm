@@ -1,6 +1,9 @@
 """URL configuration for opportunities module."""
 
+# First party imports (Horilla)
 from horilla.urls import path
+
+# Local imports
 from horilla_crm.opportunities import views
 
 app_name = "opportunities"

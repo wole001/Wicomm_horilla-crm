@@ -8,13 +8,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.functional import cached_property  # type: ignore
 from django.views import View
 
-# First-party / Horilla imports
 from horilla.contrib.core.utils import is_owner
 from horilla.contrib.generics.views import (
     HorillaRelatedListSectionView,
     HorillaSingleDeleteView,
     HorillaSingleFormView,
 )
+
+# First party imports (Horilla)
 from horilla.http import HttpResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse_lazy
@@ -25,7 +26,7 @@ from horilla.utils.decorators import (
 )
 from horilla.utils.translation import gettext_lazy as _
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.contacts.models import ContactAccountRelationship
 from horilla_crm.opportunities.models import (
     Opportunity,

@@ -2,6 +2,7 @@
 Feature registration for Opportunities app.
 """
 
+# First party imports (Horilla)
 from horilla.contrib.cadences.registration import register_cadence_tab
 from horilla.registry.feature import register_model_for_feature
 

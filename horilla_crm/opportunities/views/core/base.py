@@ -7,7 +7,6 @@ from urllib.parse import urlencode
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.functional import cached_property  # type: ignore
 
-# First-party / Horilla imports
 from horilla.contrib.generics.views import (
     HorillaChartView,
     HorillaGroupByView,
@@ -20,6 +19,8 @@ from horilla.contrib.generics.views import (
 )
 from horilla.contrib.generics.views.card import HorillaCardView
 from horilla.contrib.generics.views.timeline import HorillaTimelineView
+
+# First party imports (Horilla)
 from horilla.http import HttpResponse
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import (
@@ -30,7 +31,7 @@ from horilla.utils.decorators import (
 )
 from horilla.utils.translation import gettext_lazy as _
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.opportunities.filters import OpportunityFilter
 from horilla_crm.opportunities.models import Opportunity
 

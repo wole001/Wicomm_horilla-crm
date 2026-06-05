@@ -10,6 +10,7 @@ from decimal import Decimal
 # Third-party imports (Django)
 from django.dispatch import Signal, receiver
 
+# First party imports (Horilla)
 from horilla.apps import apps
 from horilla.auth.models import User
 from horilla.contrib.core.models import TeamRole
@@ -17,11 +18,11 @@ from horilla.contrib.core.signals import company_currency_changed
 from horilla.contrib.keys.models import ShortcutKey
 from horilla.contrib.keys.utils import resolve_page_url
 from horilla.db import models
-
-# First party imports (Horilla)
 from horilla.db.models.signals import post_save, pre_save
 from horilla.shortcuts import render
 from horilla.urls import reverse_lazy
+
+# Local imports
 from horilla_crm.leads.signals import lead_stage_created
 from horilla_crm.opportunities.models import (
     Opportunity,

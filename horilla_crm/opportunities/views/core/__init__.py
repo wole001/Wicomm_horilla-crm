@@ -4,6 +4,7 @@ Opportunity core views package.
 Submodules: base (list, navbar, kanban, group_by, delete), forms, detail, detail_sections.
 """
 
+# Local imports
 from horilla_crm.opportunities.views.core.base import (
     OpportunityChartView,
     OpportunityDeleteView,

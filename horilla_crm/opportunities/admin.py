@@ -1,7 +1,9 @@
 """Django admin configuration for opportunities app."""
 
+# Third-party imports (Django)
 from django.contrib import admin
 
+# Local imports
 from horilla_crm.opportunities.models import (
     DefaultOpportunityMember,
     Opportunity,

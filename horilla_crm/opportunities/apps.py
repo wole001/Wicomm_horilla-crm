@@ -1,5 +1,6 @@
 """App configuration for the opportunities module."""
 
+# First party imports (Horilla)
 from horilla.apps import AppLauncher
 from horilla.utils.translation import gettext_lazy as _
 

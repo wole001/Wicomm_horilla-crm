@@ -2,9 +2,13 @@
 URL patterns for horilla_crm.opportunities API
 """
 
+# Third-party imports (other)
 from rest_framework.routers import DefaultRouter
 
+# First party imports (Horilla)
 from horilla.urls import include, path
+
+# Local imports
 from horilla_crm.opportunities.api.views import (
     DefaultOpportunityMemberViewSet,
     OpportunityStageViewSet,

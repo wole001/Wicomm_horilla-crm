@@ -4,7 +4,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.functional import cached_property  # type: ignore
 
-# First-party / Horilla imports
+# First party imports (Horilla)
 from horilla.apps import apps
 from horilla.contrib.generics.views import (
     HorillaMultiStepFormView,
@@ -20,7 +20,7 @@ from horilla.utils.decorators import (
 )
 from horilla.utils.translation import gettext_lazy as _
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.opportunities.forms import OpportunityFormClass, OpportunitySingleForm
 from horilla_crm.opportunities.models import Opportunity, OpportunityStage
 from horilla_crm.opportunities.signals import set_opportunity_contact_id

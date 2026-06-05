@@ -1,5 +1,6 @@
 """Aggregate view modules for the `opportunities.views` package."""
 
+# Local imports
 from horilla_crm.opportunities.views.core import (
     OpportunityActivityTabView,
     OpportunityChangeOwnerForm,
@@ -26,7 +27,7 @@ from horilla_crm.opportunities.views.core import (
     OpportunityChartView,
     OpportunityTimelineView,
 )
-from horilla_crm.opportunities.views.opporunity_stages import (
+from horilla_crm.opportunities.views.opportunity_stages import (
     ChangeFinalStage,
     CreateOppStageGroupView,
     CreateOpportunityStage,

@@ -3,19 +3,20 @@
 # Standard library imports
 import logging
 
-# Django imports
+# Third-party imports (Django)
 from django import forms
 
+# First party imports (Horilla)
 from horilla.auth.models import User
 from horilla.contrib.core.mixins import OwnerQuerysetMixin
 from horilla.contrib.core.models import TeamRole
 from horilla.contrib.generics.forms import HorillaModelForm, HorillaMultiStepForm
 from horilla.core.exceptions import FieldDoesNotExist
-
-# Horilla / first-party imports
 from horilla.db import models
 from horilla.urls import reverse_lazy
 from horilla.utils.translation import gettext_lazy as _
+
+# Local imports
 from horilla_crm.opportunities.models import (
     DefaultOpportunityMember,
     Opportunity,

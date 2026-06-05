@@ -5,13 +5,17 @@ This module mirrors core API patterns including search, filtering,
 bulk update, bulk delete, permissions, and documentation.
 """
 
+# Third-party imports (other)
 from drf_yasg import openapi
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+# First party imports (Horilla)
 from horilla.contrib.core.api.mixins import BulkOperationsMixin, SearchFilterMixin
 from horilla.contrib.core.api.permissions import IsCompanyMember
+
+# Local imports
 from horilla_crm.opportunities.api.serializers import (
     DefaultOpportunityMemberSerializer,
     OpportunitySerializer,
