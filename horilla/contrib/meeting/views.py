@@ -366,6 +366,11 @@ def _build_provider_cards(request, company, open_provider=None):
     }
 
     # ── Google Meet (reuses Google Calendar OAuth) ──
+    from horilla.contrib.calendar.models import GoogleIntegrationSetting
+
+    gcal_admin_enabled = GoogleIntegrationSetting.google_calendar_enabled(
+        company=company
+    )
     gcal = GoogleCalendarConfig.objects.filter(user=request.user).first()
     gcal_connected = gcal.is_connected() if gcal else False
     meet_cfg = UserMeetingConfig.objects.filter(
@@ -375,6 +380,7 @@ def _build_provider_cards(request, company, open_provider=None):
     cards["google_meet"] = {
         "label": _("Google Meet"),
         "oauth": True,
+        "gcal_admin_enabled": gcal_admin_enabled,
         "has_credentials": gcal.is_configured() if gcal else False,
         "gcal_connected": gcal_connected,
         "is_connected": gcal_connected and meet_enabled,

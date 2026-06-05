@@ -143,6 +143,7 @@
         {% endwith %}
         {# ── Google Meet ── #}
         {% with card=provider_cards.google_meet %}
+        {% if card.gcal_admin_enabled %}
         <div class="rounded-md mb-3 border border-primary-400">
             <h3 class="text-md font-semibold mb-0 border-b border-primary-400 p-2 bg-primary-100 text-primary-600 flex items-center justify-between">
                 <span class="flex items-center gap-2">
@@ -200,6 +201,7 @@
                 {% endif %}
             </div>
         </div>
+        {% endif %}
         {% endwith %}
         {# ── Microsoft Teams ── #}
         {% with card=provider_cards.ms_teams %}
