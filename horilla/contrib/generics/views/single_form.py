@@ -132,7 +132,18 @@ class HorillaSingleFormView(FormViewCommonMixin, FormView):
         """Return dynamic form class with condition fields and readonly handling when form_class is None."""
         if self.form_class is None and self.model is not None:
             return single_form_builder.get_dynamic_form_class(self)
-        return super().get_form_class()
+        # Concrete form from the view (form_class=LeadSingleForm, etc.), not the dynamic branch above.
+        base = super().get_form_class()
+        # No registered form on this view — nothing to compose; do not call resolve_form_class.
+        if base is None:
+            return base
+        # Import here (not at module top): extension forms bootstrap in CoreConfig.ready()
+        # after apps are loaded; a top-level import can run too early or create cycles.
+        from horilla.extension.forms.resolve import resolve_form_class
+
+        # Views keep form_class = Horilla module form at import time; resolve to composed subclass
+        # (e.g. LeadSingleFormExtended) when an extension app registered _inherit_form.
+        return resolve_form_class(base)
 
     def get_form_kwargs(self):
         """Pass full_width_fields, conditions, request, instance/initial, and field_permissions to the form."""

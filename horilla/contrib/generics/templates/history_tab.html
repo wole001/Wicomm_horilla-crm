@@ -67,7 +67,9 @@
                                         <div class="md:w-1/2 md:pl-10 md:text-left">
                                             <div class="bg-white p-4 rounded border-[1px] border-[solid] border-primary-300 w-[350px]">
                                                 <h3 class="text-primary-600 font-semibold text-sm">
-                                                    {% if 'email' in entry|lower %}
+                                                    {% if entry.content_type.model == "calllog" %}
+                                                        {% trans "Call" %}
+                                                    {% elif 'email' in entry|lower %}
                                                         {% trans "Email" %}
                                                     {% elif 'call' in entry|lower %}
                                                         {% trans "Call" %}
@@ -83,7 +85,14 @@
                                                 </h3>
 
                                                 <p class="mt-1 text-xs text-gray-700">
-                                                    {% if 'created' in entry|lower %}
+                                                    {% if entry.content_type.model == "calllog" %}
+                                                        <span class="font-bold text-black">{% trans "Status" %}:</span>
+                                                        {% if entry.status %}
+                                                            {{ entry.status|capfirst }}
+                                                        {% else %}
+                                                            {% trans "Initiated" %}
+                                                        {% endif %}
+                                                    {% elif 'created' in entry|lower %}
                                                         {% with mail_label=entry|mail_create_display activity_label=entry|activity_create_display details=entry|activity_create_details %}
                                                             {% if mail_label %}
                                                                 {{ mail_label }}

@@ -6,7 +6,7 @@ This view can be extended to create specific list views for different models, an
 # Standard library imports
 import json
 import logging
-from functools import reduce
+from functools import reduce, update_wrapper
 from operator import or_
 
 # Third-party imports (Django)
@@ -90,13 +90,93 @@ class HorillaListView(HorillaListViewMixin, ListView):
     enable_quick_filters = False  # Set to True in child classes to enable
     exclude_quick_filter_fields = []  # Fields to exclude from quick filters
 
+    def get_filterset_class(self):
+        """
+        Return composed filterset when _inherit_filter extensions exist.
+
+        Views keep ``filterset_class = LeadFilter`` at class definition time;
+        resolution runs here (same pattern as ``get_form_class()`` on form views).
+        """
+        base = type(self).filterset_class
+        if base is None:
+            return None
+        from horilla.extension.filter.resolve import resolve_filterset_class
+
+        return resolve_filterset_class(base)
+
+    @classmethod
+    def as_view(cls, **initkwargs):
+        """
+        Wrap the view so _inherit_list / _inherit_card / _inherit_kanban resolve on each request.
+
+        CRM apps register URLs in ``AppLauncher.ready()`` before extension apps
+        import ``lists.py`` / ``cards.py`` / ``kanbans.py``; resolving only at
+        URL-import time would miss extensions.
+        """
+        if getattr(cls, "__horilla_kanban_composed__", False):
+            return super(HorillaListView, cls).as_view(**initkwargs)
+
+        if getattr(cls, "__horilla_card_composed__", False):
+            return super().as_view(**initkwargs)
+
+        if getattr(cls, "__horilla_list_composed__", False):
+            return super().as_view(**initkwargs)
+
+        base_view = super().as_view(**initkwargs)
+
+        def view(request, *args, **kwargs):
+            from horilla.contrib.generics.views.card import HorillaCardView
+            from horilla.contrib.generics.views.kanban import HorillaKanbanView
+
+            if issubclass(cls, HorillaKanbanView):
+                from horilla.extension.kanban.bootstrap import (
+                    registry_fingerprint as kanban_fingerprint,
+                )
+                from horilla.extension.kanban.resolve import resolve_kanban_view_class
+
+                resolved = resolve_kanban_view_class(cls)
+                fingerprint = kanban_fingerprint()
+                fp_attr = "_kanban_ext_fingerprint"
+            elif issubclass(cls, HorillaCardView):
+                from horilla.extension.card.bootstrap import (
+                    registry_fingerprint as card_fingerprint,
+                )
+                from horilla.extension.card.resolve import resolve_card_view_class
+
+                resolved = resolve_card_view_class(cls)
+                fingerprint = card_fingerprint()
+                fp_attr = "_card_ext_fingerprint"
+            else:
+                from horilla.extension.list.bootstrap import registry_fingerprint
+                from horilla.extension.list.resolve import resolve_list_view_class
+
+                resolved = resolve_list_view_class(cls)
+                fingerprint = registry_fingerprint()
+                fp_attr = "_list_ext_fingerprint"
+
+            if resolved is not cls:
+                if (
+                    getattr(view, "_extended_handler", None) is None
+                    or getattr(view, "_extended_cls", None) is not resolved
+                    or getattr(view, fp_attr, None) != fingerprint
+                ):
+                    view._extended_cls = resolved
+                    view._extended_handler = resolved.as_view(**initkwargs)
+                    setattr(view, fp_attr, fingerprint)
+                return view._extended_handler(request, *args, **kwargs)
+            return base_view(request, *args, **kwargs)
+
+        update_wrapper(view, base_view)
+        view.view_class = cls
+        view.view_initkwargs = initkwargs
+        return view
+
     def __init__(self, **kwargs):
         self._model_fields_cache = None
         super().__init__(**kwargs)
         if self.store_ordered_ids:
             self.ordered_ids_key = f"ordered_ids_{self.model.__name__.lower()}"
         self.kwargs = kwargs
-
         if self.columns:
             resolved_columns = []
             instance = self.model()
@@ -119,6 +199,39 @@ class HorillaListView(HorillaListViewMixin, ListView):
                         resolved_columns.append((str(col), str(col)))
 
             self.columns = resolved_columns
+
+        self._run_list_view_extension_setup()
+        self._run_kanban_view_extension_setup()
+
+    def _run_list_view_extension_setup(self):
+        """Call setup_list_view_extension on extension mixins (composed views only)."""
+        if not getattr(type(self), "__horilla_list_composed__", False):
+            return
+        wrapped = getattr(type(self), "__wrapped_list_view__", None)
+        seen: set = set()
+        for base in type(self).__mro__:
+            if wrapped is not None and base is wrapped:
+                break
+            method = base.__dict__.get("setup_list_view_extension")
+            if method is None or method in seen:
+                continue
+            seen.add(method)
+            method(self)
+
+    def _run_kanban_view_extension_setup(self):
+        """Call setup_kanban_view_extension on extension mixins (composed kanban views only)."""
+        if not getattr(type(self), "__horilla_kanban_composed__", False):
+            return
+        wrapped = getattr(type(self), "__wrapped_kanban_view__", None)
+        seen: set = set()
+        for base in type(self).__mro__:
+            if wrapped is not None and base is wrapped:
+                break
+            method = base.__dict__.get("setup_kanban_view_extension")
+            if method is None or method in seen:
+                continue
+            seen.add(method)
+            method(self)
 
     def _is_embedded_list_context(self):
         """
@@ -228,18 +341,20 @@ class HorillaListView(HorillaListViewMixin, ListView):
                             for value in values:
                                 merged_params.appendlist(key, value)
 
-                    if self.filterset_class:
-                        self.filterset = self.filterset_class(
+                    filterset_class = self.get_filterset_class()
+                    if filterset_class:
+                        self.filterset = filterset_class(
                             merged_params, queryset=queryset, request=self.request
                         )
                         queryset = self.filterset.filter_queryset(queryset)
             except Exception:
                 pass
 
-        if self.filterset_class and not (
+        filterset_class = self.get_filterset_class()
+        if filterset_class and not (
             view_type.startswith("saved_list_") and getattr(self, "filterset", None)
         ):
-            self.filterset = self.filterset_class(
+            self.filterset = filterset_class(
                 self.request.GET, queryset=queryset, request=self.request
             )
             queryset = self.filterset.filter_queryset(queryset)
@@ -752,9 +867,10 @@ class HorillaListView(HorillaListViewMixin, ListView):
         context["filter_rows"] = filter_rows
         context["last_row_id"] = len(filter_rows) - 1
 
-        if self.filterset_class:
+        filterset_class = self.get_filterset_class()
+        if filterset_class:
             context["filter_class_path"] = (
-                f"{self.filterset_class.__module__}.{self.filterset_class.__name__}"
+                f"{filterset_class.__module__}.{filterset_class.__name__}"
             )
             context["parent_model_path"] = (
                 f"{self.model._meta.app_label}.{self.model._meta.model_name}"
@@ -948,7 +1064,7 @@ class HorillaListView(HorillaListViewMixin, ListView):
         if "page" in search_params:
             del search_params["page"]
         context["search_params"] = search_params.urlencode()
-        context["filter_set_class"] = self.filterset_class
+        context["filter_set_class"] = self.get_filterset_class()
         context["table_width"] = self.table_width
         context["table_class"] = self.table_class
         context["table_height_as_class"] = self.table_height_as_class

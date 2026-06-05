@@ -247,7 +247,7 @@ class HorillaListFilterFieldsMixin:
     """
     _get_model_fields and filter UI handlers (handle_field_change,
     handle_operator_change) for HorillaListView.
-    Expects self.model, self.request, self.filterset_class.
+    Expects self.model, self.request, and get_filterset_class() (or filterset_class).
     """
 
     def _get_model_fields(self, include_properties=False, for_export=False):
@@ -260,8 +260,10 @@ class HorillaListFilterFieldsMixin:
             {"value": "True", "label": "Yes"},
             {"value": "False", "label": "No"},
         ]
-        if self.filterset_class:
-            exclude_fields = getattr(self.filterset_class.Meta, "exclude", [])
+        filterset_class = self.get_filterset_class()
+        exclude_fields = []
+        if filterset_class:
+            exclude_fields = list(getattr(filterset_class.Meta, "exclude", []) or [])
         exclude_from_export = ["histories", "full_histories"]
         if for_export:
             view_export_exclude = getattr(self, "export_exclude", [])
@@ -279,14 +281,14 @@ class HorillaListFilterFieldsMixin:
         is_operator_trigger = trigger_name == "operator"
         trigger = self.request.GET.get("hx_trigger")
         is_filter_form_trigger = trigger == "filter-form"
-        has_filterset = bool(self.filterset_class)
+        has_filterset = bool(filterset_class)
         value_field = self.request.GET.get("value", "")
         use_full_queryset_for_choices = False
 
         for field in self.model._meta.fields:
             if field.name in exclude_from_export:
                 continue
-            if self.filterset_class and not for_export:
+            if filterset_class and not for_export:
                 if field.name in exclude_fields:
                     continue
 
@@ -323,11 +325,11 @@ class HorillaListFilterFieldsMixin:
 
                     if (
                         related_objects_queryset is None
-                        and self.filterset_class
+                        and filterset_class
                         and field.name
                     ):
                         try:
-                            temp_filterset = self.filterset_class(
+                            temp_filterset = filterset_class(
                                 request=self.request, data={}
                             )
                             if field.name in temp_filterset.filters:
@@ -389,7 +391,7 @@ class HorillaListFilterFieldsMixin:
 
             operators = []
             if has_filterset:
-                operators = self.filterset_class.get_operators_for_field(field_type)
+                operators = filterset_class.get_operators_for_field(field_type)
 
             field_dict = {
                 "name": field.name,
@@ -448,7 +450,10 @@ class HorillaListFilterFieldsMixin:
         )
         if not field_info:
             return HttpResponse("Field not found", status=404)
-        operators = self.filterset_class.get_operators_for_field(field_info["type"])
+        filterset_class = self.get_filterset_class()
+        if not filterset_class:
+            return HttpResponse("Filterset not configured", status=404)
+        operators = filterset_class.get_operators_for_field(field_info["type"])
         context = {
             "operators": operators,
             "field_name": field_name,
@@ -471,9 +476,10 @@ class HorillaListFilterFieldsMixin:
             return HttpResponse("Field not found", status=404)
         filter_class_path = None
         parent_model_path = None
-        if self.filterset_class:
+        filterset_class = self.get_filterset_class()
+        if filterset_class:
             filter_class_path = (
-                f"{self.filterset_class.__module__}.{self.filterset_class.__name__}"
+                f"{filterset_class.__module__}.{filterset_class.__name__}"
             )
             parent_model_path = (
                 f"{self.model._meta.app_label}.{self.model._meta.model_name}"

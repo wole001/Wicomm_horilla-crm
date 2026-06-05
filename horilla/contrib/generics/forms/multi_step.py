@@ -221,6 +221,7 @@ class HorillaMultiStepForm(HorillaFormMixin, forms.ModelForm):
         self._configure_field_widgets()
 
         self._remove_fields_by_permission(skip_hidden_widget=True)
+        self._apply_phone_fields()
 
         if self.current_step <= len(self.step_fields):
             current_fields = self.step_fields.get(self.current_step, [])

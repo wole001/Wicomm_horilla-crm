@@ -9,14 +9,15 @@ import logging
 # Third-party imports (Django)
 from django.contrib import messages
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.db import IntegrityError, transaction
+from django.db import IntegrityError
 from django.template.loader import render_to_string
 
-# First-party (Horilla)
+# First party imports (Horilla)
 from horilla.apps import apps
 from horilla.contrib.core.models import KanbanGroupBy
 from horilla.contrib.core.utils import get_user_field_permission
 from horilla.core.exceptions import FieldDoesNotExist, FieldError, ImproperlyConfigured
+from horilla.db import transaction
 from horilla.db.models import ForeignKey, Max
 from horilla.http import HttpNotFound, HttpResponse, QueryDict
 from horilla.shortcuts import redirect
@@ -732,7 +733,11 @@ class HorillaKanbanView(HorillaListView):
                     "apps_label": app_label.split(".")[-1] if app_label else "",
                     "columns": filtered_columns,
                     "actions": self.actions,
-                    "filter_class": self.filterset_class.__name__,
+                    "filter_class": (
+                        self.get_filterset_class().__name__
+                        if self.get_filterset_class()
+                        else ""
+                    ),
                     "group_by_field": group_by,
                     "kanban_attrs": self.kanban_attrs,
                 }

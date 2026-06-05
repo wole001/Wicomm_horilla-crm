@@ -475,6 +475,158 @@ class CustomFileInput(forms.ClearableFileInput):
         return context
 
 
+# Phone country-dial-code data: (dial_code, country_name)
+def _build_phone_country_codes():
+    """Build sorted, deduplicated dial-code choices from the phonenumbers library."""
+    try:
+        import phonenumbers
+
+        seen = set()
+        codes = []
+        for region in sorted(phonenumbers.SUPPORTED_REGIONS):
+            dial = phonenumbers.country_code_for_region(region)
+            label = f"+{dial}"
+            if label not in seen:
+                seen.add(label)
+                codes.append((label, label))
+        codes.sort(key=lambda x: int(x[0][1:]))
+        return [("", "+")] + codes
+    except ImportError:
+        return [("", "+")]
+
+
+PHONE_COUNTRY_CODES = _build_phone_country_codes()
+
+
+class PhoneWidget(forms.MultiWidget):
+    """Phone input widget combining a country-code selector and a number input.
+
+    Stores the combined value in the underlying CharField as ``+XX NNNNNN``.
+    No migration is required — the field type is unchanged.
+    """
+
+    template_name = "forms/widgets/phone_widget.html"
+
+    def __init__(self, attrs=None):
+        widgets = [
+            forms.Select(
+                choices=PHONE_COUNTRY_CODES,
+                attrs={
+                    "class": "js-example-basic-single headselect phone-country-code",
+                    "data-placeholder": "+",
+                },
+            ),
+            forms.TextInput(
+                attrs={
+                    "class": (
+                        "phone-number-input text-color-600 p-2 placeholder:text-xs "
+                        "w-full border border-dark-50 rounded-md "
+                        "focus-visible:outline-0 placeholder:text-dark-100 text-sm "
+                        "[transition:.3s] focus:border-primary-600"
+                    ),
+                    "placeholder": "Enter phone number",
+                }
+            ),
+        ]
+        super().__init__(widgets, attrs)
+
+    def decompress(self, value):
+        """Split stored ``+XX NNNNNN`` into [dial_code, number]."""
+        if value:
+            value = value.strip()
+            if value.startswith("+"):
+                # Match longest known dial code first
+                for code, _ in PHONE_COUNTRY_CODES[1:]:
+                    if value.startswith(code):
+                        rest = value[len(code) :].strip()
+                        return [code, rest]
+                parts = value.split(" ", 1)
+                if len(parts) == 2:
+                    return parts
+                return ["", value]
+            return ["", value]
+        return ["", ""]
+
+    def render(self, name, value, attrs=None, renderer=None):
+        """Render as a flex row: [Select2 country-code select][number input]."""
+        if not isinstance(value, list):
+            value = self.decompress(value)
+        code_widget, number_widget = self.widgets
+        final_attrs = self.build_attrs(self.attrs, attrs or {})
+        id_ = final_attrs.get("id", f"id_{name}")
+        select_id = f"{id_}_0"
+
+        code_html = code_widget.render(f"{name}_0", value[0], {"id": select_id})
+        number_html = number_widget.render(f"{name}_1", value[1], {"id": f"{id_}_1"})
+        # Re-initialise Select2 on this specific element after every render
+        # (covers both page load and HTMX swaps).
+        init_script = format_html(
+            """<script>
+(function(){{
+  function initPhoneSelect2_{safe_id}(){{
+    var el = document.getElementById('{id}');
+    if(!el || !window.$) return;
+    if($(el).data('select2')) return;
+    $(el).select2({{ minimumResultsForSearch: 0, width: '25%' }});
+  }}
+  if(document.readyState === 'loading'){{
+    document.addEventListener('DOMContentLoaded', initPhoneSelect2_{safe_id});
+  }} else {{
+    initPhoneSelect2_{safe_id}();
+  }}
+  document.addEventListener('htmx:afterSwap', initPhoneSelect2_{safe_id});
+}})();
+</script>""",
+            id=select_id,
+            safe_id=select_id.replace("-", "_"),
+        )
+        return format_html(
+            '<div class="flex items-center gap-2 w-full phone-widget-wrapper mt-1">'
+            '<div style="width:25%;flex-shrink:0">{}</div>'
+            '<div style="width:75%">{}</div>'
+            "{}</div>",
+            code_html,
+            number_html,
+            init_script,
+        )
+
+
+class PhoneField(forms.MultiValueField):
+    """Form field that pairs a country-code selector with a phone-number input.
+
+    Compresses into a single string (``+XX NNNNNN``) saved to the CharField.
+    Both sub-fields are optional so the whole field can be blank.
+    """
+
+    widget = PhoneWidget
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("required", False)
+        fields = [
+            forms.ChoiceField(
+                choices=PHONE_COUNTRY_CODES,
+                required=False,
+            ),
+            forms.CharField(
+                required=False,
+                max_length=50,
+            ),
+        ]
+        super().__init__(fields, *args, **kwargs)
+
+    def compress(self, data_list):
+        """Combine dial code and number into a single string."""
+        if not data_list:
+            return ""
+        code = (data_list[0] or "").strip()
+        number = (data_list[1] or "").strip()
+        if not code and not number:
+            return ""
+        if code and number:
+            return f"{code} {number}"
+        return number or code
+
+
 class HorillaAttachmentForm(forms.ModelForm):
     """Form for creating and editing attachments with title, file, and description."""
 

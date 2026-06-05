@@ -4,7 +4,7 @@ This view supports pinned views, recently viewed/created/modified filters, saved
 """
 
 # Standard library imports
-from functools import cached_property
+from functools import cached_property, update_wrapper
 from urllib.parse import urlencode
 
 # Third-party imports (Django)
@@ -56,6 +56,59 @@ class HorillaNavView(TemplateView):
     search_push_url = True
     enable_quick_filters = False  # Set to True in child classes to enable
     main_session_id: str = "mainSession"  # Override to avoid ID conflicts inside modals
+
+    def get_filterset_class(self):
+        """
+        Return composed filterset when _inherit_filter extensions exist.
+
+        Nav views may set ``filterset_class`` for parity with list views; resolution
+        matches ``HorillaListView.get_filterset_class()``.
+        """
+        base = type(self).filterset_class
+        if base is None:
+            return None
+        from horilla.extension.filter.resolve import resolve_filterset_class
+
+        return resolve_filterset_class(base)
+
+    @classmethod
+    def as_view(cls, **initkwargs):
+        """
+        Wrap the view so _inherit_nav resolves on each request.
+
+        CRM apps register navbar URLs in ``AppLauncher.ready()`` before extension
+        apps import ``navbars.py``; resolving only at URL-import time would miss extensions.
+        """
+        if getattr(cls, "__horilla_nav_composed__", False):
+            return super().as_view(**initkwargs)
+
+        base_view = super().as_view(**initkwargs)
+
+        def view(request, *args, **kwargs):
+            from horilla.extension.nav.bootstrap import (
+                registry_fingerprint as nav_fingerprint,
+            )
+            from horilla.extension.nav.resolve import resolve_nav_view_class
+
+            resolved = resolve_nav_view_class(cls)
+            fingerprint = nav_fingerprint()
+
+            if resolved is not cls:
+                if (
+                    getattr(view, "_extended_handler", None) is None
+                    or getattr(view, "_extended_cls", None) is not resolved
+                    or getattr(view, "_nav_ext_fingerprint", None) != fingerprint
+                ):
+                    view._extended_cls = resolved
+                    view._extended_handler = resolved.as_view(**initkwargs)
+                    view._nav_ext_fingerprint = fingerprint
+                return view._extended_handler(request, *args, **kwargs)
+            return base_view(request, *args, **kwargs)
+
+        update_wrapper(view, base_view)
+        view.view_class = cls
+        view.view_initkwargs = initkwargs
+        return view
 
     @property
     def nav_title(self) -> str:

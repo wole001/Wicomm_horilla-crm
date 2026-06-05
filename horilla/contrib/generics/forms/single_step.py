@@ -76,6 +76,7 @@ class HorillaModelForm(HorillaFormMixin, forms.ModelForm):
                 condition_fields_module.add_condition_fields(self)
 
         condition_fields_module.add_generic_htmx_to_field(self)
+        self._apply_phone_fields()
 
         for field_name, field in self.fields.items():
             if getattr(field, "is_custom_field", False):

@@ -100,9 +100,14 @@ def get_quick_filter_choices(view, field_name):
             related_model = field.related_model
             queryset = related_model.objects.all()
 
-            if getattr(view, "filterset_class", None) and field_name:
+            filterset_class = (
+                view.get_filterset_class()
+                if hasattr(view, "get_filterset_class")
+                else getattr(view, "filterset_class", None)
+            )
+            if filterset_class and field_name:
                 try:
-                    temp_filterset = view.filterset_class(request=view.request, data={})
+                    temp_filterset = filterset_class(request=view.request, data={})
                     if field_name in temp_filterset.filters:
                         filter_obj = temp_filterset.filters[field_name]
                         if hasattr(filter_obj, "field") and hasattr(

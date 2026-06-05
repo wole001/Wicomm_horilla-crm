@@ -415,7 +415,7 @@ class HorillaBulkDeleteMixin:
                 prefetch_queries.append(
                     Prefetch(
                         related_name,
-                        queryset=manager.all()[:10],
+                        queryset=manager.all(),
                         to_attr=f"prefetched_{related_name}",
                     )
                 )

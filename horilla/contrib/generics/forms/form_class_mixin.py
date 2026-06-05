@@ -35,6 +35,24 @@ WIDGET_TIME_CSS_CLASS = (
 SELECT_READONLY_CLASS_SUFFIX = " bg-gray-100 cursor-not-allowed opacity-60"
 
 
+def apply_horilla_form_meta_exclude(meta) -> None:
+    """
+    Merge ``HORILLA_FORM_EXCLUDE`` into ``Meta.exclude``, honoring ``keep_on_form``.
+
+    Used by ``HorillaFormMixin.__init_subclass__`` and composed form extensions
+    (``new_class`` runs ``__init_subclass__`` before extension ``Meta`` is attached).
+    """
+    if meta is None:
+        return
+    keep_on_form = set(getattr(meta, "keep_on_form", ()) or ())
+    child_exclude = list(getattr(meta, "exclude", None) or [])
+    # Parent forms may already have core fields in exclude; re-apply from scratch.
+    child_exclude = [f for f in child_exclude if f not in HORILLA_FORM_EXCLUDE]
+    base_exclude = [f for f in HORILLA_FORM_EXCLUDE if f not in keep_on_form]
+    merged = child_exclude + [f for f in base_exclude if f not in child_exclude]
+    meta.exclude = merged
+
+
 class HorillaFormMixin:
     """
     Mixin with shared logic for HorillaModelForm and HorillaMultiStepForm:
@@ -53,14 +71,7 @@ class HorillaFormMixin:
         meta = cls.__dict__.get("Meta")
         if meta is None:
             return
-
-        keep_on_form = set(getattr(meta, "keep_on_form", ()) or ())
-        base_exclude = [f for f in HORILLA_FORM_EXCLUDE if f not in keep_on_form]
-
-        child_exclude = list(getattr(meta, "exclude", None) or [])
-        # Union: child's own extra fields + base core fields not already present
-        merged = child_exclude + [f for f in base_exclude if f not in child_exclude]
-        meta.exclude = merged
+        apply_horilla_form_meta_exclude(meta)
 
     def _remove_fields_by_permission(
         self,
@@ -172,6 +183,72 @@ class HorillaFormMixin:
             else:
                 cleaned_data[field_name] = original_value
 
+    # Default phone field names — automatically get PhoneField widget.
+    # Subclasses can extend with extra names:
+    #   phone_fields = ["work_phone", "home_phone"]
+    # Or disable entirely:
+    #   phone_fields = []
+    _DEFAULT_PHONE_FIELD_NAMES = {
+        "phone",
+        "mobile",
+        "contact_number",
+        "phone_number",
+        "mobile_number",
+        "secondary_phone",
+        "assistant_phone",
+        "fax",
+        "whatsapp",
+        "telephone",
+        "cell",
+        "cell_number",
+        "alt_phone",
+        "alternate_phone",
+    }
+
+    def _apply_phone_fields(self):
+        """Replace CharFields whose names are in the phone field set with PhoneField.
+
+        Subclass override examples::
+
+            # Add extra field names on top of defaults
+            phone_fields = ["work_phone", "home_phone"]
+
+            # Opt out entirely
+            phone_fields = []
+        """
+        from horilla.contrib.generics.forms.generics import PhoneField
+
+        phone_fields_attr = self.__class__.__dict__.get("phone_fields", None)
+        if phone_fields_attr is None:
+            # Not declared on this class — check MRO for any parent override
+            phone_fields_attr = getattr(self.__class__, "phone_fields", None)
+
+        if phone_fields_attr is None:
+            active_names = self._DEFAULT_PHONE_FIELD_NAMES
+        elif len(phone_fields_attr) == 0:
+            return  # opted out
+        else:
+            active_names = self._DEFAULT_PHONE_FIELD_NAMES | set(phone_fields_attr)
+
+        for field_name, field in list(self.fields.items()):
+            if field_name not in active_names:
+                continue
+            if isinstance(field, PhoneField):
+                continue
+            if not isinstance(field, forms.CharField):
+                continue
+            current_value = (
+                getattr(self.instance, field_name, None)
+                if hasattr(self, "instance")
+                and self.instance
+                and getattr(self.instance, "pk", None)
+                else None
+            )
+            phone_field = PhoneField(label=field.label, required=field.required)
+            if current_value:
+                phone_field.initial = current_value
+            self.fields[field_name] = phone_field
+
     # --- Shared widget / initial helpers (each form gets initials its own way, same attrs) ---
 
     def _should_disable_select_for_permission(self, field_name, model_field):
@@ -221,7 +298,11 @@ class HorillaFormMixin:
             "data-initial": data_initial,
             "data-field-name": field_name,
             "id": f"id_{field_name}",
-            "data-form-class": f"{self.__module__}.{self.__class__.__name__}",
+            "data-form-class": getattr(
+                self.__class__,
+                "__horilla_form_path__",
+                f"{self.__module__}.{self.__class__.__name__}",
+            ),
             **(existing_attrs or {}),
         }
         if object_id is not None:
@@ -255,7 +336,11 @@ class HorillaFormMixin:
             "data-initial": str(initial_value) if initial_value is not None else "",
             "data-field-name": field_name,
             "id": f"id_{field_name}",
-            "data-form-class": f"{self.__module__}.{self.__class__.__name__}",
+            "data-form-class": getattr(
+                self.__class__,
+                "__horilla_form_path__",
+                f"{self.__module__}.{self.__class__.__name__}",
+            ),
             **(existing_attrs or {}),
         }
         if object_id is not None:

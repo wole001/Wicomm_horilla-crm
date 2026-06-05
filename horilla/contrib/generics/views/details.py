@@ -5,6 +5,7 @@ pipeline stages, badges, and breadcrumbs. This view can be subclassed for specif
 
 # Standard library imports
 import logging
+from functools import update_wrapper
 from typing import Any
 from urllib.parse import parse_qs, quote, urlencode, urlparse, urlunparse
 
@@ -71,6 +72,64 @@ class HorillaDetailView(DetailView):
         super().__init_subclass__(**kwargs)
         if hasattr(cls, "model") and cls.model:
             HorillaDetailView._view_registry[cls.model] = cls
+
+    @classmethod
+    def as_view(cls, **initkwargs):
+        """
+        Wrap the view so _inherit_detail resolves on each request.
+
+        CRM apps register URLs in ``AppLauncher.ready()`` before extension apps
+        import ``details.py``; resolving only at URL-import time would miss extensions.
+        """
+        if getattr(cls, "__horilla_detail_composed__", False):
+            return super().as_view(**initkwargs)
+
+        base_view = super().as_view(**initkwargs)
+
+        def view(request, *args, **kwargs):
+            from horilla.extension.detail.bootstrap import (
+                registry_fingerprint as detail_fingerprint,
+            )
+            from horilla.extension.detail.resolve import resolve_detail_view_class
+
+            resolved = resolve_detail_view_class(cls)
+            fingerprint = detail_fingerprint()
+
+            if resolved is not cls:
+                if (
+                    getattr(view, "_extended_handler", None) is None
+                    or getattr(view, "_extended_cls", None) is not resolved
+                    or getattr(view, "_detail_ext_fingerprint", None) != fingerprint
+                ):
+                    view._extended_cls = resolved
+                    view._extended_handler = resolved.as_view(**initkwargs)
+                    view._detail_ext_fingerprint = fingerprint
+                return view._extended_handler(request, *args, **kwargs)
+            return base_view(request, *args, **kwargs)
+
+        update_wrapper(view, base_view)
+        view.view_class = cls
+        view.view_initkwargs = initkwargs
+        return view
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._run_detail_view_extension_setup()
+
+    def _run_detail_view_extension_setup(self):
+        """Call setup_detail_view_extension on extension mixins (composed views only)."""
+        if not getattr(type(self), "__horilla_detail_composed__", False):
+            return
+        wrapped = getattr(type(self), "__wrapped_detail_view__", None)
+        seen: set = set()
+        for base in type(self).__mro__:
+            if wrapped is not None and base is wrapped:
+                break
+            method = base.__dict__.get("setup_detail_view_extension")
+            if method is None or method in seen:
+                continue
+            seen.add(method)
+            method(self)
 
     def _is_owner(self, obj, user) -> bool:
         """Return True if user owns obj via any OWNER_FIELDS on the model."""
