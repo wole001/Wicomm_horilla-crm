@@ -313,3 +313,8 @@ class Booking(HorillaCoreModel):
         """Return the URL for checking the status of this booking."""
 
         return reverse("booking:booking_status", kwargs={"pk": self.pk})
+
+    def get_detail_url(self):
+        """Return the URL for viewing this booking's detail modal."""
+
+        return reverse("booking:booking_detail_modal", kwargs={"pk": self.pk})

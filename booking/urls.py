@@ -91,6 +91,11 @@ urlpatterns = [
         views.BookingStatusUpdateView.as_view(),
         name="booking_status",
     ),
+    path(
+        "booking-detail-modal/<int:pk>/",
+        views.BookingDetailModalView.as_view(),
+        name="booking_detail_modal",
+    ),
     # Public booking pages (no login required)
     path("book/<slug:slug>/", views.PublicBookingView.as_view(), name="public_booking"),
     path(

@@ -14,6 +14,7 @@ from django.views.generic import View
 
 from horilla.contrib.generics.views import (
     HorillaListView,
+    HorillaModalDetailView,
     HorillaNavView,
     HorillaSingleDeleteView,
     HorillaSingleFormView,
@@ -481,6 +482,7 @@ class BookingListView(LoginRequiredMixin, HorillaListView):
     filterset_class = BookingFilter
     save_to_list_option = False
     bulk_select_option = False
+    store_ordered_ids = True
     table_height_as_class = "h-[calc(_100vh_-_260px_)]"
 
     columns = [
@@ -490,6 +492,23 @@ class BookingListView(LoginRequiredMixin, HorillaListView):
         "status",
         (_("Meeting URL"), "meeting_url"),
     ]
+
+    @cached_property
+    def col_attrs(self):
+        """Make booker_name clickable to open the detail modal."""
+        query_string = self.request.session.get(self.ordered_ids_key, [])
+        attrs = {}
+        if self.request.user.has_perm("booking.view_booking"):
+            attrs = {
+                "hx-get": f"{{get_detail_url}}?instance_ids={query_string}",
+                "hx-target": "#detailModalBox",
+                "hx-swap": "innerHTML",
+                "hx-push-url": "false",
+                "hx-on:click": "openDetailModal();",
+                "style": "cursor:pointer",
+                "class": "hover:text-primary-600",
+            }
+        return [{"booker_name": {**attrs}}]
 
     actions = [
         {
@@ -561,6 +580,7 @@ class MyBookingsListView(LoginRequiredMixin, HorillaListView):
     save_to_list_option = False
     bulk_select_option = False
     list_column_visibility = False
+    store_ordered_ids = True
     table_height_as_class = "h-[calc(_100vh_-_200px_)]"
     search_url = reverse_lazy("booking:my_bookings_list")
     main_url = reverse_lazy("booking:my_bookings")
@@ -573,6 +593,23 @@ class MyBookingsListView(LoginRequiredMixin, HorillaListView):
         "status",
         (_("Meeting URL"), "meeting_url"),
     ]
+
+    @cached_property
+    def col_attrs(self):
+        """Make booker_name clickable to open the detail modal."""
+        query_string = self.request.session.get(self.ordered_ids_key, [])
+        attrs = {}
+        if self.request.user.has_perm("booking.view_booking"):
+            attrs = {
+                "hx-get": f"{{get_detail_url}}?instance_ids={query_string}",
+                "hx-target": "#detailModalBox",
+                "hx-swap": "innerHTML",
+                "hx-push-url": "false",
+                "hx-on:click": "openDetailModal();",
+                "style": "cursor:pointer",
+                "class": "hover:text-primary-600",
+            }
+        return [{"booker_name": {**attrs}}]
 
     actions = [
         {
@@ -633,6 +670,44 @@ class BookingStatusUpdateView(LoginRequiredMixin, View):
                     daemon=True,
                 ).start()
         return HttpResponse("<script>closeModal();$('#reloadButton').click();</script>")
+
+
+@method_decorator(htmx_required, name="dispatch")
+@method_decorator(permission_required("booking.view_booking"), name="dispatch")
+class BookingDetailModalView(LoginRequiredMixin, HorillaModalDetailView):
+    """Modal detail view for a single Booking."""
+
+    model = Booking
+    title = _("Booking Detail")
+    header = {
+        "title": "booker_name",
+        "subtitle": "booker_email",
+        "avatar": "",
+    }
+    body = [
+        (_("Booking Page"), "booking_page"),
+        (_("Start"), "start_datetime"),
+        (_("End"), "end_datetime"),
+        (_("Status"), "get_status_display"),
+        (_("Meeting URL"), "meeting_url"),
+        (_("Timezone"), "booker_timezone"),
+        (_("Cancellation Reason"), "cancellation_reason"),
+    ]
+    actions = [
+        {
+            "action": _("Change Status"),
+            "src": "assets/icons/change.svg",
+            "img_class": "w-3 h-3 filter brightness-0 invert",
+            "permission": "booking.change_booking",
+            "attrs": """
+                class="justify-center px-4 py-2 bg-primary-600 text-white rounded-md text-xs flex items-center gap-2 hover:bg-primary-800 transition duration-300"
+                hx-get="{get_status_url}"
+                hx-target="#modalBox"
+                hx-swap="innerHTML"
+                onclick="openModal()"
+            """,
+        },
+    ]
 
 
 # ─── Public Booking Views ─────────────────────────────────────────────────────

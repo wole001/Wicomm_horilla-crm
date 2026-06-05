@@ -2,18 +2,18 @@
 <div>
     <div class="p-5">
         <div class="flex justify-between items-center mb-4">
-            <h2 class="text-base font-semibold text-gray-700 dark:text-gray-300">
+            <h2 class="text-base font-semibold text-color-600">
                 {% trans "Share & Embed" %} — {{ page.title }}
             </h2>
             <button type="button" onclick="closeModal()"
-                class="text-gray-500 hover:text-red-500 cursor-pointer">
+                class="text-dark-100 hover:text-primary-600 cursor-pointer">
                 <img src="{% static 'assets/icons/close.svg' %}" alt="{% trans 'Close' %}">
             </button>
         </div>
 
         <!-- Public Link -->
         <div class="mb-5">
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">
+            <label class="block text-xs font-medium text-dark-100 mb-1 uppercase tracking-wide">
                 {% trans "Public Booking Link" %}
             </label>
             <div class="flex items-center gap-2">
@@ -25,12 +25,12 @@
                     {% trans "Copy" %}
                 </button>
             </div>
-            <p id="urlCopiedMsg" class="hidden mt-1 text-xs text-green-600">{% trans "Link copied!" %}</p>
+            <p id="urlCopiedMsg" class="hidden mt-1 text-xs text-success">{% trans "Link copied!" %}</p>
         </div>
 
         <!-- Embed Code -->
         <div class="mb-5">
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">
+            <label class="block text-xs font-medium text-dark-100 mb-1 uppercase tracking-wide">
                 {% trans "Embed Code" %}
             </label>
             <div class="flex items-center gap-2">
@@ -41,7 +41,7 @@
                     {% trans "Copy" %}
                 </button>
             </div>
-            <p id="embedCopiedMsg" class="hidden mt-1 text-xs text-green-600">{% trans "Embed code copied!" %}</p>
+            <p id="embedCopiedMsg" class="hidden mt-1 text-xs text-success">{% trans "Embed code copied!" %}</p>
         </div>
     </div>
 </div>
