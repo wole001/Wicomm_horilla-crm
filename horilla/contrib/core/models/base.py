@@ -419,6 +419,21 @@ class HorillaCoreModel(models.Model, metaclass=ExtensionModelBase):
 
                 related_pks.update(gfk_pks)
 
+            # Also handle models that use a custom string-based GFK pattern:
+            # `related_model_name` (CharField) + `related_object_id` (IntegerField).
+            # Standard Django GFK detection above misses these (e.g. CallLog).
+            field_names = {f.name for f in opts.get_fields() if hasattr(f, "name")}
+            if (
+                "related_model_name" in field_names
+                and "related_object_id" in field_names
+            ):
+                manager = getattr(model, "all_objects", model.objects)
+                string_gfk_pks = manager.filter(
+                    related_model_name__iexact=current_model._meta.model_name,
+                    related_object_id=self.pk,
+                ).values_list("pk", flat=True)
+                related_pks.update(string_gfk_pks)
+
             if related_pks:
                 if hasattr(model, "status"):
                     status_map = {

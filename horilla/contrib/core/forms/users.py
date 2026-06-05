@@ -384,8 +384,6 @@ class ChangeUserCompanyForm(HorillaModelForm):
             company = None
             if self.data and self.data.get("company"):
                 try:
-                    from ..models import Company
-
                     company_id = self.data.get("company")
                     if isinstance(company_id, list):
                         company_id = company_id[-1] if company_id else None

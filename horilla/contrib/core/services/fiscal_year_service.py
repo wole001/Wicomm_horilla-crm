@@ -14,12 +14,9 @@ from datetime import datetime, timedelta
 # Third-party imports (Others)
 from dateutil.relativedelta import relativedelta
 
-# Third-party imports (Django)
-from django.db import transaction
-
-from horilla.apps import apps
-
 # First party imports (Horilla)
+from horilla.apps import apps
+from horilla.db import transaction
 from horilla.utils import timezone
 
 # Local imports

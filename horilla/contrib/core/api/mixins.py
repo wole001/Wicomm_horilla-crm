@@ -2,13 +2,13 @@
 API mixins for implementing advanced features like search, filtering, bulk update, and bulk delete
 """
 
-# Third-party imports (Django)
-from django.db import transaction
+# Third-party imports (other)
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 # First party imports (Horilla)
+from horilla.db import transaction
 from horilla.db.models import Q
 
 

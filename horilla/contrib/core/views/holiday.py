@@ -201,13 +201,22 @@ class HolidayFormView(LoginRequiredMixin, HorillaSingleFormView):
             )
 
         else:
-            initial["all_users"] = False
+            initial["all_users"] = True
             initial["is_recurring"] = False
             initial["frequency"] = ""
             initial["monthly_repeat_type"] = ""
             initial["yearly_repeat_type"] = ""
 
-        initial.update(self.request.GET.dict())
+        protected = {
+            "all_users",
+            "is_recurring",
+            "frequency",
+            "monthly_repeat_type",
+            "yearly_repeat_type",
+        }
+        for key, value in self.request.GET.items():
+            if key not in protected:
+                initial[key] = value
 
         return initial
 

@@ -3,9 +3,14 @@ Horilla Core App configuration.
 Handles app setup, demo data, and scheduler,signals and menu initialization.
 """
 
+# Standard library imports
+import logging
+
 # First party imports (Horilla)
 from horilla.apps import AppLauncher
 from horilla.utils.translation import gettext_lazy as _
+
+logger = logging.getLogger(__name__)
 
 
 class CoreConfig(AppLauncher):
@@ -62,3 +67,31 @@ class CoreConfig(AppLauncher):
                 "namespace": "core",
             }
         ]
+
+    def ready(self):
+        super().ready()
+        try:
+            from django.apps import apps as django_apps
+
+            if django_apps.ready:
+                from horilla.extension.card.bootstrap import apply_card_extensions
+                from horilla.extension.detail.bootstrap import apply_detail_extensions
+                from horilla.extension.filter.bootstrap import apply_filter_extensions
+                from horilla.extension.forms.bootstrap import apply_form_extensions
+                from horilla.extension.kanban.bootstrap import apply_kanban_extensions
+                from horilla.extension.list.bootstrap import apply_list_extensions
+                from horilla.extension.nav.bootstrap import apply_nav_extensions
+
+                apply_form_extensions()
+                apply_filter_extensions()
+                apply_nav_extensions()
+                apply_list_extensions()
+                apply_card_extensions()
+                apply_kanban_extensions()
+                apply_detail_extensions()
+        except Exception as exc:
+            logger.warning(
+                "Extension bootstrap skipped or failed: %s",
+                exc,
+                exc_info=True,
+            )

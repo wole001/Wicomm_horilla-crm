@@ -9,13 +9,10 @@ from decimal import Decimal
 import requests
 from dateutil.parser import parse
 
-# Third-party imports (Django)
-from django.db import transaction
-
 # First party imports (Horilla)
 from horilla.apps import apps
 from horilla.contrib.utils.middlewares import _thread_local
-from horilla.db import models
+from horilla.db import models, transaction
 from horilla.db.models import QuerySet
 from horilla.utils.choices import TABLE_FALLBACK_FIELD_TYPES
 

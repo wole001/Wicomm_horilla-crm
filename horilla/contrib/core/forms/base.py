@@ -190,6 +190,8 @@ class HolidayForm(HorillaModelForm):
         # All users logic
         if self.fields.get("specific_users") and initial.get("all_users"):
             hide_fields(["specific_users"], nullify=True)
+        elif self.fields.get("specific_users"):
+            self.fields["specific_users"].required = True
 
         # Not recurring? Hide all recurrence-related fields
         is_recurring = bool(initial.get("is_recurring"))
