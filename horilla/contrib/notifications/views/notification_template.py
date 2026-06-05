@@ -241,6 +241,9 @@ class NotificationTemplateCreateUpdateView(LoginRequiredMixin, FormView):
                 if hasattr(_thread_local, "request")
                 else self.request.user.company
             )
+            if not self.object:
+                mail_template.created_by = self.request.user
+            mail_template.updated_by = self.request.user
             mail_template.save()
             if self.object:
                 messages.success(

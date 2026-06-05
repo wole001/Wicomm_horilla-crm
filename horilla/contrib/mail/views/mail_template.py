@@ -440,6 +440,8 @@ class SaveAsMailTemplateView(LoginRequiredMixin, View):
                     if hasattr(_thread_local, "request")
                     else self.request.user.company
                 )
+                instance.created_by = request.user
+                instance.updated_by = request.user
                 instance.save()
                 messages.success(
                     self.request,
