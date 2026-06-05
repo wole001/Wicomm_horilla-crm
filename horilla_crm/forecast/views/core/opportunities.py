@@ -8,9 +8,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.template.loader import render_to_string
 from django.views import View
 
-# First-party / Horilla imports
 from horilla.contrib.core.models import FiscalYearInstance, Period
 from horilla.contrib.generics.views import HorillaListView
+
+# First party imports (Horilla)
 from horilla.http import HttpNotFound
 from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse_lazy
@@ -21,7 +22,7 @@ from horilla.utils.decorators import (
 )
 from horilla.utils.translation import gettext_lazy as _
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.forecast.models import Forecast, ForecastType
 from horilla_crm.opportunities.models import Opportunity
 

@@ -13,7 +13,7 @@ from django import forms
 from horilla.contrib.core.mixins import OwnerQuerysetMixin
 from horilla.contrib.generics.forms import HorillaModelForm, HorillaMultiStepForm
 
-# First-party / Horilla imports
+# First party imports (Horilla)
 from horilla.urls import reverse_lazy
 from horilla.utils.choices import get_subdivision_choices
 from horilla.utils.translation import gettext_lazy as _

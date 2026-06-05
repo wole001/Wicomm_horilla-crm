@@ -14,7 +14,7 @@ from urllib.parse import urlencode
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View
 
-# First-party / Horilla imports
+# First party imports (Horilla)
 from horilla.contrib.activity.views import HorillaActivitySectionView
 from horilla.contrib.core.utils import is_owner
 from horilla.contrib.generics.mixins import RecentlyViewedMixin
@@ -45,7 +45,7 @@ from horilla.utils.decorators import (
 )
 from horilla.utils.translation import gettext_lazy as _
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.accounts.filters import AccountFilter
 from horilla_crm.accounts.models import Account, PartnerAccountRelationship
 from horilla_crm.contacts.models import ContactAccountRelationship

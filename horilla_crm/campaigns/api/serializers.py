@@ -2,9 +2,13 @@
 Serializers for horilla_crm.campaigns models
 """
 
+# Third-party imports (other)
 from rest_framework import serializers
 
+# First party imports (Horilla)
 from horilla.contrib.core.api.serializers import HorillaUserSerializer
+
+# Local imports
 from horilla_crm.campaigns.models import Campaign
 
 

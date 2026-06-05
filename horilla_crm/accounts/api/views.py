@@ -5,19 +5,19 @@ This module mirrors core API patterns including search, filtering,
 bulk update, bulk delete, permissions, and documentation.
 """
 
-# Third-party imports (Swagger / drf-yasg)
+# Third-party imports (other)
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-
-# Third-party imports (Django REST Framework)
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-# First-party / Horilla imports
+# First party imports (Horilla)
 from horilla.contrib.core.api.docs import BULK_DELETE_DOCS, BULK_UPDATE_DOCS
 from horilla.contrib.core.api.mixins import BulkOperationsMixin, SearchFilterMixin
 from horilla.contrib.core.api.permissions import IsCompanyMember
+
+# Local imports
 from horilla_crm.accounts.api.docs import (
     ACCOUNT_CHILD_ACCOUNTS_DOCS,
     ACCOUNT_CREATE_DOCS,

@@ -14,11 +14,11 @@ from horilla.contrib.generics.views import (
     HorillaSingleDeleteView,
     HorillaSingleFormView,
 )
+
+# First party imports (Horilla)
 from horilla.http import HttpResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse_lazy
-
-# First party imports (Horilla)
 from horilla.utils import timezone
 from horilla.utils.decorators import (
     htmx_required,
@@ -27,7 +27,7 @@ from horilla.utils.decorators import (
 )
 from horilla.utils.translation import gettext_lazy as _
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.contacts.forms import (
     ChildContactForm,
     ContactFormClass,

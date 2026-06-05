@@ -5,7 +5,7 @@ This module defines models related to forecasts, including forecast types,
 conditions, main forecasts, targets, individual user targets, and historical tracking.
 """
 
-# Third party imports (Django)
+# Third-party imports (Django)
 from django.conf import settings
 
 from horilla.contrib.core.models import (
@@ -16,12 +16,14 @@ from horilla.contrib.core.models import (
     Role,
 )
 
-# First party / Horilla imports
+# First party imports (Horilla)
 from horilla.db import models
 from horilla.registry.permission_registry import permission_exempt_model
 from horilla.urls import reverse_lazy
 from horilla.utils.choices import OPERATOR_CHOICES
 from horilla.utils.translation import gettext_lazy as _
+
+# Local imports
 from horilla_crm.opportunities.models import Opportunity
 
 

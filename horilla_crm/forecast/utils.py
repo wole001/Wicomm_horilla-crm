@@ -14,13 +14,12 @@ Features:
 - Caches condition queries for efficiency.
 """
 
+# First party imports (Horilla)
 from horilla.auth.models import User
 from horilla.contrib.core.models import FiscalYearInstance, Period
-
-# First party / Horilla imports
 from horilla.db.models import Q, Sum
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.forecast.models import Forecast, ForecastTarget, ForecastType
 from horilla_crm.opportunities.models import Opportunity
 

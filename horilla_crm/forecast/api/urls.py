@@ -2,9 +2,13 @@
 URL patterns for horilla_crm.forecast API
 """
 
+# Third-party imports (other)
 from rest_framework.routers import DefaultRouter
 
+# First party imports (Horilla)
 from horilla.urls import include, path
+
+# Local imports
 from horilla_crm.forecast.api.views import (
     ForecastTargetUserViewSet,
     ForecastTargetViewSet,

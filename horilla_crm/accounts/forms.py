@@ -5,17 +5,16 @@ Includes forms for creating/editing accounts and assigning child accounts,
 with validation and dynamic queryset setup to prevent circular references.
 """
 
-# Third-party imports(Django)
+# Third-party imports (Django)
 from django import forms
 
+# First party imports (Horilla)
 from horilla.contrib.core.mixins import OwnerQuerysetMixin
 from horilla.contrib.generics.forms import HorillaModelForm, HorillaMultiStepForm
-
-# First-party / Horilla imports
 from horilla.urls import reverse_lazy
 from horilla.utils.translation import gettext_lazy as _
 
-# Local Imports
+# Local imports
 from horilla_crm.accounts.models import Account
 
 

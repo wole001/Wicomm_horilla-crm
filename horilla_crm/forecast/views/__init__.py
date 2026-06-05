@@ -1,5 +1,6 @@
 """Aggregate view modules for the `horilla_crm.forecast.views` package."""
 
+# Local imports
 from horilla_crm.forecast.views.core import (
     ForecastChartsModalView,
     ForecastView,

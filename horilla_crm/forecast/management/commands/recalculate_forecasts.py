@@ -17,7 +17,7 @@ from django.core.management.base import BaseCommand
 # First party imports (Horilla)
 from horilla.db.models import Q
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.forecast.models import Forecast
 from horilla_crm.forecast.utils import ForecastCalculator
 

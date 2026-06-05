@@ -2,7 +2,7 @@
 Defines filters for the Campaign model, enabling search and exclusion of specific fields.
 """
 
-# First-party / Horilla imports
+# First party imports (Horilla)
 from horilla.contrib.core.mixins import OwnerFiltersetMixin
 from horilla.contrib.generics.filters import HorillaFilterSet
 

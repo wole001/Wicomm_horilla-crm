@@ -1,5 +1,6 @@
 """Template filters for forecast module."""
 
+# Third-party imports (Django)
 from django import template
 
 register = template.Library()

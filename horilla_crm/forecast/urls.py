@@ -2,7 +2,10 @@
 URL configuration for the forecast app.
 """
 
+# First party imports (Horilla)
 from horilla.urls import path
+
+# Local imports
 from horilla_crm.forecast import views
 
 app_name = "forecast"

@@ -1,5 +1,6 @@
 """Aggregate and re-export contact-related views for convenience imports."""
 
+# Local imports
 from horilla_crm.contacts.views.core import (
     ContactActivityTab,
     ContactDetailTab,

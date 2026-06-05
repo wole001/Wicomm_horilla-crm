@@ -5,12 +5,14 @@ This module mirrors core and accounts API patterns including search, filtering,
 bulk update, bulk delete, permissions, and documentation.
 """
 
+# Third-party imports (other)
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+# First party imports (Horilla)
 from horilla.contrib.core.api.docs import (
     BULK_DELETE_DOCS,
     BULK_UPDATE_DOCS,
@@ -18,6 +20,8 @@ from horilla.contrib.core.api.docs import (
 )
 from horilla.contrib.core.api.mixins import BulkOperationsMixin, SearchFilterMixin
 from horilla.contrib.core.api.permissions import IsCompanyMember
+
+# Local imports
 from horilla_crm.forecast.api.docs import (
     FORECAST_CREATE_DOCS,
     FORECAST_DETAIL_DOCS,

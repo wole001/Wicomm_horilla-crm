@@ -10,14 +10,13 @@ from decimal import Decimal, InvalidOperation
 # Third-party imports (Django)
 from django import forms
 
+# First party imports (Horilla)
 from horilla.auth.models import User
 from horilla.contrib.generics.forms import HorillaModelForm
-
-# First-party / Horilla imports
 from horilla.urls import reverse_lazy
 from horilla.utils.translation import gettext_lazy as _
 
-# Local application imports
+# Local imports
 from .models import ForecastCondition, ForecastTarget, ForecastType
 
 logger = logging.getLogger(__name__)

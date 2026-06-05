@@ -7,7 +7,7 @@ from django.views.generic import TemplateView
 from horilla.contrib.core.models import FiscalYearInstance
 from horilla.contrib.core.services.fiscal_year_service import FiscalYearService
 
-# First-party / Horilla imports
+# First party imports (Horilla)
 from horilla.http import HttpResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.utils.decorators import (
@@ -16,6 +16,8 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+
+# Local imports
 from horilla_crm.forecast.models import ForecastType
 from horilla_crm.forecast.views.core.helpers import (
     ForecastTypeTabHelpersMixin,

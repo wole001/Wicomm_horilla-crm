@@ -32,9 +32,9 @@ from horilla.contrib.generics.views import (
 )
 from horilla.contrib.generics.views.card import HorillaCardView
 from horilla.contrib.generics.views.timeline import HorillaTimelineView
-from horilla.shortcuts import get_object_or_404, render
 
-# First-party / Horilla imports
+# First party imports (Horilla)
+from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import (
     htmx_required,
@@ -44,7 +44,7 @@ from horilla.utils.decorators import (
 )
 from horilla.utils.translation import gettext_lazy as _
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.contacts.filters import ContactFilter
 from horilla_crm.contacts.models import Contact, ContactAccountRelationship
 

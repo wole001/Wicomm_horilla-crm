@@ -7,14 +7,14 @@ Recalculates scores for all affected modules when scoring rules, criteria, or co
 import logging
 
 # Third-party imports (Django)
-from django.db import transaction
 from django.dispatch import receiver
 
 from horilla.apps import apps
 from horilla.core.exceptions import FieldDoesNotExist
-from horilla.db.models import Case, F, IntegerField, Q, When
 
 # First party imports (Horilla)
+from horilla.db import transaction
+from horilla.db.models import Case, F, IntegerField, Q, When
 from horilla.db.models.signals import post_save, pre_delete
 
 # Local imports

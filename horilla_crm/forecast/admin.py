@@ -1,7 +1,9 @@
 """Django admin configuration for forecast  app."""
 
+# Third-party imports (Django)
 from django.contrib import admin
 
+# Local imports
 from horilla_crm.forecast.models import (
     Forecast,
     ForecastCondition,

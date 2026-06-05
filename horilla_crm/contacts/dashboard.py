@@ -1,8 +1,10 @@
 """Dashboard utilities for contacts module."""
 
+# First party imports (Horilla)
 from horilla.contrib.dashboard.utils import DefaultDashboardGenerator
 from horilla.utils.choices import TABLE_FALLBACK_FIELD_TYPES
 
+# Local imports
 from .models import Contact
 
 

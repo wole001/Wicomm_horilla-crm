@@ -2,9 +2,13 @@
 Serializers for horilla_crm.accounts models
 """
 
+# Third-party imports (other)
 from rest_framework import serializers
 
+# First party imports (Horilla)
 from horilla.contrib.core.api.serializers import HorillaUserSerializer
+
+# Local imports
 from horilla_crm.accounts.models import Account, PartnerAccountRelationship
 
 

@@ -2,24 +2,24 @@
 Models for managing contacts in the CRM system, including contact details,
 """
 
-from django.conf import settings
-
 # Third-party imports (Django)
+from django.conf import settings
 from django.dispatch import receiver
+
+# Third-party imports (other)
 from django_countries.fields import CountryField
 
+# First party imports (Horilla)
 from horilla.apps import apps
 from horilla.contrib.core.models import HorillaCoreModel
 from horilla.contrib.utils.middlewares import _thread_local
 from horilla.db import models
-
-# First party imports (Horilla)
 from horilla.db.models.signals import pre_save
 from horilla.urls import reverse_lazy
 from horilla.utils.choices import LANGUAGE_CHOICES
 from horilla.utils.translation import gettext_lazy as _
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.scoring_rules.utils import compute_score
 
 CONTACT_SOURCE_CHOICES = [

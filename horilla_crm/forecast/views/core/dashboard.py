@@ -8,7 +8,7 @@ Features: Period-based forecasts, trend analysis, user/aggregated views, optimiz
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 
-# First-party / Horilla imports
+# First party imports (Horilla)
 from horilla.auth.models import User
 from horilla.contrib.core.models import FiscalYearInstance, Period
 from horilla.contrib.core.services.fiscal_year_service import FiscalYearService
@@ -21,7 +21,7 @@ from horilla.utils.decorators import (
 )
 from horilla.utils.translation import gettext_lazy as _
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.forecast.models import ForecastType
 
 

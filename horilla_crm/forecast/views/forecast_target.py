@@ -6,12 +6,13 @@ and dynamic UI handling for role-based and condition-based forecasting.
 # Standard library imports
 from functools import cached_property
 
-# Third party imports (Django)
+# Third-party imports (Django)
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.views.generic import TemplateView
 
+# First party imports (Horilla)
 from horilla.auth.models import User
 from horilla.contrib.core.models import Period, Role
 from horilla.contrib.generics.views import (
@@ -24,8 +25,6 @@ from horilla.contrib.generics.views import (
 from horilla.http import HttpResponse, HttpResponseRedirect
 from horilla.shortcuts import render
 from horilla.urls import reverse_lazy
-
-# First party imports (Horilla)
 from horilla.utils import timezone
 from horilla.utils.decorators import (
     htmx_required,
@@ -35,7 +34,7 @@ from horilla.utils.decorators import (
 )
 from horilla.utils.translation import gettext_lazy as _
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.forecast.filters import ForecastTargetFilter
 from horilla_crm.forecast.forms import ForecastTargetForm
 from horilla_crm.forecast.models import ForecastTarget, ForecastType

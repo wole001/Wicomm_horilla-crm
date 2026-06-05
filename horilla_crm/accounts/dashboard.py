@@ -6,14 +6,13 @@ import logging
 # Third-party imports (Django)
 from django.utils.http import urlencode
 
+# First party imports (Horilla)
 from horilla.contrib.dashboard.utils import DefaultDashboardGenerator
 from horilla.contrib.utils.methods import get_section_info_for_model
-
-# First-party / Horilla imports
 from horilla.db.models import Count
 from horilla.utils.choices import TABLE_FALLBACK_FIELD_TYPES
 
-# Local application imports
+# Local imports
 from .models import Account
 
 logger = logging.getLogger(__name__)

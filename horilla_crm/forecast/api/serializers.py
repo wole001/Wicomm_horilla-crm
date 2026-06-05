@@ -2,9 +2,13 @@
 Serializers for horilla_crm.forecast models
 """
 
+# Third-party imports (other)
 from rest_framework import serializers
 
+# First party imports (Horilla)
 from horilla.contrib.core.api.serializers import HorillaUserSerializer
+
+# Local imports
 from horilla_crm.forecast.models import (
     Forecast,
     ForecastTarget,

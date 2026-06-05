@@ -2,8 +2,10 @@
 URL configuration for the Contacts app.
 """
 
+# First party imports (Horilla)
 from horilla.urls import path
 
+# Local imports
 from . import views
 
 app_name = "contacts"

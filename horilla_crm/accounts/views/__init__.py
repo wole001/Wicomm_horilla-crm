@@ -1,5 +1,6 @@
 """Aggregate and re-export account-related views for convenience imports."""
 
+# Local imports
 from horilla_crm.accounts.views.core import (
     AccountView,
     AccountsNavbar,

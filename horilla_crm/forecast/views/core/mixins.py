@@ -4,10 +4,12 @@
 from django.core.paginator import Paginator
 from django.utils.functional import cached_property
 
-# First-party / Horilla imports
+# First party imports (Horilla)
 from horilla.auth.models import User
 from horilla.contrib.core.models import Company, FiscalYearInstance, Period
 from horilla.utils.translation import gettext_lazy as _
+
+# Local imports
 from horilla_crm.forecast.models import Forecast, ForecastTarget
 from horilla_crm.forecast.utils import ForecastCalculator
 

@@ -4,7 +4,10 @@ Filters for the forecast app.
 This module defines filter classes used to search and filter forecast records.
 """
 
+# First party imports (Horilla)
 from horilla.contrib.generics.filters import HorillaFilterSet
+
+# Local imports
 from horilla_crm.forecast.models import ForecastTarget, ForecastType
 
 

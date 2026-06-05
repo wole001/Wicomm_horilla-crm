@@ -1,9 +1,11 @@
 """Helper methods for ForecastTypeTabView (create forecasts, trends, enhance data, chart data)."""
 
-# First-party / Horilla imports
+# First party imports (Horilla)
 from horilla.auth.models import User
 from horilla.contrib.core.models import Period
 from horilla.utils.translation import gettext_lazy as _
+
+# Local imports
 from horilla_crm.forecast.models import Forecast
 
 

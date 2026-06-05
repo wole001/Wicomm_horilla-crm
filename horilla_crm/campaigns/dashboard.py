@@ -9,11 +9,11 @@ from django.utils.http import urlencode
 from horilla.contrib.dashboard.utils import DefaultDashboardGenerator
 from horilla.contrib.utils.methods import get_section_info_for_model
 
-# First-party / Horilla imports
+# First party imports (Horilla)
 from horilla.db.models import Count
 from horilla.utils.choices import TABLE_FALLBACK_FIELD_TYPES
 
-# Local application imports
+# Local imports
 from .models import Campaign
 
 logger = logging.getLogger(__name__)

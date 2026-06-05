@@ -3,6 +3,8 @@ Feature registration for Contacts app.
 """
 
 from horilla.contrib.cadences.registration import register_cadence_tab
+
+# First party imports (Horilla)
 from horilla.registry.feature import register_model_for_feature
 
 register_model_for_feature(

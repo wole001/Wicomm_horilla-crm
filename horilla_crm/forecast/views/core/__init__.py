@@ -5,6 +5,7 @@ This package provides forecast dashboard, type tab and opportunities views.
 Submodules: dashboard, type_tab, opportunities.
 """
 
+# Local imports
 from horilla_crm.forecast.views.core.dashboard import (
     ForecastNavbarView,
     ForecastTabView,

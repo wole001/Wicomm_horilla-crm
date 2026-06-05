@@ -2,6 +2,7 @@
 This module contains the views for the campaigns app.
 """
 
+# Local imports
 from horilla_crm.campaigns.views.core import (
     CampaignView,
     CampaignListView,

@@ -2,6 +2,7 @@
 Feature registration for Campaigns app.
 """
 
+# First party imports (Horilla)
 from horilla.registry.feature import register_model_for_feature
 
 register_model_for_feature(

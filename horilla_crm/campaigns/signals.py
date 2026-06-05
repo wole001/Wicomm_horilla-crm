@@ -4,19 +4,18 @@
 import logging
 
 # Third-party imports (Django)
-from django.db import transaction
 from django.dispatch import receiver
 
+# First party imports (Horilla)
 from horilla.auth.models import User
 from horilla.contrib.core.signals import company_currency_changed
 from horilla.contrib.keys.models import ShortcutKey
 from horilla.contrib.keys.utils import resolve_page_url
+from horilla.db import transaction
 from horilla.db.models import Sum
-
-# First party imports (Horilla)
 from horilla.db.models.signals import post_delete, post_save
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.campaigns.models import Campaign, CampaignMember
 from horilla_crm.leads.models import Lead
 from horilla_crm.opportunities.models import Opportunity

@@ -6,15 +6,14 @@ import threading
 # Third-party imports (Django)
 from django.dispatch import receiver
 
+# First party imports (Horilla)
 from horilla.apps import apps
 from horilla.auth.models import User
 from horilla.contrib.keys.models import ShortcutKey
 from horilla.contrib.keys.utils import resolve_page_url
-
-# First party imports (Horilla)
 from horilla.db.models.signals import post_save
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.contacts.models import Contact, ContactAccountRelationship
 
 _thread_locals = threading.local()

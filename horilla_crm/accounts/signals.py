@@ -3,15 +3,14 @@
 # Third-party imports (Django)
 from django.dispatch import receiver
 
+# First party imports (Horilla)
 from horilla.auth.models import User
 from horilla.contrib.core.signals import company_currency_changed
 from horilla.contrib.keys.models import ShortcutKey
 from horilla.contrib.keys.utils import resolve_page_url
-
-# First party imports (Horilla)
 from horilla.db.models.signals import post_save
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.accounts.models import Account
 
 # Define your accounts signals here

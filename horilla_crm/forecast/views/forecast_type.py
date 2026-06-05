@@ -11,7 +11,6 @@ from functools import cached_property
 # Third-party imports (Django)
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-# First-party / Horilla imports
 from horilla.contrib.generics.views import (
     HorillaListView,
     HorillaNavView,
@@ -19,6 +18,8 @@ from horilla.contrib.generics.views import (
     HorillaSingleFormView,
     HorillaView,
 )
+
+# First party imports (Horilla)
 from horilla.http import HttpResponse
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import (
@@ -28,7 +29,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.forecast.filters import ForecastTypeFilter
 from horilla_crm.forecast.forms import ForecastTypeForm
 from horilla_crm.forecast.models import ForecastCondition, ForecastType

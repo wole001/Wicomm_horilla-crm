@@ -12,11 +12,10 @@ from django.conf import settings
 # Third-party imports (Django)
 from django.forms import ValidationError
 
+# First party imports (Horilla)
 from horilla.apps import apps
 from horilla.contrib.core.models import HorillaCoreModel
 from horilla.contrib.utils.middlewares import _thread_local
-
-# First-party / Horilla imports
 from horilla.db import models
 from horilla.urls import reverse_lazy
 from horilla.utils.translation import gettext_lazy as _

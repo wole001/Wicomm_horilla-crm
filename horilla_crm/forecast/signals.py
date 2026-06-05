@@ -6,16 +6,15 @@ import logging
 # Third-party imports (Django)
 from django.dispatch import receiver
 
+# First party imports (Horilla)
 from horilla.auth.models import User
 from horilla.contrib.core.models import Period
 from horilla.contrib.core.signals import company_currency_changed
 from horilla.contrib.keys.models import ShortcutKey
 from horilla.contrib.keys.utils import resolve_page_url
-
-# First party imports (Horilla)
 from horilla.db.models.signals import post_delete, post_save, pre_save
 
-# First-party / Horilla apps
+# Local imports
 from horilla_crm.forecast.models import Forecast, ForecastType
 from horilla_crm.forecast.utils import ForecastCalculator
 from horilla_crm.opportunities.models import Opportunity
