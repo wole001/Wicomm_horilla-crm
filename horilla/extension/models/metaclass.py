@@ -58,16 +58,12 @@ class ExtensionModelBase(ModelBase):
         model_key = (app_label, model_name.lower())
 
         contributed_fields = {
-            key: value
-            for key, value in namespace.items()
-            if isinstance(value, Field)
+            key: value for key, value in namespace.items() if isinstance(value, Field)
         }
         contributed_methods = {
             key: value
             for key, value in namespace.items()
-            if callable(value)
-            and not key.startswith("__")
-            and key not in _SKIP_KEYS
+            if callable(value) and not key.startswith("__") and key not in _SKIP_KEYS
         }
 
         EXTENSION_REGISTRY.setdefault(inherit, []).append(

@@ -23,9 +23,9 @@ def lookup_injection_owner(target_app_label, model_name, field_name):
         return INJECTION_MAP[key]
 
     try:
-        from horilla.db import connection
         from django.db.migrations.loader import MigrationLoader
 
+        from horilla.db import connection
         from horilla.extension.models.migration_ops import InjectField
     except ImportError:
         return None

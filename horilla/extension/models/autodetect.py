@@ -126,9 +126,7 @@ class HorillaAutodetector(MigrationAutodetector):
                     field_name, model_name
                 )
         if field.unique and field.has_default() and callable(field.default):
-            self.questioner.ask_unique_callable_default_addition(
-                field_name, model_name
-            )
+            self.questioner.ask_unique_callable_default_addition(field_name, model_name)
 
         self.add_operation(
             ext_app,

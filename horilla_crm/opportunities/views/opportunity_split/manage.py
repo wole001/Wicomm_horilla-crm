@@ -5,11 +5,12 @@ from decimal import Decimal
 
 # Third-party imports (Django)
 from django.contrib import messages
-from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView, View
 
 # First party imports (Horilla)
 from horilla.auth.models import User
+from horilla.contrib.generics.views import HorillaTabView
 from horilla.http import HttpResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse_lazy
@@ -19,7 +20,6 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
-from horilla.contrib.generics.views import HorillaTabView
 
 # Local imports
 from horilla_crm.opportunities.models import (
@@ -29,7 +29,9 @@ from horilla_crm.opportunities.models import (
     OpportunitySplitType,
     OpportunityTeamMember,
 )
-from horilla_crm.opportunities.views.opportunity_split.settings import SplitEnabledRequiredMixin
+from horilla_crm.opportunities.views.opportunity_split.settings import (
+    SplitEnabledRequiredMixin,
+)
 
 
 @method_decorator(

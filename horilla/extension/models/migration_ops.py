@@ -149,7 +149,9 @@ class RemoveInjectedField(RemoveField):
         """Re-add the column on the target app's database table."""
         to_model = to_state.apps.get_model(self.target_app_label, self.model_name)
         if self.allow_migrate_model(schema_editor.connection.alias, to_model):
-            from_model = from_state.apps.get_model(self.target_app_label, self.model_name)
+            from_model = from_state.apps.get_model(
+                self.target_app_label, self.model_name
+            )
             schema_editor.add_field(from_model, to_model._meta.get_field(self.name))
 
     def deconstruct(self):

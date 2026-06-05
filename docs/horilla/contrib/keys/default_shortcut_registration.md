@@ -110,7 +110,7 @@ auto_import_modules = ["registration", "signals", "menu"]
 Create or update: `your_app/signals.py`
 
 ```python
-from django.db.models.signals import post_save
+from horilla.db.models.signals import post_save
 from django.dispatch import receiver
 
 from horilla.auth.models import User
@@ -187,7 +187,7 @@ class HelpdeskConfig(AppLauncher):
 ### `horilla_helpdesk/signals.py`
 
 ```python
-from django.db.models.signals import post_save
+from horilla.db.models.signals import post_save
 from django.dispatch import receiver
 
 from horilla.auth.models import User
