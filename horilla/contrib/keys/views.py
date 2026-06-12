@@ -109,10 +109,11 @@ class ShortKeyListView(LoginRequiredMixin, HorillaListView):
     columns = [(_("Page"), "page_display"), (_("Key"), "custom_key_col")]
 
     def get_queryset(self):
-        """Return shortcut keys filtered by the logged-in user."""
-        queryset = super().get_queryset()
-        user_id = self.request.user
-        return queryset.filter(user=user_id) if user_id else queryset.none()
+        """Return shortcut keys filtered by the logged-in user across all companies."""
+        user = self.request.user
+        if not user:
+            return self.model.all_objects.none()
+        return self.model.all_objects.filter(user=user)
 
     actions = [
         {
@@ -170,11 +171,10 @@ class ShortKeyFormView(LoginRequiredMixin, HorillaSingleFormView):
         return reverse_lazy("keys:short_key_create")
 
     def get_initial(self):
-        """Set initial form data with current user and active company."""
+        """Set initial form data with current user and their assigned company."""
         initial = super().get_initial()
         initial["user"] = self.request.user
-        company = getattr(self.request, "active_company", None)
-        initial["company"] = company
+        initial["company"] = getattr(self.request.user, "company", None)
         return initial
 
     def get_form_kwargs(self):
@@ -186,7 +186,7 @@ class ShortKeyFormView(LoginRequiredMixin, HorillaSingleFormView):
         pk = kwargs.get("pk")
         if pk:
             try:
-                self.model.objects.get(pk=pk)
+                self.model.all_objects.get(pk=pk)
             except self.model.DoesNotExist:
                 messages.error(request, "The requested data does not exist.")
                 return HttpResponse("<script>$('reloadButton').click();</script>")
@@ -226,7 +226,7 @@ class ShortKeyDataView(LoginRequiredMixin, View):
                 "section": sk.get_section(),
                 "title": sk.get_page_title(),
             }
-            for sk in request.user.shortcut_keys.all()
+            for sk in ShortcutKey.all_objects.filter(user=request.user)
         ]
 
         return JsonResponse({"shortcuts": shortcuts})

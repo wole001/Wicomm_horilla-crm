@@ -47,7 +47,11 @@ class ShortcutKeyForm(HorillaModelForm):
         self.fields["user"].queryset = self.fields["user"].queryset.filter(
             id=request.user.id
         )
-        self.fields["company"].queryset = Company.objects.filter(id=company.id)
+        user_company = getattr(request.user, "company", None)
+        if user_company:
+            self.fields["company"].queryset = Company.objects.filter(id=user_company.id)
+        else:
+            self.fields["company"].queryset = Company.objects.none()
 
         main_sections = main_section_menu.get_main_section_menu(request)
         for item in main_sections:

@@ -87,6 +87,17 @@ def normalize_shortcut_pages_on_migrate(sender, **kwargs):
 
 
 @receiver(post_save, sender=User)
+def sync_shortcut_keys_on_company_change(sender, instance, created, **kwargs):
+    """
+    When a user's company changes, update all their shortcut keys to the new company
+    so they remain visible regardless of which active company is selected.
+    """
+    if created:
+        return
+    ShortcutKey.all_objects.filter(user=instance).update(company=instance.company)
+
+
+@receiver(post_save, sender=User)
 def create_all_default_shortcuts(sender, instance, created, **kwargs):
     """
     Create all default shortcut keys for a newly created user
