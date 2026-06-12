@@ -108,8 +108,12 @@ class HorillaSelect2DataView(LoginRequiredMixin, View):
             try:
                 form_kwargs = {"request": request}
                 # Pass instance when object_id is provided (edit mode) so OwnerQuerysetMixin
-                # uses change/change_own instead of add/add_own
+                # uses change/change_own instead of add/add_own.
+                # Also temporarily set request.active_company to the instance's company so
+                # the form's FK querysets are scoped to the record's tenant, not the
+                # admin's currently-selected company.
                 object_id = request.GET.get("object_id")
+                original_active_company = getattr(request, "active_company", None)
                 if (
                     object_id
                     and hasattr(form_class, "_meta")
@@ -117,29 +121,52 @@ class HorillaSelect2DataView(LoginRequiredMixin, View):
                 ):
                     parent_model = form_class._meta.model
                     try:
-                        instance = parent_model.objects.get(pk=object_id)
+                        instance = parent_model.all_objects.get(pk=object_id)
                         form_kwargs["instance"] = instance
+                        instance_company = getattr(instance, "company", None)
+                        if instance_company is not None:
+                            request.active_company = instance_company
                     except (parent_model.DoesNotExist, ValueError):
                         pass
-                form = form_class(**form_kwargs)
-                if field_name in form.fields:
-                    queryset = form.fields[field_name].queryset
+                try:
+                    form = form_class(**form_kwargs)
+                    if field_name in form.fields:
+                        queryset = form.fields[field_name].queryset
+                finally:
+                    request.active_company = original_active_company
             except Exception as e:
                 logger.error("[Select2] Could not resolve queryset from form: %s", e)
 
         if queryset is None:
             queryset = model.objects.all()
 
-        # Apply company filtering if model has company field and active_company is set
-        company = getattr(request, "active_company", None)
+        # Apply company filtering if model has company field.
+        # In edit mode, scope to the parent object's company so FK choices stay
+        # within the record's tenant even when the admin's active_company differs.
+        # In create mode, fall back to request.active_company.
+        company = None
+        edit_object_id = request.GET.get("object_id")
+        if (
+            edit_object_id
+            and form_class
+            and hasattr(form_class, "_meta")
+            and hasattr(form_class._meta, "model")
+        ):
+            parent_model_for_company = form_class._meta.model
+            try:
+                parent_instance = parent_model_for_company.all_objects.get(
+                    pk=edit_object_id
+                )
+                company = getattr(parent_instance, "company", None)
+            except Exception:
+                pass
+        if company is None:
+            company = getattr(request, "active_company", None)
         if company:
-            # Check if the model has a company field
             try:
                 model._meta.get_field("company")
-                # Filter queryset by company
                 queryset = queryset.filter(company=company)
             except Exception:
-                # Model doesn't have a company field, skip filtering
                 pass
 
         if dependency_value and dependency_model and dependency_field:
