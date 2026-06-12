@@ -66,8 +66,8 @@ def _get_or_create_config(user):
 
 def _is_integration_enabled(request):
     """Return True if the admin has enabled Google Calendar integration for this company."""
-    company = getattr(request, "active_company", None) or request.user.company
-    setting = GoogleIntegrationSetting.objects.filter(company=company).first()
+    company = request.user.company
+    setting = GoogleIntegrationSetting.all_objects.filter(company=company).first()
     return bool(setting and setting.is_google_calendar_enabled)
 
 
@@ -671,7 +671,7 @@ class GoogleIntegrationSettingsView(LoginRequiredMixin, View):
         Stop watch channels and clear all OAuth tokens/credentials for every user
         in the company when the admin disables Google Calendar integration.
         """
-        configs = GoogleCalendarConfig.all_objects.filter(company=company)
+        configs = GoogleCalendarConfig.objects.filter(company=company)
         for config in configs:
             try:
                 if config.watch_channel_id:
@@ -708,9 +708,7 @@ class GoogleIntegrationSettingsView(LoginRequiredMixin, View):
                 _("Google Calendar integration has been enabled for users."),
             )
         else:
-            self._disconnect_all_company_users(
-                getattr(request, "active_company", None) or request.user.company
-            )
+            self._disconnect_all_company_users(getattr(request, "active_company", None))
             messages.info(
                 request,
                 _(

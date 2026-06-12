@@ -200,11 +200,20 @@ class GoogleIntegrationSetting(HorillaCoreModel):
         verbose_name_plural = _("Google Integration Settings")
 
     @classmethod
-    def google_calendar_enabled(cls, company=None):
-        """Quick check if Google Calendar integration is enabled for a company"""
-        request = getattr(_thread_local, "request", None)
-        company = getattr(request, "active_company", None)
-        settings = cls.objects.filter(company=company).first()
+    def google_calendar_enabled(cls, request=None):
+        """Quick check if Google Calendar integration is enabled for a company.
+
+        Accepts a request object (called by the menu system as condition(request))
+        or falls back to thread-local request.
+        """
+        if request is None:
+            request = getattr(_thread_local, "request", None)
+        if request is None:
+            return False
+        company = getattr(request.user, "company", None)
+        if not company:
+            return False
+        settings = cls.all_objects.filter(company=company).first()
         return settings.is_google_calendar_enabled if settings else False
 
     def __str__(self):
