@@ -6,7 +6,7 @@ model for horilla notifications
 from django.conf import settings
 
 from horilla.contrib.core.models import HorillaContentType, HorillaCoreModel
-from horilla.contrib.utils.methods import has_xss
+from horilla.contrib.utils.methods import has_xss, sanitize_html, sanitize_plain_text
 from horilla.core.exceptions import ValidationError
 
 # First-party (Horilla)
@@ -53,23 +53,18 @@ class Notification(models.Model):
         return f"Notification for {self.user.username}: {self.message}"
 
     def clean(self):
-        """Validate model fields for XSS at model level (works for admin, forms, and API)."""
-        errors = {}
-
-        if self.message and has_xss(self.message):
-            errors["message"] = _(
-                "Message contains potentially dangerous content (XSS detected). "
-                "Please remove any scripts or malicious code."
-            )
-
+        """Sanitize HTML fields and reject XSS in plain-text fields."""
+        if self.message:
+            self.message = sanitize_html(self.message)
         if self.url and has_xss(self.url):
-            errors["url"] = _(
-                "URL contains potentially dangerous content (XSS detected). "
-                "Please remove any scripts or malicious code."
+            raise ValidationError(
+                {
+                    "url": _(
+                        "URL contains potentially dangerous content. "
+                        "Please remove any scripts or malicious code."
+                    )
+                }
             )
-
-        if errors:
-            raise ValidationError(errors)
 
     def save(self, *args, **kwargs):
         """Override save to ensure clean() is called for validation."""
@@ -125,23 +120,11 @@ class NotificationTemplate(HorillaCoreModel):
         return f"{self.title}"
 
     def clean(self):
-        """Reject XSS payloads in message and title at the model level."""
-        errors = {}
-
-        if self.title and has_xss(self.title):
-            errors["title"] = _(
-                "Title contains potentially dangerous content (XSS detected). "
-                "Please remove any scripts or malicious code."
-            )
-
-        if self.message and has_xss(self.message):
-            errors["message"] = _(
-                "Message contains potentially dangerous content (XSS detected). "
-                "Please remove any scripts or malicious code."
-            )
-
-        if errors:
-            raise ValidationError(errors)
+        """Sanitize HTML fields at the model level."""
+        if self.title:
+            self.title = sanitize_plain_text(self.title)
+        if self.message:
+            self.message = sanitize_html(self.message)
 
     def save(self, *args, **kwargs):
         """Enforce clean() on every save path (admin, API, shell, curl)."""

@@ -10,7 +10,7 @@ mail configurations, and mail-related functionality.
 from django import forms
 
 # First-party (Horilla)
-from horilla.contrib.utils.methods import has_xss
+from horilla.contrib.utils.methods import sanitize_html
 
 # Local imports
 from .models import NotificationTemplate
@@ -68,9 +68,4 @@ class NotificationTemplateForm(forms.ModelForm):
         message = self.cleaned_data.get("message")
         if not message or message.strip() == "":
             raise forms.ValidationError("Template message is required.")
-        if has_xss(message):
-            raise forms.ValidationError(
-                "Message contains potentially dangerous content (XSS detected). "
-                "Please remove any scripts or malicious code."
-            )
-        return message
+        return sanitize_html(message)
