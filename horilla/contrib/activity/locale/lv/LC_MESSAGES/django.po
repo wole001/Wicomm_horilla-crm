@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-21 07:48+0000\n"
+"POT-Creation-Date: 2026-06-12 07:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,7 +24,54 @@ msgid ""
 "emails."
 msgstr ""
 
+msgid ""
+"Email-tab permissions corrected to add/view/change/delete own-record checks. "
+"Removed redundant fields attributes from create-view forms superseded by "
+"form_class. Adopted the horilla.utils.timezone shim, standardized first-"
+"party imports, and added class and method docstrings for pylint compliance."
+msgstr ""
+
+msgid ""
+"Activity forms aligned with HorillaModelForm layout: field_order, Meta."
+"fields = \"__all__\", and Meta.exclude; save logic and HTMX behavior "
+"unchanged."
+msgstr ""
+
+msgid ""
+"Meeting integration in activities: schedule meetings from activities, send "
+"invites and reminders, and display generated Zoom/Teams meeting links on "
+"activity records."
+msgstr ""
+
+msgid ""
+"Release 1.10: activity ships under contrib with app label activity. "
+"AppLauncher, imports, namespaces, registrations, templates, and metadata "
+"references updated from the legacy activity package name to the contrib "
+"layout."
+msgstr ""
+
+msgid ""
+"Reduced redundant history entries, improved Many-to-Many field "
+"representation, and added cleaner labels for mail events and activity "
+"creation with new template filters for better rendering."
+msgstr ""
+
+msgid ""
+"Improved activity workflow behavior. The Pending tab now shows all "
+"incomplete activitiesregardless of status label, and activity type "
+"configuration handling was enhanced for improved workflow accuracy."
+msgstr ""
+
+msgid ""
+"Migrated from Django AppConfig to Horilla AppLauncher and replaced Django "
+"utilities withhorilla.utils.decorators, horilla.utils.translation, and "
+"horilla.shortcuts where applicable."
+msgstr ""
+
 msgid "Activity"
+msgstr ""
+
+msgid "Meeting Provider"
 msgstr ""
 
 msgid "Activities"
@@ -42,10 +89,25 @@ msgstr ""
 msgid "Log Call"
 msgstr ""
 
-msgid "Pending"
+msgid "Not Started"
+msgstr ""
+
+msgid "Scheduled"
+msgstr ""
+
+msgid "In Progress"
+msgstr ""
+
+msgid "Waiting on Someone"
 msgstr ""
 
 msgid "Completed"
+msgstr ""
+
+msgid "Cancelled"
+msgstr ""
+
+msgid "Deferred"
 msgstr ""
 
 msgid "High"
@@ -63,6 +125,15 @@ msgstr ""
 msgid "Outbound"
 msgstr ""
 
+msgid "Zoom"
+msgstr ""
+
+msgid "Google Meet"
+msgstr ""
+
+msgid "Microsoft Teams"
+msgstr ""
+
 msgid "Subject"
 msgstr ""
 
@@ -75,7 +146,7 @@ msgstr ""
 msgid "Related Content Type"
 msgstr ""
 
-msgid "Related Object ID"
+msgid "Related To"
 msgstr ""
 
 msgid "Status"
@@ -91,6 +162,12 @@ msgid "End Date"
 msgstr ""
 
 msgid "Location"
+msgstr ""
+
+msgid "Online Meeting"
+msgstr ""
+
+msgid "Meeting Link"
 msgstr ""
 
 msgid "All Day"
@@ -129,7 +206,43 @@ msgstr ""
 msgid "Notes"
 msgstr ""
 
+msgid "Google Calendar Event ID"
+msgstr ""
+
 msgid "Call Purpose"
+msgstr ""
+
+msgid "External Participants"
+msgstr ""
+
+msgid "No Reminder"
+msgstr ""
+
+msgid "5 minutes before"
+msgstr ""
+
+msgid "10 minutes before"
+msgstr ""
+
+msgid "15 minutes before"
+msgstr ""
+
+msgid "30 minutes before"
+msgstr ""
+
+msgid "1 hour before"
+msgstr ""
+
+msgid "1 day before"
+msgstr ""
+
+msgid "Reminder"
+msgstr ""
+
+msgid "Invitation Email Template"
+msgstr ""
+
+msgid "External guests will receive a meeting invite email."
 msgstr ""
 
 msgid "Tasks"
@@ -180,9 +293,6 @@ msgstr ""
 msgid "Drafts"
 msgstr ""
 
-msgid "Scheduled"
-msgstr ""
-
 msgid "Pending Events"
 msgstr ""
 
@@ -192,14 +302,38 @@ msgstr ""
 msgid "Add Events"
 msgstr ""
 
+msgid "Join"
+msgstr ""
+
 msgid "Send Email"
 msgstr ""
 
-msgid "Related To"
+msgid "Calls"
+msgstr ""
+
+msgid "You do not have permission to modify this item."
+msgstr ""
+
+msgid "Purpose"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Duration"
+msgstr ""
+
+msgid "Schedule"
 msgstr ""
 
 msgid "Duplicate"
 msgstr ""
 
-msgid "Schedule"
+msgid "Invalid status."
+msgstr ""
+
+msgid "Activity not found."
+msgstr ""
+
+msgid "Status Updated."
 msgstr ""
