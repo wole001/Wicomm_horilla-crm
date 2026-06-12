@@ -139,12 +139,12 @@
 
     <div class="flex justify-end gap-2 p-5">
         <button
-            onclick="closeContentModal()"
-            hx-get="{% url 'leads:leads_view' %}?{{request.GET.urlencode}}"
+            hx-get="{% url 'leads:leads_view' %}?section=sales"
             hx-target="#mainContent"
             hx-swap="outerHTML"
             hx-select="#mainContent"
             hx-push-url="true"
+            hx-on::after-request="closeContentModal()"
             class="text-sm px-4 py-2 bg-primary-600 rounded-md hover:bg-primary-800 transition duration-300 text-[white]"
         >
             {% trans "Go to Leads" %}
