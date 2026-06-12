@@ -881,7 +881,7 @@ class HorillaDetailView(DetailView):
             if hasattr(field, "choices") and field.choices:
                 # Validate for choice fields
                 if pipeline_value not in [choice[0] for choice in field.choices]:
-                    raise ValidationError("Invalid choice")
+                    raise ValidationError(_("Invalid choice"))
                 setattr(self.object, self.pipeline_field, pipeline_value)
             elif isinstance(field, ForeignKey):
                 # Validate for ForeignKey fields
@@ -939,7 +939,7 @@ class HorillaModalDetailView(DetailView):
     HorillDetailedView
     """
 
-    title = "Detailed View"
+    title = _("Detailed View")
     template_name = "single_detail_view.html"
     header: dict = {
         "title": "Horilla",
@@ -986,7 +986,7 @@ class HorillaModalDetailView(DetailView):
         if not self.instance and self.empty_template:
             return render(request, self.empty_template, context=self.get_context_data())
         if not self.instance:
-            messages.error(request, "The requested record does not exist.")
+            messages.error(request, _("The requested record does not exist."))
             return HttpResponse("<script>$('#reloadButton').click();</script>")
         return response
 
