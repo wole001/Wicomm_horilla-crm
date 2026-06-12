@@ -148,33 +148,76 @@ calculation.
 
 ---
 
+## Views (`booking/views/`)
+
+`booking/views.py` has been refactored into a package. The monolithic file is replaced by three
+focused modules; `booking/views/__init__.py` re-exports every class so existing `urls.py` imports
+are unchanged.
+
+| Module | Responsibility |
+|---|---|
+| `booking/views/booking_page.py` | BookingPage CRUD, availability settings, embed, toggle helpers |
+| `booking/views/booking_list.py` | Booking list, detail modal, status updates, My Bookings |
+| `booking/views/public.py` | Public slot picker, booking form, cancel, reschedule |
+
+The `__init__.py` aggregates all view classes into a flat `__all__` list and re-exports them:
+
+```python
+# booking/views/__init__.py
+from booking.views.booking_page import (
+    GoToWorkingHoursView, BookingSettingsView, BookingPageNavView,
+    BookingPageListView, BookingPageCreateView, BookingToggleLocationView,
+    BookingPageDeleteView, BookingToggleRescheduleCutoffView,
+    BookingToggleCancelCutoffView, BookingAvailabilityView, BookingEmbedView,
+)
+from booking.views.booking_list import (
+    BookingPageDetailView, BookingListNavView, BookingListView,
+    MyBookingsView, MyBookingsNavView, MyBookingsListView,
+    BookingStatusUpdateView, BookingDetailModalView,
+)
+from booking.views.public import (
+    AvailableSlotView, PublicBookingView,
+    PublicBookingCancelView, PublicBookingRescheduleView,
+)
+```
+
+---
+
 ## URL Patterns (`booking/urls.py`, `app_name = "booking"`)
 
 ### Authenticated (Host) Views
 
-| URL | Name | View |
-|---|---|---|
-| `booking/booking-settings/` | `booking_settings` | `BookingSettingsView` |
-| `booking/booking-page-nav/` | `booking_page_nav` | `BookingPageNavView` |
-| `booking/booking-page-list/` | `booking_page_list` | `BookingPageListView` |
-| `booking/booking-page-create/` | `booking_page_create` | `BookingPageCreateView` |
-| `booking/booking-page-edit/<pk>/` | `booking_page_edit` | `BookingPageCreateView` |
-| `booking/booking-page-delete/<pk>/` | `booking_page_delete` | `BookingPageDeleteView` |
-| `booking/booking-availability/<pk>/` | `booking_availability` | `BookingAvailabilityView` |
-| `booking/booking-embed/<pk>/` | `booking_embed` | `BookingEmbedView` |
-| `booking/booking-page-detail/<pk>/` | `booking_page_detail` | `BookingPageDetailView` |
-| `booking/booking-list/<pk>/` | `booking_list` | `BookingListView` |
-| `booking/my-bookings/` | `my_bookings` | `MyBookingsView` |
-| `booking/booking-status/<pk>/` | `booking_status` | `BookingStatusUpdateView` |
+| URL | Name | View | Module |
+|---|---|---|---|
+| `booking/booking-settings/` | `booking_settings` | `BookingSettingsView` | `booking_page` |
+| `booking/goto-working-hours/` | `goto_working_hours` | `GoToWorkingHoursView` | `booking_page` |
+| `booking/booking-page-nav/` | `booking_page_nav` | `BookingPageNavView` | `booking_page` |
+| `booking/booking-page-list/` | `booking_page_list` | `BookingPageListView` | `booking_page` |
+| `booking/booking-page-create/` | `booking_page_create` | `BookingPageCreateView` | `booking_page` |
+| `booking/booking-page-edit/<int:pk>/` | `booking_page_edit` | `BookingPageCreateView` | `booking_page` |
+| `booking/booking-page-delete/<int:pk>/` | `booking_page_delete` | `BookingPageDeleteView` | `booking_page` |
+| `booking/booking-toggle-location/` | `toggle_location_field` | `BookingToggleLocationView` | `booking_page` |
+| `booking/booking-toggle-reschedule-cutoff/` | `toggle_reschedule_cutoff` | `BookingToggleRescheduleCutoffView` | `booking_page` |
+| `booking/booking-toggle-cancel-cutoff/` | `toggle_cancel_cutoff` | `BookingToggleCancelCutoffView` | `booking_page` |
+| `booking/booking-availability/<int:pk>/` | `booking_availability` | `BookingAvailabilityView` | `booking_page` |
+| `booking/booking-embed/<int:pk>/` | `booking_embed` | `BookingEmbedView` | `booking_page` |
+| `booking/booking-page-detail/<int:pk>/` | `booking_page_detail` | `BookingPageDetailView` | `booking_list` |
+| `booking/booking-list-nav/<int:pk>/` | `booking_list_nav` | `BookingListNavView` | `booking_list` |
+| `booking/booking-list/<int:pk>/` | `booking_list` | `BookingListView` | `booking_list` |
+| `booking/my-bookings/` | `my_bookings` | `MyBookingsView` | `booking_list` |
+| `booking/my-bookings/nav/` | `my_bookings_nav` | `MyBookingsNavView` | `booking_list` |
+| `booking/my-bookings/list/` | `my_bookings_list` | `MyBookingsListView` | `booking_list` |
+| `booking/booking-status/<int:pk>/` | `booking_status` | `BookingStatusUpdateView` | `booking_list` |
+| `booking/booking-detail-modal/<int:pk>/` | `booking_detail_modal` | `BookingDetailModalView` | `booking_list` |
 
 ### Public (No Login) Views
 
-| URL | Name | View |
-|---|---|---|
-| `booking/book/<slug>/` | `public_booking` | `PublicBookingView` |
-| `booking/book/<slug>/slots/` | `available_slots` | `AvailableSlotView` |
-| `booking/book/cancel/<uuid:token>/` | `booking_cancel` | `PublicBookingCancelView` |
-| `booking/book/reschedule/<uuid:token>/` | `booking_reschedule` | `PublicBookingRescheduleView` |
+| URL | Name | View | Module |
+|---|---|---|---|
+| `booking/book/<slug:slug>/` | `public_booking` | `PublicBookingView` | `public` |
+| `booking/book/<slug:slug>/slots/` | `available_slots` | `AvailableSlotView` | `public` |
+| `booking/book/cancel/<uuid:token>/` | `booking_cancel` | `PublicBookingCancelView` | `public` |
+| `booking/book/reschedule/<uuid:token>/` | `booking_reschedule` | `PublicBookingRescheduleView` | `public` |
 
 ---
 
@@ -257,3 +300,29 @@ current 15-minute window and sends an HTML reminder email to the booker.
 | `get_availability_url()` | URL for `booking_availability` |
 | `get_embed_url()` | URL for `booking_embed` |
 | `get_detail_url()` | URL for `booking_page_detail` |
+
+---
+
+## Template Tag Builtins
+
+`static`, `i18n`, and `horilla_tags` are registered as Django template builtins in `settings.py`.
+Booking templates no longer contain explicit `{% load %}` declarations for these libraries. Do not
+re-add `{% load static %}`, `{% load i18n %}`, or `{% load horilla_tags %}` to any booking template —
+they are available in every template automatically.
+
+Affected booking templates (redundant `{% load %}` removed):
+
+- `partials/cancel_cutoff_field.html`
+- `partials/location_field.html`
+- `partials/reschedule_cutoff_field.html`
+- `partials/time_slots.html`
+- `public/booking_cancel.html`
+- `public/booking_confirmed.html`
+- `public/booking_form.html`
+- `public/booking_reschedule.html`
+- `settings/booking_availability.html`
+- `settings/booking_detail.html`
+- `settings/booking_embed.html`
+- `settings/booking_page_nav.html`
+- `settings/booking_pages.html`
+- `settings/booking_status_form.html`
