@@ -94,12 +94,10 @@ class MeetingIntegrationSetting(HorillaCoreModel):
             request = getattr(_thread_local, "request", None)
         if request is None:
             return False
-        company = getattr(request, "active_company", None) or getattr(
-            request.user, "company", None
-        )
+        company = getattr(request.user, "company", None)
         if not company:
             return False
-        setting = cls.objects.filter(company=company).first()
+        setting = cls.all_objects.filter(company=company).first()
         return bool(setting and setting.is_enabled)
 
     @classmethod
@@ -114,9 +112,7 @@ class MeetingIntegrationSetting(HorillaCoreModel):
         user = getattr(request, "user", None)
         if not user or not user.is_authenticated:
             return False
-        company = getattr(request, "active_company", None) or getattr(
-            user, "company", None
-        )
+        company = getattr(user, "company", None)
         if not company:
             return False
         return cls.user_can_access(user, company)
@@ -124,13 +120,13 @@ class MeetingIntegrationSetting(HorillaCoreModel):
     @classmethod
     def get_for_company(cls, company):
         """Return integration settings for ``company``, creating the row if missing."""
-        setting, _ = cls.objects.get_or_create(company=company)
+        setting, _ = cls.all_objects.get_or_create(company=company)
         return setting
 
     @classmethod
     def user_can_access(cls, user, company):
         """Return True if meeting integration is enabled and ``user`` is allowed for ``company``."""
-        setting = cls.objects.filter(company=company).first()
+        setting = cls.all_objects.filter(company=company).first()
         return bool(setting and setting.user_has_access(user))
 
 

@@ -368,10 +368,13 @@ def _build_provider_cards(request, company, open_provider=None):
     # ── Google Meet (reuses Google Calendar OAuth) ──
     from horilla.contrib.calendar.models import GoogleIntegrationSetting
 
-    gcal_admin_enabled = GoogleIntegrationSetting.google_calendar_enabled(
-        company=company
+    gcal_admin_enabled = (
+        GoogleIntegrationSetting.all_objects.filter(company=company)
+        .values_list("is_google_calendar_enabled", flat=True)
+        .first()
+        or False
     )
-    gcal = GoogleCalendarConfig.objects.filter(user=request.user).first()
+    gcal = GoogleCalendarConfig.all_objects.filter(user=request.user).first()
     gcal_connected = gcal.is_connected() if gcal else False
     meet_cfg = UserMeetingConfig.objects.filter(
         user=request.user, provider="google_meet", company=company
@@ -411,7 +414,7 @@ class MeetingUserSettingsView(LoginRequiredMixin, View):
     """My Settings page — OAuth connect cards per provider."""
 
     def _render(self, request, open_provider=None):
-        company = _get_active_company(request)
+        company = request.user.company
         has_access = MeetingIntegrationSetting.user_can_access(request.user, company)
         context = {
             "has_access": has_access,
@@ -429,7 +432,7 @@ class MeetingUserSettingsView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         """Save OAuth credentials, disconnect providers, or toggle Google Meet linking."""
-        company = _get_active_company(request)
+        company = request.user.company
         provider = request.POST.get("provider")
         action = request.POST.get("action", "save_credentials")
 
@@ -462,7 +465,7 @@ class MeetingUserSettingsView(LoginRequiredMixin, View):
         if provider == "google_meet" and action == "enable":
             from horilla.contrib.calendar.models import GoogleCalendarConfig
 
-            gcal = GoogleCalendarConfig.objects.filter(user=request.user).first()
+            gcal = GoogleCalendarConfig.all_objects.filter(user=request.user).first()
             if not gcal or not gcal.is_connected():
                 messages.error(
                     request, _("Connect Google Calendar first to enable Google Meet.")
@@ -586,7 +589,7 @@ class GenerateMeetingLinkView(LoginRequiredMixin, View):
         if provider == "google_meet":
             from horilla.contrib.calendar.models import GoogleCalendarConfig
 
-            config = GoogleCalendarConfig.objects.filter(user=request.user).first()
+            config = GoogleCalendarConfig.all_objects.filter(user=request.user).first()
             if not config or not config.is_connected():
                 return JsonResponse(
                     {
