@@ -216,4 +216,9 @@ urlpatterns = [
         views.IncomingMailServerTypeSelectionView.as_view(),
         name="incoming_mail_server_type_selection",
     ),
+    path(
+        "mail-config-detail/<int:pk>/",
+        views.MailConfigDetailView.as_view(),
+        name="mail_config_detail_view",
+    ),
 ]

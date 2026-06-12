@@ -124,8 +124,26 @@ class MailServerListView(LoginRequiredMixin, HorillaListView):
     bulk_select_option = False
     list_column_visibility = False
     action_method = "custom_actions"
+    store_ordered_ids = True
 
     columns = ["username", "type"]
+
+    @cached_property
+    def col_attrs(self):
+        """Open the detail modal when clicking the username column."""
+        query_string = self.request.session.get(self.ordered_ids_key, [])
+        attrs = {}
+        if self.request.user.has_perm("mail.view_horillamailconfiguration"):
+            attrs = {
+                "hx-get": f"{{get_detail_url}}?instance_ids={query_string}",
+                "hx-target": "#detailModalBox",
+                "hx-swap": "innerHTML",
+                "hx-push-url": "false",
+                "hx-on:click": "openDetailModal();",
+                "style": "cursor:pointer",
+                "class": "hover:text-primary-600",
+            }
+        return [{"username": {**attrs}}]
 
     def get_queryset(self):
         queryset = super().get_queryset()

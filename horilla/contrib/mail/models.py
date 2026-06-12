@@ -146,6 +146,26 @@ class HorillaMailConfiguration(HorillaCoreModel):
         """Return custom action buttons for the admin interface."""
         return render_template(path="mail_actions.html", context={"instance": self})
 
+    def get_detail_url(self):
+        """Return the detail modal URL for this mail configuration."""
+        return reverse_lazy("mail:mail_config_detail_view", kwargs={"pk": self.pk})
+
+    def get_edit_url(self):
+        """Return the edit URL based on channel and type."""
+        if self.type == "outlook":
+            return reverse_lazy(
+                "mail:outlook_mail_server_update_view", kwargs={"pk": self.pk}
+            )
+        if self.mail_channel == "incoming":
+            return reverse_lazy(
+                "mail:incoming_mail_server_update_view", kwargs={"pk": self.pk}
+            )
+        return reverse_lazy("mail:mail_server_update_view", kwargs={"pk": self.pk})
+
+    def get_delete_url(self):
+        """Return the delete URL for this mail configuration."""
+        return reverse_lazy("mail:mail_server_delete_view", kwargs={"pk": self.pk})
+
     def clean(self):
         """Validate that company is set when the configuration is not primary."""
         if not self.company and not self.is_primary:

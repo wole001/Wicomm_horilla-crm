@@ -36,6 +36,7 @@ from horilla.contrib.mail.views.outgoing_mail import (
     MailServerTestEmailView,
     MailServerDeleteView,
 )
+from horilla.contrib.mail.views.mail_config_detail import MailConfigDetailView
 
 __all__ = [
     # Mail template views
@@ -69,4 +70,6 @@ __all__ = [
     "OutgoingMailServerFormView",
     "MailServerTestEmailView",
     "MailServerDeleteView",
+    # Mail config detail view
+    "MailConfigDetailView",
 ]
