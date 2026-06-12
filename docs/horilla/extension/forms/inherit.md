@@ -1,10 +1,10 @@
 # Horilla `_inherit_form` — Form Extension Guide
 
-Extend existing Horilla CRM forms (single-step and multi-step) **without** editing core `horilla_crm` form classes.
+Extend existing Horilla forms (single-step and multi-step) **without** editing target-app form classes. CRM apps (`horilla_crm.*`) and core apps (`horilla.contrib.core.*`) use the same API.
 
-**Related:** [Extension system & model `_inherit`](../models/inherit.md)
+**Related:** [Extension system index](../inherit.md) · [Model `_inherit`](../models/inherit.md)
 
-**Reference implementation:** `horilla/extension/forms/` · **Example app:** `my_lead_extensions/forms.py`
+**Reference implementation:** `horilla/extension/forms/` · **CRM example:** `my_lead_extensions/forms.py` · **Core tests:** `horilla/extension/forms/tests.py` (`HolidayForm`, `UserFormSingle`)
 
 ---
 

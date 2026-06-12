@@ -86,11 +86,12 @@ Both may return HTTP **403**, but they are different paths:
 
 ## Custom signals (`horilla.contrib.core.signals`)
 
-Platform-wide hooks consumed by theme, currency, login, and CRM modules, including:
+Platform-wide hooks consumed by theme, currency, login, and installed apps, including:
 
-- `company_created`, `company_currency_changed`
-- `pre_logout_signal`, `pre_login_render_signal`
-- Pipeline hooks such as `lead_stage_created`, `opp_stage_created` (names per codebase)
+- **`company_created`** — fired when a new `Company` is created; listeners initialize fiscal year, currency, etc.
+- **`company_currency_changed`** — fired after default currency changes; listeners bulk-update `MoneyField` amounts (sent in a background thread so bulk updates do not block the HTTP response)
+- **`pre_logout_signal`**, **`pre_login_render_signal`** — theme/login customization
+- Product-specific pipeline hooks (e.g. `lead_stage_created`, `opp_stage_created` in `horilla_crm`) connect in their own apps
 
 Theme app listens to **`pre_logout_signal`** / **`pre_login_render_signal`**—see [../theme/theme.md](../theme/theme.md).
 

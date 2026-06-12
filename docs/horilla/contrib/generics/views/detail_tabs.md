@@ -45,6 +45,7 @@ Only keys **present** in `urls` get a tab. Supported keys:
 |-----|-----------|-------------|--------|
 | `details` | Details | `tab-details-content` | URL includes optional query: `pipeline_field`, `detail_url_name`. |
 | `activity` | Activity | `tab-activity-content` | `reverse_lazy` with `pk=object_id`. |
+| `cadences` | Cadence | `tab-cadence-content` | Optional; shown when `urls` includes `"cadences"` (sales cadences contrib). |
 | `related_lists` | Related Lists | `tab-related-lists-content` | |
 | `notes_attachments` | Notes & Attachments | `tab-notes-attachments-content` | Only if user has `horilla_core.view_horillaattachment` **or** `horilla_core.view_own_horillaattachment`. |
 | `history` | History | `tab-history-content` | |

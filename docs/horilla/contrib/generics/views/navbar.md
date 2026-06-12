@@ -11,7 +11,11 @@ It supports:
 - optional layout switching (list/kanban/card/group_by/timeline/split_view/chart)
 - optional UI actions (import / add column / settings modals) when permissions allow
 
-The class is designed to be subclassed by feature-specific Navbar classes (example: `LeadNavbar`).
+The class is designed to be subclassed by feature-specific Navbar classes (examples: `UserNavbar` in core, `LeadNavbar` in CRM).
+
+### Extension resolution (`_inherit_nav`)
+
+`HorillaNavView.as_view()` wraps the class so each request calls `resolve_nav_view_class()`. Target apps register navbar URLs in `AppLauncher.ready()` before extension apps import `navbars.py`. See [../../../extension/inherit.md](../../../extension/inherit.md).
 
 ### Implementation imports
 

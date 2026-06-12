@@ -133,6 +133,8 @@ Typical keys (defaults in `horilla.utils.branding.DEFAULTS`; override via **`set
 
 After registration, any template can read the keys above without each view passing them explicitly—for example `{{ user_currency }}`, `{{ allowed_languages }}`, or branding fields like `{{ TITLE }}` (exact keys depend on `load_branding()` / overrides).
 
+Python code that sends transactional email without a company context (activity meeting reminders/invites, booking confirmation/status mail) also uses `str(load_branding()["TITLE"])` as the fallback display name in templates.
+
 ---
 
 ## Adding or changing behavior

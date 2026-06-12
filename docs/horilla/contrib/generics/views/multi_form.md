@@ -138,6 +138,10 @@ Final save explicitly handles file fields:
 
 `get_initial_step()` reads `POST["step"]` with validation and bounds `[1, total_steps]`.
 
+### Concrete form + extensions
+
+When `form_class` is set (e.g. `UserFormClass`), `get_form_class()` calls `resolve_form_class()` so `_inherit_form` extensions compose before the wizard runs (e.g. `UserFormClassExtended`).
+
 ### Dynamic form fallback
 
 If `form_class` is not set and `model` exists, `get_form_class()` creates a local `DynamicMultiStepForm`:

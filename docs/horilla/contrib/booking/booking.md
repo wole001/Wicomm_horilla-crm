@@ -247,7 +247,7 @@ Receivers in `horilla_crm.leads` create a `Lead`, `Contact`, and `Activity` from
 
 ## Import conventions
 
-Booking follows Horilla CRM import shims (not raw Django URL/HTTP helpers):
+Booking follows Horilla platform import shims (not raw Django URL/HTTP helpers):
 
 | Use case | Import |
 |---|---|
@@ -264,6 +264,8 @@ Booking follows Horilla CRM import shims (not raw Django URL/HTTP helpers):
 
 Three functions send transactional emails. All use `HorillaMailConfiguration` for SMTP routing
 (falls back to `DEFAULT_FROM_EMAIL`).
+
+When no `company` is on the booking, email templates use **`str(load_branding()["TITLE"])`** as the display name (from `settings.BRANDING_MODULE`, e.g. `horilla_crm.__branding__`), not a hardcoded product string.
 
 Reminder and confirmation bodies format datetimes in the **booker's timezone** when `booker_timezone` is set (`ZoneInfo` with fallback to the server timezone). Cancel/reschedule links use `reverse_lazy("booking:booking_cancel", …)` and `reverse_lazy("booking:booking_reschedule", …)` with the booking's `cancellation_token`.
 

@@ -1,6 +1,6 @@
 # Horilla Generics app — deep dive (`horilla.contrib.generics`)
 
-The **generics** app is Horilla CRM’s **class-based view (CBV) framework**: list/kanban/card/detail/timeline/chart views, filter panels, single/multi-step forms, Select2 endpoints, and template tags that glue HTMX + Tailwind + permission checks.
+The **generics** app is the Horilla platform’s **class-based view (CBV) framework**: list/kanban/card/detail/timeline/chart views, filter panels, single/multi-step forms, Select2 endpoints, and template tags that glue HTMX + Tailwind + permission checks.
 
 ---
 
@@ -65,6 +65,23 @@ Entry index: [views/views_init.md](views/views_init.md).
 - **Select2** JSON endpoints under paths like `/generics/{app}/{model}/select2/` (see `views/helpers/select2.md`).
 
 Reverse names always use namespace **`generics:`**—confirm exact names in `horilla/contrib/generics/urls.py`.
+
+---
+
+## Extension resolution (`horilla.extension`)
+
+List, detail, navbar, card, kanban, and form views resolve **composed subclasses** at runtime when extension apps register `_inherit_*` specs:
+
+| View / form | Resolution |
+|-------------|------------|
+| `HorillaListView.as_view()` | `resolve_list_view_class()` / `resolve_filterset_class()` |
+| `HorillaDetailView.as_view()` | `resolve_detail_view_class()` |
+| `HorillaNavView.as_view()` | `resolve_nav_view_class()` |
+| `HorillaSingleFormView` / `HorillaMultiFormView` | `resolve_form_class()` in `get_form_class()` |
+
+Target apps register URLs in `AppLauncher.ready()` before extension apps import `lists.py` / `details.py` / `navbars.py`; `bootstrap_extensions()` in `horilla/urls/project.py` composes all layers after `apps.ready`. See [../../extension/inherit.md](../../extension/inherit.md).
+
+Platform code comments and tests use **core** examples (`UserFilter`, `UserFormSingle`, `UserListView`); CRM modules use the same APIs with `horilla_crm.*` targets.
 
 ---
 

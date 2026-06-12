@@ -3,7 +3,7 @@
 ## What this app does
 
 - Central **Activity** model for **events**, **meetings**, **tasks**, and **log calls** in one table (discriminated by `activity_type`).
-- Links each row to **any CRM record** via `HorillaContentType` + `object_id` + `GenericForeignKey` (`related_object`), limited by the **`activity_related`** feature registry (see `registration.py`).
+- Links each row to **any registered record** via `HorillaContentType` + `object_id` + `GenericForeignKey` (`related_object`), limited by the **`activity_related`** feature registry (see `registration.py`).
 - Surfaces in the UI under the **Schedule** sidebar section (sub-section menu) with HTMX navigation into `#mainContent`.
 - Exposes a **REST API** under `/activity/` for external clients.
 
@@ -68,7 +68,7 @@ Without `register_model_for_feature`, the four-layer permission system would not
 ### Generic relation
 
 - **`content_type`** → `HorillaContentType`, limited to **`activity_related_models`**.
-- **`object_id`** + **`related_object`** — the CRM entity this activity is about (lead, contact, etc.).
+- **`object_id`** + **`related_object`** — the business record this activity is about (user, lead, contact, etc., depending on what apps register for `activity_related`).
 
 ### Type-specific columns
 
@@ -227,6 +227,10 @@ All four views extend **`HorillaSingleFormView`** with **`ActivityOwnerPermissio
 | `form_valid()` | Calls `generate_meeting_url()`, sends invitations to participants and external emails, updates external participants list |
 | Helper methods | Instance methods bridge to `meeting_helpers` functions |
 | HTMX trigger | Clicks `#MeetingsTab` and closes modal on save |
+
+### Meeting emails and branding
+
+`meeting_helpers.send_meeting_invites()` and Celery `tasks._send_reminder_for_meeting()` set template `company_name` to `str(company)` when a company is available, otherwise **`str(load_branding()["TITLE"])`** from `horilla.utils.branding.load_branding()` (driven by `settings.BRANDING_MODULE`).
 
 ### `ActivityCreateView` (`views/create_view/activity.py`)
 

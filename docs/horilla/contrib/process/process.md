@@ -70,6 +70,10 @@ Structured **review cycles** (360 / performance-style) with configurable rules, 
 | `ReviewCondition` / `ReviewRule` / `ReviewRuleCondition` | Eligibility and scoring matrix. |
 | `ReviewJob` | Concrete assignment batch per employee/period. |
 
+### Global `post_save` handler (`signals.py`)
+
+`reviews_post_save_handler` is connected once at import time. It checks `FEATURE_REGISTRY` at **dispatch** time (not at `ready()`), because target apps register review-enabled models after the reviews app starts. Per-model connections at startup would miss late-registered models.
+
 ---
 
 ## Cross-cutting concerns

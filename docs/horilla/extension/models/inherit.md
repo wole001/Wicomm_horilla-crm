@@ -1,6 +1,6 @@
-# Horilla extension system
+# Model `_inherit` extensions
 
-Horilla CRM supports extending core apps in separate packages without forking `horilla_crm` migrations or form classes.
+Extend existing `HorillaCoreModel` subclasses from a separate app without editing the target app's migrations. Platform tests use `_inherit = "core.Department"`; CRM apps commonly use paths such as `leads.Lead`.
 
 | Mechanism | Doc | Package |
 |-----------|-----|---------|

@@ -28,6 +28,17 @@ It combines:
 
 ---
 
+## Extension resolution (`_inherit_list` / `_inherit_filter`)
+
+`HorillaListView.as_view()` wraps the class so each request resolves:
+
+- **`get_filterset_class()`** — returns composed filterset when `_inherit_filter` extensions exist (views keep `filterset_class = UserFilter` at class definition time; resolution runs here, same pattern as `get_form_class()` on form views).
+- **`resolve_list_view_class()`** — composed list subclass when `_inherit_list` extensions exist.
+
+Target apps register URLs in `AppLauncher.ready()` before extension apps import `lists.py`; `bootstrap_extensions()` in `horilla/urls/project.py` composes all layers after `apps.ready`. See [../../../extension/inherit.md](../../../extension/inherit.md).
+
+---
+
 ## Inheritance and base contract
 
 ```python

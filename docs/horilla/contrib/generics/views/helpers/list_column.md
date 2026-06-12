@@ -203,17 +203,19 @@ So after save/reset, triggering `#reloadButton` causes list view to re-render us
 
 ## Example 2: Save selected visible columns
 
-POST payload shape:
+POST payload shape (core `User` list example):
 
 ```text
-app_label=leads
-model_name=Lead
-url_name=leads_list
-visible_fields=title
-visible_fields=first_name
-visible_fields=lead_status
-visible_fields=get_lead_source_display
+app_label=core
+model_name=User
+url_name=user_list_view
+visible_fields=get_avatar_with_name
+visible_fields=email
+visible_fields=role
+visible_fields=get_role_display
 ```
+
+For choice fields, the column picker may store the raw field name (e.g. `role`) while `all_fields` uses `get_<field>_display`; both are treated as visible so the field does not appear in both panels.
 
 Result:
 

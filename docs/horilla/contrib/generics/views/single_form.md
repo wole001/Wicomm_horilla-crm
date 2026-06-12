@@ -80,7 +80,11 @@ Handled by FormView submit flow -> `form_valid` / `form_invalid`.
 
 ---
 
-## Dynamic form generation (`get_form_class`)
+## Form class resolution (`get_form_class`)
+
+When `form_class` is set (e.g. `UserFormSingle`), the view returns the **composed** subclass from `resolve_form_class()` when extension apps registered `_inherit_form` against that path (e.g. `UserFormSingleExtended`). Dynamic forms skip composition.
+
+## Dynamic form generation
 
 If `form_class` is not provided and `model` exists:
 

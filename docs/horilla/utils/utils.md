@@ -29,7 +29,7 @@ horilla/utils/
 | `decorators/` | `permission_required`, `htmx_required`, `db_initialization`, etc. Documented in [decorators.md](./decorators.md). |
 | `translation/` | `gettext_lazy`, `gettext`, `activate`, … from Django. Documented in [translation.md](./translation.md). |
 | `timezone.py` | `now`, `localtime`, `make_aware`, `UTC`, … from Django. Use `from horilla.utils import timezone`. |
-| `branding.py` | `DEFAULTS` (title, login copy, logo paths) and `load_branding()` merging overrides from `BRANDING_MODULE`. |
+| `branding.py` | `DEFAULTS` (title, login copy, logo paths) and `load_branding()` merging overrides from `BRANDING_MODULE`. Also used as the fallback **company name** in activity meeting and booking transactional emails when no company is set. |
 | `choices.py` | Shared `(value, label)` tuples and maps (languages, date/time formats, operators, field types, `BLOCKED_EXTENSIONS`). |
 | `upload.py` | Builds `app_label/model_name/[field_name/]slug-uuid.ext` paths to avoid collisions. |
 | `version.py` | Discovers `module.__version__` metadata and changelog attributes like `__1_2_0__` for about/settings UIs. |

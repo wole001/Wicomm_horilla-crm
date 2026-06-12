@@ -2,9 +2,9 @@
 
 > **Status:** Implemented (`horilla/extension/list/`)
 > **Related:** [Model `_inherit`](../models/inherit.md) · [Form `_inherit_form`](../forms/inherit.md)
-> **Example app:** `my_lead_extensions/lists.py`
+> **CRM example:** `my_lead_extensions/lists.py` · **Core tests:** `horilla/extension/list/tests.py` (`UserListView`)
 
-Extend existing `HorillaListView` subclasses (Lead list, Opportunity list, etc.) **without** editing core `horilla_crm` view classes or URL names.
+Extend existing `HorillaListView` subclasses (core `UserListView`, CRM `LeadListView`, etc.) **without** editing target-app view classes or URL names.
 
 ---
 

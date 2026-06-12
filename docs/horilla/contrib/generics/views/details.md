@@ -7,6 +7,10 @@ This module provides:
 1. **`HorillaDetailView`** — Full-page (and split-panel) **object detail** with header/body fields, **pipeline** (choices or FK stages), **badges**, **breadcrumbs**, **prev/next** from list session, **field permissions**, **`DetailFieldVisibility`**, and **HTMX pipeline updates**.
 2. **`HorillaModalDetailView`** — **Modal-style** detail (`single_detail_view.html`) with **session-backed ID lists** for **previous/next** navigation within a filtered set.
 
+### Extension resolution (`_inherit_detail`)
+
+`HorillaDetailView.as_view()` wraps the class so each request calls `resolve_detail_view_class()`. Target apps register URLs in `AppLauncher.ready()` before extension apps import `details.py`; `bootstrap_extensions()` composes registered specs after `apps.ready`. See [../../../extension/inherit.md](../../../extension/inherit.md). Platform integration tests extend `horilla.contrib.core.views.users.UserDetailView`.
+
 ---
 
 ## `HorillaDetailView`

@@ -119,7 +119,7 @@ For each model field with `choices`, the mixin appends a synthetic export field:
 
 Why:
 
-- exported files should show human-readable labels instead of raw choice keys.
+- exported files should show human-readable labels instead of raw choice keys (e.g. `role`, `country` on `User`, via `get_<field>_display`).
 
 ---
 

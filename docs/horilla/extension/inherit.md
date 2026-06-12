@@ -1,6 +1,6 @@
 # Horilla extension system
 
-Horilla CRM supports extending core apps in separate packages without forking `horilla_crm` migrations or form classes.
+The Horilla **platform** supports extending installed apps in separate packages without forking target-app migrations or form/view classes. CRM modules (`horilla_crm.*`) are common targets; core modules (`horilla.contrib.core`, etc.) work the same way.
 
 | Mechanism | Doc | Package | Status |
 |-----------|-----|---------|--------|
@@ -33,6 +33,8 @@ Each view/form subpackage includes a **`cache.py`** module (resolver cache + boo
 
 ## Typical extension app
 
+**CRM example** (`my_lead_extensions`):
+
 ```text
 my_lead_extensions/
 ├── apps.py               # AppLauncher; auto_import_modules = ["models", "forms", "filters", "navbars", "lists", ...]
@@ -47,10 +49,20 @@ my_lead_extensions/
 └── migrations/
 ```
 
+**Core platform example** (same mechanics; see `horilla/extension/*/tests.py`):
+
+```text
+# Model: _inherit = "core.Department"
+# Form:  _inherit_form = "horilla.contrib.core.forms.base.HolidayForm"
+# List:  _inherit_list = "horilla.contrib.core.views.users.UserListView"
+# Detail: _inherit_detail = "horilla.contrib.core.views.users.UserDetailView"
+# Kanban: _inherit_kanban = "horilla.contrib.core.views.users.UserKanbanView"
+```
+
 ```python
 # Client local_settings.py only — do not edit horilla/settings/base.py or horilla_apps.py
 INSTALLED_APPS += [
-    "my_lead_extensions",  # after horilla_crm.* is OK
+    "my_lead_extensions",  # after target apps (horilla_crm.*, core, etc.) is OK
 ]
 ```
 
@@ -79,9 +91,11 @@ bootstrap_extensions()
 
 **Naming:** Under `horilla/`, types and functions omit a redundant `Horilla` prefix when the import path already provides context — e.g. `ListExtension`, `FormExtension`, `bootstrap_extensions()` (not `HorillaListExtension`). Framework types such as `HorillaCoreModel` in `horilla.contrib.core` keep their established names.
 
-`CoreConfig.ready()` also invokes all `apply_*_extensions` hooks when `django.apps.ready` is already true; in practice the **URLconf call above** is what matters for extension apps listed after CRM.
+`CoreConfig.ready()` also invokes all `apply_*_extensions` hooks when `django.apps.ready` is already true; in practice the **URLconf call above** is what matters for extension apps listed after their target apps.
 
-Extension apps may load **after** CRM apps in `INSTALLED_APPS`; no `horilla_apps.py` / `base.py` edits are required.
+Extension apps may load **after** the apps they extend in `INSTALLED_APPS`; no `horilla_apps.py` / `base.py` edits are required.
+
+**Migrations:** `horilla/extension/__init__.py` patches `makemigrations` / `migrate` to use `HorillaAutodetector` so injected model fields generate migrations in the **owning extension app**, not in the target app.
 
 | Layer | Load-order sensitivity |
 |-------|-------------------------|

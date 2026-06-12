@@ -108,7 +108,7 @@ Important behavior:
 
 - case-insensitive model name match (`model_name__iexact`)
 
-This avoids mismatch when caller passes `Opportunity` vs stored `opportunity`.
+This avoids mismatch when caller passes `User` vs stored `user` (or any model name with different casing).
 
 ---
 

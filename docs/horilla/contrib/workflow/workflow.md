@@ -5,7 +5,9 @@
 - **`WorkflowRule`** — module (`HorillaContentType`), name, description, triggers on create/edit, active flag.
 - **`WorkflowCondition`** — criteria rows (field / operator / value / logical operator).
 - **`WorkflowAction`** / **`WorkflowTimeTriggerAction`** — actions on match (update field, task, email, notification) with JSON **`action_config`** built from hidden compose fields.
-- Runs on record create/edit for models registered under the workflow feature registry.
+- Runs on record create/edit for models registered under the workflow feature registry (core models such as users, departments, and holidays, plus any app that calls `register_model_for_feature` with workflow enabled).
+
+**Owner resolution for `assign_task` actions** tries common owner FK names in order: `owner`, `assigned_to`, `created_by`, then `lead_owner` for legacy CRM models.
 
 ---
 
