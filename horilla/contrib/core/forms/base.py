@@ -619,16 +619,14 @@ class RegionalFormattingForm(HorillaModelForm):
         """Meta options for RegionalFormattingForm."""
 
         model = User
-        fields = "__all__"
-        exclude = [
-            "password",
-            "last_login",
-            "date_joined",
-            "is_superuser",
-            "username",
-            "is_staff",
-            "groups",
-            "user_permissions",
+        fields = [
+            "date_format",
+            "time_format",
+            "date_time_format",
+            "language",
+            "time_zone",
+            "currency",
+            "number_grouping",
         ]
 
     def __init__(self, *args, **kwargs):

@@ -702,7 +702,7 @@ class LoginHistoryListView(LoginRequiredMixin, HorillaListView):
         )
 
     columns = [
-        (_("Browser"), "user_agent"),
+        (_("Browser"), "short_user_agent"),
         (_("Login Time"), "formatted_datetime"),
         (_("Is Active"), "is_login_icon"),
         (_("IP"), "ip"),

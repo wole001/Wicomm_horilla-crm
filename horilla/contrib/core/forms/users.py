@@ -46,7 +46,7 @@ class UserFormClass(HorillaMultiStepForm):
             "is_staff",
             "number_grouping",
         ]
-        keep_on_form = ["company", "is_active"]
+        keep_on_form = ["is_active"]
 
     step_fields = {
         1: [
@@ -58,7 +58,7 @@ class UserFormClass(HorillaMultiStepForm):
             "is_active",
         ],
         2: ["country", "state", "city", "zip_code"],
-        3: ["department", "role", "company"],
+        3: ["department", "role"],
         4: [
             "language",
             "time_zone",
@@ -131,7 +131,6 @@ class UserFormSingle(HorillaModelForm):
         "zip_code",
         "department",
         "role",
-        "company",
         "language",
         "time_zone",
         "date_format",
@@ -157,7 +156,7 @@ class UserFormSingle(HorillaModelForm):
             "groups",
             "user_permissions",
         ]
-        keep_on_form = ["company", "is_active"]
+        keep_on_form = ["is_active"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

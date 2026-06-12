@@ -12,6 +12,7 @@ to enhance its display capabilities. These functions handle:
 from django.utils.html import format_html
 from django.utils.timezone import localtime
 from login_history.models import LoginHistory
+from user_agents import parse
 
 
 def user_status(self):
@@ -22,14 +23,31 @@ def user_status(self):
 
 
 def short_user_agent(self):
-    """
-    Returns only the first part of the user agent (up to the first closing parenthesis).
-    """
-    if self.user_agent:
-        end = self.user_agent.find(")") + 1  # Find first closing bracket
-        if end > 0:
-            return self.user_agent[:end]
-    return self.user_agent
+    """Return first UA part (Mozilla/5.0 ...) plus parsed browser/OS/device info."""
+    if not self.user_agent:
+        return self.user_agent
+
+    ua = parse(self.user_agent)
+
+    end = self.user_agent.find(")") + 1
+    first_part = self.user_agent[:end] if end > 0 else ""
+
+    major = ua.browser.version[0] if ua.browser.version else ""
+    browser = f"{ua.browser.family} {major}".strip() if major else ua.browser.family
+
+    os_info = (
+        f"{ua.os.family} {ua.os.version_string}".strip()
+        if ua.os.version_string
+        else ua.os.family
+    )
+
+    device_parts = [p for p in [ua.device.brand, ua.device.model] if p and p != "Other"]
+    device = " ".join(dict.fromkeys(device_parts))
+
+    if device:
+        browser += f" [{device}]"
+
+    return f"{browser} — {first_part}" if first_part else browser
 
 
 def formatted_datetime(self):
