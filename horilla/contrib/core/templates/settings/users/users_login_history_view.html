@@ -1,7 +1,4 @@
 {% extends "settings/my_settings.html" %}
-{% load static %}
-{% load i18n %}
-
 {% block my_settings %}
     <div id="user-login-history-view">
         <div id="navBar" hx-get="{{ nav_url}}?{{request.GET.urlencode}}" hx-trigger="load"></div>

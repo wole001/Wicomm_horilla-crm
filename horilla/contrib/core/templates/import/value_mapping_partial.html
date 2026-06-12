@@ -1,5 +1,3 @@
-{% load horilla_tags i18n %}
-
 <div id="value-mapping-{{ field.name }}" class="{% if field.unique_file_values %}block{% else %}hidden{% endif %}">
     <h4 class="text-sm font-semibold mb-2">{% trans "Map Values for" %} {{ field.verbose_name }}</h4>
     <table class="w-full border border-[#efefef]">

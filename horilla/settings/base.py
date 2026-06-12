@@ -175,7 +175,14 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
-        "OPTIONS": {"context_processors": CONTEXT_PROCESSORS},
+        "OPTIONS": {
+            "context_processors": CONTEXT_PROCESSORS,
+            "builtins": [
+                "django.templatetags.static",
+                "django.templatetags.i18n",
+                "horilla.contrib.generics.templatetags.horilla_tags",
+            ],
+        },
     },
 ]
 

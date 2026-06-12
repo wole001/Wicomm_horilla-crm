@@ -1,5 +1,4 @@
 {% extends "settings/settings.html" %}
-{% load horilla_tags i18n  static %}
 {% block settings %}
     {% has_perm "core.view_company" as can_view_company %}
     {% has_perm "core.change_company" as can_change_company %}

@@ -1,4 +1,3 @@
-{% load i18n %}
 <form
     hx-post="{% url 'activity:activity_status_update' instance.pk %}"
     hx-trigger="change from:find select"

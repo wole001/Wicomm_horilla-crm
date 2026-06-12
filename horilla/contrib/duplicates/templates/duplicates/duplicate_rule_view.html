@@ -1,6 +1,4 @@
 {% extends "settings/settings.html" %}
-{% load static i18n horilla_tags %}
-
 {% block settings %}
     {% has_perm "duplicates.view_duplicaterule" as can_view_duplicate_rules %}
     {% if can_view_duplicate_rules %}

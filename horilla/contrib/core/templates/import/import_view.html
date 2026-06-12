@@ -1,6 +1,4 @@
 {% extends "settings/settings.html" %}
-{% load static i18n horilla_tags %}
-
 {% block settings %}
     {% has_perm "core.can_view_horilla_import" as view_horilla_import %}
     {% if view_horilla_import %}

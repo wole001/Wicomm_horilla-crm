@@ -1,6 +1,4 @@
 {% extends "settings/settings.html" %}
-{% load static i18n horilla_tags %}
-
 {% block settings %}
     {% has_perm "mail.view_horillamailconfiguration" as can_view_mail_server %}
     {% if can_view_mail_server %}

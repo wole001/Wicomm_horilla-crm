@@ -1,6 +1,4 @@
 {% extends "settings/settings.html" %}
-{% load static i18n horilla_tags %}
-
 {% block settings %}
     {% has_perm "automations.view_horillaautomation" as can_view_automation %}
     {% if can_view_automation %}

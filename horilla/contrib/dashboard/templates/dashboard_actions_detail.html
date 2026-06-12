@@ -1,5 +1,3 @@
-{% load static i18n horilla_tags %}
-
 <div class="flex rounded-md overflow-hidden">
     {% has_perm "dashboard.change_dashboard" as can_change_dashboard %}
     {% if can_change_dashboard  or instance.dashboard_owner == request.user %}

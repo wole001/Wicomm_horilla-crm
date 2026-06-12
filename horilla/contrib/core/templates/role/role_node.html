@@ -1,5 +1,3 @@
-{% load horilla_tags i18n %}
-
 {% get_user_model_meta as user_meta %}
 {% has_perm user_meta.app_label|add:".add_"|add:user_meta.model_name as can_add_user_role %}
 {% has_perm "core.add_role" as can_add_role %}

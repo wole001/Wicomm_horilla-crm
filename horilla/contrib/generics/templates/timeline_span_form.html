@@ -1,5 +1,3 @@
-{% load static i18n horilla_tags %}
-
 <form
     hx-post="{% url 'generics:timeline_settings' %}?{% if request.GET.exclude_fields %}exclude_fields={{ request.GET.exclude_fields }}&{% endif %}"
     hx-target="#modalBox"

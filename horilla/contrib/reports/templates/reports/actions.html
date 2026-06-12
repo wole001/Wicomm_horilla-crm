@@ -1,5 +1,3 @@
-{% load static i18n horilla_tags %}
-
 <div class="flex rounded-md overflow-hidden [&>button:first-of-type]:rounded-l-md [&>button:last-of-type]:rounded-r-md [&>button:last-of-type]:border-r-0">
     {% has_perm "reports.change_report" as can_change_report %}
     {% if can_change_report or instance.dashboard_owner == request.user %}

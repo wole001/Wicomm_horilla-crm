@@ -1,4 +1,3 @@
-{% load i18n %}
 <form hx-post="{{ url }}" hx-trigger="change from:select" class="w-full">
     {% csrf_token %}
     <input type="hidden" name="task_id" value="{{ instance.pk }}">

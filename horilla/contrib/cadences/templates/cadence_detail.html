@@ -1,5 +1,4 @@
 {% extends "settings/settings.html" %}
-{% load horilla_tags i18n  static %}
 {% block settings %}
     <link rel="stylesheet" href="{% static 'cadences/css/cadence_detail.css' %}">
     {% has_perm "cadences.view_cadence" as can_view_cadence %}

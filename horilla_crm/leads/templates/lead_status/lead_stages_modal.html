@@ -1,5 +1,3 @@
-{% load horilla_tags i18n %}
-
 {% partialdef stage_card %}
 <form
     hx-post="{% url 'leads:create_stage_group' company.id %}{% if is_default %}?initialization={{initialization}}{% endif %}"

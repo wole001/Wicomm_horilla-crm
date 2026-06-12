@@ -1,5 +1,4 @@
 {% extends "settings/settings.html" %}
-{% load horilla_tags i18n  static %}
 {% block settings %}
     {% get_user_model_meta as user_meta %}
     {% has_perm user_meta.app_label|add:".view_"|add:user_meta.model_name as can_view_user %}

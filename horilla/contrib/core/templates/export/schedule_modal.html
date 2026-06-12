@@ -1,4 +1,3 @@
-{% load i18n static %}
 <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" id="scheduleModal">
     <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
         <form hx-post="{% url 'core:schedule_create' %}" hx-target="#scheduleModal" hx-swap="outerHTML">

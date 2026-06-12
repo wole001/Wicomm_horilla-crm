@@ -1,5 +1,3 @@
-{% load i18n static %}
-
 <form
     hx-post="{% url 'approvals:approval_job_respond_modal_view' job.pk %}"
     hx-target="#modalBox"

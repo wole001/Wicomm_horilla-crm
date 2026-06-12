@@ -1,5 +1,3 @@
-{% load static i18n horilla_tags %}
-
 {% get_user_model_meta as user_meta %}
 <form
     hx-post="{% url 'leads:convert_lead' pk=lead.pk %}?{{request.GET.urlencode}}"

@@ -1,5 +1,3 @@
-{% load static i18n horilla_tags %}
-
 <div class="flex items-center gap-2 mb-2 condition-row" data-row-id="{{ row_id }}" id="condition-row-{{ row_id }}">
     <div class="grid grid-cols-{{ condition_fields|length }} gap-2 flex-1">
         {% for field_name in condition_fields %}

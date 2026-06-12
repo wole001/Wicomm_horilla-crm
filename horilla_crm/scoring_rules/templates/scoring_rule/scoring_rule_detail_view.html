@@ -1,5 +1,4 @@
 {% extends "settings/settings.html" %}
-{% load horilla_tags i18n static %}
 {% block settings %}
     {% has_perm "scoring_rules.view_scoringrule" as can_view_scoringrule %}
     {% if can_view_scoringrule %}

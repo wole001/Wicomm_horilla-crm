@@ -1,5 +1,3 @@
-{% load static i18n %}
-
 <div id="mail-test-container" class="relative bg-white rounded-lg shadow-sm">
     <form
         hx-post="{% url 'mail:send_test_email_view' %}?instance_id={{instance_id}}"

@@ -1,6 +1,5 @@
 {% extends "settings/settings.html" %}
 {% block settings %}
-    {% load static i18n horilla_tags %}
     {% has_perm "core.can_view_horilla_export" as view_horilla_export %}
     {% if view_horilla_export %}
         <div class="ps-3" id="export-view">

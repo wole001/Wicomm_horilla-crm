@@ -1,4 +1,4 @@
-{% load i18n reports_tags %}
+{% load reports_tags %}
 {% for field in available_fields %}
     {% if field.name not in report.selected_columns_list %}
         <button

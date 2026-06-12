@@ -1,5 +1,3 @@
-{% load static i18n %}
-
 <div class="bg-white rounded w-full">
     <form
         hx-post="{% url 'opportunities:save_opportunity_splits' opportunity.id split_type.id %}"

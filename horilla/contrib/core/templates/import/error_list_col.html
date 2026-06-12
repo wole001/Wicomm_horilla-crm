@@ -1,4 +1,3 @@
-{% load i18n %}
 {% if instance.error_file_path %}
     <a
         href="{% url 'core:download_error_file' %}?file_path={{ instance.error_file_path|urlencode }}"
