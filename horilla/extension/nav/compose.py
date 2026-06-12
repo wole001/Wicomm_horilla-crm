@@ -50,6 +50,7 @@ def _build_actions_mixin(specs: list[NavExtensionSpec]) -> type | None:
     class _NavActionsMixin:
         @cached_property
         def actions(self):
+            """Merge base nav actions with extension actions_append entries."""
             base_actions = list(super().actions)
             seen = {repr(a) if isinstance(a, dict) else a for a in base_actions}
             for action in append:
@@ -72,6 +73,7 @@ def _build_custom_view_type_mixin(specs: list[NavExtensionSpec]) -> type | None:
     class _NavCustomViewTypeMixin:
         @cached_property
         def custom_view_type(self):
+            """Merge base custom_view_type dict with extension updates."""
             try:
                 base = super().custom_view_type
             except AttributeError:

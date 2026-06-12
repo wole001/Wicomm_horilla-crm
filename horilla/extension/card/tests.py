@@ -34,12 +34,16 @@ class CardExtensionMetaclassTests(SimpleTestCase):
     """Tests for CardExtension registration and validation."""
 
     def test_invalid_inherit_card_raises(self):
+        """Reject _inherit_card paths without module.Class form."""
         with self.assertRaises(ValueError):
 
             class _BadCardExt(CardExtension):
+                """Extension with invalid _inherit_card path."""
+
                 _inherit_card = "invalid-no-dot"
 
     def test_extension_class_is_registered(self):
+        """Registered extensions are flagged and cannot be instantiated."""
         self.assertTrue(getattr(_ExtCard, "_is_card_extension", False))
         with self.assertRaises(TypeError):
             _ExtCard()
@@ -49,6 +53,7 @@ class CardExtensionComposeTests(SimpleTestCase):
     """Tests for compose_card_view_class and composed card markers."""
 
     def setUp(self):
+        """Isolate registry and register a single test extension spec."""
         clear_card_extension_cache()
         CARD_EXTENSION_REGISTRY.clear()
         CARD_COMPOSED_MAP.clear()
@@ -63,11 +68,13 @@ class CardExtensionComposeTests(SimpleTestCase):
         )
 
     def tearDown(self):
+        """Restore registry and clear composed card cache."""
         clear_card_extension_cache()
         CARD_EXTENSION_REGISTRY.clear()
         CARD_COMPOSED_MAP.clear()
 
     def test_compose_mro_order(self):
+        """Composed class MRO places extension mixin before target."""
         composed = compose_card_view_class(
             "horilla.extension.card.tests._TargetCardView",
             _TargetCardView,
@@ -78,6 +85,7 @@ class CardExtensionComposeTests(SimpleTestCase):
         self.assertIn("_TargetCardView", mro_names)
 
     def test_columns_insert(self):
+        """columns_insert places new columns after the anchor."""
         composed = compose_card_view_class(
             "horilla.extension.card.tests._TargetCardView",
             _TargetCardView,
@@ -88,6 +96,7 @@ class CardExtensionComposeTests(SimpleTestCase):
         )
 
     def test_composed_markers(self):
+        """Composed card views expose __horilla_* marker attributes."""
         composed = compose_card_view_class(
             "horilla.extension.card.tests._TargetCardView",
             _TargetCardView,
@@ -99,6 +108,7 @@ class CardExtensionComposeTests(SimpleTestCase):
         )
 
     def test_no_extensions_returns_target(self):
+        """Without registered extensions, compose returns the target unchanged."""
         CARD_EXTENSION_REGISTRY.clear()
         composed = compose_card_view_class(
             "horilla.extension.card.tests._TargetCardView",

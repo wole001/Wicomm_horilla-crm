@@ -40,12 +40,16 @@ class NavExtensionMetaclassTests(SimpleTestCase):
     """Tests for NavExtension registration and validation."""
 
     def test_invalid_inherit_nav_raises(self):
+        """Reject _inherit_nav paths without module.Class form."""
         with self.assertRaises(ValueError):
 
             class _BadNavExt(NavExtension):
+                """Extension with invalid _inherit_nav path."""
+
                 _inherit_nav = "invalid-no-dot"
 
     def test_extension_class_is_registered(self):
+        """Registered extensions are flagged and cannot be instantiated."""
         self.assertTrue(getattr(_ExtNav, "_is_nav_extension", False))
         with self.assertRaises(TypeError):
             _ExtNav()
@@ -55,6 +59,7 @@ class NavExtensionComposeTests(SimpleTestCase):
     """Tests for compose_nav_view_class and composed nav markers."""
 
     def setUp(self):
+        """Isolate registry and register a single test extension spec."""
         clear_nav_extension_cache()
         NAV_EXTENSION_REGISTRY.clear()
         NAV_COMPOSED_MAP.clear()
@@ -71,11 +76,13 @@ class NavExtensionComposeTests(SimpleTestCase):
         )
 
     def tearDown(self):
+        """Restore registry and clear composed nav cache."""
         clear_nav_extension_cache()
         NAV_EXTENSION_REGISTRY.clear()
         NAV_COMPOSED_MAP.clear()
 
     def test_compose_mro_order(self):
+        """Composed class MRO places extension mixin before target."""
         composed = compose_nav_view_class(
             "horilla.extension.nav.tests._TargetNavView",
             _TargetNavView,
@@ -86,6 +93,7 @@ class NavExtensionComposeTests(SimpleTestCase):
         self.assertIn("_TargetNavView", mro_names)
 
     def test_column_selector_exclude_merge(self):
+        """column_selector_exclude_fields_append merges with the base list."""
         composed = compose_nav_view_class(
             "horilla.extension.nav.tests._TargetNavView",
             _TargetNavView,
@@ -94,6 +102,7 @@ class NavExtensionComposeTests(SimpleTestCase):
         self.assertIn("industry_code", composed.column_selector_exclude_fields)
 
     def test_composed_markers(self):
+        """Composed nav views expose __horilla_* marker attributes."""
         composed = compose_nav_view_class(
             "horilla.extension.nav.tests._TargetNavView",
             _TargetNavView,
@@ -105,6 +114,7 @@ class NavExtensionComposeTests(SimpleTestCase):
         )
 
     def test_no_extensions_returns_target(self):
+        """Without registered extensions, compose returns the target unchanged."""
         NAV_EXTENSION_REGISTRY.clear()
         composed = compose_nav_view_class(
             "horilla.extension.nav.tests._TargetNavView",

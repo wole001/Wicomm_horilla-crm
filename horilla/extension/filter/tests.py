@@ -25,6 +25,8 @@ class _TargetFilter(django_filters.FilterSet):
     name = django_filters.CharFilter(field_name="name", lookup_expr="icontains")
 
     class Meta:
+        """FilterSet meta for _TargetFilter."""
+
         fields = ["name"]
         search_fields = ["name"]
 
@@ -40,12 +42,16 @@ class FilterExtensionMetaclassTests(SimpleTestCase):
     """Tests for FilterExtension registration and validation."""
 
     def test_invalid_inherit_filter_raises(self):
+        """Reject _inherit_filter paths without module.Class form."""
         with self.assertRaises(ValueError):
 
             class _BadFilterExt(FilterExtension):
+                """Extension with invalid _inherit_filter path."""
+
                 _inherit_filter = "invalid-no-dot"
 
     def test_extension_class_is_registered(self):
+        """Registered extensions are flagged and cannot be instantiated."""
         self.assertTrue(getattr(_ExtFilter, "_is_filter_extension", False))
         with self.assertRaises(TypeError):
             _ExtFilter()
@@ -55,6 +61,7 @@ class FilterExtensionComposeTests(SimpleTestCase):
     """Tests for compose_filterset_class and composed filterset markers."""
 
     def setUp(self):
+        """Isolate registry and register a single test extension spec."""
         clear_filter_extension_cache()
         FILTER_EXTENSION_REGISTRY.clear()
         FILTER_COMPOSED_MAP.clear()
@@ -69,11 +76,13 @@ class FilterExtensionComposeTests(SimpleTestCase):
         )
 
     def tearDown(self):
+        """Restore registry and clear composed filterset cache."""
         clear_filter_extension_cache()
         FILTER_EXTENSION_REGISTRY.clear()
         FILTER_COMPOSED_MAP.clear()
 
     def test_compose_mro_order(self):
+        """Composed class MRO places extension mixin before target."""
         composed = compose_filterset_class(
             "horilla.extension.filter.tests._TargetFilter",
             _TargetFilter,
@@ -84,6 +93,7 @@ class FilterExtensionComposeTests(SimpleTestCase):
         self.assertIn("_TargetFilter", mro_names)
 
     def test_search_fields_append(self):
+        """search_fields_append adds fields after the base Meta.search_fields."""
         composed = compose_filterset_class(
             "horilla.extension.filter.tests._TargetFilter",
             _TargetFilter,
@@ -94,6 +104,7 @@ class FilterExtensionComposeTests(SimpleTestCase):
         )
 
     def test_composed_markers(self):
+        """Composed filtersets expose __horilla_* marker attributes."""
         composed = compose_filterset_class(
             "horilla.extension.filter.tests._TargetFilter",
             _TargetFilter,
@@ -105,6 +116,7 @@ class FilterExtensionComposeTests(SimpleTestCase):
         )
 
     def test_resolve_returns_composed(self):
+        """resolve_filterset_class returns the composed subclass."""
         from horilla.extension.filter.bootstrap import apply_filter_extensions
 
         apply_filter_extensions(force=True)
@@ -119,6 +131,7 @@ class FilterExtensionComposeTests(SimpleTestCase):
         self.assertTrue(resolved.__horilla_composed__)
 
     def test_no_extensions_returns_target(self):
+        """Without registered extensions, compose returns the target unchanged."""
         FILTER_EXTENSION_REGISTRY.clear()
         composed = compose_filterset_class(
             "horilla.extension.filter.tests._TargetFilter",
