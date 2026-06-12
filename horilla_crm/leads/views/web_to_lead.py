@@ -466,13 +466,26 @@ class PublicLeadFormView(CreateView):
             for field_name in selected_fields:
                 try:
                     field = Lead._meta.get_field(field_name)
+                    field_type = field.get_internal_type()
                     field_info = {
                         "name": field_name,
                         "verbose_name": str(getattr(field, "verbose_name", field_name)),
                         "required": not getattr(field, "blank", False),
-                        "field_type": field.get_internal_type(),
-                        "choices": getattr(field, "choices", None),
+                        "field_type": field_type,
                     }
+
+                    # Handle choice fields
+                    if hasattr(field, "choices") and field.choices:
+                        field_info["choices"] = list(field.choices)
+                    # Handle ForeignKey and OneToOneField
+                    elif field_type in ("ForeignKey", "OneToOneField"):
+                        related_model = field.related_model
+                        field_info["choices"] = [
+                            (obj.pk, str(obj)) for obj in related_model.objects.all()
+                        ]
+                    else:
+                        field_info["choices"] = None
+
                     parsed_fields.append(field_info)
                 except Exception:
                     pass
