@@ -309,6 +309,8 @@ class UserFormClassSingle(HorillaModelForm):
 class ChangeUserCompanyForm(HorillaModelForm):
     """Form for changing user's company with dynamic role, department, and currency filtering"""
 
+    field_order = ["company", "role", "department", "currency"]
+
     class Meta:
         """
         Meta class for change user company form
@@ -316,6 +318,7 @@ class ChangeUserCompanyForm(HorillaModelForm):
 
         model = User
         fields = ["company", "role", "department", "currency"]
+        keep_on_form = ["company"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
