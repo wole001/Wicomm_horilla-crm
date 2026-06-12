@@ -188,7 +188,7 @@ class ReportDetailFilteredView(LoginRequiredMixin, View):
 
         def get_filter_value(field_name, value, model):
             """Convert a filter string/value into an actual model field value for lookup."""
-            if not value or not field_name:
+            if value is None or not field_name:
                 return None
             try:
                 field = model._meta.get_field(field_name)
@@ -282,35 +282,67 @@ class ReportDetailFilteredView(LoginRequiredMixin, View):
                 )
                 return None
 
-        if row_group1 and row_fields:
-            filter_value = get_filter_value(row_fields[0], row_group1, model_class)
+        def apply_group_filter(field_name, value, model, fkwargs):
+            """Apply a pivot group filter, handling empty/null values correctly."""
+            if field_name is None:
+                return None
+            if value == "":
+                # Empty string means the field is null or blank — return a Q for OR handling
+                try:
+                    field = model._meta.get_field(field_name)
+                    if isinstance(field, ForeignKey):
+                        return Q(**{f"{field_name}__isnull": True})
+                    else:
+                        return Q(**{f"{field_name}__isnull": True}) | Q(
+                            **{field_name: ""}
+                        )
+                except Exception:
+                    return Q(**{f"{field_name}__isnull": True})
+            filter_value = get_filter_value(field_name, value, model)
             if filter_value is not None:
-                filter_kwargs[row_fields[0]] = filter_value
-        if row_group2 and len(row_fields) > 1:
-            filter_value = get_filter_value(row_fields[1], row_group2, model_class)
-            if filter_value is not None:
-                filter_kwargs[row_fields[1]] = filter_value
-        if row_group3 and len(row_fields) > 2:
-            filter_value = get_filter_value(row_fields[2], row_group3, model_class)
-            if filter_value is not None:
-                filter_kwargs[row_fields[2]] = filter_value
-        if col and col_fields:
-            filter_value = get_filter_value(col_fields[0], col, model_class)
-            if filter_value is not None:
-                filter_kwargs[col_fields[0]] = filter_value
-        if col1 and col2 and len(col_fields) > 1:
-            filter_value1 = get_filter_value(col_fields[0], col1, model_class)
-            filter_value2 = get_filter_value(col_fields[1], col2, model_class)
-            if filter_value1 is not None:
-                filter_kwargs[col_fields[0]] = filter_value1
-            if filter_value2 is not None:
-                filter_kwargs[col_fields[1]] = filter_value2
+                fkwargs[field_name] = filter_value
+            return None
+
+        null_q_filters = []
+
+        if row_group1 is not None and row_fields:
+            q = apply_group_filter(
+                row_fields[0], row_group1, model_class, filter_kwargs
+            )
+            if q is not None:
+                null_q_filters.append(q)
+        if row_group2 is not None and len(row_fields) > 1:
+            q = apply_group_filter(
+                row_fields[1], row_group2, model_class, filter_kwargs
+            )
+            if q is not None:
+                null_q_filters.append(q)
+        if row_group3 is not None and len(row_fields) > 2:
+            q = apply_group_filter(
+                row_fields[2], row_group3, model_class, filter_kwargs
+            )
+            if q is not None:
+                null_q_filters.append(q)
+        if col is not None and col_fields:
+            q = apply_group_filter(col_fields[0], col, model_class, filter_kwargs)
+            if q is not None:
+                null_q_filters.append(q)
+        if col1 is not None and col2 is not None and len(col_fields) > 1:
+            q1 = apply_group_filter(col_fields[0], col1, model_class, filter_kwargs)
+            q2 = apply_group_filter(col_fields[1], col2, model_class, filter_kwargs)
+            if q1 is not None:
+                null_q_filters.append(q1)
+            if q2 is not None:
+                null_q_filters.append(q2)
         # if simple_aggregate and temp_report.aggregate_columns_dict.get('field'):
         # filter_kwargs[temp_report.aggregate_columns_dict['field']] = simple_aggregate
 
-        if filter_kwargs:
+        if filter_kwargs or null_q_filters:
             try:
-                queryset = queryset.filter(**filter_kwargs)
+                if filter_kwargs:
+                    queryset = queryset.filter(**filter_kwargs)
+                for q in null_q_filters:
+                    queryset = queryset.filter(q)
             except Exception as e:
                 logger.error("Filter Error: %s", e)
                 queryset = model_class.objects.none()
