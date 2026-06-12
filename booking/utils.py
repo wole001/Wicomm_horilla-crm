@@ -255,8 +255,7 @@ def get_all_slots(page, target_date: date) -> dict:
         if not host_blocked:
             # A slot is "booked" when an existing booking starts within this slot's window
             overlaps = any(
-                bstart >= current_aware and bstart < slot_end_aware
-                for bstart, bend in existing
+                current_aware <= bstart < slot_end_aware for bstart, bend in existing
             )
             if overlaps:
                 booked.append(current.strftime("%H:%M"))
