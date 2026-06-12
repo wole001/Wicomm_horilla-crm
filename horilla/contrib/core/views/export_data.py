@@ -50,6 +50,7 @@ from horilla.utils.translation import gettext_lazy as _
 
 # Local imports
 from ..models import ExportSchedule
+from ..utils import sanitize_export_value
 
 logger = logging.getLogger(__name__)
 
@@ -240,7 +241,8 @@ class ExportView(LoginRequiredMixin, TemplateView):
             writer = csv.writer(buffer)
             writer.writerow(column_headers)
             for row in data:
-                writer.writerow(row)
+                sanitized_row = [sanitize_export_value(cell) for cell in row]
+                writer.writerow(sanitized_row)
             buffer.seek(0)
             filename = self.get_export_filename(model, "csv")
             return f"{filename}", io.BytesIO(buffer.getvalue().encode("utf-8"))
@@ -267,7 +269,11 @@ class ExportView(LoginRequiredMixin, TemplateView):
                 ws.column_dimensions[column_letter].width = 25
 
             for row in data:
-                ws.append([str(cell) if cell is not None else "" for cell in row])
+                sanitized_row = [
+                    sanitize_export_value(str(cell) if cell is not None else "")
+                    for cell in row
+                ]
+                ws.append(sanitized_row)
 
             for idx, row in enumerate(ws.rows, 1):
                 ws.row_dimensions[idx].height = 15
@@ -472,7 +478,8 @@ def get_export_cell_value(obj, field_name, field, user):
                     value = value.strftime(fmt)
                 except Exception:
                     value = value.strftime("%Y-%m-%d")
-        return str(value) if value is not None else ""
+        value_str = str(value) if value is not None else ""
+        return sanitize_export_value(value_str)
     except Exception as e:
         logger.error("Error retrieving field %s: %s", field_name, str(e))
         return ""

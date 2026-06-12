@@ -34,6 +34,8 @@ from horilla.db import models
 from horilla.utils import timezone
 from horilla.utils.translation import gettext as _
 
+from .utils import sanitize_export_value
+
 # Local imports
 from .views.export_data import get_export_cell_value
 
@@ -345,7 +347,8 @@ def export_to_csv(model, headers, data):
     writer = csv.writer(buffer)
     writer.writerow(headers)
     for row in data:
-        writer.writerow(row)
+        sanitized_row = [sanitize_export_value(cell) for cell in row]
+        writer.writerow(sanitized_row)
     buffer.seek(0)
     return f"{model.__name__}_export.csv", io.BytesIO(buffer.getvalue().encode("utf-8"))
 
@@ -376,7 +379,10 @@ def export_to_xlsx(model, headers, data):
 
     # Add data
     for row in data:
-        ws.append([str(cell) if cell is not None else "" for cell in row])
+        sanitized_row = [
+            sanitize_export_value(str(cell) if cell is not None else "") for cell in row
+        ]
+        ws.append(sanitized_row)
 
     # Set row heights
     for idx, row in enumerate(ws.rows, 1):

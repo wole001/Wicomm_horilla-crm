@@ -22,6 +22,18 @@ from .models import FieldPermission, HorillaContentType, MultipleCurrency, Recyc
 logger = logging.getLogger(__name__)
 
 
+def sanitize_export_value(value):
+    """
+    Sanitize cell values to prevent formula injection in CSV/XLSX exports.
+    Prefixes formula-triggering characters (=, +, -, @, tab, CR) with a single quote.
+    """
+    if not isinstance(value, str):
+        return value
+    if value and value[0] in ("=", "+", "-", "@", "\t", "\r"):
+        return "'" + value
+    return value
+
+
 def fetch_exchange_rate_from_api(base_currency, target_currency):
     """
     Fetch exchange rate from Frankfurter API (free, no API key required).

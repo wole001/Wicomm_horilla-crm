@@ -18,6 +18,7 @@ from openpyxl.styles import Alignment, Font, PatternFill
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
+from horilla.contrib.core.utils import sanitize_export_value
 from horilla.db.models import ForeignKey
 from horilla.http import HttpResponse
 
@@ -221,7 +222,8 @@ class HorillaBulkExportMixin:
                 writer = csv.writer(response)
                 writer.writerow(column_headers)
                 for row in data:
-                    writer.writerow(row)
+                    sanitized_row = [sanitize_export_value(cell) for cell in row]
+                    writer.writerow(sanitized_row)
                 return response
 
             if export_format == "xlsx":
@@ -250,7 +252,11 @@ class HorillaBulkExportMixin:
 
                 # Append the data rows
                 for row in data:
-                    ws.append([str(cell) if cell is not None else "" for cell in row])
+                    sanitized_row = [
+                        sanitize_export_value(str(cell) if cell is not None else "")
+                        for cell in row
+                    ]
+                    ws.append(sanitized_row)
 
                 for idx, row in enumerate(ws.rows, 1):
                     ws.row_dimensions[idx].height = 15
