@@ -2,13 +2,21 @@
 
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.11.1"
+__version__ = "1.11.2"
 __module_name__ = "Activity"
 __release_date__ = ""
 __description__ = _(
     "Module for tracking and managing activities such as tasks,calls, events, and emails."
 )
 __icon__ = "activity/assets/icons/activity-red.svg"
+
+__1_11_2__ = _(
+    "Fixed call duration field ordering and removed redundant validation; history tab now "
+    "correctly identifies CallLog entries and displays call status. Use load_branding() TITLE "
+    "as the fallback company name in meeting invitation emails. Allow ActivityView for users "
+    "with view_own_activity as well as view_activity. Added meeting provider choices (Zoom, "
+    "Google Meet, Microsoft Teams) on the Activity model."
+)
 
 __1_11_1__ = _(
     "Email-tab permissions corrected to add/view/change/delete own-record checks. "

@@ -2,11 +2,20 @@
 
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.11.1"
+__version__ = "1.11.2"
 __module_name__ = "CRM"
 __release_date__ = ""
 __description__ = _("CRM module for managing leads, contacts, and opportunities.")
 __icon__ = "assets/icons/icon2.svg"
+
+__1_11_2__ = _(
+    "Refactored leads core views into tab sub-packages and opportunities split and stages "
+    "views into sub-packages. Standardized first-party import section headers and migrated "
+    "transaction imports to horilla.db. Leads: fixed Go to Leads navigation from convert "
+    "success modal; enhanced web-to-lead form with Select2 and improved styling. "
+    "Opportunities: fixed team selling and split checks via _resolve_company and all_objects "
+    "OpportunitySettings lookups; scoped OpportunityTeamForm user choices to active company."
+)
 
 __1_11_1__ = _(
     "Lead and opportunity stage saving now validates first and uses update-or-create "

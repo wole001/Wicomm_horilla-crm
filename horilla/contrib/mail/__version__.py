@@ -3,13 +3,22 @@
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.11.1"
+__version__ = "1.11.2"
 __module_name__ = "Mail"
 __release_date__ = ""
 __description__ = _(
     "Module for managing incoming and outgoing emails through mail servers and Outlook."
 )
 __icon__ = "assets/icons/icon1.svg"
+
+__1_11_2__ = _(
+    "Fixed mail and notification template creation by assigning created_by and updated_by "
+    "before save when _thread_local.request is unavailable. Added mail configuration detail "
+    "modal with list row click-through and channel-specific edit and delete URLs. Sanitize "
+    "mail subject and body XSS with shared helpers and centralized sanitize_html in preview "
+    "and detail views. Clear mail template body on validation errors to prevent re-displaying "
+    "rejected content."
+)
 
 __1_11_1__ = _(
     "Security: fixed SSTI information disclosure and IDOR in the preview endpoint by "

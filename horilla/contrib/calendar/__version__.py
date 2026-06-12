@@ -8,11 +8,18 @@ application registry and UI.
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.11.1"
+__version__ = "1.11.2"
 __module_name__ = "Calendar"
 __release_date__ = ""
 __description__ = _("Module for managing calendar events and schedules.")
 __icon__ = "assets/icons/calendar-red.svg"
+
+__1_11_2__ = _(
+    "Resolve Google Calendar integration settings from the user's company with all_objects. "
+    "Use all_objects for GoogleCalendarConfig lookups to prevent missing config and UNIQUE "
+    "constraint errors when admins switch company context. Scope disconnect to active company "
+    "when admin disables integration."
+)
 
 __1_11_1__ = _(
     "Restored CSRF protection on SaveCalendarPreferencesView (removed @csrf_exempt). "

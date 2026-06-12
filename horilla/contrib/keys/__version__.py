@@ -5,11 +5,16 @@ Version and metadata information for the keys module.
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.11.1"
+__version__ = "1.11.2"
 __module_name__ = "Short Keys"
 __release_date__ = ""
 __description__ = _("Module providing customizable keyboard shortcuts.")
 __icon__ = "keys/assets/icons/icon3.svg"
+
+__1_11_2__ = _(
+    "Tie shortcut keys to the user's company with all_objects lookups and sync company on "
+    "user company change so shortcuts stay visible across active company switches."
+)
 
 __1_11_1__ = _(
     "Migrated signal and timezone imports to the horilla shims, standardized first-party "

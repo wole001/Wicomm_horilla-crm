@@ -2,13 +2,35 @@
 
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "1.11.1"
+__version__ = "1.12.1"
 __module_name__ = _("Core System")
 __release_date__ = ""
 __description__ = _(
     "Core system providing authentication, configuration, utilities, and platform-level services."
 )
 __icon__ = "assets/icons/logo.png"
+
+__1_12_1__ = _(
+    "Extension tests now use contrib.core examples instead of CRM-specific modules. Added "
+    "centralized sanitize_html and sanitize_plain_text helpers with bleach CSS allowlisting, "
+    "Summernote DOMPurify mirroring, CSV/XLSX cell sanitization against formula injection, "
+    "and notification template XSS sanitization with validation-error field clearing. Fixed "
+    "generics Select2 edit-mode FK filtering by loading parent instances via all_objects and "
+    "scoping request.active_company to the record tenant; fixed navbar search losing focus by "
+    "removing hx-select-oob/hx-preserve. Core: restricted login history to the current user, "
+    "improved role empty state, refined User and RegionalFormatting forms, showed company on "
+    "ChangeUserCompanyForm, debounced saveActiveTab for SQLite, and rendered readable user-agent "
+    "details in login history. Registered static, i18n, and horilla_tags as template builtins."
+)
+
+__1_12_0__ = _(
+    "Expanded extension framework with _inherit_form, _inherit_list, _inherit_card, "
+    "_inherit_filter, _inherit_nav, _inherit_kanban, and _inherit_detail composition with "
+    "caching and per-request resolution. Introduced PhoneWidget and PhoneField for "
+    "international phone numbers. Fixed generics bulk-delete Prefetch slicing, action button "
+    "text wrapping, and HolidayForm user-selection defaults. Centralized horilla.db "
+    "transaction and connection imports and standardized first-party import groups."
+)
 
 __1_11_1__ = _(
     "Custom CSRF failure view and csrf_failure.html for DEBUG=False. CSRF protection "

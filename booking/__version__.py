@@ -2,7 +2,7 @@
 
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.11.1"
+__version__ = "1.11.2"
 __module_name__ = _("Booking")
 __release_date__ = ""
 __description__ = _(
@@ -11,6 +11,13 @@ __description__ = _(
     "confirmation, reminder, reschedule, and cancellation emails."
 )
 __icon__ = "/assets/icons/calendar.svg"
+
+__1_11_2__ = _(
+    "Added HorillaModalDetailView with clickable rows, prev/next navigation, and status "
+    "change actions; replaced hardcoded modal colors with Horilla theme variables. Split "
+    "booking/views.py into booking_page, booking_list, and public modules. Use load_branding() "
+    "TITLE as the fallback company name in reminder and confirmation emails."
+)
 
 __1_11_1__ = _(
     "Improved booking calendar UX with timezone-aware slot display and confirmation "

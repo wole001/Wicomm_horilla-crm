@@ -3,13 +3,18 @@
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.11.1"
+__version__ = "1.11.2"
 __module_name__ = "Reports"
 __release_date__ = ""
 __description__ = _(
     "Module for creating and customizing reports across all system modules."
 )
 __icon__ = "assets/icons/icon5.svg"
+
+__1_11_2__ = _(
+    "Added pivot cell active state and filter badge with clear action. Fixed detail table "
+    "filtering for empty and null pivot group values."
+)
 
 __1_11_1__ = _(
     "Removed redundant fields attributes superseded by form_class on report CRUD views, "
