@@ -192,7 +192,7 @@ class CampaignMember(HorillaCoreModel):
             ).exclude(pk=self.pk if self.pk else None)
 
             if existing.exists():
-                raise ValidationError("This lead already has this campaign.")
+                raise ValidationError(_("This lead already has this campaign."))
 
         # Check for duplicate contact in same campaign
         elif self.member_type == "contact" and self.contact and self.campaign:
@@ -201,7 +201,7 @@ class CampaignMember(HorillaCoreModel):
             ).exclude(pk=self.pk if self.pk else None)
 
             if existing.exists():
-                raise ValidationError("This contact already has this campaign.")
+                raise ValidationError(_("This contact already has this campaign."))
 
     @property
     def campaign_type_display(self):

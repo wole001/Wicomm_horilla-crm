@@ -20,6 +20,7 @@ from horilla.contrib.utils.middlewares import _thread_local
 from horilla.core.exceptions import ValidationError
 from horilla.db import models as db_models
 from horilla.db import transaction
+from horilla.utils.translation import gettext_lazy as _
 
 # Local imports
 from .models import ApprovalInstance, ApprovalProcessRule
@@ -674,7 +675,9 @@ def enforce_pending_edit_policy(instance):
         if is_user_pending_approver(approval, user):
             user_instances.append(approval)
     if pending_instances and not user_instances:
-        raise ValidationError("This record is pending approval and cannot be edited.")
+        raise ValidationError(
+            _("This record is pending approval and cannot be edited.")
+        )
 
     allow_all = False
     allowed_fields = set()

@@ -18,6 +18,7 @@ from horilla.contrib.core.models import RecycleBin
 from horilla.db.models import Q
 from horilla.http import HttpResponse
 from horilla.shortcuts import render
+from horilla.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +53,7 @@ class HorillaBulkDeleteMixin:
                 context["selected_ids"] = valid_ids
                 context["selected_ids_json"] = json.dumps(valid_ids)
                 if not valid_ids:
-                    messages.error(request, "No rows selected for deletion.")
+                    messages.error(request, _("No rows selected for deletion."))
                     return HttpResponse("<script>$('#reloadButton').click();</script>")
                 return render(request, "partials/delete_mode_form.html", context)
             except (json.JSONDecodeError, ValueError) as e:

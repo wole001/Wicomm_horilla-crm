@@ -230,7 +230,7 @@ class BulkDeleteRecycleBinView(LoginRequiredMixin, View):
         """
         record_ids = json.loads(request.POST.get("selected_ids", "[]"))
         if not record_ids:
-            messages.error(request, "No records selected for deletion.")
+            messages.error(request, _("No records selected for deletion."))
             response = HttpResponse(status=204)
             response["HX-Redirect"] = reverse_lazy("core:recycle_bin_view")
             return response
@@ -304,7 +304,7 @@ class BulkRestoreRecycleView(LoginRequiredMixin, View):
         """
         record_ids = json.loads(request.POST.get("selected_ids", "[]"))
         if not record_ids:
-            messages.error(request, "No records selected for restoration.")
+            messages.error(request, _("No records selected for restoration."))
             response = HttpResponse(status=204)
             response["HX-Redirect"] = reverse_lazy("core:recycle_bin_view")
             return response

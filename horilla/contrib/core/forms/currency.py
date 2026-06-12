@@ -24,8 +24,8 @@ class CurrencyForm(forms.Form):
 
     currency = forms.ModelChoiceField(
         queryset=MultipleCurrency.objects.none(),
-        empty_label="Select a currency",
-        label="New Currency",
+        empty_label=_("Select a currency"),
+        label=_("New Currency"),
         required=True,
     )
 
@@ -44,8 +44,8 @@ class ConversionRateForm(forms.Form):
 
     new_default_currency = forms.ModelChoiceField(
         queryset=MultipleCurrency.objects.none(),
-        empty_label="Select a new default currency",
-        label="Change Default Currency",
+        empty_label=_("Select a new default currency"),
+        label=_("Change Default Currency"),
         required=False,
     )
 

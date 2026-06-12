@@ -68,7 +68,7 @@ class Role(HorillaCoreModel):
         null=True,
         blank=True,
         related_name="subroles",
-        verbose_name="Parent Role",
+        verbose_name=_("Parent Role"),
     )
     description = models.TextField(blank=True, null=True, verbose_name=_("Description"))
     permissions = models.ManyToManyField(

@@ -57,7 +57,7 @@ class MarkAllNotificationsReadView(LoginRequiredMixin, View):
             HttpResponse: Rendered notification list template.
         """
         Notification.objects.filter(user=request.user, read=False).update(read=True)
-        messages.success(request, "All notifications marked as read.")
+        messages.success(request, _("All notifications marked as read."))
         unread_notifications = Notification.objects.filter(
             user=request.user, read=False
         )
@@ -91,7 +91,7 @@ class DeleteNotification(LoginRequiredMixin, View):
             notif.delete()
         except Notification.DoesNotExist:
             pass
-        messages.success(request, "Notification Deleted.")
+        messages.success(request, _("Notification Deleted."))
         response = HttpResponse(status=200)
         return response
 

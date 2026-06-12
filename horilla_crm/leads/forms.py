@@ -15,6 +15,7 @@ from horilla.contrib.notifications.models import NotificationTemplate
 from horilla.db.models import Q
 from horilla.urls import reverse, reverse_lazy
 from horilla.utils.choices import get_subdivision_choices
+from horilla.utils.translation import gettext_lazy as _
 
 # Local imports
 from horilla_crm.accounts.models import Account
@@ -175,7 +176,7 @@ class LeadConversionForm(forms.Form):
     existing_account = forms.ModelChoiceField(
         queryset=Account.objects.all(),
         required=False,
-        empty_label="Select Account",
+        empty_label=_("Select Account"),
         widget=forms.Select(
             attrs={
                 "class": "select2-pagination w-full text-sm",
@@ -220,7 +221,7 @@ class LeadConversionForm(forms.Form):
     existing_contact = forms.ModelChoiceField(
         queryset=Contact.objects.all(),
         required=False,
-        empty_label="Select Contact",
+        empty_label=_("Select Contact"),
         widget=forms.Select(attrs={"class": "normal-seclect"}),
     )
 
@@ -247,7 +248,7 @@ class LeadConversionForm(forms.Form):
     existing_opportunity = forms.ModelChoiceField(
         queryset=Opportunity.objects.none(),  # Start with empty queryset
         required=False,
-        empty_label="Select Opportunity",
+        empty_label=_("Select Opportunity"),
         widget=forms.Select(attrs={"class": "normal-seclect"}),
     )
 
@@ -255,7 +256,7 @@ class LeadConversionForm(forms.Form):
     owner = forms.ModelChoiceField(
         queryset=User.objects.all(),
         required=True,
-        empty_label="Select Owner",
+        empty_label=_("Select Owner"),
         widget=forms.Select(
             attrs={
                 "class": "text-color-600 p-2 placeholder:text-xs pr-[40px] w-full border border-dark-50 rounded-md mt-1 focus-visible:outline-0 placeholder:text-dark-100 text-sm [transition:.3s] focus:border-primary-600"

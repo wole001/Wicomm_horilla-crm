@@ -101,7 +101,7 @@ class HorillaMailTemplateForm(forms.ModelForm):
         """
         title = self.cleaned_data.get("title")
         if not title or title.strip() == "":
-            raise ValidationError("Template title is required.")
+            raise ValidationError(_("Template title is required."))
         return title.strip()
 
     def clean_body(self):
@@ -116,7 +116,7 @@ class HorillaMailTemplateForm(forms.ModelForm):
         """
         body = self.cleaned_data.get("body")
         if not body or body.strip() == "":
-            raise ValidationError("Template body is required.")
+            raise ValidationError(_("Template body is required."))
         return body
 
 
@@ -131,8 +131,8 @@ class MailTemplateSelectForm(forms.Form):
 
     template = forms.ModelChoiceField(
         queryset=HorillaMailTemplate.objects.none(),
-        label="Select Mail Template",
-        empty_label="Choose a template",
+        label=_("Select Mail Template"),
+        empty_label=_("Choose a template"),
         required=True,
         widget=forms.Select(attrs={"class": "js-example-basic-single headselect"}),
     )
@@ -183,7 +183,7 @@ class SaveAsMailTemplateForm(forms.ModelForm):
         """
         body = self.cleaned_data.get("body")
         if not body or strip_tags(body).strip() == "" or body == "<p><br></p>":
-            raise ValidationError("Body content cannot be empty.")
+            raise ValidationError(_("Body content cannot be empty."))
 
         return body
 

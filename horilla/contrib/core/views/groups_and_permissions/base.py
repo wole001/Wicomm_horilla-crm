@@ -520,12 +520,12 @@ class UpdateRolePermissionsView(LoginRequiredMixin, View):
             role.permissions.add(permission)
             for member in members:
                 member.user_permissions.add(permission)
-            messages.success(request, "Permission added successfully.")
+            messages.success(request, _("Permission added successfully."))
         else:
             role.permissions.remove(permission)
             for member in members:
                 member.user_permissions.remove(permission)
-            messages.success(request, "Permission removed successfully.")
+            messages.success(request, _("Permission removed successfully."))
 
         return HttpResponse("<script>$('#reloadMessagesButton').click();</script>")
 

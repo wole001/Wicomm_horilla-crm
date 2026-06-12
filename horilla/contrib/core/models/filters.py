@@ -271,7 +271,9 @@ class SavedFilterList(models.Model):
     filter_params = models.JSONField()
     is_public = models.BooleanField(
         default=False,
-        help_text="When set, this filter is available to all users in this list/position.",
+        help_text=_(
+            "When set, this filter is available to all users in this list/position."
+        ),
     )
     created_at = models.DateTimeField(default=timezone.now)
     all_objects = models.Manager()

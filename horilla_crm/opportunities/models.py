@@ -47,7 +47,7 @@ class OpportunityStage(HorillaCoreModel):
         max_digits=5,
         decimal_places=2,
         verbose_name=_("Probability"),
-        help_text="Default probability percentage for this stage",
+        help_text=_("Default probability percentage for this stage"),
     )
     is_final = models.BooleanField(default=False, verbose_name=_("Is Final Stage"))
     stage_type = models.CharField(
@@ -328,7 +328,7 @@ class Opportunity(HorillaCoreModel):
         null=True,
         blank=True,
         verbose_name=_("Quantity"),
-        help_text="Total Opportunity Quantity",
+        help_text=_("Total Opportunity Quantity"),
     )
     close_date = models.DateField(null=True, blank=True, verbose_name=_("Close Date"))
     stage = models.ForeignKey(
@@ -342,7 +342,7 @@ class Opportunity(HorillaCoreModel):
         null=True,
         blank=True,
         verbose_name=_("Probability"),
-        help_text="Probability percentage (0-100)",
+        help_text=_("Probability percentage (0-100)"),
         validators=[MinValueValidator(0), MaxValueValidator(100)],
     )
     description = models.TextField(
@@ -366,7 +366,7 @@ class Opportunity(HorillaCoreModel):
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
         verbose_name=_("Owner"),
-        help_text="Opportunity Owner",
+        help_text=_("Opportunity Owner"),
     )
     opportunity_type = models.CharField(
         max_length=50, choices=TYPE_CHOICES, blank=True, verbose_name=_("Type")

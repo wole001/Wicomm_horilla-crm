@@ -3,6 +3,7 @@
 from django import forms
 
 from horilla.contrib.generics.forms import HorillaModelForm
+from horilla.utils.translation import gettext_lazy as _
 from horilla_crm.scoring_rules.models import (
     ScoringCondition,
     ScoringCriterion,
@@ -33,7 +34,7 @@ class ScoringCriterionForm(HorillaModelForm):
         cleaned_data = super().clean()
         condition_rows = self._extract_condition_rows()
         if not condition_rows:
-            raise forms.ValidationError("At least one condition must be provided.")
+            raise forms.ValidationError(_("At least one condition must be provided."))
         cleaned_data["condition_rows"] = condition_rows
         return cleaned_data
 

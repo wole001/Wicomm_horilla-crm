@@ -174,7 +174,7 @@ class ChangeFinalStage(LoginRequiredMixin, View):
             with transaction.atomic():
                 new_final_stage.is_final = True
                 new_final_stage.save()
-            messages.success(request, "Final Stage  changed successfully.")
+            messages.success(request, _("Final Stage  changed successfully."))
             return HttpResponse(
                 "<script>htmx.trigger('#reloadButton','click')</script>"
             )

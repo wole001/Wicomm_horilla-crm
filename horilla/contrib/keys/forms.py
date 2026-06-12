@@ -16,6 +16,7 @@ from horilla.menu import (
     settings_menu,
     sub_section_menu,
 )
+from horilla.utils.translation import gettext_lazy as _
 
 # Local imports
 from .models import ShortcutKey
@@ -106,7 +107,7 @@ class ShortcutKeyForm(HorillaModelForm):
 
         self.fields["command"] = forms.ChoiceField(
             choices=[("", "Select Command Key")] + command_choices,
-            label="Command Key",
+            label=_("Command Key"),
             required=True,
             widget=forms.Select(
                 attrs={

@@ -28,6 +28,7 @@ from horilla.utils.decorators import (
     permission_required,
     permission_required_or_denied,
 )
+from horilla.utils.translation import gettext_lazy as _
 
 # Local imports
 from horilla_crm.forecast.filters import ForecastTypeFilter
@@ -137,7 +138,7 @@ class ForecastTypeFormView(LoginRequiredMixin, HorillaSingleFormView):
     condition_model = ForecastCondition
     condition_related_name = "conditions"
     condition_order_by = ["order", "created_at"]
-    condition_field_title = "Filter Opportunities"
+    condition_field_title = _("Filter Opportunities")
     modal_height = False
     save_and_new = False
 

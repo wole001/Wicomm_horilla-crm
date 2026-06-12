@@ -315,7 +315,7 @@ class ForecastTargetFormView(LoginRequiredMixin, HorillaSingleFormView):
     template_name = "forecast_target/forecast_target_form.html"
     form_url = reverse_lazy("forecast:forecast_target_form_view")
     condition_fields = ["assigned_to", "period", "forcasts_type", "target_amount"]
-    condition_field_title = "Select User"
+    condition_field_title = _("Select User")
     modal_height = False
     save_and_new = False
 
@@ -705,15 +705,15 @@ class UpdateTargetHelpTextView(View):
             or request.POST.get(f"forcasts_type_{row_id}")
             or request.POST.get("forcasts_type_0")
         )
-        help_text = "Enter the target amount"
+        help_text = _("Enter the target amount")
 
         if forecast_type_id:
             try:
                 forecast_type = ForecastType.objects.get(id=forecast_type_id)
                 if forecast_type.is_quantity_based:
-                    help_text = "Enter the quantity"
+                    help_text = _("Enter the quantity")
                 elif forecast_type.is_revenue_based:
-                    help_text = "Enter the revenue amount"
+                    help_text = _("Enter the revenue amount")
             except ForecastType.DoesNotExist:
                 pass
 

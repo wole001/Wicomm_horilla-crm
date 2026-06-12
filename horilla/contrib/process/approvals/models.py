@@ -37,7 +37,7 @@ class ApprovalRule(HorillaCoreModel):
         on_delete=models.CASCADE,
         limit_choices_to=limit_content_types("approval_models"),
         related_name="approval_rules",
-        help_text="Model this process applies to.",
+        help_text=_("Model this process applies to."),
         verbose_name=_("Module"),
     )
 
@@ -282,7 +282,7 @@ class ApprovalInstance(HorillaCoreModel):
     )
     object_id = models.CharField(
         max_length=64,
-        help_text="Primary key of the target object, stored as string.",
+        help_text=_("Primary key of the target object, stored as string."),
     )
     content_object = models.GenericForeignKey("content_type", "object_id")
 
@@ -313,8 +313,8 @@ class ApprovalInstance(HorillaCoreModel):
     class Meta:
         """Meta options for ApprovalInstance."""
 
-        verbose_name = "Approval instance"
-        verbose_name_plural = "Approval instances"
+        verbose_name = _("Approval instance")
+        verbose_name_plural = _("Approval instances")
         indexes = [
             models.Index(fields=["content_type", "object_id"]),
         ]
@@ -389,8 +389,8 @@ class ApprovalDecision(HorillaCoreModel):
     class Meta:
         """Meta options for ApprovalDecision."""
 
-        verbose_name = "Approval decision"
-        verbose_name_plural = "Approval decisions"
+        verbose_name = _("Approval decision")
+        verbose_name_plural = _("Approval decisions")
         ordering = ["-decided_at", "-id"]
 
     def __str__(self) -> str:  # pragma: no cover - trivial

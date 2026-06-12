@@ -524,7 +524,7 @@ class AutomationFieldChoicesView(LoginRequiredMixin, View):
 
         # Return select with hx-swap-oob for out-of-band swap
         # The target selector is #mail_to_container select, so HTMX will find it and swap it
-        select_html = f'<select name="mail_to" id="id_mail_to" class="js-example-basic-multiple headselect w-full" multiple="multiple" data-placeholder="Select user fields" hx-swap-oob="outerHTML">{options_html}</select>'
+        select_html = f'<select name="mail_to" id="id_mail_to" class="js-example-basic-multiple headselect w-full" multiple="multiple" data-placeholder="{_("Select user fields")}" hx-swap-oob="outerHTML">{options_html}</select>'
 
         return select_html
 

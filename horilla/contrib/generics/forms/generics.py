@@ -275,7 +275,7 @@ class SaveFilterListForm(forms.Form):
     list_name = forms.CharField(
         max_length=100,
         required=True,
-        label="List View Name",
+        label=_("List View Name"),
         widget=forms.TextInput(
             attrs={
                 "class": "text-color-600 p-2 placeholder:text-xs  w-full border border-dark-50 rounded-md mt-1 focus-visible:outline-0 placeholder:text-dark-100 text-sm [transition:.3s] focus:border-primary-600",
@@ -291,7 +291,7 @@ class SaveFilterListForm(forms.Form):
     make_public = forms.BooleanField(
         required=False,
         initial=False,
-        label="Make as public",
+        label=_("Make as public"),
         widget=forms.CheckboxInput(
             attrs={
                 "class": "w-4 h-4 bg-[#E9EDF7] rounded-sm accent-[#e54f38]",

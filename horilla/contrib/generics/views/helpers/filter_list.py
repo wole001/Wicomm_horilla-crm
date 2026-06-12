@@ -272,7 +272,7 @@ class DeleteSavedListView(LoginRequiredMixin, View):
         model_name = request.POST.get("model_name")  # Fallback to a default URL
 
         if not saved_list_id:
-            messages.error(request, "Invalid saved list ID.")
+            messages.error(request, _("Invalid saved list ID."))
             response = RedirectResponse(request=request, redirect_to=main_url)
             response["HX-Push-Url"] = "true"  # Add HTMX header
             return response

@@ -19,6 +19,7 @@ from horilla.utils.decorators import (
     method_decorator,
     permission_required_or_denied,
 )
+from horilla.utils.translation import gettext_lazy as _
 
 # Local imports
 from .models import HorillaAutomation
@@ -158,7 +159,7 @@ class CreateSelectedAutomationsView(LoginRequiredMixin, View):
         selected_titles = request.POST.getlist("selected_automations")
 
         if not mail_server_id:
-            messages.error(request, "Please select a mail server.")
+            messages.error(request, _("Please select a mail server."))
             return HttpResponse(
                 "<script>closeModal();</script>",
                 status=400,
@@ -175,7 +176,7 @@ class CreateSelectedAutomationsView(LoginRequiredMixin, View):
         except (HorillaMailConfiguration.DoesNotExist, ValueError):
             mail_server = None
         if not mail_server:
-            messages.error(request, "Invalid mail server selected.")
+            messages.error(request, _("Invalid mail server selected."))
             return HttpResponse(
                 "<script>closeModal();</script>",
                 status=400,
@@ -251,10 +252,10 @@ class CreateSelectedAutomationsView(LoginRequiredMixin, View):
                 f"{len(created)} automation(s) loaded. {len(skipped)} already exist and were skipped.",
             )
         elif created:
-            messages.success(request, "Automations loaded successfully.")
+            messages.success(request, _("Automations loaded successfully."))
         elif skipped:
-            messages.warning(request, "All selected automations already exist.")
+            messages.warning(request, _("All selected automations already exist."))
         else:
-            messages.info(request, "No automations were processed.")
+            messages.info(request, _("No automations were processed."))
 
         return HttpResponse("<script>$('#reloadButton').click();closeModal();</script>")

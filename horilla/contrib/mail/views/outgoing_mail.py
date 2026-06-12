@@ -167,7 +167,7 @@ class OutgoingMailServerFormView(LoginRequiredMixin, HorillaSingleFormView):
 
     model = HorillaMailConfiguration
     form_class = HorillaMailConfigurationForm
-    form_title = "Outgoing Mail Server Configuration"
+    form_title = _("Outgoing Mail Server Configuration")
     modal_height = False
     hidden_fields = ["company", "type", "mail_channel"]
     save_and_new = False

@@ -81,7 +81,7 @@ class FiscalYearFormView(LoginRequiredMixin, HorillaSingleFormView):
     """
 
     model = FiscalYear
-    form_title = "Fiscal Year Configuration"
+    form_title = _("Fiscal Year Configuration")
     form_class = FiscalYearForm
     full_width_fields = [
         "fiscal_year_type",

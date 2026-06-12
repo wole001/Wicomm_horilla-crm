@@ -268,11 +268,13 @@ class OpportunitySplitTypeActiveToggleView(
                 # Trigger HTMX reload (for list/table refresh)
                 return HttpResponse("<script>$('#reloadButton').click();</script>")
 
-            messages.error(request, "You don’t have permission to change split types.")
+            messages.error(
+                request, _("You don’t have permission to change split types.")
+            )
             return HttpResponse("<script>$('#reloadButton').click();</script>")
 
         except OpportunitySplitType.DoesNotExist:
-            messages.error(request, "Split Type not found.")
+            messages.error(request, _("Split Type not found."))
             return HttpResponse("<script>$('#reloadButton').click();</script>")
         except Exception as e:
             messages.error(request, f"Error: {e}")

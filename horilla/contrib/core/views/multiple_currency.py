@@ -284,7 +284,7 @@ class ChangeDefaultCurrencyView(LoginRequiredMixin, View):
                 ).first()
 
                 if current_default and current_default.id == new_default_currency.id:
-                    messages.info(request, "Currency is already the default.")
+                    messages.info(request, _("Currency is already the default."))
                     return HttpResponse(
                         "<script>htmx.trigger('#tab-currency-view','click')</script>"
                     )
@@ -373,7 +373,7 @@ class ChangeDefaultCurrencyView(LoginRequiredMixin, View):
                 company.currency = new_default_currency.currency
                 company.save()
 
-            messages.success(request, "Default currency changed successfully.")
+            messages.success(request, _("Default currency changed successfully."))
             return HttpResponse(
                 "<script>htmx.trigger('#tab-currency-view','click')</script>"
             )

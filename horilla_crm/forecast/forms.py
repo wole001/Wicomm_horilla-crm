@@ -39,8 +39,8 @@ class ForecastTargetForm(HorillaModelForm):
 
     is_role_based = forms.BooleanField(
         required=False,
-        label="Role-Based Assignment",
-        help_text="Filter users by selected role",
+        label=_("Role-Based Assignment"),
+        help_text=_("Filter users by selected role"),
         widget=forms.CheckboxInput(
             attrs={
                 "class": "sr-only peer",
@@ -55,8 +55,8 @@ class ForecastTargetForm(HorillaModelForm):
 
     is_period_same = forms.BooleanField(
         required=False,
-        label="Same Period for All",
-        help_text="Apply the same period for all users",
+        label=_("Same Period for All"),
+        help_text=_("Apply the same period for all users"),
         widget=forms.CheckboxInput(
             attrs={
                 "class": "sr-only peer",
@@ -71,8 +71,8 @@ class ForecastTargetForm(HorillaModelForm):
 
     is_target_same = forms.BooleanField(
         required=False,
-        label="Same Target for All",
-        help_text="Apply the same target amount for all users",
+        label=_("Same Target for All"),
+        help_text=_("Apply the same target amount for all users"),
         widget=forms.CheckboxInput(
             attrs={
                 "class": "sr-only peer",
@@ -87,8 +87,8 @@ class ForecastTargetForm(HorillaModelForm):
 
     is_forecast_type_same = forms.BooleanField(
         required=False,
-        label="Same Forecast Type for All",
-        help_text="Apply the same forecast type for all users",
+        label=_("Same Forecast Type for All"),
+        help_text=_("Apply the same forecast type for all users"),
         widget=forms.CheckboxInput(
             attrs={
                 "class": "sr-only peer",
@@ -164,7 +164,7 @@ class ForecastTargetForm(HorillaModelForm):
         except (InvalidOperation, TypeError, ValueError):
             return target_amount
         if value < 0:
-            raise forms.ValidationError("Target amount cannot be negative.")
+            raise forms.ValidationError(_("Target amount cannot be negative."))
         return target_amount
 
     def clean(self):

@@ -142,7 +142,7 @@ class ActivityStatusUpdateView(LoginRequiredMixin, View):
 
         activity.status = status
         activity.save(update_fields=["status"])
-        messages.success(request, "Status Updated.")
+        messages.success(request, _("Status Updated."))
 
         tab_map = {
             "task": "tab-tasks",

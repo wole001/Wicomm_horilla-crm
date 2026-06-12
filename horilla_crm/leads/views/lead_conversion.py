@@ -90,7 +90,7 @@ class LeadConversionView(LoginRequiredMixin, FormView):
             try:
                 lead = get_object_or_404(Lead, pk=pk)
             except Http404:
-                messages.error(request, "Lead not found or no longer exists.")
+                messages.error(request, _("Lead not found or no longer exists."))
                 return HttpResponse(
                     "<script>$('#reloadButton').click();closeModal();</script>"
                 )

@@ -188,12 +188,13 @@ class GetFieldValueWidgetView(LoginRequiredMixin, View):
                 '<div id="id_operator_{}_container" hx-swap-oob="true">'
                 '<select name="operator_{}" id="id_operator_{}" '
                 'class="js-example-basic-single headselect" '
-                'data-placeholder="Select Operator" '
+                'data-placeholder="{}" '
                 'hx-get="{}" hx-target="#id_value_{}_container" hx-swap="innerHTML" '
                 'hx-vals="{}" hx-include="{}" hx-trigger="change">{}</select></div>',
                 row_id,
                 row_id,
                 row_id,
+                _("Select Operator"),
                 get_widget_url,
                 row_id,
                 escape(hx_vals),
@@ -308,11 +309,12 @@ class GetFieldValueWidgetView(LoginRequiredMixin, View):
 
     def _render_text_input(self, row_id, existing_value=""):
         return format_html(
-            '<input type="text" name="value_{}" id="id_value_{}" value="{}" placeholder="Enter Value" '
+            '<input type="text" name="value_{}" id="id_value_{}" value="{}" placeholder="{}" '
             'class="text-color-820 p-2 placeholder:text-xs pr-[40px] w-full border border-dark-50 rounded-md  focus-visible:outline-0 placeholder:text-dark-100 text-sm [transition:.3s] focus:border-primary-600">',
             row_id,
             row_id,
             existing_value,
+            _("Enter Value"),
         )
 
     def _render_select_input(self, choices, row_id, existing_value=""):
@@ -462,37 +464,41 @@ class GetFieldValueWidgetView(LoginRequiredMixin, View):
     def _render_number_input(self, row_id, existing_value="", step="1"):
         return format_html(
             '<input type="number" name="value_{}" id="id_value_{}" value="{}" step="{}" '
-            'class="text-color-600 p-2 placeholder:text-xs w-full border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-dark-100 text-sm [transition:.3s] focus:border-primary-600" placeholder="Enter Number">',
+            'class="text-color-600 p-2 placeholder:text-xs w-full border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-dark-100 text-sm [transition:.3s] focus:border-primary-600" placeholder="{}">',
             row_id,
             row_id,
             existing_value,
             step,
+            _("Enter Number"),
         )
 
     def _render_email_input(self, row_id, existing_value=""):
         return format_html(
             '<input type="email" name="value_{}" id="id_value_{}" value="{}" '
-            'class="text-color-600 p-2 placeholder:text-xs w-full border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-dark-100 text-sm [transition:.3s] focus:border-primary-600" placeholder="Enter Email">',
+            'class="text-color-600 p-2 placeholder:text-xs w-full border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-dark-100 text-sm [transition:.3s] focus:border-primary-600" placeholder="{}">',
             row_id,
             row_id,
             existing_value,
+            _("Enter Email"),
         )
 
     def _render_url_input(self, row_id, existing_value=""):
         return format_html(
             '<input type="url" name="value_{}" id="id_value_{}" value="{}" '
-            'class="text-color-600 p-2 placeholder:text-xs w-full border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-dark-100 text-sm [transition:.3s] focus:border-primary-600" placeholder="Enter URL">',
+            'class="text-color-600 p-2 placeholder:text-xs w-full border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-dark-100 text-sm [transition:.3s] focus:border-primary-600" placeholder="{}">',
             row_id,
             row_id,
             existing_value,
+            _("Enter URL"),
         )
 
     def _render_textarea_input(self, row_id, existing_value=""):
         return format_html(
             '<textarea name="value_{}" id="id_value_{}" rows="3" '
-            'class="text-color-600 p-2 w-full border border-dark-50 rounded-md focus-visible:outline-0 text-sm transition focus:border-primary-600" placeholder="Enter Value">{}</textarea>',
+            'class="text-color-600 p-2 w-full border border-dark-50 rounded-md focus-visible:outline-0 text-sm transition focus:border-primary-600" placeholder="{}">{}</textarea>',
             row_id,
             row_id,
+            _("Enter Value"),
             existing_value,
         )
 

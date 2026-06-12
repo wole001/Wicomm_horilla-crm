@@ -18,6 +18,7 @@ from horilla.contrib.generics.forms import HorillaModelForm
 # First party imports (Horilla)
 from horilla.db.models import Q
 from horilla.urls import reverse_lazy
+from horilla.utils.translation import gettext_lazy as _
 
 # Local imports
 from .models import Activity
@@ -29,7 +30,7 @@ class MeetingsForm(OwnerQuerysetMixin, HorillaModelForm):
     meeting_provider = forms.ChoiceField(
         choices=[],
         required=False,
-        label="Meeting Provider",
+        label=_("Meeting Provider"),
         widget=forms.Select(
             attrs={
                 "class": "w-full border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:border-primary-500",

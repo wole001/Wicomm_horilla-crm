@@ -494,7 +494,7 @@ class LeadCaptureForm(HorillaCoreModel):
     )
     header_color = models.CharField(max_length=7, verbose_name=_("Header Color"))
     generated_html = models.TextField(
-        blank=True, null=True, verbose_name="Generated HTML"
+        blank=True, null=True, verbose_name=_("Generated HTML")
     )
     lead_owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,

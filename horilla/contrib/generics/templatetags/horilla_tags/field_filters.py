@@ -511,10 +511,11 @@ def render_field_with_name(context, form, field_name, row_id=None, selected_valu
                 'name="value_{}" '
                 'id="id_value_{}" '
                 'class="text-color-820 p-2 placeholder:text-xs pr-[40px] w-full border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-dark-100 text-sm [transition:.3s] focus:border-primary-600" '
-                'placeholder="Enter Value" '
+                'placeholder="{}" '
                 'value="{}">',
                 row_id,
                 row_id,
+                _("Enter Value"),
                 selected_value or "",
                 row_id,
                 row_id,

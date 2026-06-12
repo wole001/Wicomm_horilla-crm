@@ -24,6 +24,7 @@ from horilla.core.exceptions import ValidationError
 from horilla.db.models import Q
 from horilla.http import HttpResponse
 from horilla.shortcuts import redirect, render
+from horilla.utils.translation import gettext_lazy as _
 
 # Local imports
 from ..models import Company
@@ -98,7 +99,9 @@ class ForgotPasswordView(View):
             return render(request, self.success_template)
 
         except User.DoesNotExist:
-            messages.error(request, "User with this email or username does not exist.")
+            messages.error(
+                request, _("User with this email or username does not exist.")
+            )
 
         except Exception as e:
             messages.error(
@@ -157,9 +160,9 @@ class PasswordResetConfirmView(View):
             confirm_password = request.POST.get("confirm_password")
 
             if not new_password or not confirm_password:
-                messages.error(request, "Please fill in all password fields.")
+                messages.error(request, _("Please fill in all password fields."))
             elif new_password != confirm_password:
-                messages.error(request, "Passwords do not match.")
+                messages.error(request, _("Passwords do not match."))
             else:
                 try:
                     validate_password(new_password, user=user)
@@ -192,6 +195,6 @@ class PasswordResetConfirmView(View):
             return render(request, self.template_name, context)
 
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-            messages.error(request, "Invalid password reset link.")
+            messages.error(request, _("Invalid password reset link."))
             context = {"validlink": False}
             return render(request, self.template_name, context)

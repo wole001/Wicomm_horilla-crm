@@ -397,6 +397,6 @@ class FieldPermission(models.Model):
         """Ensure either user or role is set, but not both."""
         # Ensure either user or role is set, but not both
         if not self.user and not self.role:
-            raise ValidationError("Either user or role must be set")
+            raise ValidationError(_("Either user or role must be set"))
         if self.user and self.role:
-            raise ValidationError("Cannot set both user and role")
+            raise ValidationError(_("Cannot set both user and role"))

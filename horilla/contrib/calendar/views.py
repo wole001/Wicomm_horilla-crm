@@ -539,7 +539,7 @@ class GetCalendarEventsView(LoginRequiredMixin, View):
                         ):
                             event_title = unavailability.reason[len("[Google] ") :]
                         else:
-                            event_title = "User Unavailable"
+                            event_title = _("User Unavailable")
                         event = {
                             "title": event_title,
                             "start": unavailability.from_datetime.isoformat(),

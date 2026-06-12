@@ -214,7 +214,7 @@ class HorillaNotesAttachementDetailView(HorillaModalDetailView):
 
     template_name = "notes_attachments_detail.html"
     model = HorillaAttachment
-    title = "Notes and Attachment"
+    title = _("Notes and Attachment")
 
     def get(self, request, *args, **kwargs):
         """Load attachment detail or return error script if not found."""
@@ -402,7 +402,7 @@ class HorillaNotesAttachmentCreateView(LoginRequiredMixin, FormView):
             try:
                 self.model.objects.get(pk=pk)
             except self.model.DoesNotExist:
-                messages.error(request, "The requested attachment does not exist.")
+                messages.error(request, _("The requested attachment does not exist."))
                 return HttpResponse(
                     "<script>$('#reloadButton').click();$('#reloadMessagesButton').click();closeModal();</script>"
                 )

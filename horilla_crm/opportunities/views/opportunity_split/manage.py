@@ -570,7 +570,9 @@ class DeleteSplitRowView(LoginRequiredMixin, SplitEnabledRequiredMixin, View):
         split = get_object_or_404(OpportunitySplit, id=split_id)
 
         if split.company != request.active_company:
-            messages.error(request, "You don't have permission to delete this split.")
+            messages.error(
+                request, _("You don't have permission to delete this split.")
+            )
             return HttpResponse(status=403)
 
         opportunity = split.opportunity

@@ -9,8 +9,10 @@ mail configurations, and mail-related functionality.
 # Third-party imports (Django)
 from django import forms
 
-# First-party (Horilla)
 from horilla.contrib.utils.methods import sanitize_html
+
+# First-party (Horilla)
+from horilla.utils.translation import gettext_lazy as _
 
 # Local imports
 from .models import NotificationTemplate
@@ -52,7 +54,7 @@ class NotificationTemplateForm(forms.ModelForm):
         """
         title = self.cleaned_data.get("title")
         if not title or title.strip() == "":
-            raise forms.ValidationError("Template title is required.")
+            raise forms.ValidationError(_("Template title is required."))
         return title.strip()
 
     def clean_message(self):
@@ -67,5 +69,5 @@ class NotificationTemplateForm(forms.ModelForm):
         """
         message = self.cleaned_data.get("message")
         if not message or message.strip() == "":
-            raise forms.ValidationError("Template message is required.")
+            raise forms.ValidationError(_("Template message is required."))
         return sanitize_html(message)

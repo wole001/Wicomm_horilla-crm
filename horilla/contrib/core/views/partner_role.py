@@ -186,7 +186,7 @@ class PartnerRoleFormView(LoginRequiredMixin, HorillaSingleFormView):
             try:
                 self.model.objects.get(pk=pk)
             except self.model.DoesNotExist:
-                messages.error(request, "The requested data does not exist.")
+                messages.error(request, _("The requested data does not exist."))
                 return HttpResponse("<script>$('reloadButton').click();</script>")
 
         return super().get(request, *args, **kwargs)

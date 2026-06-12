@@ -214,7 +214,7 @@ class AddChildAccountFormView(LoginRequiredMixin, FormView):
             try:
                 account = get_object_or_404(Account, pk=account_id)
             except Http404:
-                messages.error(request, "Account not found or no longer exists.")
+                messages.error(request, _("Account not found or no longer exists."))
                 return HttpResponse(
                     "<script>$('#reloadButton').click();closeModal();</script>"
                 )
