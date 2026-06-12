@@ -37,9 +37,7 @@ class TeamSellingRequiredMixin:
 
     def dispatch(self, request, *args, **kwargs):
         """Guard team-selling pages when team selling is disabled."""
-        if not OpportunitySettings.is_team_selling_enabled(
-            getattr(request, "active_company", None)
-        ):
+        if not OpportunitySettings.is_team_selling_enabled(request.user.company):
             if request.headers.get("HX-Request") == "true":
                 messages.error(request, _("Team Selling is not enabled."))
                 response = HttpResponse(status=204)
@@ -68,9 +66,7 @@ class SplitEnabledRequiredMixin:
 
     def dispatch(self, request, *args, **kwargs):
         """Guard split pages when the split feature is disabled."""
-        if not OpportunitySettings.is_split_enabled(
-            getattr(request, "active_company", None)
-        ):
+        if not OpportunitySettings.is_split_enabled(request.user.company):
             if request.headers.get("HX-Request") == "true":
                 messages.error(request, _("Opportunity Splits are not enabled."))
                 response = HttpResponse(status=204)

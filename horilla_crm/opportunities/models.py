@@ -784,27 +784,43 @@ class OpportunitySettings(HorillaCoreModel):
         return settings
 
     @classmethod
-    def is_team_selling_enabled(cls, company=None):
+    def _resolve_company(cls, company_or_request=None):
+        """Resolve a Company from a request, a Company instance, or thread-local."""
+        from django.http import HttpRequest
+
+        if company_or_request is None or isinstance(company_or_request, HttpRequest):
+            request = company_or_request or getattr(_thread_local, "request", None)
+            if request is None:
+                return None
+            return getattr(request.user, "company", None)
+        # Passed an actual Company object
+        return company_or_request
+
+    @classmethod
+    def is_team_selling_enabled(cls, company_or_request=None):
         """Quick check if team selling is enabled for a company"""
-        request = getattr(_thread_local, "request", None)
-        company = getattr(request, "active_company", None)
-        settings = cls.objects.filter(company=company).first()
+        company = cls._resolve_company(company_or_request)
+        if not company:
+            return False
+        settings = cls.all_objects.filter(company=company).first()
         return settings.team_selling_enabled if settings else False
 
     @classmethod
-    def is_split_enabled(cls, company=None):
+    def is_split_enabled(cls, company_or_request=None):
         """Quick check if splits are enabled for a company"""
-        request = getattr(_thread_local, "request", None)
-        company = getattr(request, "active_company", None)
-        settings = cls.objects.filter(company=company).first()
+        company = cls._resolve_company(company_or_request)
+        if not company:
+            return False
+        settings = cls.all_objects.filter(company=company).first()
         return settings.split_enabled if settings else False
 
     @classmethod
-    def allow_all_users_in_splits_enabled(cls, company=None):
+    def allow_all_users_in_splits_enabled(cls, company_or_request=None):
         """Quick check if all users can be added in splits for a company"""
-        request = getattr(_thread_local, "request", None)
-        company = getattr(request, "active_company", None)
-        settings = cls.objects.filter(company=company).first()
+        company = cls._resolve_company(company_or_request)
+        if not company:
+            return False
+        settings = cls.all_objects.filter(company=company).first()
         return settings.allow_all_users_in_splits if settings else False
 
     def save(self, *args, **kwargs):

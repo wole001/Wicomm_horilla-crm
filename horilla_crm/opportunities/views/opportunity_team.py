@@ -70,10 +70,8 @@ class TeamSellingRequiredMixin:
     """
 
     def dispatch(self, request, *args, **kwargs):
-        """Block access when team selling is disabled for the active company."""
-        if not OpportunitySettings.is_team_selling_enabled(
-            getattr(request, "active_company", None)
-        ):
+        """Block access when team selling is disabled for the user's company."""
+        if not OpportunitySettings.is_team_selling_enabled(request.user.company):
             if request.headers.get("HX-Request") == "true":
                 messages.error(request, _("Team Selling is not enabled."))
                 response = HttpResponse(status=204)

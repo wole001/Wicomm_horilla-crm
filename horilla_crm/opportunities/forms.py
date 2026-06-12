@@ -150,7 +150,7 @@ class OpportunityTeamForm(HorillaModelForm):
             model_name = request.GET.get("model_name") or request.POST.get("model_name")
 
         # Set up condition field choices similar to ScoringCriterionForm
-        condition_field_choices = self._get_condition_field_choices()
+        condition_field_choices = self._get_condition_field_choices(request=request)
         kwargs["condition_field_choices"] = condition_field_choices
 
         super().__init__(*args, **kwargs)
@@ -161,13 +161,20 @@ class OpportunityTeamForm(HorillaModelForm):
         if self.instance_obj and self.instance_obj.pk:
             self._set_initial_condition_values()
 
-    def _get_condition_field_choices(self):
+    def _get_condition_field_choices(self, request=None):
         """Get condition field choices for OpportunityTeam form"""
         condition_field_choices = {}
 
         try:
             user_choices = [("", "---------")]
-            users = User.objects.all()[:100]  # Limit for performance
+            user_qs = User.objects.all()
+            if (
+                request
+                and hasattr(request, "active_company")
+                and request.active_company
+            ):
+                user_qs = user_qs.filter(company=request.active_company)
+            users = user_qs
             user_choices.extend([(user.pk, str(user)) for user in users])
             condition_field_choices["user"] = user_choices
 
