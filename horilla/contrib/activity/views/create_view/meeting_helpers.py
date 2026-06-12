@@ -8,6 +8,7 @@ import logging
 
 # First party imports (Horilla)
 from horilla.utils import timezone
+from horilla.utils.branding import load_branding
 
 logger = logging.getLogger(__name__)
 
@@ -168,7 +169,7 @@ def send_meeting_invites(view_self, activity, emails):
     company = getattr(view_self.request, "active_company", None) or getattr(
         view_self.request.user, "company", None
     )
-    company_name = str(company) if company else "Horilla CRM"
+    company_name = str(company) if company else str(load_branding()["TITLE"])
 
     template_context = {
         "activity": activity,

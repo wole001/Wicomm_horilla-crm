@@ -8,6 +8,7 @@ from celery import shared_task
 
 # First party imports (Horilla)
 from horilla.utils import timezone
+from horilla.utils.branding import load_branding
 
 logger = logging.getLogger(__name__)
 
@@ -124,7 +125,9 @@ def _send_reminder_for_meeting(meeting):
     except Exception:
         pass
 
-    company_name = str(meeting.company) if meeting.company else "Horilla CRM"
+    company_name = (
+        str(meeting.company) if meeting.company else str(load_branding()["TITLE"])
+    )
 
     html_body = f"""
 <div style="max-width:650px;margin:auto;background:white;border-radius:12px;padding:35px;box-shadow:0 4px 12px rgba(0,0,0,0.08)">
