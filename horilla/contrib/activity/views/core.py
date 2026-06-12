@@ -265,7 +265,9 @@ class AllActivityTabbedView(LoginRequiredMixin, HorillaTabView):
 
 
 @method_decorator(
-    permission_required_or_denied("activity.view_activity"),
+    permission_required_or_denied(
+        ["activity.view_activity", "activity.view_own_activity"]
+    ),
     name="dispatch",
 )
 class ActivityView(LoginRequiredMixin, HorillaView):
