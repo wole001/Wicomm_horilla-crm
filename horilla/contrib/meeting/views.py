@@ -86,8 +86,12 @@ class MeetingIntegrationSettingsView(LoginRequiredMixin, View):
 
         all_roles = Role.objects.filter(company=company)
         all_users = User.objects.filter(company=company, is_active=True)
-        selected_role_ids = list(setting.allowed_roles.values_list("pk", flat=True))
-        selected_user_ids = list(setting.allowed_users.values_list("pk", flat=True))
+        selected_role_ids = (
+            list(setting.allowed_roles.values_list("pk", flat=True)) if setting else []
+        )
+        selected_user_ids = (
+            list(setting.allowed_users.values_list("pk", flat=True)) if setting else []
+        )
 
         context = {
             "integration_setting": setting,
@@ -107,6 +111,9 @@ class MeetingIntegrationSettingsView(LoginRequiredMixin, View):
         """Toggle integration, update access type, or persist related admin actions."""
         company = _get_active_company(request)
         setting = MeetingIntegrationSetting.get_for_company(company)
+        if setting is None:
+            messages.error(request, _("No active company found.Cannot save settings."))
+            return self._render(request)
 
         # Toggle enable/disable (sent via hx-vals from the toggle buttons)
         if "is_meeting_enabled" in request.POST:

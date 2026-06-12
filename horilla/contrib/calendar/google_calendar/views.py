@@ -654,7 +654,9 @@ class GoogleIntegrationSettingsView(LoginRequiredMixin, View):
 
     def _get_or_create_setting(self, request):
         company = getattr(request, "active_company", None) or request.user.company
-        setting, _ = GoogleIntegrationSetting.objects.get_or_create(company=company)
+        if not company:
+            return None
+        setting, _ = GoogleIntegrationSetting.all_objects.get_or_create(company=company)
         return setting
 
     def get(self, request, *args, **kwargs):
@@ -698,6 +700,11 @@ class GoogleIntegrationSettingsView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         """Persist admin toggle and optionally disconnect all users in the company."""
         setting = self._get_or_create_setting(request)
+        if setting is None:
+            messages.error(request, _("No active company found. Cannot save settings."))
+            return render(
+                request, _INTEGRATION_SETTINGS_TEMPLATE, {"integration_setting": None}
+            )
         is_enabled = request.POST.get("is_google_calendar_enabled") == "true"
         setting.is_google_calendar_enabled = is_enabled
         setting.updated_by = request.user

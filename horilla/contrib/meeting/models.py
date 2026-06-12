@@ -120,6 +120,8 @@ class MeetingIntegrationSetting(HorillaCoreModel):
     @classmethod
     def get_for_company(cls, company):
         """Return integration settings for ``company``, creating the row if missing."""
+        if not company:
+            return None
         setting, _ = cls.all_objects.get_or_create(company=company)
         return setting
 
