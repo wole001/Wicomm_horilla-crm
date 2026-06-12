@@ -124,6 +124,30 @@ class NotificationTemplate(HorillaCoreModel):
     def __str__(self) -> str:
         return f"{self.title}"
 
+    def clean(self):
+        """Reject XSS payloads in message and title at the model level."""
+        errors = {}
+
+        if self.title and has_xss(self.title):
+            errors["title"] = _(
+                "Title contains potentially dangerous content (XSS detected). "
+                "Please remove any scripts or malicious code."
+            )
+
+        if self.message and has_xss(self.message):
+            errors["message"] = _(
+                "Message contains potentially dangerous content (XSS detected). "
+                "Please remove any scripts or malicious code."
+            )
+
+        if errors:
+            raise ValidationError(errors)
+
+    def save(self, *args, **kwargs):
+        """Enforce clean() on every save path (admin, API, shell, curl)."""
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
     class Meta:
         """Meta options for the mail template model."""
 
