@@ -2,7 +2,7 @@
 Horilla extension package: model _inherit and form _inherit_form.
 
 Patches makemigrations and migrate to use HorillaAutodetector so injected fields
-generate migrations in extension apps, not in core CRM apps.
+generate migrations in the owning extension app, not in the target app.
 """
 
 from horilla.extension.models import (

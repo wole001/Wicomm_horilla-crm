@@ -187,37 +187,49 @@ class KanbanExtensionComposeTests(SimpleTestCase):
         self.assertIs(composed, _TargetKanbanView)
 
 
-class KanbanExtensionLeadIntegrationTests(SimpleTestCase):
-    """Integration tests with my_lead_extensions Lead kanban extension."""
+class KanbanExtensionUserIntegrationTests(SimpleTestCase):
+    """Integration tests with core UserKanbanView kanban extension."""
+
+    _TARGET_PATH = "horilla.contrib.core.views.users.UserKanbanView"
 
     def setUp(self):
-        """Import my_lead_extensions.kanbans to populate the registry."""
+        """Register a User kanban extension spec for integration tests."""
         clear_kanban_extension_cache()
-        import importlib
-
-        importlib.import_module("my_lead_extensions.kanbans")
-
-        self.addCleanup(clear_kanban_extension_cache)
-
-    def test_lead_kanban_extension_registers_when_imported(self):
-        """LeadKanbanExtension registers against LeadKanbanView path."""
-        specs = KANBAN_EXTENSION_REGISTRY.get(
-            "horilla_crm.leads.views.core.LeadKanbanView",
-            [],
+        KANBAN_EXTENSION_REGISTRY.clear()
+        KANBAN_COMPOSED_MAP.clear()
+        register_kanban_extension(
+            KanbanExtensionSpec(
+                inherit_kanban=self._TARGET_PATH,
+                class_name="UserKanbanExtension",
+                module="horilla.extension.kanban.tests",
+                extension_app_label="tests",
+                columns_insert=[("first_name", "time_zone")],
+                class_attrs={},
+            )
         )
-        self.assertTrue(any(s.class_name == "LeadKanbanExtension" for s in specs))
 
-    def test_lead_kanban_compose_includes_industry_code(self):
-        """Composed LeadKanbanView columns include industry_code from extension."""
+    def tearDown(self):
+        """Clear kanban extension registry after each test."""
+        clear_kanban_extension_cache()
+        KANBAN_EXTENSION_REGISTRY.clear()
+        KANBAN_COMPOSED_MAP.clear()
+
+    def test_user_kanban_extension_registers(self):
+        """UserKanbanExtension registers against UserKanbanView path."""
+        specs = KANBAN_EXTENSION_REGISTRY.get(self._TARGET_PATH, [])
+        self.assertTrue(any(s.class_name == "UserKanbanExtension" for s in specs))
+
+    def test_user_kanban_compose_includes_time_zone(self):
+        """Composed UserKanbanView columns include time_zone from extension."""
+        from horilla.contrib.core.views.users import UserKanbanView
         from horilla.extension.kanban.bootstrap import apply_kanban_extensions
-        from horilla_crm.leads.views.core import LeadKanbanView
 
         apply_kanban_extensions(force=True)
-        resolved = resolve_kanban_view_class(LeadKanbanView)
+        resolved = resolve_kanban_view_class(UserKanbanView)
         column_keys = []
         for col in resolved.columns:
             if isinstance(col, str):
                 column_keys.append(col)
             elif isinstance(col, (list, tuple)) and len(col) >= 2:
                 column_keys.append(col[1])
-        self.assertIn("industry_code", column_keys)
+        self.assertIn("time_zone", column_keys)

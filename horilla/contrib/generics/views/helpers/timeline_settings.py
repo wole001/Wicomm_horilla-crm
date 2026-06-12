@@ -117,8 +117,8 @@ class TimelineSettingsFormView(FormView):
 def get_timeline_span_by_row(user, app_label, model_name):
     """
     Return the TimelineSpanBy row for this user/model, or None.
-    Matches model_name case-insensitively so navbar ?model=Opportunity finds row
-    stored as opportunity (or vice versa) and header caption uses saved fields.
+    Matches model_name case-insensitively so navbar ?model=User finds row
+    stored as user (or vice versa) and header caption uses saved fields.
     """
     if not user or not user.is_authenticated or not app_label or not model_name:
         return None

@@ -2,7 +2,7 @@
 Bootstrap all Horilla extension layers after Django has finished loading apps.
 
 Called from ``horilla.urls.project`` (after ``apps.ready``) so extension apps
-listed **after** CRM in ``INSTALLED_APPS`` are included.
+listed after their target apps in ``INSTALLED_APPS`` are included.
 """
 
 from __future__ import annotations

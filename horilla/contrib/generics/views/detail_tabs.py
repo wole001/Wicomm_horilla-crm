@@ -86,6 +86,7 @@ class HorillaDetailTabView(HorillaTabView):
                         "id": "activity",
                     }
                 )
+            # Optional cadences contrib tab when urls includes "cadences".
             if "cadences" in self.urls:
                 self.tabs.append(
                     {

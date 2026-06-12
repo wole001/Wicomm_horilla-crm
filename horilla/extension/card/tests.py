@@ -17,17 +17,17 @@ from horilla.extension.card.registry import (
 
 
 class _TargetCardView(HorillaCardView):
-    """Minimal card target for compose tests."""
+    """Minimal card target for compose tests (core User card pattern)."""
 
-    model_name = "Lead"
-    columns = ["title", "email"]
+    model_name = "User"
+    columns = ["get_avatar_with_name", "email"]
 
 
 class _ExtCard(CardExtension):
     """Sample card extension registered against _TargetCardView."""
 
     _inherit_card = "horilla.extension.card.tests._TargetCardView"
-    columns_insert = [("email", "industry_code")]
+    columns_insert = [("email", "department")]
 
 
 class CardExtensionMetaclassTests(SimpleTestCase):
@@ -63,7 +63,7 @@ class CardExtensionComposeTests(SimpleTestCase):
                 class_name="_ExtCard",
                 module="horilla.extension.card.tests",
                 extension_app_label="tests",
-                columns_insert=[("email", "industry_code")],
+                columns_insert=[("email", "department")],
             )
         )
 
@@ -92,7 +92,7 @@ class CardExtensionComposeTests(SimpleTestCase):
         )
         self.assertEqual(
             composed.columns,
-            ["title", "email", "industry_code"],
+            ["get_avatar_with_name", "email", "department"],
         )
 
     def test_composed_markers(self):

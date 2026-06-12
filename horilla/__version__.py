@@ -26,7 +26,7 @@ __1_11_1__ = _(
 __1_11_0__ = _(
     "Workflow automation engine (rules, conditions, actions, Celery time triggers, "
     "execution history). Public booking platform with slots, public pages, reminders, "
-    "and lead/contact/activity integration. ERP-style _inherit model extensions with "
+    "and booking/activity integration. ERP-style _inherit model extensions with "
     "InjectField and extension-owned migrations. ShiftHour scheduling and BusinessHour "
     "enhancements with holiday support. HTMX-first UX, multi-step form refactors, "
     "django-countries subdivisions, permission inheritance fixes, activity/booking mail "

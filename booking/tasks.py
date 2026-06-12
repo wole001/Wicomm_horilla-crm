@@ -17,6 +17,7 @@ from django.core.mail import EmailMultiAlternatives, get_connection
 from horilla.contrib.mail.models import HorillaMailConfiguration
 from horilla.urls import reverse_lazy
 from horilla.utils import timezone
+from horilla.utils.branding import load_branding
 
 
 def _format_for_booker(booking):
@@ -178,7 +179,7 @@ def send_booking_confirmation_email(booking, cancel_url="", reschedule_url=""):
 
     host_name = page.host.get_full_name() or page.host.username
     meeting_url = booking.meeting_url or ""
-    company_name = str(company) if company else "Horilla CRM"
+    company_name = str(company) if company else str(load_branding()["TITLE"])
 
     template_context = {
         "booking": booking,
@@ -309,7 +310,7 @@ def send_status_change_email(booking, new_status):
     }
     label = status_labels.get(new_status, new_status.title())
     start_str = _format_for_booker(booking)
-    company_name = str(company) if company else "Horilla CRM"
+    company_name = str(company) if company else str(load_branding()["TITLE"])
 
     # Pick the right template based on status
     if new_status == "cancelled":

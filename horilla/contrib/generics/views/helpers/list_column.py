@@ -314,7 +314,7 @@ class ListColumnSelectFormView(LoginRequiredMixin, FormView):
             f[1] if isinstance(f, (list, tuple)) and len(f) >= 2 else f
             for f in visible_fields
         ]
-        # For choice fields: view/store uses raw name (e.g. lead_source) but all_fields
+        # For choice fields: view/store uses raw name (e.g. role) but all_fields
         # uses get_x_display; treat both as visible so the field does not appear in both panels
         visible_field_names_set = set(visible_field_names)
         for name in visible_field_names:

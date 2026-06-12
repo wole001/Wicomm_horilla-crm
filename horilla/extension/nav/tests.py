@@ -18,12 +18,12 @@ from horilla.extension.nav.registry import (
 
 
 class _TargetNavView(HorillaNavView):
-    """Minimal nav target for compose tests."""
+    """Minimal nav target for compose tests (core User navbar pattern)."""
 
-    model_name = "Lead"
-    model_app_label = "leads"
-    column_selector_exclude_fields = ["message_id"]
-    exclude_kanban_fields = "lead_owner"
+    model_name = "User"
+    model_app_label = "core"
+    column_selector_exclude_fields = ["password", "last_login"]
+    exclude_kanban_fields = "department"
     enable_actions = False
 
 
@@ -33,7 +33,7 @@ class _ExtNav(NavExtension):
     _inherit_nav = "horilla.extension.nav.tests._TargetNavView"
     actions_append = [{"action": "Extra", "attrs": "data-test=1"}]
     custom_view_type_update = {"ext_view": {"name": "Extension view"}}
-    column_selector_exclude_fields_append = ["industry_code"]
+    column_selector_exclude_fields_append = ["zip_code"]
 
 
 class NavExtensionMetaclassTests(SimpleTestCase):
@@ -71,7 +71,7 @@ class NavExtensionComposeTests(SimpleTestCase):
                 extension_app_label="tests",
                 actions_append=[{"action": "Extra", "attrs": "data-test=1"}],
                 custom_view_type_update={"ext_view": {"name": "Extension view"}},
-                column_selector_exclude_fields_append=["industry_code"],
+                column_selector_exclude_fields_append=["zip_code"],
             )
         )
 
@@ -98,8 +98,8 @@ class NavExtensionComposeTests(SimpleTestCase):
             "horilla.extension.nav.tests._TargetNavView",
             _TargetNavView,
         )
-        self.assertIn("message_id", composed.column_selector_exclude_fields)
-        self.assertIn("industry_code", composed.column_selector_exclude_fields)
+        self.assertIn("password", composed.column_selector_exclude_fields)
+        self.assertIn("zip_code", composed.column_selector_exclude_fields)
 
     def test_composed_markers(self):
         """Composed nav views expose __horilla_* marker attributes."""

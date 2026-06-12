@@ -190,7 +190,7 @@ class ReviewProcessListView(LoginRequiredMixin, HorillaListView):
 
     @cached_property
     def col_attrs(self):
-        """Return column attributes for opportunity list view."""
+        """Return column attributes for the review process list view."""
         query_params = {}
         if "section" in self.request.GET:
             query_params["section"] = self.request.GET.get("section")

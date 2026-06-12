@@ -76,7 +76,7 @@ class HorillaNavView(TemplateView):
         """
         Wrap the view so _inherit_nav resolves on each request.
 
-        CRM apps register navbar URLs in ``AppLauncher.ready()`` before extension
+        Target apps register navbar URLs in ``AppLauncher.ready()`` before extension
         apps import ``navbars.py``; resolving only at URL-import time would miss extensions.
         """
         if getattr(cls, "__horilla_nav_composed__", False):

@@ -94,7 +94,7 @@ class HorillaListView(HorillaListViewMixin, ListView):
         """
         Return composed filterset when _inherit_filter extensions exist.
 
-        Views keep ``filterset_class = LeadFilter`` at class definition time;
+        Views keep ``filterset_class = UserFilter`` at class definition time;
         resolution runs here (same pattern as ``get_form_class()`` on form views).
         """
         base = type(self).filterset_class
@@ -109,7 +109,7 @@ class HorillaListView(HorillaListViewMixin, ListView):
         """
         Wrap the view so _inherit_list / _inherit_card / _inherit_kanban resolve on each request.
 
-        CRM apps register URLs in ``AppLauncher.ready()`` before extension apps
+        Target apps register URLs in ``AppLauncher.ready()`` before extension apps
         import ``lists.py`` / ``cards.py`` / ``kanbans.py``; resolving only at
         URL-import time would miss extensions.
         """

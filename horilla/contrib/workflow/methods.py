@@ -230,7 +230,7 @@ def _resolve_email_recipients(to_value, also_send_to, instance, user):
 
     Each comma-separated spec can be:
       - "self"                    → the triggering user's email
-      - "instance.field.subfield" → dotted path on the instance (e.g. instance.lead_owner.email)
+      - "instance.field.subfield" → dotted path on the instance (e.g. instance.assigned_to.email)
       - an integer PK             → looked up in User table
       - a raw email address       → used directly
     """
@@ -588,9 +588,9 @@ def _execute_assign_task(action, instance, user):
     except Exception:
         due_datetime = None
 
-    # Resolve owner: prefer a FK field named "owner", "lead_owner", "assigned_to", etc.
+    # Resolve owner: try common owner FK names (OWNER_FIELDS-style) on the instance.
     owner = user
-    for attr in ("lead_owner", "owner", "assigned_to", "created_by"):
+    for attr in ("owner", "assigned_to", "created_by", "lead_owner"):
         candidate = getattr(instance, attr, None)
         if candidate and isinstance(candidate, User):
             owner = candidate

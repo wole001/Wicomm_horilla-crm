@@ -1,5 +1,5 @@
 """
-Forms for User model in Horilla CRM.
+Forms for managing users in the Horilla core module.
 """
 
 # Standard library imports
@@ -79,7 +79,7 @@ class UserFormClass(HorillaMultiStepForm):
                 queryset = queryset.exclude(pk=self.instance.pk)
 
             if queryset.exists():
-                raise forms.ValidationError(_("A user with this email already exists."))
+                raise forms.ValidationError("A user with this email already exists.")
 
         return email
 

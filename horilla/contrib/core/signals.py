@@ -44,7 +44,9 @@ from .utils import fetch_exchange_rates_bulk, get_user_field_permission
 logger = logging.getLogger(__name__)
 
 
+# Fired after a company default currency changes; listeners bulk-update MoneyField amounts.
 company_currency_changed = Signal()
+# Fired when a new Company is created; listeners initialize fiscal year, currency, etc.
 company_created = Signal()
 pre_logout_signal = Signal()
 pre_login_render_signal = Signal()
@@ -56,7 +58,8 @@ def handle_company_currency_change(company, old_currency):
     Kept in signals so Company model does not need to import MultipleCurrency.
     Updates conversion rates for all non-default currencies using a single bulk
     API call; falls back to ratio math if fetch fails.
-    CRM record amount updates run in a background thread to avoid blocking the response.
+    ``company_currency_changed`` is sent in a background thread so listener bulk
+    updates do not block the response.
     """
     request = getattr(_thread_local, "request", None)
     try:
@@ -122,7 +125,7 @@ def handle_company_currency_change(company, old_currency):
             old_rate = old_default.conversion_rate if old_default else Decimal("1.0")
             conversion_rate = Decimal("1.0") / old_rate
 
-        # Send signal in a background thread so CRM bulk updates don't block the response
+        # Send signal in a background thread so listener bulk updates don't block the response
         def _send_currency_changed():
             try:
                 company_currency_changed.send(

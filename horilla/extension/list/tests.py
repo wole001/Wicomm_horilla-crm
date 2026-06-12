@@ -147,47 +147,51 @@ class ListExtensionComposeTests(SimpleTestCase):
         self.assertIs(composed, _TargetListView)
 
 
-class ListExtensionLeadIntegrationTests(SimpleTestCase):
-    """Integration tests with my_lead_extensions Lead list extension."""
+class ListExtensionUserIntegrationTests(SimpleTestCase):
+    """Integration tests with core UserListView list extension."""
+
+    _TARGET_PATH = "horilla.contrib.core.views.users.UserListView"
 
     def setUp(self):
-        """Import my_lead_extensions.lists to populate the registry."""
+        """Register a User list extension spec for integration tests."""
         clear_list_extension_cache()
-        import importlib
-
-        importlib.import_module("my_lead_extensions.lists")
-
-        self.addCleanup(clear_list_extension_cache)
-
-    def test_lead_list_extension_registers_when_imported(self):
-        """LeadListExtension registers against LeadListView path."""
-        specs = LIST_EXTENSION_REGISTRY.get(
-            "horilla_crm.leads.views.core.LeadListView",
-            [],
-        )
-        self.assertTrue(any(s.class_name == "LeadListExtension" for s in specs))
-
-    def test_lead_list_compose_includes_industry_code(self):
-        """Composed LeadListView includes industry_code column and bulk field."""
-        from horilla.extension.list.bootstrap import apply_list_extensions
-        from horilla_crm.leads.views.core import LeadListView
-
-        self.assertTrue(
-            any(
-                s.class_name == "LeadListExtension"
-                for s in LIST_EXTENSION_REGISTRY.get(
-                    "horilla_crm.leads.views.core.LeadListView",
-                    [],
-                )
+        LIST_EXTENSION_REGISTRY.clear()
+        LIST_COMPOSED_MAP.clear()
+        register_list_extension(
+            ListExtensionSpec(
+                inherit_list=self._TARGET_PATH,
+                class_name="UserListExtension",
+                module="horilla.extension.list.tests",
+                extension_app_label="tests",
+                columns_insert=[("email", "city")],
+                bulk_update_fields_append=["city"],
+                class_attrs={},
             )
         )
+
+    def tearDown(self):
+        """Clear list extension registry after each test."""
+        clear_list_extension_cache()
+        LIST_EXTENSION_REGISTRY.clear()
+        LIST_COMPOSED_MAP.clear()
+
+    def test_user_list_extension_registers(self):
+        """UserListExtension registers against UserListView path."""
+        specs = LIST_EXTENSION_REGISTRY.get(self._TARGET_PATH, [])
+        self.assertTrue(any(s.class_name == "UserListExtension" for s in specs))
+
+    def test_user_list_compose_includes_city(self):
+        """Composed UserListView includes city column and bulk field."""
+        from horilla.contrib.core.views.users import UserListView
+        from horilla.extension.list.bootstrap import apply_list_extensions
+
         apply_list_extensions(force=True)
-        resolved = resolve_list_view_class(LeadListView)
+        resolved = resolve_list_view_class(UserListView)
         column_keys = []
         for col in resolved.columns:
             if isinstance(col, str):
                 column_keys.append(col)
             elif isinstance(col, (list, tuple)) and len(col) >= 2:
                 column_keys.append(col[1])
-        self.assertIn("industry_code", column_keys)
-        self.assertIn("industry_code", resolved.bulk_update_fields)
+        self.assertIn("city", column_keys)
+        self.assertIn("city", resolved.bulk_update_fields)

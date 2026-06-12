@@ -12,7 +12,7 @@ from horilla.utils.translation import gettext_lazy as _
 
 @settings_menu.register
 class MailSettings:
-    """Settings menu entries for the Forecast module."""
+    """Settings menu entries for the Mail module."""
 
     title = _("Mail")
     icon = "/assets/icons/email-orange.svg"

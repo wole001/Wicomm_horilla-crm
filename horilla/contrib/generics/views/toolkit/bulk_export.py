@@ -132,7 +132,7 @@ class HorillaBulkExportMixin:
                 row = []
                 for _verbose_name, field_name, field in selected_fields:
                     try:
-                        # Prefer display value for choice fields (e.g. lead_source, industry)
+                        # Prefer display value for choice fields (e.g. role, country)
                         # and CountryField (e.g. country) so export shows label not key
                         display_method_name = f"get_{field_name}_display"
                         if hasattr(obj, display_method_name):

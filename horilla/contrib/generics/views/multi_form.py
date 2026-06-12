@@ -124,7 +124,7 @@ class HorillaMultiStepFormView(FormViewCommonMixin, FormView):
 
             return DynamicMultiStepForm
 
-        # Concrete form from the view (form_class=LeadFormClass, etc.), not the dynamic branch above.
+        # Concrete form from the view (form_class=UserFormClass, etc.), not the dynamic branch above.
         base = super().get_form_class()
         # No registered form on this view — nothing to compose; do not call resolve_form_class.
         if base is None:
@@ -134,7 +134,7 @@ class HorillaMultiStepFormView(FormViewCommonMixin, FormView):
         from horilla.extension.forms.resolve import resolve_form_class
 
         # Views keep form_class = Horilla module form at import time; resolve to composed subclass
-        # (e.g. LeadFormClassExtended) when an extension app registered _inherit_form.
+        # (e.g. UserFormClassExtended) when an extension app registered _inherit_form.
         return resolve_form_class(base)
 
     def get_initial_step(self):

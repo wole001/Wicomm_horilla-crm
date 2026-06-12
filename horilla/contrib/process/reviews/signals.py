@@ -17,7 +17,7 @@ def reviews_post_save_handler(sender, instance, **kwargs):
     """Sync review jobs for a record whenever it is saved.
 
     Registry membership is checked at dispatch time so that app loading order
-    does not matter — the `reviews` app initialises before CRM apps, but
+    does not matter — the `reviews` app initialises before other apps, but
     FEATURE_REGISTRY is fully populated by the time any real request triggers
     a model save.
     """
@@ -31,7 +31,7 @@ def reviews_post_save_handler(sender, instance, **kwargs):
 
 
 # Connect a single global handler.  Per-model connections attempted at app
-# startup fail silently because CRM apps register their models AFTER the
+# startup fail silently because target apps register their models AFTER the
 # reviews app's ready() runs, leaving the registry empty at that point.
 post_save.connect(
     reviews_post_save_handler,

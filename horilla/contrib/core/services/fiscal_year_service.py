@@ -603,8 +603,8 @@ class FiscalYearService:
         """
         Ensure that Quarter.is_current and Period.is_current reflect the given date.
 
-        This is used by check_and_update_fiscal_years so that templates relying on
-        is_current (e.g. forecast views) always see an up-to-date "current" flag.
+        This is used by check_and_update_fiscal_years so that templates and views
+        relying on is_current always see an up-to-date "current" flag.
         """
         Quarter = apps.get_model("core", "Quarter")
         Period = apps.get_model("core", "Period")

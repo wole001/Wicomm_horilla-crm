@@ -21,8 +21,8 @@ __1_11_0__ = _(
     "Workflow automation engine: WorkflowRule / WorkflowCondition / WorkflowAction models, "
     "dynamic condition evaluation, immediate dispatch on record saves, Celery "
     "WorkflowTimeTriggerAction and ScheduledWorkflowExecution, execution history modal, "
-    "FilterSet support, auto-registration for workflow-enabled CRM models (leads, "
-    "accounts, campaigns, contacts, opportunities), modular views, hidden-field action "
+    "FilterSet support, auto-registration for workflow-enabled models via feature "
+    "registration (e.g. users, departments, holidays), modular views, hidden-field action "
     "configuration fixes, restored workflow detail pages, and improved routing namespaces."
 )
 
@@ -35,5 +35,5 @@ __1_10_0__ = _(
     "Initial release: workflow rules per ContentType with create/edit triggers, "
     "AND/OR conditions, ordered immediate actions, time-trigger actions with "
     "Celery scheduling and execution history, Settings → Automations → Workflow Rules, "
-    "and integration with registered CRM models via feature registration."
+    "and integration with registered models via feature registration."
 )

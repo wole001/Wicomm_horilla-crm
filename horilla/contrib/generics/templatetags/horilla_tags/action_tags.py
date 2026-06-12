@@ -83,7 +83,7 @@ def get_intermediate_instance(action, related_obj, request):
 
     Args:
         action: Action dictionary with intermediate_model config
-        related_obj: The related model instance (e.g., Campaign)
+        related_obj: The related model instance (e.g., Department)
         request: The request object to get parent object ID
 
     Returns:

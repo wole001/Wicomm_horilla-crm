@@ -28,9 +28,9 @@ class ExtensionMetaclassTests(SimpleTestCase):
         """Extension classes with _inherit are not registered Django models."""
 
         class SampleExtension(HorillaCoreModel):
-            """Placeholder extension; fields inject onto leads.LeadStatus."""
+            """Placeholder extension; fields inject onto core.Department."""
 
-            _inherit = "leads.LeadStatus"
+            _inherit = "core.Department"
             marker = models.CharField(max_length=1, null=True)
 
         self.assertTrue(getattr(SampleExtension, "_is_horilla_extension", False))

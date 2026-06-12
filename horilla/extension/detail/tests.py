@@ -171,31 +171,43 @@ class DetailExtensionComposeTests(SimpleTestCase):
         self.assertIs(composed, _TargetDetailView)
 
 
-class DetailExtensionLeadIntegrationTests(SimpleTestCase):
-    """Integration tests with my_lead_extensions Lead detail extension."""
+class DetailExtensionUserIntegrationTests(SimpleTestCase):
+    """Integration tests with core UserDetailView detail extension."""
+
+    _TARGET_PATH = "horilla.contrib.core.views.users.UserDetailView"
 
     def setUp(self):
-        """Import my_lead_extensions.details to populate the registry."""
+        """Register a User detail extension spec for integration tests."""
         clear_detail_extension_cache()
-        import importlib
-
-        importlib.import_module("my_lead_extensions.details")
-
-        self.addCleanup(clear_detail_extension_cache)
-
-    def test_lead_detail_extension_registers_when_imported(self):
-        """LeadDetailExtension registers against LeadDetailView path."""
-        specs = DETAIL_EXTENSION_REGISTRY.get(
-            "horilla_crm.leads.views.core.LeadDetailView",
-            [],
+        DETAIL_EXTENSION_REGISTRY.clear()
+        DETAIL_COMPOSED_MAP.clear()
+        register_detail_extension(
+            DetailExtensionSpec(
+                inherit_detail=self._TARGET_PATH,
+                class_name="UserDetailExtension",
+                module="horilla.extension.detail.tests",
+                extension_app_label="tests",
+                body_append=["time_zone"],
+                class_attrs={},
+            )
         )
-        self.assertTrue(any(s.class_name == "LeadDetailExtension" for s in specs))
 
-    def test_lead_detail_compose_includes_industry_code(self):
-        """Composed LeadDetailView body includes industry_code from extension."""
+    def tearDown(self):
+        """Clear detail extension registry after each test."""
+        clear_detail_extension_cache()
+        DETAIL_EXTENSION_REGISTRY.clear()
+        DETAIL_COMPOSED_MAP.clear()
+
+    def test_user_detail_extension_registers(self):
+        """UserDetailExtension registers against UserDetailView path."""
+        specs = DETAIL_EXTENSION_REGISTRY.get(self._TARGET_PATH, [])
+        self.assertTrue(any(s.class_name == "UserDetailExtension" for s in specs))
+
+    def test_user_detail_compose_includes_time_zone(self):
+        """Composed UserDetailView body includes time_zone from extension."""
+        from horilla.contrib.core.views.users import UserDetailView
         from horilla.extension.detail.bootstrap import apply_detail_extensions
-        from horilla_crm.leads.views.core import LeadDetailView
 
         apply_detail_extensions(force=True)
-        resolved = resolve_detail_view_class(LeadDetailView)
-        self.assertIn("industry_code", resolved.body)
+        resolved = resolve_detail_view_class(UserDetailView)
+        self.assertIn("time_zone", resolved.body)

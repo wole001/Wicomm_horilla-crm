@@ -128,7 +128,7 @@ class FormExtensionComposeTests(SimpleTestCase):
 
 
 class FormExtensionKeepOnFormTests(SimpleTestCase):
-    """Tests for Meta.keep_on_form merge on LeadSingleForm."""
+    """Tests for Meta.keep_on_form merge on core HolidayForm."""
 
     def setUp(self):
         """Clear form extension registry before each test."""
@@ -144,22 +144,22 @@ class FormExtensionKeepOnFormTests(SimpleTestCase):
 
     def test_keep_on_form_removes_company_from_exclude(self):
         """keep_on_form meta keeps company visible when removed from exclude."""
-        from horilla_crm.leads.forms import LeadSingleForm
+        from horilla.contrib.core.forms.base import HolidayForm
 
         register_extension(
             ExtensionSpec(
-                inherit_form="horilla_crm.leads.forms.LeadSingleForm",
-                class_name="LeadSingleFormExtension",
-                module="my_lead_extensions.forms",
-                extension_app_label="my_lead_extensions",
+                inherit_form="horilla.contrib.core.forms.base.HolidayForm",
+                class_name="HolidayFormExtension",
+                module="horilla.extension.forms.tests",
+                extension_app_label="tests",
                 meta_attrs={"keep_on_form": ("company",), "exclude": ()},
                 declared_fields={},
                 class_attrs={},
             )
         )
         composed = compose_form_class(
-            "horilla_crm.leads.forms.LeadSingleForm",
-            LeadSingleForm,
+            "horilla.contrib.core.forms.base.HolidayForm",
+            HolidayForm,
         )
         self.assertIn("company", composed.Meta.keep_on_form)
         self.assertNotIn("company", composed.Meta.exclude)
