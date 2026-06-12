@@ -4,6 +4,29 @@
 (function() {
     if (typeof DOMPurify === 'undefined' || typeof $ === 'undefined') return;
 
+    // Dangerous CSS value patterns — block expression() and url() inside style tags/attrs.
+    // DOMPurify cannot inspect CSS content, so we strip it with a pre-pass regex.
+    var CSS_DANGEROUS = /expression\s*\(|url\s*\(/gi;
+
+    // Wipe <style> tag content while keeping the tag itself, then let DOMPurify
+    // handle everything else. This mirrors the server-side bleach sanitizer behaviour.
+    function stripStyleTagContent(html) {
+        return html.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, function(match, content) {
+            return match.replace(content, '');
+        });
+    }
+
+    // Remove dangerous CSS functions from inline style attributes.
+    function stripDangerousInlineStyles(html) {
+        return html.replace(/style\s*=\s*["']([^"']*)["']/gi, function(match, css) {
+            if (CSS_DANGEROUS.test(css)) {
+                CSS_DANGEROUS.lastIndex = 0;
+                return 'style=""';
+            }
+            return match;
+        });
+    }
+
     var purifyConfig = {
         USE_PROFILES: { html: true },
         ALLOW_DATA_ATTR: true,
@@ -13,12 +36,18 @@
             'onmousedown', 'onmouseup', 'ondblclick', 'oncontextmenu', 'ondrag', 'ondrop']
     };
 
+    function sanitize(html) {
+        var result = stripStyleTagContent(html);
+        result = stripDangerousInlineStyles(result);
+        return DOMPurify.sanitize(result, purifyConfig);
+    }
+
     // Function to sanitize code area content
     function sanitizeCodeArea($editor) {
         var $codeArea = $editor.find('.note-codable');
         if ($codeArea.length) {
             var rawCode = $codeArea.val();
-            var sanitized = DOMPurify.sanitize(rawCode, purifyConfig);
+            var sanitized = sanitize(rawCode);
             if (rawCode !== sanitized) {
                 $codeArea.val(sanitized);
             }
@@ -58,7 +87,7 @@
     var originalHtml = $.fn.html;
     $.fn.html = function(value) {
         if (value !== undefined && this.hasClass('note-editable')) {
-            value = DOMPurify.sanitize(value, purifyConfig);
+            value = sanitize(value);
         }
         return originalHtml.apply(this, arguments.length ? [value] : []);
     };
@@ -70,7 +99,7 @@
             setTimeout(function() {
                 try {
                     var content = $target.summernote('code');
-                    var sanitized = DOMPurify.sanitize(content, purifyConfig);
+                    var sanitized = sanitize(content);
                     if (content !== sanitized) {
                         $target.summernote('code', sanitized);
                     }
@@ -85,7 +114,7 @@
         setTimeout(function() {
             try {
                 var content = $target.summernote('code');
-                var sanitized = DOMPurify.sanitize(content, purifyConfig);
+                var sanitized = sanitize(content);
                 if (content !== sanitized) {
                     $target.summernote('code', sanitized);
                 }

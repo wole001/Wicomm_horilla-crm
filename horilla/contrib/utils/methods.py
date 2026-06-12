@@ -10,6 +10,9 @@ Horilla application.
 import logging
 import re
 
+# Third-party imports
+import bleach
+from bleach.css_sanitizer import CSSSanitizer
 from django import template
 from django.middleware.csrf import get_token
 from django.template import loader
@@ -195,50 +198,212 @@ def get_section_info_for_model(model_input):
     return {"section": "", "url": "#"}
 
 
+# Allowlist used by sanitize_html — shared with mail preview and any other HTML-clean callsite.
+HTML_ALLOWED_TAGS = [
+    "a",
+    "abbr",
+    "b",
+    "blockquote",
+    "br",
+    "caption",
+    "cite",
+    "code",
+    "col",
+    "colgroup",
+    "dd",
+    "del",
+    "details",
+    "div",
+    "dl",
+    "dt",
+    "em",
+    "figcaption",
+    "figure",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "hr",
+    "i",
+    "img",
+    "ins",
+    "kbd",
+    "li",
+    "mark",
+    "ol",
+    "p",
+    "pre",
+    "q",
+    "s",
+    "small",
+    "span",
+    "strong",
+    "sub",
+    "summary",
+    "sup",
+    "table",
+    "tbody",
+    "td",
+    "tfoot",
+    "th",
+    "thead",
+    "tr",
+    "u",
+    "ul",
+]
+HTML_ALLOWED_ATTRS = {
+    "*": ["class", "id", "style"],
+    "a": ["href", "title", "target", "rel"],
+    "img": ["src", "alt", "width", "height"],
+    "td": ["colspan", "rowspan"],
+    "th": ["colspan", "rowspan", "scope"],
+    "col": ["span"],
+    "colgroup": ["span"],
+}
+
+# Only visual/layout CSS properties — no expression(), url(), or behaviour.
+_CSS_SANITIZER = CSSSanitizer(
+    allowed_css_properties=[
+        # Color
+        "color",
+        "background-color",
+        "background",
+        # Font — both individual properties and the shorthand Summernote emits
+        "font",
+        "font-size",
+        "font-weight",
+        "font-style",
+        "font-family",
+        "font-variant",
+        # Text
+        "text-align",
+        "text-decoration",
+        "text-transform",
+        "text-indent",
+        "line-height",
+        "letter-spacing",
+        "word-spacing",
+        "white-space",
+        # Box model
+        "margin",
+        "margin-top",
+        "margin-right",
+        "margin-bottom",
+        "margin-left",
+        "padding",
+        "padding-top",
+        "padding-right",
+        "padding-bottom",
+        "padding-left",
+        # Border
+        "border",
+        "border-top",
+        "border-right",
+        "border-bottom",
+        "border-left",
+        "border-color",
+        "border-width",
+        "border-style",
+        "border-radius",
+        "border-collapse",
+        "border-spacing",
+        # Sizing
+        "width",
+        "height",
+        "max-width",
+        "max-height",
+        "min-width",
+        "min-height",
+        # Layout
+        "display",
+        "vertical-align",
+        "float",
+        "clear",
+        "overflow",
+        # List
+        "list-style",
+        "list-style-type",
+    ]
+)
+
+# Dangerous CSS value patterns that bypass the property allowlist.
+# expression() is a legacy IE vector; url() can load external scripts via background.
+_CSS_DANGEROUS_VALUE = re.compile(r"expression\s*\(|url\s*\(", re.IGNORECASE)
+
+
+def _safe_style_attr(tag, name, value):
+    """Attribute callback: drop style values containing dangerous CSS functions."""
+    if name == "style" and _CSS_DANGEROUS_VALUE.search(value):
+        return False
+    return True
+
+
+# Summernote's codeview emits <style> tags — keep the tag but wipe its content
+# so page-level CSS injection is impossible while the tag round-trips cleanly.
+_STYLE_TAG_CONTENT = re.compile(
+    r"(<style[^>]*>)(.*?)(</style>)", re.IGNORECASE | re.DOTALL
+)
+
+
+def sanitize_html(value: str) -> str:
+    """
+    Strip disallowed tags and attributes from HTML using an allowlist.
+
+    Safe for storing rich-text fields (mail body, notification message, etc.).
+    Returns a clean string — dangerous tags are removed, not escaped.
+    Non-string input is returned unchanged.
+    """
+    if not isinstance(value, str):
+        return value
+
+    # Blank out <style> tag content before bleach runs so CSS rules can't leak.
+    value = _STYLE_TAG_CONTENT.sub(r"\1\3", value)
+
+    def _allowed_attrs(tag, name, val):
+        allowed = HTML_ALLOWED_ATTRS.get(tag, []) + HTML_ALLOWED_ATTRS.get("*", [])
+        if name not in allowed:
+            return False
+        return _safe_style_attr(tag, name, val)
+
+    return bleach.clean(
+        value,
+        tags=HTML_ALLOWED_TAGS + ["style"],
+        attributes=_allowed_attrs,
+        css_sanitizer=_CSS_SANITIZER,
+        strip=True,
+    )
+
+
+def sanitize_plain_text(value: str) -> str:
+    """
+    Strip ALL HTML tags from a plain-text field (subject lines, URLs, titles).
+
+    Use this for fields that should never contain markup at all.
+    Non-string input is returned unchanged.
+    """
+    if not isinstance(value, str):
+        return value
+    return bleach.clean(value, tags=[], attributes={}, strip=True)
+
+
+_PLAIN_TEXT_DANGER = re.compile(r"javascript\s*:", re.IGNORECASE)
+
+
 def has_xss(value: str) -> bool:
     """
-    Detect common XSS (Cross-Site Scripting) attempts in a string.
+    Return True if ``value`` contains HTML markup or a javascript: pseudo-protocol.
 
-    This function checks for various XSS patterns including:
-    - Script tags (<script>...</script>)
-    - JavaScript pseudo-protocol (javascript:)
-    - Inline event handlers (onclick, onload, etc.)
-    - Dangerous active content (embed, object, iframe, svg, etc.)
-    - JS API abuse patterns
-
-    Args:
-        value (str): The string to check for XSS patterns.
-
-    Returns:
-        bool: True if XSS patterns are detected, False otherwise.
-
-    Example:
-        >>> has_xss("<script>alert('XSS')</script>")
-        True
-        >>> has_xss("Hello world")
-        False
-        >>> has_xss("javascript:alert('XSS')")
-        True
+    Kept for backwards compatibility with callers that use detect-and-reject logic
+    on plain-text fields (URL fields, etc.).  Prefer ``sanitize_html`` /
+    ``sanitize_plain_text`` for new code — they remove content rather than just detecting it.
     """
     if not isinstance(value, str):
         return False
-
-    xss_patterns = [
-        # <script> ... </script> with any attributes
-        r"<\s*script[^>]*>.*?<\s*/\s*script\s*>",
-        # Opening <script> tag (for incomplete scripts)
-        r"<\s*script[^>]*>",
-        r"javascript\s*:",  # javascript: pseudo-protocol
-        r"on\w+\s*=",  # inline event handlers (onclick, onload, etc.)
-        # dangerous active content
-        r"<\s*(embed|object|iframe|svg|math|link|meta).*?>",
-        # JS API abuse
-        r"on\w+\s*=\s*['\"]?\s*(eval|setTimeout|setInterval|new\s+Function|XMLHttpRequest|fetch|\$\s*\()[^>]*",
-    ]
-
-    combined = re.compile("|".join(xss_patterns), re.IGNORECASE | re.DOTALL)
-    result = bool(combined.search(value))
-    return result
+    return bleach.clean(value, tags=[], attributes={}, strip=True) != value or bool(
+        _PLAIN_TEXT_DANGER.search(value)
+    )
 
 
 def has_ssti(value: str) -> bool:
