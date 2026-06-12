@@ -30,7 +30,7 @@
                 type="text"
                 id="title"
                 name="title"
-                placeholder="Enter template title"
+                placeholder="{% trans 'Enter template title' %}"
                 value="{{ form.title.value|default:'' }}"
                 class="mb-4 text-color-600 p-2 placeholder:text-xs w-full border border-dark-50 rounded-md mt-1 focus-visible:outline-0 placeholder:text-dark-100 text-sm [transition:.3s] focus:border-primary-600"
                 required
@@ -69,7 +69,7 @@
                 <div class="flex gap-1">
                     <button
                         type="button"
-                        title="Insert Field"
+                        title="{% trans 'Insert Field' %}"
                         id="insert-field-btn"
                         class="w-7 h-7 hover:bg-primary-600 hover:text-[white] transition-all p-[5px] border border-[#a8a8a8] hover:border-primary-600 flex items-center justify-center rounded-md"
                         hx-get="{% url 'mail:field_selection' %}"

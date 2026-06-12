@@ -84,7 +84,7 @@
                 <div class="relative mb-3 flex-shrink-0">
                     <input
                         type="text"
-                        placeholder="Search Columns"
+                        placeholder="{% trans 'Search Columns' %}"
                         name="search_columns"
                         class="text-color-600 px-2 py-1.5 pr-[40px] w-full border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-dark-100 placeholder:text-xs text-sm [transition:.3s] focus:border-primary-600"
                         hx-get="{% url 'reports:search_available_fields' report.pk %}"
@@ -150,7 +150,7 @@
                 <div class="relative mb-3 flex-shrink-0">
                     <input
                         type="text"
-                        placeholder="Search Columns"
+                        placeholder="{% trans 'Search Columns' %}"
                         name="search_grouping"
                         class="text-color-600 px-2 py-1.5 pr-[40px] w-full border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-dark-100 placeholder:text-xs text-sm [transition:.3s] focus:border-primary-600"
                         hx-get="{% url 'reports:search_available_fields' report.pk %}"
@@ -339,7 +339,7 @@
                 <div class="relative mb-3 flex-shrink-0">
                     <input
                         type="text"
-                        placeholder="Search Columns"
+                        placeholder="{% trans 'Search Columns' %}"
                         name="search_filter"
                         class="text-color-600 px-2 py-1.5 pr-[40px] w-full border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-dark-100 placeholder:text-xs text-sm [transition:.3s] focus:border-primary-600"
                         hx-get="{% url 'reports:search_available_fields' report.pk %}"
@@ -466,7 +466,7 @@
                                         hx-trigger="change"
                                         hx-indicator="#loading-indicator"
                                     >
-                                        <option value="">Select...</option>
+                                        <option value="">{% trans "Select..." %}</option>
                                         {% for choice in report|get_field_choices:filter_value.original_field %}
                                             <option
                                                 value="{{ choice.value }}"

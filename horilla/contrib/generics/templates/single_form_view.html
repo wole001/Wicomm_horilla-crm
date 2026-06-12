@@ -237,7 +237,7 @@
                                                         >*</span>{% endif %}
                                                     {% if field.field.widget.attrs.readonly or field.field.widget.attrs.data_readonly or field.field.widget.attrs.disabled %}
                                                         <span class="ml-2 text-xs text-gray-500 italic"
-                                                        >(Read Only)</span>
+                                                        >({% trans "Read Only" %})</span>
                                                     {% endif %}
                                                 </label>
                                                 {% if field.name in dynamic_create_fields and field.name in related_models_info %}

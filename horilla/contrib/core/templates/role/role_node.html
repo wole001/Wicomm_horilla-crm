@@ -20,7 +20,7 @@
                             hx-swap="innerHTML"
                             hx-vals='{"role_id": {{ role.id }}}'
                             hx-on:click="openModal()"
-                            title="Add Users"
+                            title="{% trans 'Add Users' %}"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                                 <path
@@ -37,7 +37,7 @@
                             hx-swap="innerHTML"
                             hx-vals='{"role_id": {{ role.id }}}'
                             hx-on:click="openModal()"
-                            title="Add Sub Role"
+                            title="{% trans 'Add Sub Role' %}"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                                 <path fill="currentColor" d="M20 14h-6v6h-4v-6H4v-4h6V4h4v6h6z" />
@@ -51,7 +51,7 @@
                             hx-swap="innerHTML"
                             hx-vals='{"role_id": {{ role.id }}}'
                             hx-on:click="openContentModal()"
-                            title="View Users"
+                            title="{% trans 'View Users' %}"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                                 <path
@@ -68,7 +68,7 @@
                             hx-swap="innerHTML"
                             hx-on:click="openDeleteModeModal()"
                             hx-vals='{"check_dependencies" : "true"}'
-                            title="Delete Role"
+                            title="{% trans 'Delete Role' %}"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                                 <path

@@ -23,7 +23,7 @@
                                     hx-trigger="change"
                                     hx-swap="innerHTML"
                                 >
-                                    <option value="">Select Choice</option>
+                                    <option value="">{% trans "Select Choice" %}</option>
                                     {% for choice in field.choices %}
                                         {% with manual_val=choice_mappings|lookup:slug_value %}
                                             {% if manual_val == choice.value %}
@@ -57,7 +57,7 @@
                                     hx-trigger="change"
                                     hx-swap="innerHTML"
                                 >
-                                    <option value="">Select Related Object</option>
+                                    <option value="">{% trans "Select Related Object" %}</option>
                                     {% for fk_choice in field.foreign_key_choices %}
                                         {% with manual_val=fk_mappings|lookup:slug_value %}
                                             {% if manual_val|stringformat:"s" == fk_choice.id|stringformat:"s" %}
@@ -87,27 +87,27 @@
                                 {% if choice_mappings|lookup:slug_value %}
                                     <span
                                         class="bg-green-100 text-green-500 text-xs font-medium px-2 py-0.5 rounded-full"
-                                    >Mapped</span>
+                                    >{% trans "Mapped" %}</span>
                                 {% elif auto_choice_mappings|lookup:slug_value %}
                                     <span
                                         class="bg-green-100 text-green-500 text-xs font-medium px-2 py-0.5 rounded-full"
-                                    >Auto Mapped</span>
+                                    >{% trans "Auto Mapped" %}</span>
                                 {% else %}
                                     <span class="bg-red-100 text-red-500 text-xs font-medium px-2 py-0.5 rounded-full"
-                                    >Not Mapped</span>
+                                    >{% trans "Not Mapped" %}</span>
                                 {% endif %}
                             {% elif field.is_foreign_key %}
                                 {% if fk_mappings|lookup:slug_value %}
                                     <span
                                         class="bg-green-100 text-green-500 text-xs font-medium px-2 py-0.5 rounded-full"
-                                    >Mapped</span>
+                                    >{% trans "Mapped" %}</span>
                                 {% elif auto_fk_mappings|lookup:slug_value %}
                                     <span
                                         class="bg-green-100 text-green-500 text-xs font-medium px-2 py-0.5 rounded-full"
-                                    >Auto Mapped</span>
+                                    >{% trans "Auto Mapped" %}</span>
                                 {% else %}
                                     <span class="bg-red-100 text-red-500 text-xs font-medium px-2 py-0.5 rounded-full"
-                                    >Not Mapped</span>
+                                    >{% trans "Not Mapped" %}</span>
                                 {% endif %}
                             {% endif %}
                         </td>
@@ -115,7 +115,7 @@
                 {% endwith %}
             {% empty %}
                 <tr>
-                    <td colspan="3" class="text-xs p-2 border border-[#efefef]">No unique values found</td>
+                    <td colspan="3" class="text-xs p-2 border border-[#efefef]">{% trans "No unique values found" %}</td>
                 </tr>
             {% endfor %}
         </tbody>

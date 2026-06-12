@@ -120,12 +120,12 @@
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="text-xs text-color-600">{% trans "Client ID" %} <span class="text-red-500">*</span></label>
-                                <input type="text" name="client_id" value="{{ card.client_id }}" placeholder="your_client_id"
+                                <input type="text" name="client_id" value="{{ card.client_id }}" placeholder="{% trans 'your_client_id' %}"
                                     class="w-full border border-dark-50 rounded-md px-3 py-1.5 text-sm mt-1 focus:outline-none focus:border-primary-500" required>
                             </div>
                             <div>
                                 <label class="text-xs text-color-600">{% trans "Client Secret" %} <span class="text-red-500">*</span></label>
-                                <input type="password" name="client_secret" value="{{ card.client_secret }}" placeholder="your_client_secret"
+                                <input type="password" name="client_secret" value="{{ card.client_secret }}" placeholder="{% trans 'your_client_secret' %}"
                                     class="w-full border border-dark-50 rounded-md px-3 py-1.5 text-sm mt-1 focus:outline-none focus:border-primary-500" required>
                             </div>
                         </div>
@@ -322,17 +322,17 @@
                         <div class="grid grid-cols-3 gap-3">
                             <div>
                                 <label class="text-xs text-color-600">{% trans "Client ID" %} <span class="text-red-500">*</span></label>
-                                <input type="text" name="client_id" value="{{ card.client_id }}" placeholder="Application (client) ID"
+                                <input type="text" name="client_id" value="{{ card.client_id }}" placeholder="{% trans 'Application (client) ID' %}"
                                     class="w-full border border-dark-50 rounded-md px-3 py-1.5 text-sm mt-1 focus:outline-none focus:border-primary-500" required>
                             </div>
                             <div>
                                 <label class="text-xs text-color-600">{% trans "Client Secret" %} <span class="text-red-500">*</span></label>
-                                <input type="password" name="client_secret" value="{{ card.client_secret }}" placeholder="Secret Value"
+                                <input type="password" name="client_secret" value="{{ card.client_secret }}" placeholder="{% trans 'Secret Value' %}"
                                     class="w-full border border-dark-50 rounded-md px-3 py-1.5 text-sm mt-1 focus:outline-none focus:border-primary-500" required>
                             </div>
                             <div>
                                 <label class="text-xs text-color-600">{% trans "Tenant ID" %} <span class="text-red-500">*</span></label>
-                                <input type="text" name="tenant_id" value="{{ card.tenant_id|default:'common' }}" placeholder="Directory (tenant) ID"
+                                <input type="text" name="tenant_id" value="{{ card.tenant_id|default:'common' }}" placeholder="{% trans 'Directory (tenant) ID' %}"
                                     class="w-full border border-dark-50 rounded-md px-3 py-1.5 text-sm mt-1 focus:outline-none focus:border-primary-500" required>
                             </div>
                         </div>

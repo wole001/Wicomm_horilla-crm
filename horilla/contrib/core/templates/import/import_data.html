@@ -173,6 +173,8 @@
     </div>
 
     <script>
+        const _uploadFile = "{% trans 'Upload File' %}";
+        const _uploadFileHint = "{% trans 'CSV, XLS, XLSX ( Max 10MB )' %}";
         function attachFileInputListener() {
             const fileInput = document.getElementById("profileImageUpload");
             const uploadBoxContent = document.getElementById("uploadBoxContent");
@@ -187,8 +189,8 @@
                     } else {
                         uploadBoxContent.innerHTML = `
                             <i class="fa-solid fa-arrow-up-from-bracket text-xl mb-2 text-gray-500"></i>
-                            <p class="text-sm font-semibold text-gray-700">Upload File</p>
-                            <p class="text-xs text-[#9e9e9e]">CSV, XLS, XLSX ( Max 10MB )</p>
+                            <p class="text-sm font-semibold text-gray-700">${_uploadFile}</p>
+                            <p class="text-xs text-[#9e9e9e]">${_uploadFileHint}</p>
                         `;
                     }
                 });

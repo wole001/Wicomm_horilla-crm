@@ -45,7 +45,7 @@
                         <div class="flex items-center">
                             <button
                                 id="saveBtn"
-                                title="Save"
+                                title="{% trans 'Save' %}"
                                 hx-post="{% url 'reports:save_report_changes' report.pk %}"
                                 hx-trigger="click"
                                 hx-target="#mainContent"
@@ -63,7 +63,7 @@
                             <button
                                 id="discardBtn"
                                 class="cursor-pointer"
-                                title="Discard Changes"
+                                title="{% trans 'Discard Changes' %}"
                                 hx-post="{% url 'reports:discard_report_changes' report.pk %}"
                                 hx-trigger="click"
                                 hx-target="#mainContent"
@@ -81,7 +81,7 @@
                         <div class="flex items-center">
                             <button
                                 id="closeBtn"
-                                title="Close Panel"
+                                title="{% trans 'Close Panel' %}"
                                 class="cursor-pointer"
                                 hx-get="{% url 'reports:report_detail' report.pk %}"
                                 hx-target="#mainContent"
@@ -101,7 +101,7 @@
                     <div class="flex items-center">
                         <button
                             id="toggleBtn"
-                            title="Edit Report"
+                            title="{% trans 'Edit Report' %}"
                             hx-get="{% url 'reports:report_update' report.pk %}"
                             hx-target="#panel"
                             hx-swap="outerHTML"

@@ -108,7 +108,7 @@
                                             {{ field.label }}
                                             {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
                                             {% if field.field.widget.attrs.readonly or field.field.widget.attrs.data_readonly or field.field.widget.attrs.disabled or field.field.widget.attrs.data_disabled %}
-                                                <span class="ml-2 text-xs text-gray-500 italic">(Read Only)</span>
+                                                <span class="ml-2 text-xs text-gray-500 italic">({% trans "Read Only" %})</span>
                                             {% endif %}
                                         </span>
                                         {{ field }}
@@ -121,7 +121,7 @@
                                             {{ field.label }}
                                             {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
                                             {% if field.field.widget.attrs.readonly or field.field.widget.attrs.data_readonly or field.field.widget.attrs.disabled or field.field.widget.attrs.data_disabled %}
-                                                <span class="ml-2 text-xs text-gray-500 italic">(Read Only)</span>
+                                                <span class="ml-2 text-xs text-gray-500 italic">({% trans "Read Only" %})</span>
                                             {% endif %}
                                         </span>
                                     </label>
@@ -228,7 +228,7 @@
                                             {% if field.field.required %}<span class="text-red-500"
                                                 >*</span>{% endif %}
                                             {% if field.field.widget.attrs.readonly or field.field.widget.attrs.data_readonly or field.field.widget.attrs.disabled or field.field.widget.attrs.data_disabled %}
-                                                <span class="ml-2 text-xs text-gray-500 italic">(Read Only)</span>
+                                                <span class="ml-2 text-xs text-gray-500 italic">({% trans "Read Only" %})</span>
                                             {% endif %}
                                         </label>
                                         {% if field.name in dynamic_create_fields and field.name in related_models_info %}

@@ -33,7 +33,7 @@
                     id="id_days"
                     name="days"
                     value="{{ days|default:30 }}"
-                    placeholder="Days"
+                    placeholder="{% trans 'Days' %}"
                     {% if not can_change_recyclebinpolicy %}
                         disabled
                     {% endif %}

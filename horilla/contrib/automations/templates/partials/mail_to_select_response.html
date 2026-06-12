@@ -3,7 +3,7 @@
     id="id_mail_to"
     class="js-example-basic-multiple headselect w-full"
     multiple="multiple"
-    data-placeholder="Select user fields"
+    data-placeholder="{% trans 'Select user fields' %}"
 >
     {% for value, label in user_fields %}
         <option value="{{ value }}" {% if value in selected_values %}selected="selected"{% endif %}>{{ label }}</option>

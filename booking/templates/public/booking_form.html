@@ -393,8 +393,8 @@
                 <span id="step2-date-label" class="text-sm font-semibold text-gray-700 truncate mx-2"></span>
                 <!-- 12hr / 24hr toggle -->
                 <div class="fmt-toggle shrink-0">
-                    <button type="button" id="fmt12" onclick="setFmt('12')" class="on">12hr</button>
-                    <button type="button" id="fmt24" onclick="setFmt('24')">24hr</button>
+                    <button type="button" id="fmt12" onclick="setFmt('12')" class="on">{% trans "12hr" %}</button>
+                    <button type="button" id="fmt24" onclick="setFmt('24')">{% trans "24hr" %}</button>
                 </div>
             </div>
 
@@ -526,6 +526,11 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
+const _12hr = "{% trans '12hr' %}";
+const _24hr = "{% trans '24hr' %}";
+const _noSlotsAvailableDay = "{% trans 'No slots available for this day' %}";
+const _failedToLoadSlots = "{% trans 'Failed to load slots.' %}";
+const _noAvailableSlots = "{% trans 'No available slots for this date.' %}";
 const SLOTS_URL          = "{% url 'booking:available_slots' page.slug %}";
 const DURATION_MIN       = {{ page.duration }};
 const BOOKING_WIN        = {{ page.booking_window }};
@@ -619,7 +624,7 @@ function renderDateStrip() {
             const tip = document.getElementById("dc-global-tooltip");
             card.addEventListener("mouseenter", () => {
                 const r = card.getBoundingClientRect();
-                tip.textContent = "No slots available for this day";
+                tip.textContent = _noSlotsAvailableDay;
                 tip.style.left = (r.left + r.width / 2) + "px";
                 tip.style.top  = (r.top - 10) + "px";
                 tip.style.transform = "translateX(-50%) translateY(-100%)";
@@ -683,7 +688,7 @@ function loadSlots(iso) {
         .then(r => r.json())
         .then(data => { allSlots = data.slots || []; bookedSlots = data.booked_slots || []; renderSlots(); })
         .catch(() => {
-            c.innerHTML = `<p class="text-center text-sm text-red-400 py-6">Failed to load slots.</p>`;
+            c.innerHTML = `<p class="text-center text-sm text-red-400 py-6">${_failedToLoadSlots}</p>`;
         });
 }
 
@@ -708,7 +713,7 @@ function fmtTime(hhmm) {
 function renderSlots() {
     const c = document.getElementById("slots-container");
     if (!allSlots.length && !bookedSlots.length) {
-        c.innerHTML = `<p class="text-center text-sm text-gray-400 py-8">No available slots for this date.</p>`;
+        c.innerHTML = `<p class="text-center text-sm text-gray-400 py-8">${_noAvailableSlots}</p>`;
         return;
     }
     const tip = document.getElementById("dc-global-tooltip");

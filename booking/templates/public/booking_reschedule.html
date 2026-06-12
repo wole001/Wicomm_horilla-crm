@@ -96,9 +96,9 @@
                 <span id="selected-date-label" class="text-sm font-semibold text-gray-800 truncate mx-2"></span>
                 <div class="flex shrink-0" style="border:1.5px solid #e5e7eb;border-radius:8px;overflow:hidden;font-size:.72rem;font-weight:600;">
                     <button type="button" id="fmt12" onclick="setFmt('12')"
-                        style="padding:4px 10px;background:var(--brand);color:#fff;border:none;cursor:pointer;">12hr</button>
+                        style="padding:4px 10px;background:var(--brand);color:#fff;border:none;cursor:pointer;">{% trans "12hr" %}</button>
                     <button type="button" id="fmt24" onclick="setFmt('24')"
-                        style="padding:4px 10px;background:#fff;color:#9ca3af;border:none;cursor:pointer;">24hr</button>
+                        style="padding:4px 10px;background:#fff;color:#9ca3af;border:none;cursor:pointer;">{% trans "24hr" %}</button>
                 </div>
             </div>
 
@@ -124,6 +124,8 @@
 
 {% if not blocked %}
 <script>
+const _failedToLoadSlots = "{% trans 'Failed to load slots.' %}";
+const _noSlotsAvailable = "{% trans 'No slots available.' %}";
 const SLOTS_URL   = "{% url 'booking:available_slots' booking.booking_page.slug %}";
 const AVAIL_DAYS  = {{ available_days_json|safe }};
 const BOOKING_WIN = {{ booking.booking_page.booking_window }};
@@ -178,7 +180,7 @@ function selectDate(iso, dateObj) {
 function loadSlots(iso) {
     document.getElementById("slots-container").innerHTML = `<div class="text-center py-4"><div class="inline-block w-5 h-5 border-2 border-gray-200 rounded-full animate-spin" style="border-top-color:var(--brand);"></div></div>`;
     fetch(`${SLOTS_URL}?date=${iso}`).then(r=>r.json()).then(data=>{allSlots=data.slots||[];renderSlots();}).catch(()=>{
-        document.getElementById("slots-container").innerHTML=`<p class="text-center text-red-400 text-sm py-4">Failed to load slots.</p>`;
+        document.getElementById("slots-container").innerHTML=`<p class="text-center text-red-400 text-sm py-4">${_failedToLoadSlots}</p>`;
     });
 }
 function fmtTime(t) {
@@ -201,7 +203,7 @@ function setFmt(fmt) {
 }
 function renderSlots() {
     const c=document.getElementById("slots-container");
-    if(!allSlots.length){c.innerHTML=`<p class="text-center text-sm text-gray-400 py-4">No slots available.</p>`;return;}
+    if(!allSlots.length){c.innerHTML=`<p class="text-center text-sm text-gray-400 py-4">${_noSlotsAvailable}</p>`;return;}
     const grid=document.createElement("div"); grid.className="grid grid-cols-4 gap-2";
     allSlots.forEach(slot=>{
         const btn=document.createElement("div"); btn.className="slot-btn"+(slot===selectedTime?" active":"");

@@ -5,7 +5,7 @@
             id="header-search"
             type="text"
             name="q"
-            placeholder="Search anything..."
+            placeholder="{% trans 'Search anything...' %}"
             class="pl-10 pr-4 py-2 text-dark-400 rounded-lg border border-secondary-200 focus:outline-none focus:border-primary-300 w-64 placeholder:text-dark-50"
             hx-get="{% url 'generics:global_search' %}?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.filter %}filter={{ request.GET.filter }}&{% endif %}{% if request.GET.section %}section={{ request.GET.section }}&{% endif %}prev_url={{ request.get_full_path|remove_query_param:"section" }}"
             hx-target="#mainContent"
@@ -252,6 +252,8 @@
             {% endif %}
         </div>
         <script>
+            const _noUnreadNotifications = "{% trans 'No unread notifications' %}";
+            const _noNotifications = "{% trans 'No notifications' %}";
             document.body.addEventListener('htmx:afterSwap', function(event){
                 if(event.target.classList.contains('notification-list')) {
                 updateNotificationCount();
@@ -319,7 +321,7 @@
                 if (currentCount === 0) {
                     notifList.innerHTML = `
                     <li class="dropdown-notif-message text-center text-xs text-gray-500 py-2">
-                        No unread notifications
+                        ${_noUnreadNotifications}
                     </li>
                     `;
                 }
@@ -340,7 +342,7 @@
                 }
 
                 if (notifList) {
-                notifList.innerHTML = '<li class="dropdown-notif-message text-center text-xs text-gray-500 py-2">No unread notifications</li>';
+                notifList.innerHTML = `<li class="dropdown-notif-message text-center text-xs text-gray-500 py-2">${_noUnreadNotifications}</li>`;
                 }
 
                 const badge = document.querySelector('#notification-count');
@@ -618,7 +620,7 @@
 
                 if ($("#sidebarModal3 .border").length === 0) {
                     $("#sidebarModal3").append(
-                    '<div class="notification-message text-center text-xs text-gray-500 py-2">No notifications</div>'
+                    `<div class="notification-message text-center text-xs text-gray-500 py-2">${_noNotifications}</div>`
                     );
                 }
                 }

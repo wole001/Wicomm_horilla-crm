@@ -33,7 +33,7 @@
                                 hx-target="#initialize-role"
                                 hx-swap="outerHTML"
                                 hx-select="#initialize-role"
-                                title="Click to edit"
+                                title="{% trans 'Click to edit' %}"
                             >
                                 {{ role.role_name }}{% if role.parent_role %}
                                     (Parent: {{ role.parent_role.role_name }}){% endif %}
@@ -45,7 +45,7 @@
                                 hx-select="#initialize-role"
                                 hx-vals='{"delete_role": "{{ role.id }}", "company_id": "{{ company_id }}"}'
                                 class="cursor-pointer"
-                                title="Delete role"
+                                title="{% trans 'Delete role' %}"
                             >
                                 <svg
                                     class="text-[#e54f38]"
@@ -86,7 +86,7 @@
                         <input
                             type="text"
                             name="role_name"
-                            placeholder="Enter role name"
+                            placeholder="{% trans 'Enter role name' %}"
                             value="{% if edit_role %}{{ edit_role.role_name }}{% endif %}"
                             class="text-color-600 p-2 placeholder:text-xs font-normal pr-[40px] w-full border border-dark-50 rounded-md mt-1 focus-visible:outline-0 placeholder:text-dark-100 text-sm [transition:.3s] focus:border-primary-600"
                             required
@@ -96,7 +96,7 @@
                         <label class="text-sm text-color-600">{% trans "Role Description" %}</label>
                         <textarea
                             name="description"
-                            placeholder="Description..."
+                            placeholder="{% trans 'Description...' %}"
                             rows="1"
                             class="text-color-600 p-2 placeholder:text-xs font-normal pr-[40px] w-full border border-dark-50 rounded-md mt-1 focus-visible:outline-0 placeholder:text-dark-100 text-sm [transition:.3s] focus:border-primary-600"
                             required

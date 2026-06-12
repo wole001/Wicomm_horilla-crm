@@ -11,7 +11,7 @@
         hx-push-url="false"
         hx-trigger="change"
     >
-        <option value="">Select Operator</option>
+        <option value="">{% trans "Select Operator" %}</option>
         {% for operator in operators %}
             <option value="{{ operator.0 }}">{{ operator.1 }}</option>
         {% endfor %}

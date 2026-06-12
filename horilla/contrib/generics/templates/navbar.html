@@ -130,7 +130,7 @@
                         type="text"
                         id="searchInput"
                         name="search"
-                        placeholder="Search"
+                        placeholder="{% trans 'Search' %}"
                         class="text-color-600 px-2 py-1.5 pr-[40px] w-full border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-[#d3d3d3] placeholder:text-xs text-sm [transition:.3s] focus:border-primary-600"
                         value="{{ request.GET.search }}"
                         hx-get="{{ main_url }}?{% for key, value in request.GET.items %}{% if key != 'apply_filter' and  key != 'remove_filter' and key != 'field' and key != 'operator' and key != 'value' and key != 'search' %}{% if not forloop.first %}&{% endif %}{{ key }}={{ value }}{% endif %}{% endfor %}{% if request.GET.field %}&apply_filter=true{% endif %}"

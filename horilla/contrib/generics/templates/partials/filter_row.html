@@ -64,7 +64,7 @@
                                         name="start_value"
                                         value="{{row.start_value}}"
                                         class="w-full h-full startValue text-color-600 px-2 py-1.5 border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-[#d3d3d3] placeholder:text-xs text-sm"
-                                        placeholder="Start"
+                                        placeholder="{% trans 'Start' %}"
                                     >
                                 </div>
                                 <div class="h-full w-3/6">
@@ -73,7 +73,7 @@
                                         name="end_value"
                                         value="{{row.end_value}}"
                                         class="w-full h-full endValue text-color-600 px-2 py-1.5 border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-[#d3d3d3] placeholder:text-xs text-sm"
-                                        placeholder="End"
+                                        placeholder="{% trans 'End' %}"
                                     >
                                 </div>
                             </div>
@@ -85,7 +85,7 @@
                                         name="start_value"
                                         value="{{row.start_value}}"
                                         class="w-full h-full startValue text-color-600 px-2 py-1.5 border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-[#d3d3d3] placeholder:text-xs text-sm"
-                                        placeholder="Start"
+                                        placeholder="{% trans 'Start' %}"
                                     >
                                 </div>
                                 <div class="h-full w-3/6">
@@ -94,7 +94,7 @@
                                         name="end_value"
                                         value="{{row.end_value}}"
                                         class="w-full h-full endValue text-color-600 px-2 py-1.5 border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-[#d3d3d3] placeholder:text-xs text-sm"
-                                        placeholder="End"
+                                        placeholder="{% trans 'End' %}"
                                     >
                                 </div>
                             </div>
@@ -107,7 +107,7 @@
                                         name="start_value"
                                         value="{{row.start_value}}"
                                         class="w-full h-full startValue text-color-600 px-2 py-1.5 border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-[#d3d3d3] placeholder:text-xs text-sm"
-                                        placeholder="Start"
+                                        placeholder="{% trans 'Start' %}"
                                     >
                                 </div>
                                 <div class="h-full">
@@ -117,7 +117,7 @@
                                         name="end_value"
                                         value="{{row.end_value}}"
                                         class="w-full h-full endValue text-color-600 px-2 py-1.5 border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-[#d3d3d3] placeholder:text-xs text-sm"
-                                        placeholder="End"
+                                        placeholder="{% trans 'End' %}"
                                     >
                                 </div>
                             </div>
@@ -130,7 +130,7 @@
                                         name="start_value"
                                         value="{{row.start_value}}"
                                         class="w-full h-full startValue text-color-600 px-2 py-1.5 border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-[#d3d3d3] placeholder:text-xs text-sm"
-                                        placeholder="Start"
+                                        placeholder="{% trans 'Start' %}"
                                     >
                                 </div>
                                 <div class="h-full">
@@ -140,7 +140,7 @@
                                         name="end_value"
                                         value="{{row.end_value}}"
                                         class="w-full h-full endValue text-color-600 px-2 py-1.5 border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-[#d3d3d3] placeholder:text-xs text-sm"
-                                        placeholder="End"
+                                        placeholder="{% trans 'End' %}"
                                     >
                                 </div>
                             </div>
@@ -153,7 +153,7 @@
                                         name="start_value"
                                         value="{{row.start_value}}"
                                         class="w-full h-full startValue text-color-600 px-2 py-1.5 border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-[#d3d3d3] placeholder:text-xs text-sm"
-                                        placeholder="Start"
+                                        placeholder="{% trans 'Start' %}"
                                     >
                                 </div>
 
@@ -164,7 +164,7 @@
                                         name="end_value"
                                         value="{{row.end_value}}"
                                         class="w-full h-full endValue text-color-600 px-2 py-1.5 border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-[#d3d3d3] placeholder:text-xs text-sm"
-                                        placeholder="End"
+                                        placeholder="{% trans 'End' %}"
                                     >
                                 </div>
                             </div>
@@ -175,7 +175,7 @@
                                     name="start_value"
                                     value="{{row.start_value}}"
                                     class="w-full h-full startValue text-color-600 px-2 py-1.5 border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-[#d3d3d3] placeholder:text-xs text-sm"
-                                    placeholder="Start"
+                                    placeholder="{% trans 'Start' %}"
                                 >
                                 <span class="text-xs">{% trans 'and' %}</span>
                                 <input
@@ -183,7 +183,7 @@
                                     name="end_value"
                                     value="{{row.end_value}}"
                                     class="endValue h-full text-color-600 px-2 py-1.5 border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-[#d3d3d3] placeholder:text-xs text-sm"
-                                    placeholder="End"
+                                    placeholder="{% trans 'End' %}"
                                 >
                             </div>
                         {% endif %}
@@ -203,7 +203,7 @@
                                     {% endif %}
                                 >
                                 <span class="custom-radio"></span>
-                                <span>True</span>
+                                <span>{% trans "True" %}</span>
                             </label>
                             <label class="flex items-center gap-2">
                                 <input
@@ -216,7 +216,7 @@
                                     {% endif %}
                                 >
                                 <span class="custom-radio"></span>
-                                <span>False</span>
+                                <span>{% trans "False" %}</span>
                             </label>
                         </div>
                     {% elif row.type == 'choice' %}
@@ -338,7 +338,7 @@
                                 name="value"
                                 value="{% if row.value %}{{row.value}}{% endif %}"
                                 class="w-full h-full text-color-600 px-2 py-1.5 border border-dark-50 rounded-md focus-visible:outline-0 placeholder:text-[#d3d3d3] placeholder:text-xs text-sm"
-                                placeholder="Enter value"
+                                placeholder="{% trans 'Enter value' %}"
                             >
                         </div>
                     {% endif %}

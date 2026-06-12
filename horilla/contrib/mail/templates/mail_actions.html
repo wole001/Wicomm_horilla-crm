@@ -9,7 +9,7 @@
                 hx-get="{% url 'mail:outlook_refresh_token' instance.id %}"
                 hx-trigger="click"
                 hx-swap="none"
-                title="Refresh Token"
+                title="{% trans 'Refresh Token' %}"
                 class="w-10 h-7 bg-dark-25 flex justify-center border-r border-r-[white] hover:bg-dark-50 items-center"
             >
                 <img src="{% static 'assets/icons/refresh_black.svg' %}" width="17">
@@ -17,7 +17,7 @@
             <!-- Login -->
             <button
                 class="w-10 h-7 bg-dark-25 flex-1 flex justify-center border-r border-r-[white] hover:bg-dark-50 transition duration-300 items-center"
-                title="Login"
+                title="{% trans 'Login' %}"
                 onclick="window.location.href='{% url 'mail:outlook_mail_server_login' instance.id %}'"
             >
                 <img src="{% static 'assets/icons/login.svg' %}" alt="{% trans 'Login' %}" width="17">
@@ -26,7 +26,7 @@
         {% if  instance.mail_channel == 'outgoing' %}
             <button
                 class="w-10 h-7 bg-dark-25 flex-1 flex justify-center border-r border-r-[white] hover:bg-dark-50 transition duration-300 items-center"
-                title="Send Test Mail"
+                title="{% trans 'Send Test Mail' %}"
                 hx-get="{% url 'mail:send_test_email_view'  %}?instance_id={{instance.id}}&{{ request.GET.urlencode}}"
                 hx-target="#modalBox"
                 hx-on:click="openModal()"
@@ -39,7 +39,7 @@
     {% if can_change_horillamailconfiguration %}
         <button
             class="w-10 h-7 bg-dark-25 flex-1 flex justify-center border-r border-r-[white] hover:bg-dark-50 transition duration-300 items-center"
-            title="Edit"
+            title="{% trans 'Edit' %}"
             {% if instance.type == 'mail' %}
                 {% if instance.mail_channel == 'outgoing' %}
                     hx-get='{% url "mail:mail_server_update_view" instance.id  %}?{{ request.GET.urlencode}}'
@@ -59,7 +59,7 @@
     {% if can_delete_horillamailconfiguration %}
         <button
             class="w-10 h-7 bg-dark-25 flex-1 flex justify-center border-r border-r-[white] hover:bg-dark-50 transition duration-300 items-center"
-            title="Delete"
+            title="{% trans 'Delete' %}"
             hx-get='{% url "mail:mail_server_delete_view" instance.id  %}?{{ request.GET.urlencode}}'
             hx-target="#deleteModeBox"
             hx-vals='{"check_dependencies": "true"}'
