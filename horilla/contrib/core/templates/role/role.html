@@ -171,7 +171,16 @@
                 </div>
             </div>
         {% else %}
-            {% trans "No roles found" %}
+            <div class="flex flex-col items-center justify-center py-16">
+                <img
+                    src="{% static 'assets/img/not-found.svg' %}"
+                    alt="No records"
+                    class="w-60 mb-4"
+                >
+                <p class="text-sm text-center text-gray-500 pb-3">
+                    {% trans "Nothing to show yet. Please add your Role." %}
+                </p>
+            </div>
         {% endif %}
         <script src="{% static 'assets/js/role_tree_manager.js' %}"></script>
     </div>
