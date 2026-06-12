@@ -51,6 +51,16 @@ Note: `horilla/settings/horilla_apps.py` extends `INSTALLED_APPS` further .
 
 This is why template variables like `floating_menu`, `main_section_menu`, etc. appear automatically.
 
+## 🏷️ Template builtins
+
+`TEMPLATES[0]["OPTIONS"]["builtins"]` auto-loads these tag libraries into every template — no `{% load %}` tag required:
+
+| Library | Provides |
+|---|---|
+| `django.templatetags.static` | `{% static %}` tag |
+| `django.templatetags.i18n` | `{% trans %}`, `{% blocktrans %}` tags |
+| `horilla.contrib.generics.templatetags.horilla_tags` | Horilla-specific tags and filters (permissions, formatting, etc.) |
+
 ## 🔌 REST Framework / JWT
 
 The settings define:
