@@ -1,18 +1,16 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Arabic translations for Horilla Reports module.
+# Copyright (C) 2024 Horilla
+# This file is distributed under the same license as the Horilla package.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Horilla\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-19 10:06+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2026-06-12 09:57+0000\n"
+"PO-Revision-Date: 2026-06-12 00:00+0000\n"
+"Last-Translator: Horilla Team\n"
+"Language-Team: Arabic\n"
+"Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,6 +19,55 @@ msgstr ""
 
 msgid "Module for creating and customizing reports across all system modules."
 msgstr "وحدة لإنشاء التقارير وتخصيصها عبر جميع وحدات النظام."
+
+msgid ""
+"Removed redundant fields attributes superseded by form_class on report CRUD "
+"views, standardized first-party import groups, and added docstrings for "
+"pylint compliance."
+msgstr ""
+"إزالة سمات الحقول الزائدة التي حل محلها form_class في طرق عرض CRUD للتقارير، "
+"وتوحيد مجموعات الاستيراد الداخلية، وإضافة توثيق docstrings لتوافق pylint."
+
+msgid ""
+"Report forms aligned with HorillaModelForm layout: field_order and Meta."
+"fields = \"__all__\" with Meta.exclude; folder and column HTMX unchanged."
+msgstr ""
+"تم محاذاة نماذج التقارير مع تخطيط HorillaModelForm: field_order وMeta.fields "
+"مع Meta.exclude؛ المجلد وعمود HTMX دون تغيير."
+
+msgid ""
+"Release 1.10: reports ship under contrib with app label reports. Cross-app "
+"report wiring, ContentType references, namespaces, and registrations updated "
+"for the contrib naming scheme."
+msgstr ""
+"الإصدار 1.10: تُشحن التقارير ضمن contrib بتسمية تطبيق reports. تم تحديث "
+"توصيل التقارير عبر التطبيقات ومراجع ContentType ومساحات الأسماء والتسجيلات."
+
+msgid ""
+"Improved report compatibility with dashboard multi-widget support, enhanced "
+"chart_value_field handling, and minor stability improvements for report "
+"rendering and filter processing."
+msgstr ""
+"تحسين توافق التقارير مع دعم لوحة التحكم متعددة الأدوات، وتحسين معالجة "
+"chart_value_field، وتحسينات استقرار طفيفة لعرض التقارير ومعالجة الفلاتر."
+
+msgid ""
+"Added support for advanced chart types including Treemap, Area charts, "
+"Heatmaps, Sankey diagrams, and Radar charts. Improved compatibility with the "
+"new visualization and analytics framework."
+msgstr ""
+"إضافة دعم لأنواع مخططات متقدمة تشمل خريطة الشجرة ومخططات المساحة "
+"والخرائط الحرارية ومخططات سانكي والرادار. تحسين التوافق مع إطار التصور "
+"والتحليلات الجديد."
+
+msgid ""
+"Migrated from Django AppConfig to Horilla AppLauncher and and replacedDjango "
+"utilities with horilla.utils.decorators, horilla.utils.translation,and "
+"horilla.shortcuts where applicable."
+msgstr ""
+"تم الترحيل من Django AppConfig إلى Horilla AppLauncher واستبدال أدوات "
+"Django بـ horilla.utils.decorators وhorilla.utils.translation "
+"وhorilla.shortcuts حيثما ينطبق."
 
 msgid "Reports"
 msgstr "التقارير"
@@ -70,6 +117,21 @@ msgstr "مخطط أفقي مكدس"
 msgid "Scatter Chart"
 msgstr "مخطط مبعثر"
 
+msgid "Treemap"
+msgstr "خريطة شجرية"
+
+msgid "Area Chart"
+msgstr "مخطط مساحة"
+
+msgid "Heatmap"
+msgstr "خريطة حرارية"
+
+msgid "Sankey"
+msgstr "مخطط سانكي"
+
+msgid "Radar Chart"
+msgstr "مخطط رادار"
+
 msgid "Report Owner"
 msgstr "مالك التقرير"
 
@@ -84,6 +146,9 @@ msgstr "حقل المخطط"
 
 msgid "Secondary Field"
 msgstr "الحقل الثانوي"
+
+msgid "Value Field (Y-axis)"
+msgstr "حقل القيمة (محور Y)"
 
 msgid "Report"
 msgstr "تقرير"
@@ -121,42 +186,6 @@ msgstr "C"
 msgid "A"
 msgstr "A"
 
-msgid "Down"
-msgstr ""
-
-msgid "Add to Dashboard"
-msgstr "إضافة إلى لوحة التحكم"
-
-msgid "Record Count"
-msgstr "عدد السجلات"
-
-msgid "Is"
-msgstr "يساوي"
-
-msgid "Contains"
-msgstr "يحتوي على"
-
-msgid "Greater than"
-msgstr "أكبر من"
-
-msgid "Less than"
-msgstr "أقل من"
-
-msgid "Greater or equal"
-msgstr "أكبر من أو يساوي"
-
-msgid "Less or equal"
-msgstr "أقل من أو يساوي"
-
-msgid "Close"
-msgstr ""
-
-msgid "AND"
-msgstr "و"
-
-msgid "OR"
-msgstr "أو"
-
 msgid "Summary Report"
 msgstr "تقرير ملخص"
 
@@ -193,8 +222,11 @@ msgstr "التجميع"
 msgid "Filter"
 msgstr "التصفية"
 
+msgid "Search Columns"
+msgstr "البحث في الأعمدة"
+
 msgid "Search"
-msgstr ""
+msgstr "بحث"
 
 msgid "Selected Columns"
 msgstr "الأعمدة المحددة"
@@ -224,25 +256,40 @@ msgid "Min"
 msgstr "الحد الأدنى"
 
 msgid "Seacrch"
-msgstr ""
+msgstr "بحث"
 
 msgid "Apply Filters"
-msgstr "تطبيق عوامل التصفية"
+msgstr "تطبيق الفلاتر"
+
+msgid "Select..."
+msgstr "اختر..."
 
 msgid "Report:"
 msgstr "التقرير:"
 
 msgid "Refresh"
-msgstr ""
+msgstr "تحديث"
 
 msgid "Save"
 msgstr "حفظ"
 
+msgid "Discard Changes"
+msgstr "تجاهل التغييرات"
+
+msgid "Close"
+msgstr "إغلاق"
+
+msgid "Close Panel"
+msgstr "إغلاق اللوحة"
+
+msgid "Edit Report"
+msgstr "تعديل التقرير"
+
 msgid "Edit"
-msgstr ""
+msgstr "تعديل"
 
 msgid "Actions"
-msgstr ""
+msgstr "الإجراءات"
 
 msgid "You have unsaved changes. Click"
 msgstr "لديك تغييرات غير محفوظة. انقر"
@@ -259,6 +306,12 @@ msgstr "للرجوع."
 msgid "Detail table"
 msgstr "جدول تفصيلي"
 
+msgid "Filtered by pivot:"
+msgstr "مُصفّى حسب المحور:"
+
+msgid "Clear pivot filter"
+msgstr "مسح فلتر المحور"
+
 msgid "Pivot table"
 msgstr "جدول محوري"
 
@@ -268,23 +321,26 @@ msgstr "مخطط التقرير"
 msgid "Change Chart"
 msgstr "تغيير المخطط"
 
-msgid "Change Field"
-msgstr "تغيير الحقل"
-
 msgid "Export as PDF"
-msgstr ""
+msgstr "تصدير كـ PDF"
 
 msgid "Export as PNG"
-msgstr ""
+msgstr "تصدير كـ PNG"
+
+msgid "Add to Dashboard"
+msgstr "إضافة إلى لوحة التحكم"
 
 msgid "Record Count:"
 msgstr "عدد السجلات:"
 
+msgid "Favourite"
+msgstr "مفضلة"
+
 msgid "Move"
-msgstr ""
+msgstr "نقل"
 
 msgid "Delete"
-msgstr ""
+msgstr "حذف"
 
 msgid "Select Default Reports"
 msgstr "تحديد التقارير الافتراضية"
@@ -312,3 +368,37 @@ msgstr "الاسم"
 
 msgid "Type"
 msgstr "النوع"
+
+msgid "Average"
+msgstr "المتوسط"
+
+msgid "Minimum"
+msgstr "الحد الأدنى"
+
+msgid "Maximum"
+msgstr "الحد الأقصى"
+
+msgid "Record count"
+msgstr "عدد السجلات"
+
+#, python-format
+msgid "%(metric)s of %(field)s"
+msgstr "%(metric)s من %(field)s"
+
+msgid "Chart type"
+msgstr "نوع المخطط"
+
+msgid "X-axis (Group by)"
+msgstr "المحور السيني (تجميع حسب)"
+
+msgid "Stack by (second group)"
+msgstr "تكديس حسب (المجموعة الثانية)"
+
+msgid "Y-axis (Value)"
+msgstr "المحور الصادي (القيمة)"
+
+msgid "Invalid field '{}'. This field does not exist on the model."
+msgstr "الحقل '{}' غير صالح. هذا الحقل غير موجود في النموذج."
+
+msgid "Invalid filter value: {}"
+msgstr "قيمة الفلتر غير صالحة: {}"

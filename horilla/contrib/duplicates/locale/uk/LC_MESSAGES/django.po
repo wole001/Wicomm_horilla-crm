@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-24 14:31+0530\n"
+"POT-Creation-Date: 2026-06-12 08:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,6 +27,29 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Standardized first-party import groups and aligned with the platform 1.11.1 "
+"release; rules, criteria, and merge behavior unchanged."
+msgstr ""
+
+msgid ""
+"Duplicate rule forms aligned with HorillaModelForm layout: field_order and "
+"Meta.fields = \"__all__\"; criteria rows and validation unchanged."
+msgstr ""
+
+msgid ""
+"Release 1.10: duplicate control ships under contrib with app label "
+"duplicates. Feature registration, merge flows, and cross-model references "
+"use contrib paths and matching app labels for clone and duplicate tooling."
+msgstr ""
+
+msgid ""
+"Renamed Clone Management to Duplicate Control. Added duplicate validation "
+"for inline field edits with warning modal for duplicate conflicts. Fixed "
+"duplicate detail tab injection issue and improved merge flow handling for "
+"edge cases."
+msgstr ""
+
+msgid ""
 "Introduced duplicate management capabilities with matching rules, potential "
 "duplicate detection, and merge comparison and summary workflows."
 msgstr ""
@@ -37,9 +60,27 @@ msgstr ""
 msgid "Potential Duplicates"
 msgstr ""
 
+msgid "Similar records were found. Do you want to proceed?"
+msgstr ""
+
+#, python-format
+msgid ""
+"Each matching criterion must use a different field. The following field(s) "
+"appear more than once: %(fields)s"
+msgstr ""
+
+msgid "Matching Criteria row has missing required field: Field."
+msgstr ""
+
+msgid "At least one matching criterion is required."
+msgstr ""
+
 msgid ""
 "Matching rule must apply to the same content type as duplicate rule. Please "
 "select a matching rule for the selected module."
+msgstr ""
+
+msgid "Duplicate Control"
 msgstr ""
 
 msgid "Matching Rules"
@@ -171,6 +212,18 @@ msgstr ""
 msgid "Duplicate Rule Conditions"
 msgstr ""
 
+msgid "Close"
+msgstr ""
+
+msgid "Potential Duplicate Records:"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Continue"
+msgstr ""
+
 msgid "Edit"
 msgstr ""
 
@@ -180,14 +233,7 @@ msgstr ""
 msgid "Nothing to show yet. Please add your Matching Rules."
 msgstr ""
 
-msgid ""
-"Are you sure you want to merge the selected duplicate(s) into this record?"
-msgstr ""
-
 msgid "Potential Duplicate Records"
-msgstr ""
-
-msgid "Close"
 msgstr ""
 
 msgid "Compare"
@@ -210,16 +256,13 @@ msgstr ""
 msgid "Merge Summary"
 msgstr ""
 
-msgid "You're about to merge these leads. You can't undo merging."
+msgid "You're about to merge these records. You can't undo merging."
 msgstr ""
 
 msgid "Selected Values"
 msgstr ""
 
 msgid "Selected Value"
-msgstr ""
-
-msgid "Cancel"
 msgstr ""
 
 msgid "Merge"
@@ -237,10 +280,13 @@ msgstr ""
 msgid "Clear Session"
 msgstr ""
 
-msgid "No records found"
+msgid "Select Visible Items"
 msgstr ""
 
-msgid "You can only select up to"
+msgid "No potential duplicates found."
+msgstr ""
+
+msgid "You can only merge up to"
 msgstr ""
 
 msgid "items at a time"
@@ -252,10 +298,10 @@ msgstr ""
 msgid "Details"
 msgstr ""
 
-msgid "Merge Selected"
+msgid "You do not have permission to view this."
 msgstr ""
 
-msgid "Selected"
+msgid "Invalid request for potential duplicates."
 msgstr ""
 
 msgid "Missing required parameters."
@@ -283,11 +329,12 @@ msgstr ""
 msgid "Successfully merged {count} duplicate(s) into master record."
 msgstr ""
 
-msgid ""
-"The master record is different from the current record. You will be "
-"redirected to the master record."
-msgstr ""
-
 #, python-brace-format
 msgid "Error merging duplicates: {error}"
+msgstr ""
+
+msgid "Merge Selected"
+msgstr ""
+
+msgid "Record"
 msgstr ""

@@ -1,29 +1,42 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# German translations for Horilla Meeting module.
+# Copyright (C) 2024 Horilla
+# This file is distributed under the same license as the Horilla package.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Horilla\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-15 15:21+0530\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2026-06-12 09:30+0000\n"
+"PO-Revision-Date: 2026-06-12 00:00+0000\n"
+"Last-Translator: Horilla Team\n"
+"Language-Team: German\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
 msgid "Meeting Integration"
-msgstr ""
+msgstr "Besprechungsintegration"
 
 msgid ""
 "Zoom and Microsoft Teams meeting integration with company access control, "
 "OAuth connections, personal meeting URLs, and activity meeting links."
 msgstr ""
+"Besprechungsintegration fuer Zoom und Microsoft Teams mit "
+"Unternehmenszugangskontrolle, OAuth-Verbindungen, persoenlichen "
+"Besprechungs-URLs und Aktivitaets-Besprechungslinks."
+
+msgid ""
+"Fixed MultipleObjectsReturned on the Zoom and Teams OAuth callbacks. "
+"Improved the access-control UI: constrained the section to the viewport, "
+"added a count + eye pill for allowed users and roles that opens a "
+"HorillaListView modal, and fixed the card-wide click handler. Added "
+"integration-settings view docstrings for pylint."
+msgstr ""
+"MultipleObjectsReturned in den Zoom- und Teams-OAuth-Callbacks behoben. "
+"Zugangskontroll-UI verbessert und Indikatoren fuer erlaubte Benutzer und "
+"Rollen hinzugefuegt. Docstrings fuer pylint-Konformitaet hinzugefuegt."
 
 msgid ""
 "Initial release: company-level meeting integration settings, Zoom and Teams "
@@ -31,489 +44,470 @@ msgid ""
 "screens under Settings → Integrations, My Settings entries, and generate-"
 "link support for activities."
 msgstr ""
+"Erstveroeffentlichung: Besprechungsintegrationseinstellungen auf "
+"Unternehmensebene, OAuth fuer Zoom und Teams, anbieterspezifische "
+"Einstellungen pro Benutzer, MeetingLink-CRUD, Admin-Integrationsbildschirme "
+"und Link-Generierungsunterstuetzung fuer Aktivitaeten."
 
 msgid "Roles"
-msgstr ""
+msgstr "Rollen"
 
 msgid "Select roles"
-msgstr ""
+msgstr "Rollen auswaehlen"
 
 msgid "Users"
-msgstr ""
+msgstr "Benutzer"
 
 msgid "Select users"
-msgstr ""
+msgstr "Benutzer auswaehlen"
 
 msgid "Meeting"
-msgstr ""
+msgstr "Besprechung"
 
 msgid "Zoom"
-msgstr ""
+msgstr "Zoom"
 
 msgid "Google Meet"
-msgstr ""
+msgstr "Google Meet"
 
 msgid "Microsoft Teams"
-msgstr ""
+msgstr "Microsoft Teams"
 
 msgid "All Users"
-msgstr ""
+msgstr "Alle Benutzer"
 
 msgid "Specific Roles"
-msgstr ""
+msgstr "Bestimmte Rollen"
 
 msgid "Specific Users"
-msgstr ""
+msgstr "Bestimmte Benutzer"
 
 msgid "Enabled"
-msgstr ""
+msgstr "Aktiviert"
 
 msgid "Access Type"
-msgstr ""
+msgstr "Zugriffstyp"
 
 msgid "Who can generate meeting links."
-msgstr ""
+msgstr "Wer Besprechungslinks generieren kann."
 
 msgid "Allowed Roles"
-msgstr ""
+msgstr "Erlaubte Rollen"
 
 msgid "Allowed Users"
-msgstr ""
+msgstr "Erlaubte Benutzer"
 
 msgid "Meeting Integration Setting"
-msgstr ""
+msgstr "Besprechungsintegrationseinstellung"
 
 msgid "Meeting Integration Settings"
-msgstr ""
+msgstr "Besprechungsintegrationseinstellungen"
 
 msgid "User"
-msgstr ""
+msgstr "Benutzer"
 
 msgid "Provider"
-msgstr ""
+msgstr "Anbieter"
 
 msgid "Personal Meeting URL"
-msgstr ""
+msgstr "Persoenliche Besprechungs-URL"
 
 msgid "Your static personal meeting room link, if available."
-msgstr ""
+msgstr "Ihr statischer persoenlicher Besprechungsraum-Link, falls verfuegbar."
 
 msgid "User Meeting Config"
-msgstr ""
+msgstr "Benutzerbesprechungskonfiguration"
 
 msgid "User Meeting Configs"
-msgstr ""
+msgstr "Benutzerbesprechungskonfigurationen"
 
 msgid "Client ID"
-msgstr ""
+msgstr "Client-ID"
 
 msgid "Client Secret"
-msgstr ""
+msgstr "Client-Geheimnis"
 
 msgid "OAuth Token"
-msgstr ""
+msgstr "OAuth-Token"
 
 msgid "OAuth State"
-msgstr ""
+msgstr "OAuth-Status"
 
 msgid "Connected Account Email"
-msgstr ""
+msgstr "E-Mail des verbundenen Kontos"
 
 msgid "Zoom OAuth Config"
-msgstr ""
+msgstr "Zoom OAuth-Konfiguration"
 
 msgid "Zoom OAuth Configs"
-msgstr ""
+msgstr "Zoom OAuth-Konfigurationen"
 
 msgid "Client ID (Application ID)"
-msgstr ""
+msgstr "Client-ID (Anwendungs-ID)"
 
 msgid "Tenant ID"
-msgstr ""
+msgstr "Mandanten-ID"
 
 msgid "Your Azure AD tenant ID, or 'common' for multi-tenant apps."
-msgstr ""
+msgstr "Ihre Azure AD-Mandanten-ID oder 'common' fuer Multi-Mandanten-Apps."
 
 msgid "Microsoft Teams OAuth Config"
-msgstr ""
+msgstr "Microsoft Teams OAuth-Konfiguration"
 
 msgid "Microsoft Teams OAuth Configs"
-msgstr ""
+msgstr "Microsoft Teams OAuth-Konfigurationen"
 
-msgid "Created By"
-msgstr ""
+msgid "Roles with access"
+msgstr "Rollen mit Zugriff"
 
-msgid "Meeting Title"
-msgstr ""
+msgid "Close"
+msgstr "Schliessen"
 
-msgid "Meeting URL"
-msgstr ""
-
-msgid "Start Date & Time"
-msgstr ""
-
-msgid "End Date & Time"
-msgstr ""
-
-msgid "Notes"
-msgstr ""
-
-msgid "Meeting Link"
-msgstr ""
-
-msgid "Meeting Links"
-msgstr ""
+msgid "Users with access"
+msgstr "Benutzer mit Zugriff"
 
 msgid "Select Roles"
-msgstr ""
+msgstr "Rollen auswaehlen"
 
 msgid "Select Users"
-msgstr ""
+msgstr "Benutzer auswaehlen"
 
 msgid "Search..."
-msgstr ""
+msgstr "Suchen..."
 
 msgid "Select all"
-msgstr ""
+msgstr "Alle auswaehlen"
 
 msgid "Clear all"
-msgstr ""
+msgstr "Alle loeschen"
 
 msgid "No roles found."
-msgstr ""
+msgstr "Keine Rollen gefunden."
 
 msgid "No users found."
-msgstr ""
+msgstr "Keine Benutzer gefunden."
 
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 msgid "Save"
-msgstr ""
+msgstr "Speichern"
 
-msgid "Edit Meeting Link"
-msgstr ""
-
-msgid "Create Meeting Link"
-msgstr ""
-
-msgid "Back to list"
-msgstr ""
-
-msgid "Update"
-msgstr ""
-
-msgid "Create"
-msgstr ""
+msgid "Meeting Links"
+msgstr "Besprechungslinks"
 
 msgid ""
 "Enable meeting integration to allow users to generate and share meeting "
 "links using Zoom, Google Meet, Microsoft Teams, and more."
 msgstr ""
+"Aktivieren Sie die Besprechungsintegration, damit Benutzer Besprechungslinks "
+"mit Zoom, Google Meet, Microsoft Teams und mehr generieren und teilen koennen."
 
 msgid "Enable Meeting Integration"
-msgstr ""
+msgstr "Besprechungsintegration aktivieren"
 
 msgid "Disable Meeting Integration?"
-msgstr ""
+msgstr "Besprechungsintegration deaktivieren?"
 
 msgid "Users will no longer be able to create meeting links."
-msgstr ""
+msgstr "Benutzer werden keine Besprechungslinks mehr erstellen koennen."
 
 msgid "Enable Meeting Integration?"
-msgstr ""
+msgstr "Besprechungsintegration aktivieren?"
 
 msgid "Enabled — users can now create meeting links"
-msgstr ""
+msgstr "Aktiviert — Benutzer koennen jetzt Besprechungslinks erstellen"
 
 msgid "Disabled — users cannot create meeting links"
-msgstr ""
+msgstr "Deaktiviert — Benutzer koennen keine Besprechungslinks erstellen"
 
 msgid "Access Control"
-msgstr ""
+msgstr "Zugangskontrolle"
 
 msgid "Choose who can generate meeting links."
-msgstr ""
+msgstr "Waehlen Sie, wer Besprechungslinks generieren kann."
 
 msgid "Set access to All Users?"
-msgstr ""
+msgstr "Zugriff fuer alle Benutzer festlegen?"
 
 msgid "Every user in the company will be able to create meeting links."
-msgstr ""
+msgstr "Jeder Benutzer im Unternehmen wird Besprechungslinks erstellen koennen."
 
 msgid "Every user in the company can use meeting links."
-msgstr ""
+msgstr "Jeder Benutzer im Unternehmen kann Besprechungslinks verwenden."
 
 msgid "Active"
-msgstr ""
+msgstr "Aktiv"
 
 msgid "Click to activate"
-msgstr ""
+msgstr "Klicken zum Aktivieren"
 
 msgid "Select Specific Roles?"
-msgstr ""
+msgstr "Bestimmte Rollen auswaehlen?"
 
 msgid "Only users with selected roles will be able to create meeting links."
-msgstr ""
+msgstr "Nur Benutzer mit ausgewaehlten Rollen werden Besprechungslinks erstellen koennen."
 
 msgid "Only users with selected roles can use meeting links."
-msgstr ""
+msgstr "Nur Benutzer mit ausgewaehlten Rollen koennen Besprechungslinks verwenden."
 
 msgid "· Click to add or remove roles."
-msgstr ""
+msgstr "· Klicken zum Hinzufuegen oder Entfernen von Rollen."
+
+msgid "role(s)"
+msgstr "Rolle(n)"
 
 msgid "Click to select"
-msgstr ""
-
-msgid "role(s) have access"
-msgstr ""
+msgstr "Klicken zum Auswaehlen"
 
 msgid "Select Specific Users?"
-msgstr ""
+msgstr "Bestimmte Benutzer auswaehlen?"
 
 msgid "Only selected users will be able to create meeting links."
-msgstr ""
+msgstr "Nur ausgewaehlte Benutzer werden Besprechungslinks erstellen koennen."
 
 msgid "Only selected individual users can use meeting links."
-msgstr ""
+msgstr "Nur ausgewaehlte individuelle Benutzer koennen Besprechungslinks verwenden."
 
 msgid "· Click to add or remove users."
-msgstr ""
+msgstr "· Klicken zum Hinzufuegen oder Entfernen von Benutzern."
 
-msgid "user(s) have access"
-msgstr ""
+msgid "user(s)"
+msgstr "Benutzer"
 
-msgid "New Meeting Link"
-msgstr ""
+msgid "Name"
+msgstr "Name"
 
-msgid "Title"
-msgstr ""
-
-msgid "Start"
-msgstr ""
-
-msgid "End"
-msgstr ""
-
-msgid "Actions"
-msgstr ""
-
-msgid "Edit"
-msgstr ""
-
-msgid "Delete this meeting link?"
-msgstr ""
-
-msgid "Delete"
-msgstr ""
-
-msgid "No meeting links yet."
-msgstr ""
-
-msgid "Create your first meeting link"
-msgstr ""
+msgid "No entries found."
+msgstr "Keine Eintraege gefunden."
 
 msgid "Meeting Accounts"
-msgstr ""
+msgstr "Besprechungskonten"
 
 msgid ""
 "Meeting integration is not currently enabled for your account. Please "
 "contact your administrator."
 msgstr ""
+"Die Besprechungsintegration ist fuer Ihr Konto derzeit nicht aktiviert. "
+"Bitte kontaktieren Sie Ihren Administrator."
 
 msgid "Connected"
-msgstr ""
+msgstr "Verbunden"
 
 msgid "Connected Account"
-msgstr ""
+msgstr "Verbundenes Konto"
 
 msgid "Reconnect"
-msgstr ""
+msgstr "Erneut verbinden"
 
 msgid "Disconnect"
-msgstr ""
+msgstr "Trennen"
 
 msgid "Credentials saved. Click Connect to authorize with Zoom."
-msgstr ""
+msgstr "Anmeldedaten gespeichert. Klicken Sie auf Verbinden, um mit Zoom zu autorisieren."
 
 msgid "Connect Zoom"
-msgstr ""
+msgstr "Zoom verbinden"
 
 msgid "Edit Credentials"
-msgstr ""
+msgstr "Anmeldedaten bearbeiten"
 
 msgid "Save Credentials"
-msgstr ""
+msgstr "Anmeldedaten speichern"
 
 msgid "How to set up Zoom OAuth"
-msgstr ""
+msgstr "So richten Sie Zoom OAuth ein"
 
 msgid "Go to Zoom Marketplace"
-msgstr ""
+msgstr "Zum Zoom Marketplace wechseln"
 
 msgid "Visit"
-msgstr ""
+msgstr "Besuchen"
 
 msgid "and sign in."
-msgstr ""
+msgstr "und anmelden."
 
 msgid "Create an OAuth app"
-msgstr ""
+msgstr "Eine OAuth-App erstellen"
 
 msgid "Click \"Build App\" → choose \"OAuth\" → select \"User-managed\"."
-msgstr ""
+msgstr "Klicken Sie auf «Build App» → waehlen Sie «OAuth» → waehlen Sie «User-managed»."
 
 msgid "Add redirect URI"
-msgstr ""
+msgstr "Weiterleitungs-URI hinzufuegen"
 
 msgid "Under OAuth settings, add this exact redirect URI:"
-msgstr ""
+msgstr "Fuegen Sie unter OAuth-Einstellungen diesen genauen Weiterleitungs-URI hinzu:"
 
 msgid "Copy credentials"
-msgstr ""
+msgstr "Anmeldedaten kopieren"
 
 msgid ""
 "Copy the Client ID and Client Secret from the app's Basic Information page."
-msgstr ""
+msgstr "Kopieren Sie die Client-ID und das Client-Geheimnis von der Basisinformationsseite der App."
 
 msgid "Enter below and save"
-msgstr ""
+msgstr "Unten eingeben und speichern"
 
 msgid "Paste your credentials below and click Save, then Connect."
-msgstr ""
+msgstr "Fuegen Sie Ihre Anmeldedaten unten ein und klicken Sie auf Speichern, dann Verbinden."
+
+msgid "your_client_id"
+msgstr "your_client_id"
+
+msgid "your_client_secret"
+msgstr "your_client_secret"
 
 msgid "Disable"
-msgstr ""
+msgstr "Deaktivieren"
 
 msgid ""
 "Google Calendar is connected. Enable Google Meet to auto-generate meeting "
 "links."
-msgstr ""
+msgstr "Google Calendar ist verbunden. Aktivieren Sie Google Meet zur automatischen Generierung von Besprechungslinks."
 
 msgid "Enable Google Meet"
-msgstr ""
+msgstr "Google Meet aktivieren"
 
 msgid "Google Meet requires Google Calendar to be connected first."
-msgstr ""
+msgstr "Google Meet erfordert, dass Google Calendar zuerst verbunden wird."
 
 msgid "Connect Google Calendar"
-msgstr ""
+msgstr "Google Calendar verbinden"
 
 msgid "Credentials saved. Click Connect to authorize with Microsoft."
-msgstr ""
+msgstr "Anmeldedaten gespeichert. Klicken Sie auf Verbinden, um mit Microsoft zu autorisieren."
 
 msgid "Connect Teams"
-msgstr ""
+msgstr "Teams verbinden"
 
 msgid "How to set up Microsoft Teams OAuth"
-msgstr ""
+msgstr "So richten Sie Microsoft Teams OAuth ein"
 
 msgid ""
 "Important: Microsoft Teams meeting creation requires a Microsoft 365 work or "
-"school account with a Teams license. Personal Microsoft accounts "
-"(@outlook.com, @hotmail.com, @live.com) are not supported by the Microsoft "
-"Graph API."
+"school account with a Teams license. Personal Microsoft accounts (@outlook."
+"com, @hotmail.com, @live.com) are not supported by the Microsoft Graph API."
 msgstr ""
+"Wichtig: Die Erstellung von Microsoft Teams-Besprechungen erfordert ein "
+"Microsoft 365-Geschafts- oder Schulkonto mit einer Teams-Lizenz. "
+"Persoenliche Microsoft-Konten (@outlook.com, @hotmail.com, @live.com) werden "
+"von der Microsoft Graph API nicht unterstuetzt."
 
 msgid "Go to Azure Portal"
-msgstr ""
+msgstr "Zum Azure-Portal wechseln"
 
 msgid "and sign in with your work or school account."
-msgstr ""
+msgstr "und mit Ihrem Geschafts- oder Schulkonto anmelden."
 
 msgid "Register an application"
-msgstr ""
+msgstr "Eine Anwendung registrieren"
 
 msgid ""
 "Search \"App registrations\" → New registration. Set a name and choose "
 "\"Accounts in any organizational directory only (Single tenant)\"."
 msgstr ""
+"Suchen Sie nach «App-Registrierungen» → Neue Registrierung. Legen Sie einen "
+"Namen fest und waehlen Sie «Konten in einem beliebigen Organisationsverzeichnis "
+"nur (Einzelner Mandant)»."
 
 msgid "Under Authentication → Add a platform → Web. Enter this exact URI:"
-msgstr ""
+msgstr "Unter Authentifizierung → Plattform hinzufuegen → Web. Geben Sie diesen genauen URI ein:"
 
 msgid "Create a client secret"
-msgstr ""
+msgstr "Ein Client-Geheimnis erstellen"
 
 msgid "Go to Certificates & secrets → New client secret. Copy the"
-msgstr ""
+msgstr "Gehen Sie zu Zertifikate und Geheimnisse → Neues Client-Geheimnis. Kopieren Sie den"
 
 msgid "Value"
-msgstr ""
+msgstr "Wert"
 
 msgid "(not the Secret ID) immediately — it is only shown once."
-msgstr ""
+msgstr "(nicht die Geheimnis-ID) sofort — er wird nur einmal angezeigt."
 
 msgid "Add API permissions"
-msgstr ""
+msgstr "API-Berechtigungen hinzufuegen"
 
 msgid ""
-"API permissions → Add → Microsoft Graph → Delegated → add "
-"OnlineMeetings.ReadWrite and User.Read. Then click \"Grant admin consent\"."
+"API permissions → Add → Microsoft Graph → Delegated → add OnlineMeetings."
+"ReadWrite and User.Read. Then click \"Grant admin consent\"."
 msgstr ""
+"API-Berechtigungen → Hinzufuegen → Microsoft Graph → Delegiert → "
+"OnlineMeetings.ReadWrite und User.Read hinzufuegen. Dann auf «Administratorzustimmung "
+"erteilen» klicken."
 
 msgid "From Overview, copy Application (client) ID and Directory (tenant) ID."
-msgstr ""
+msgstr "Kopieren Sie aus der Uebersicht die Anwendungs-(Client-)ID und die Verzeichnis-(Mandanten-)ID."
+
+msgid "Application (client) ID"
+msgstr "Anwendungs-(Client-)ID"
+
+msgid "Secret Value"
+msgstr "Geheimniswert"
+
+msgid "Directory (tenant) ID"
+msgstr "Verzeichnis-(Mandanten-)ID"
+
+msgid "No active company found.Cannot save settings."
+msgstr "Kein aktives Unternehmen gefunden. Einstellungen koennen nicht gespeichert werden."
 
 msgid "Meeting integration enabled."
-msgstr ""
+msgstr "Besprechungsintegration aktiviert."
 
 msgid "Meeting integration disabled and all credentials cleared."
-msgstr ""
+msgstr "Besprechungsintegration deaktiviert und alle Anmeldedaten geloescht."
 
 msgid "Access set to All Users."
-msgstr ""
+msgstr "Zugriff fuer alle Benutzer festgelegt."
+
+msgid "Full Name"
+msgstr "Vollstaendiger Name"
+
+msgid "Role"
+msgstr "Rolle"
+
+msgid "Email"
+msgstr "E-Mail"
+
+msgid "Role Name"
+msgstr "Rollenname"
 
 msgid "Allowed roles updated."
-msgstr ""
+msgstr "Erlaubte Rollen aktualisiert."
 
 msgid "Allowed users updated."
-msgstr ""
+msgstr "Erlaubte Benutzer aktualisiert."
 
 msgid "Zoom credentials saved. Click Connect to authorize."
-msgstr ""
+msgstr "Zoom-Anmeldedaten gespeichert. Klicken Sie auf Verbinden zur Autorisierung."
 
 msgid "Zoom account disconnected."
-msgstr ""
+msgstr "Zoom-Konto getrennt."
 
 msgid "Connect Google Calendar first to enable Google Meet."
-msgstr ""
+msgstr "Verbinden Sie zuerst Google Calendar, um Google Meet zu aktivieren."
 
 msgid "Google Meet enabled for meeting link generation."
-msgstr ""
+msgstr "Google Meet fuer die Generierung von Besprechungslinks aktiviert."
 
 msgid "Google Meet disabled."
-msgstr ""
+msgstr "Google Meet deaktiviert."
 
 msgid "Teams credentials saved. Click Connect to authorize."
-msgstr ""
+msgstr "Teams-Anmeldedaten gespeichert. Klicken Sie auf Verbinden zur Autorisierung."
 
 msgid "Teams account disconnected."
-msgstr ""
+msgstr "Teams-Konto getrennt."
 
 msgid "Please save your Zoom Client ID and Secret first."
-msgstr ""
+msgstr "Bitte speichern Sie zuerst Ihre Zoom Client-ID und Ihr Geheimnis."
 
 msgid "Zoom account connected successfully."
-msgstr ""
+msgstr "Zoom-Konto erfolgreich verbunden."
 
 msgid "Please save your Teams Client ID, Secret and Tenant ID first."
-msgstr ""
+msgstr "Bitte speichern Sie zuerst Ihre Teams Client-ID, Ihr Geheimnis und die Mandanten-ID."
 
 msgid "Teams account connected successfully."
-msgstr ""
-
-msgid "Meeting integration is not currently enabled for your account."
-msgstr ""
-
-msgid "Meeting link created successfully."
-msgstr ""
-
-msgid "Meeting link not found."
-msgstr ""
-
-msgid "Meeting link updated."
-msgstr ""
-
-msgid "Meeting link deleted."
-msgstr ""
+msgstr "Teams-Konto erfolgreich verbunden."

@@ -1,26 +1,75 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# German translations for Horilla Reports module.
+# Copyright (C) 2024 Horilla
+# This file is distributed under the same license as the Horilla package.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Horilla\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-19 10:06+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2026-06-12 09:57+0000\n"
+"PO-Revision-Date: 2026-06-12 00:00+0000\n"
+"Last-Translator: Horilla Team\n"
+"Language-Team: German\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Module for creating and customizing reports across all system modules."
+msgstr "Modul zum Erstellen und Anpassen von Berichten ueber alle Systemmodule hinweg."
+
+msgid ""
+"Removed redundant fields attributes superseded by form_class on report CRUD "
+"views, standardized first-party import groups, and added docstrings for "
+"pylint compliance."
 msgstr ""
-"Modul zum Erstellen und Anpassen von Berichten über alle Systemmodule hinweg."
+"Entfernung redundanter Feldattribute, die durch form_class in den CRUD-"
+"Ansichten der Berichte ersetzt wurden, Standardisierung der Importgruppen "
+"und Hinzufuegen von Docstrings fuer pylint-Konformitaet."
+
+msgid ""
+"Report forms aligned with HorillaModelForm layout: field_order and Meta."
+"fields = \"__all__\" with Meta.exclude; folder and column HTMX unchanged."
+msgstr ""
+"Berichtsformulare am HorillaModelForm-Layout ausgerichtet: field_order und "
+"Meta.fields mit Meta.exclude; Ordner und Spalten-HTMX unveraendert."
+
+msgid ""
+"Release 1.10: reports ship under contrib with app label reports. Cross-app "
+"report wiring, ContentType references, namespaces, and registrations updated "
+"for the contrib naming scheme."
+msgstr ""
+"Version 1.10: Berichte werden unter contrib mit dem App-Label reports "
+"ausgeliefert. App-uebergreifende Berichtsverdrahtung, ContentType-"
+"Referenzen, Namespaces und Registrierungen wurden aktualisiert."
+
+msgid ""
+"Improved report compatibility with dashboard multi-widget support, enhanced "
+"chart_value_field handling, and minor stability improvements for report "
+"rendering and filter processing."
+msgstr ""
+"Verbesserte Berichtskompatibilitaet mit Dashboard-Multi-Widget-Unterstuetzung, "
+"verbesserter chart_value_field-Handhabung und geringfuegigen "
+"Stabilitaetsverbesserungen fuer die Berichtsdarstellung."
+
+msgid ""
+"Added support for advanced chart types including Treemap, Area charts, "
+"Heatmaps, Sankey diagrams, and Radar charts. Improved compatibility with the "
+"new visualization and analytics framework."
+msgstr ""
+"Unterstuetzung fuer erweiterte Diagrammtypen hinzugefuegt, einschliesslich "
+"Baumkarte, Flaechendiagramme, Heatmaps, Sankey-Diagramme und Radardiagramme. "
+"Verbesserte Kompatibilitaet mit dem neuen Visualisierungs-Framework."
+
+msgid ""
+"Migrated from Django AppConfig to Horilla AppLauncher and and replacedDjango "
+"utilities with horilla.utils.decorators, horilla.utils.translation,and "
+"horilla.shortcuts where applicable."
+msgstr ""
+"Migration von Django AppConfig zu Horilla AppLauncher und Ersatz der "
+"Django-Hilfsprogramme durch horilla.utils.decorators, "
+"horilla.utils.translation und horilla.shortcuts wo anwendbar."
 
 msgid "Reports"
 msgstr "Berichte"
@@ -44,7 +93,7 @@ msgid "Report Folders"
 msgstr "Berichtsordner"
 
 msgid "Column Chart"
-msgstr "Säulendiagramm"
+msgstr "Saeulendiagramm"
 
 msgid "Line Chart"
 msgstr "Liniendiagramm"
@@ -70,6 +119,21 @@ msgstr "Gestapeltes horizontales Diagramm"
 msgid "Scatter Chart"
 msgstr "Streudiagramm"
 
+msgid "Treemap"
+msgstr "Baumkarte"
+
+msgid "Area Chart"
+msgstr "Flaechendiagramm"
+
+msgid "Heatmap"
+msgstr "Heatmap"
+
+msgid "Sankey"
+msgstr "Sankey-Diagramm"
+
+msgid "Radar Chart"
+msgstr "Radardiagramm"
+
 msgid "Report Owner"
 msgstr "Berichtsinhaber"
 
@@ -83,7 +147,10 @@ msgid "Chart Field"
 msgstr "Diagrammfeld"
 
 msgid "Secondary Field"
-msgstr "Sekundäres Feld"
+msgstr "Sekundaeres Feld"
+
+msgid "Value Field (Y-axis)"
+msgstr "Wertfeld (Y-Achse)"
 
 msgid "Report"
 msgstr "Bericht"
@@ -104,7 +171,7 @@ msgid "All Reports"
 msgstr "Alle Berichte"
 
 msgid "You are already selected this field"
-msgstr "Dieses Feld wurde bereits ausgewählt"
+msgstr "Dieses Feld wurde bereits ausgewaehlt"
 
 msgid "No matching columns found"
 msgstr "Keine passenden Spalten gefunden"
@@ -120,42 +187,6 @@ msgstr "C"
 
 msgid "A"
 msgstr "A"
-
-msgid "Down"
-msgstr ""
-
-msgid "Add to Dashboard"
-msgstr "Zum Dashboard hinzufügen"
-
-msgid "Record Count"
-msgstr "Anzahl der Datensätze"
-
-msgid "Is"
-msgstr "Ist"
-
-msgid "Contains"
-msgstr "Enthält"
-
-msgid "Greater than"
-msgstr "Größer als"
-
-msgid "Less than"
-msgstr "Kleiner als"
-
-msgid "Greater or equal"
-msgstr "Größer oder gleich"
-
-msgid "Less or equal"
-msgstr "Kleiner oder gleich"
-
-msgid "Close"
-msgstr ""
-
-msgid "AND"
-msgstr "UND"
-
-msgid "OR"
-msgstr "ODER"
 
 msgid "Summary Report"
 msgstr "Zusammenfassender Bericht"
@@ -182,7 +213,7 @@ msgid "Error"
 msgstr "Fehler"
 
 msgid "Configuration not supported"
-msgstr "Konfiguration wird nicht unterstützt"
+msgstr "Konfiguration wird nicht unterstuetzt"
 
 msgid "Columns"
 msgstr "Spalten"
@@ -193,11 +224,14 @@ msgstr "Gruppierung"
 msgid "Filter"
 msgstr "Filter"
 
+msgid "Search Columns"
+msgstr "Spalten suchen"
+
 msgid "Search"
-msgstr ""
+msgstr "Suchen"
 
 msgid "Selected Columns"
-msgstr "Ausgewählte Spalten"
+msgstr "Ausgewaehlte Spalten"
 
 msgid "Grouped Columns"
 msgstr "Gruppierte Spalten"
@@ -224,40 +258,61 @@ msgid "Min"
 msgstr "Minimum"
 
 msgid "Seacrch"
-msgstr ""
+msgstr "Suchen"
 
 msgid "Apply Filters"
 msgstr "Filter anwenden"
+
+msgid "Select..."
+msgstr "Auswaehlen..."
 
 msgid "Report:"
 msgstr "Bericht:"
 
 msgid "Refresh"
-msgstr ""
+msgstr "Aktualisieren"
 
 msgid "Save"
 msgstr "Speichern"
 
+msgid "Discard Changes"
+msgstr "Aenderungen verwerfen"
+
+msgid "Close"
+msgstr "Schliessen"
+
+msgid "Close Panel"
+msgstr "Bereich schliessen"
+
+msgid "Edit Report"
+msgstr "Bericht bearbeiten"
+
 msgid "Edit"
-msgstr ""
+msgstr "Bearbeiten"
 
 msgid "Actions"
-msgstr ""
+msgstr "Aktionen"
 
 msgid "You have unsaved changes. Click"
-msgstr "Sie haben nicht gespeicherte Änderungen. Klicken Sie auf"
+msgstr "Sie haben nicht gespeicherte Aenderungen. Klicken Sie auf"
 
 msgid "to keep your changes or"
-msgstr "um Ihre Änderungen zu behalten oder"
+msgstr "um Ihre Aenderungen zu behalten oder"
 
 msgid "Discard"
 msgstr "Verwerfen"
 
 msgid "to revert."
-msgstr "um zurückzusetzen."
+msgstr "um zurueckzusetzen."
 
 msgid "Detail table"
 msgstr "Detailtabelle"
+
+msgid "Filtered by pivot:"
+msgstr "Gefiltert nach Pivot:"
+
+msgid "Clear pivot filter"
+msgstr "Pivot-Filter loeschen"
 
 msgid "Pivot table"
 msgstr "Pivot-Tabelle"
@@ -266,31 +321,34 @@ msgid "Report Chart"
 msgstr "Berichtsdiagramm"
 
 msgid "Change Chart"
-msgstr "Diagramm ändern"
-
-msgid "Change Field"
-msgstr "Feld ändern"
+msgstr "Diagramm aendern"
 
 msgid "Export as PDF"
-msgstr ""
+msgstr "Als PDF exportieren"
 
 msgid "Export as PNG"
-msgstr ""
+msgstr "Als PNG exportieren"
+
+msgid "Add to Dashboard"
+msgstr "Zum Dashboard hinzufuegen"
 
 msgid "Record Count:"
-msgstr "Anzahl der Datensätze:"
+msgstr "Anzahl der Datensaetze:"
+
+msgid "Favourite"
+msgstr "Favorit"
 
 msgid "Move"
-msgstr ""
+msgstr "Verschieben"
 
 msgid "Delete"
-msgstr ""
+msgstr "Loeschen"
 
 msgid "Select Default Reports"
-msgstr "Standardberichte auswählen"
+msgstr "Standardberichte auswaehlen"
 
 msgid "Select All"
-msgstr "Alle auswählen"
+msgstr "Alle auswaehlen"
 
 msgid "Create"
 msgstr "Erstellen"
@@ -312,3 +370,37 @@ msgstr "Name"
 
 msgid "Type"
 msgstr "Typ"
+
+msgid "Average"
+msgstr "Durchschnitt"
+
+msgid "Minimum"
+msgstr "Minimum"
+
+msgid "Maximum"
+msgstr "Maximum"
+
+msgid "Record count"
+msgstr "Anzahl der Datensaetze"
+
+#, python-format
+msgid "%(metric)s of %(field)s"
+msgstr "%(metric)s von %(field)s"
+
+msgid "Chart type"
+msgstr "Diagrammtyp"
+
+msgid "X-axis (Group by)"
+msgstr "X-Achse (Gruppieren nach)"
+
+msgid "Stack by (second group)"
+msgstr "Stapeln nach (zweite Gruppe)"
+
+msgid "Y-axis (Value)"
+msgstr "Y-Achse (Wert)"
+
+msgid "Invalid field '{}'. This field does not exist on the model."
+msgstr "Ungueltiges Feld '{}'. Dieses Feld existiert nicht im Modell."
+
+msgid "Invalid filter value: {}"
+msgstr "Ungueltiger Filterwert: {}"

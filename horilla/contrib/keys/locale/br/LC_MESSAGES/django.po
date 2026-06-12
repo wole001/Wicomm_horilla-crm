@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-17 09:38+0000\n"
+"POT-Creation-Date: 2026-06-12 09:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,7 +25,28 @@ msgstr ""
 msgid "Module providing customizable keyboard shortcuts."
 msgstr ""
 
+msgid ""
+"Migrated signal and timezone imports to the horilla shims, standardized "
+"first-party import groups, and added docstrings for pylint compliance; "
+"shortcuts unchanged."
+msgstr ""
+
+msgid ""
+"Release 1.10: keyboard shortcuts ship under contrib with app label keys. "
+"URLs, registrations, shortcuts metadata, templates, and static paths updated "
+"from the legacy keys package layout."
+msgstr ""
+
+msgid ""
+"Migrated from Django AppConfig to Horilla AppLauncher and replaced "
+"Djangoutilities with horilla.utils.decorators, horilla.utils.translation, "
+"and horilla.shortcuts where applicable."
+msgstr ""
+
 msgid "Keyboard Shortcuts"
+msgstr ""
+
+msgid "Command Key"
 msgstr ""
 
 msgid "Short Keys"
@@ -40,14 +61,47 @@ msgstr ""
 msgid "Key"
 msgstr ""
 
-msgid "Command Key"
-msgstr ""
-
 msgid "Shortcut Key"
 msgstr ""
 
 msgid "Shortcut Keys"
 msgstr ""
 
+msgid "Home"
+msgstr ""
+
+msgid "Profile"
+msgstr ""
+
+msgid "Users"
+msgstr ""
+
+msgid "Branches"
+msgstr ""
+
+msgid "Regional & Formatting"
+msgstr ""
+
+msgid "Login History"
+msgstr ""
+
+msgid "Holiday"
+msgstr ""
+
+msgid "Dashboards"
+msgstr ""
+
+msgid "Reports"
+msgstr ""
+
+msgid "Calendar"
+msgstr ""
+
+msgid "Activities"
+msgstr ""
+
 msgid "Short Key"
+msgstr ""
+
+msgid "The requested data does not exist."
 msgstr ""

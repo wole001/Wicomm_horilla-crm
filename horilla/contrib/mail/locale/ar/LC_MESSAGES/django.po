@@ -1,17 +1,16 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Arabic translations for Horilla Mail module.
+# Copyright (C) 2024 Horilla
+# This file is distributed under the same license as the Horilla package.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Horilla\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-21 07:51+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2026-06-12 09:24+0000\n"
+"PO-Revision-Date: 2026-06-12 00:00+0000\n"
+"Last-Translator: Horilla Team\n"
+"Language-Team: Arabic\n"
+"Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,6 +23,58 @@ msgid ""
 msgstr ""
 "وحدة لإدارة رسائل البريد الإلكتروني الواردة والصادرة عبر خوادم البريد "
 "وOutlook."
+
+msgid ""
+"Security: fixed SSTI information disclosure and IDOR in the preview endpoint "
+"by blocking dangerous template paths and adding a per-object permission "
+"check. HorillaMail permissions replaced admin-config perms with correct add/"
+"view/change/delete own-record permissions across all mail views and the "
+"activity email tab. Standardized first-party imports and added docstrings "
+"for pylint compliance."
+msgstr ""
+"الأمان: إصلاح كشف معلومات SSTI وIDOR في نقطة المعاينة عن طريق حجب مسارات "
+"القوالب الخطرة وإضافة فحص صلاحيات لكل كائن. تحديث صلاحيات HorillaMail "
+"وتوحيد الاستيرادات وإضافة توثيق docstrings لتوافق pylint."
+
+msgid ""
+"Mail forms aligned with HorillaModelForm / ModelForm layout: field_order, "
+"Meta.fields = \"__all__\", Meta.exclude, and keep_on_form on configuration "
+"forms."
+msgstr ""
+"تم محاذاة نماذج البريد مع تخطيط HorillaModelForm / ModelForm: field_order "
+"وMeta.fields وMeta.exclude وkeep_on_form في نماذج الإعداد."
+
+msgid ""
+"Release 1.10: mail ships under the contrib package tree with Django app "
+"label mail. Imports, API routes, URLs, permissions, templates, and static "
+"asset paths updated to drop the legacy prefixed mail app name."
+msgstr ""
+"الإصدار 1.10: يُشحن البريد ضمن شجرة حزمة contrib بتسمية تطبيق mail. تم "
+"تحديث الاستيرادات ومسارات API وعناوين URL والصلاحيات والقوالب والمسارات الثابتة."
+
+msgid ""
+"Improved mail template standardization, async mail handling with background "
+"thread execution, and enhanced notification and mail action separation for "
+"approval workflows."
+msgstr ""
+"تحسين توحيد قوالب البريد ومعالجة البريد غير المتزامن مع تنفيذ خيوط الخلفية "
+"وتعزيز الفصل بين إجراءات الإشعار والبريد لسير عمل الموافقة."
+
+msgid ""
+"Minor compatibility improvements and internal stability updates to align "
+"with the enhanced generics framework and visualization system."
+msgstr ""
+"تحسينات توافق طفيفة وتحديثات استقرار داخلية للتوافق مع إطار generics "
+"المحسّن ونظام التصور."
+
+msgid ""
+"Migrated from Django AppConfig to Horilla AppLauncher and and replacedDjango "
+"utilities with horilla.utils.decorators, horilla.utils.translation, and "
+"horilla.shortcuts where applicable."
+msgstr ""
+"تم الترحيل من Django AppConfig إلى Horilla AppLauncher واستبدال أدوات "
+"Django بـ horilla.utils.decorators وhorilla.utils.translation "
+"وhorilla.shortcuts حيثما ينطبق."
 
 msgid "Mail System"
 msgstr "نظام البريد"
@@ -39,6 +90,21 @@ msgstr "أدخل عنوان البريد الإلكتروني الذي تريد 
 
 msgid "Please enter a valid email address."
 msgstr "يرجى إدخال عنوان بريد إلكتروني صالح."
+
+msgid "Template title is required."
+msgstr "عنوان القالب مطلوب."
+
+msgid "Template body is required."
+msgstr "محتوى القالب مطلوب."
+
+msgid "Select Mail Template"
+msgstr "حدد قالب البريد"
+
+msgid "Choose a template"
+msgstr "اختر قالباً"
+
+msgid "Body content cannot be empty."
+msgstr "لا يمكن أن يكون محتوى الرسالة فارغاً."
 
 msgid "Enter app password"
 msgstr "أدخل كلمة مرور التطبيق"
@@ -59,44 +125,6 @@ msgid ""
 msgstr ""
 "أدخل سر العميل الذي تم إنشاؤه من تسجيل تطبيق Microsoft Azure. يُستخدم هذا "
 "السر للمصادقة الآمنة على تكامل Outlook."
-
-msgid "Related Model"
-msgstr "النموذج المرتبط"
-
-msgid "Update Mail Template"
-msgstr "تحديث قالب البريد"
-
-msgid "Update Template"
-msgstr "تحديث القالب"
-
-msgid "Create Mail Template"
-msgstr "إنشاء قالب بريد"
-
-msgid "Save Template"
-msgstr "حفظ القالب"
-
-msgid "Mail template \"{}\" updated successfully."
-msgstr "تم تحديث قالب البريد \"{}\" بنجاح."
-
-msgid "Mail template \"{}\" created successfully."
-msgstr "تم إنشاء قالب البريد \"{}\" بنجاح."
-
-msgid "Token not refreshed, Login required"
-msgstr "لم يتم تحديث الرمز، تسجيل الدخول مطلوب"
-
-msgid "Token refreshed successfully"
-msgstr "تم تحديث الرمز بنجاح"
-
-#, python-brace-format
-msgid "Token refresh failed: {error}. Please re-authenticate."
-msgstr ""
-
-#, python-brace-format
-msgid "Token refresh failed: {error}"
-msgstr ""
-
-msgid "Incoming Mail Configurations"
-msgstr "إعدادات البريد الوارد"
 
 msgid "Mail"
 msgstr "البريد"
@@ -206,6 +234,15 @@ msgstr "مجدول"
 msgid "Sent"
 msgstr "تم الإرسال"
 
+msgid "Delivered"
+msgstr "تم التسليم"
+
+msgid "Bounced"
+msgstr "مرتد"
+
+msgid "Opened"
+msgstr "مفتوح"
+
 msgid "Failed"
 msgstr "فشل"
 
@@ -233,20 +270,6 @@ msgstr "المحتوى"
 msgid "When the mail should be sent (for scheduled mails)."
 msgstr "توقيت إرسال البريد (للبريد المجدول)."
 
-msgid ""
-"Subject contains potentially dangerous content (XSS detected). Please remove "
-"any scripts or malicious code."
-msgstr ""
-"يحتوي الموضوع على محتوى خطير محتمل (تم اكتشاف XSS). يرجى إزالة أي "
-"سكريبتات أو كود ضار."
-
-msgid ""
-"Body contains potentially dangerous content (XSS detected). Please remove "
-"any scripts or malicious code."
-msgstr ""
-"يحتوي نص الرسالة على محتوى خطير محتمل (تم اكتشاف XSS). يرجى إزالة أي "
-"سكريبتات أو كود ضار."
-
 msgid "Mails"
 msgstr "الرسائل"
 
@@ -259,14 +282,11 @@ msgstr "مرفقات البريد"
 msgid "Template title"
 msgstr "عنوان القالب"
 
+msgid "Related Model"
+msgstr "النموذج المرتبط"
+
 msgid "Mail Templates"
 msgstr "قوالب البريد"
-
-msgid "Outgoing Mail Configurations"
-msgstr "إعدادات البريد الصادر"
-
-msgid "Mail sent successfully"
-msgstr "تم إرسال البريد بنجاح"
 
 msgid "Save Changes?"
 msgstr "حفظ التغييرات؟"
@@ -364,11 +384,14 @@ msgstr "تكوين SMTP أو Gmail أو Yahoo أو أي خادم بريد آخر
 msgid "Select Other"
 msgstr "حدد آخر"
 
-msgid "Refresh"
-msgstr "تحديث"
+msgid "Refresh Token"
+msgstr "تحديث الرمز"
 
 msgid "Login"
 msgstr "تسجيل الدخول"
+
+msgid "Send Test Mail"
+msgstr "إرسال بريد اختباري"
 
 msgid "Edit"
 msgstr "تعديل"
@@ -397,11 +420,32 @@ msgstr "إرسال البريد"
 msgid "No mail server configured"
 msgstr "لم يتم تكوين خادم بريد"
 
+msgid "Enter Subject"
+msgstr "أدخل الموضوع"
+
 msgid "Related to"
 msgstr "مرتبط بـ"
 
 msgid "Message"
 msgstr "الرسالة"
+
+msgid "Insert Field"
+msgstr "إدراج حقل"
+
+msgid "Add mail template"
+msgstr "إضافة قالب بريد"
+
+msgid "Save as template"
+msgstr "حفظ كقالب"
+
+msgid "Preview"
+msgstr "معاينة"
+
+msgid "Preview Error"
+msgstr "خطأ في المعاينة"
+
+msgid "Error generating preview:"
+msgstr "خطأ في إنشاء المعاينة:"
 
 msgid "Mail Preview"
 msgstr "معاينة البريد"
@@ -415,6 +459,9 @@ msgstr "من:"
 msgid "No sender configured"
 msgstr "لم يتم تكوين المرسل"
 
+msgid "To:"
+msgstr "إلى:"
+
 msgid "No subject"
 msgstr "بدون موضوع"
 
@@ -423,6 +470,9 @@ msgstr "لا يوجد محتوى للرسالة"
 
 msgid "This is how your email will look when sent"
 msgstr "هكذا سيبدو بريدك الإلكتروني عند الإرسال"
+
+msgid "Enter template title"
+msgstr "أدخل عنوان القالب"
 
 msgid "Enter email subject (optional)"
 msgstr "أدخل موضوع البريد الإلكتروني (اختياري)"
@@ -436,8 +486,11 @@ msgstr "حفظ كقالب بريد"
 msgid "Title"
 msgstr "العنوان"
 
-msgid "Select Mail Template"
-msgstr "حدد قالب البريد"
+msgid "Enter title"
+msgstr "أدخل العنوان"
+
+msgid "Save Template"
+msgstr "حفظ القالب"
 
 msgid "Select Template"
 msgstr "حدد القالب"
@@ -468,20 +521,35 @@ msgstr "تكوين البريد المرسل مطلوب"
 
 msgid ""
 "Both model_name and object_id are required to send mail related to an object."
-msgstr ""
-"كلٌّ من model_name وobject_id مطلوبان لإرسال بريد إلكتروني مرتبط بكائن."
+msgstr "كلٌّ من model_name وobject_id مطلوبان لإرسال بريد إلكتروني مرتبط بكائن."
 
 msgid ""
 "Cannot send mail: model information is missing. Please try again from the "
 "opportunity page."
 msgstr ""
-"تعذّر إرسال البريد الإلكتروني: معلومات النموذج مفقودة. يرجى المحاولة مرة أخرى من صفحة الفرصة."
+"تعذّر إرسال البريد الإلكتروني: معلومات النموذج مفقودة. يرجى المحاولة مرة أخرى "
+"من صفحة الفرصة."
+
+msgid "Mail sent successfully"
+msgstr "تم إرسال البريد بنجاح"
+
+msgid "Mail bounced: "
+msgstr "تم إرجاع البريد: "
 
 msgid "Failed to send mail: "
 msgstr "فشل إرسال البريد: "
 
 msgid "Error sending mail: "
 msgstr "خطأ في إرسال البريد: "
+
+msgid "Subject contains dangerous content."
+msgstr "يحتوي الموضوع على محتوى خطير."
+
+msgid "Message body contains dangerous content."
+msgstr "يحتوي نص الرسالة على محتوى خطير."
+
+msgid "You do not have permission to access this record."
+msgstr "ليس لديك صلاحية للوصول إلى هذا السجل."
 
 msgid "Draft saved successfully"
 msgstr "تم حفظ المسودة بنجاح"
@@ -507,14 +575,112 @@ msgstr "تنسيق التاريخ/الوقت غير صالح"
 msgid "Scheduled mail not found or you don't have permission"
 msgstr "البريد المجدول غير موجود أو ليس لديك الصلاحية"
 
+msgid "You do not have permission to reschedule this mail."
+msgstr "ليس لديك صلاحية لإعادة جدولة هذا البريد."
+
 msgid "Mail rescheduled successfully for "
 msgstr "تم إعادة جدولة البريد بنجاح لـ "
 
 msgid "Invalid mail configuration selected"
 msgstr "تم تحديد تكوين بريد غير صالح"
 
+msgid "You do not have permission to send mail for this record."
+msgstr "ليس لديك صلاحية لإرسال بريد لهذا السجل."
+
 msgid "Mail scheduled successfully for "
 msgstr "تم جدولة البريد بنجاح لـ "
 
 msgid "Error scheduling mail: "
 msgstr "خطأ في جدولة البريد: "
+
+msgid "Incoming Mail Configurations"
+msgstr "إعدادات البريد الوارد"
+
+msgid "Channel"
+msgstr "القناة"
+
+msgid "Primary"
+msgstr "أساسي"
+
+msgid "From Email"
+msgstr "من البريد الإلكتروني"
+
+msgid "Dynamic Display Name"
+msgstr "اسم العرض الديناميكي"
+
+msgid "Timeout (seconds)"
+msgstr "المهلة (بالثواني)"
+
+msgid "Redirect URI"
+msgstr "عنوان URI لإعادة التوجيه"
+
+msgid "Authorization URL"
+msgstr "عنوان URL للتفويض"
+
+msgid "Token URL"
+msgstr "عنوان URL للرمز"
+
+msgid "API Endpoint"
+msgstr "نقطة واجهة API"
+
+msgid "Token Last Refreshed"
+msgstr "آخر تحديث للرمز"
+
+msgid "Update Mail Template"
+msgstr "تحديث قالب البريد"
+
+msgid "Update Template"
+msgstr "تحديث القالب"
+
+msgid "Create Mail Template"
+msgstr "إنشاء قالب بريد"
+
+msgid "Mail template \"{}\" updated successfully."
+msgstr "تم تحديث قالب البريد \"{}\" بنجاح."
+
+msgid "Mail template \"{}\" created successfully."
+msgstr "تم إنشاء قالب البريد \"{}\" بنجاح."
+
+msgid "Outgoing Mail Configurations"
+msgstr "إعدادات البريد الصادر"
+
+msgid "Outgoing Mail Server Configuration"
+msgstr "تكوين خادم البريد الصادر"
+
+msgid "Not configured outlook"
+msgstr "Outlook غير مكوّن"
+
+msgid "Outlook Client ID is not configured"
+msgstr "معرّف عميل Outlook غير مكوّن"
+
+msgid "Outlook Redirect URI is not configured"
+msgstr "عنوان URI لإعادة التوجيه في Outlook غير مكوّن"
+
+msgid "Outlook Authorization URL is not configured"
+msgstr "عنوان URL للتفويض في Outlook غير مكوّن"
+
+msgid "Invalid Outlook configuration"
+msgstr "تكوين Outlook غير صالح"
+
+msgid "Outlook Token URL is not configured"
+msgstr "عنوان URL للرمز في Outlook غير مكوّن"
+
+msgid "Outlook Client Secret is not configured"
+msgstr "سر عميل Outlook غير مكوّن"
+
+msgid "Unable to build authorization response URI"
+msgstr "تعذّر إنشاء عنوان URI لاستجابة التفويض"
+
+msgid "Token not refreshed, Login required"
+msgstr "لم يتم تحديث الرمز، تسجيل الدخول مطلوب"
+
+msgid "Token refreshed successfully"
+msgstr "تم تحديث الرمز بنجاح"
+
+#, python-brace-format
+msgid "Token refresh failed: {error}. Please re-authenticate."
+msgstr "فشل تحديث الرمز: {error}. يرجى إعادة المصادقة."
+
+#, python-brace-format
+msgid "Token refresh failed: {error}"
+msgstr "فشل تحديث الرمز: {error}"

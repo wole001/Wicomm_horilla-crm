@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-15 15:21+0530\n"
+"POT-Creation-Date: 2026-06-12 09:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : "
 "2);\n"
+
 msgid "Meeting Integration"
 msgstr ""
 
 msgid ""
 "Zoom and Microsoft Teams meeting integration with company access control, "
 "OAuth connections, personal meeting URLs, and activity meeting links."
+msgstr ""
+
+msgid ""
+"Fixed MultipleObjectsReturned on the Zoom and Teams OAuth callbacks. "
+"Improved the access-control UI: constrained the section to the viewport, "
+"added a count + eye pill for allowed users and roles that opens a "
+"HorillaListView modal, and fixed the card-wide click handler. Added "
+"integration-settings view docstrings for pylint."
 msgstr ""
 
 msgid ""
@@ -141,28 +150,13 @@ msgstr ""
 msgid "Microsoft Teams OAuth Configs"
 msgstr ""
 
-msgid "Created By"
+msgid "Roles with access"
 msgstr ""
 
-msgid "Meeting Title"
+msgid "Close"
 msgstr ""
 
-msgid "Meeting URL"
-msgstr ""
-
-msgid "Start Date & Time"
-msgstr ""
-
-msgid "End Date & Time"
-msgstr ""
-
-msgid "Notes"
-msgstr ""
-
-msgid "Meeting Link"
-msgstr ""
-
-msgid "Meeting Links"
+msgid "Users with access"
 msgstr ""
 
 msgid "Select Roles"
@@ -192,19 +186,7 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-msgid "Edit Meeting Link"
-msgstr ""
-
-msgid "Create Meeting Link"
-msgstr ""
-
-msgid "Back to list"
-msgstr ""
-
-msgid "Update"
-msgstr ""
-
-msgid "Create"
+msgid "Meeting Links"
 msgstr ""
 
 msgid ""
@@ -263,10 +245,10 @@ msgstr ""
 msgid "· Click to add or remove roles."
 msgstr ""
 
-msgid "Click to select"
+msgid "role(s)"
 msgstr ""
 
-msgid "role(s) have access"
+msgid "Click to select"
 msgstr ""
 
 msgid "Select Specific Users?"
@@ -281,37 +263,13 @@ msgstr ""
 msgid "· Click to add or remove users."
 msgstr ""
 
-msgid "user(s) have access"
+msgid "user(s)"
 msgstr ""
 
-msgid "New Meeting Link"
+msgid "Name"
 msgstr ""
 
-msgid "Title"
-msgstr ""
-
-msgid "Start"
-msgstr ""
-
-msgid "End"
-msgstr ""
-
-msgid "Actions"
-msgstr ""
-
-msgid "Edit"
-msgstr ""
-
-msgid "Delete this meeting link?"
-msgstr ""
-
-msgid "Delete"
-msgstr ""
-
-msgid "No meeting links yet."
-msgstr ""
-
-msgid "Create your first meeting link"
+msgid "No entries found."
 msgstr ""
 
 msgid "Meeting Accounts"
@@ -383,6 +341,12 @@ msgstr ""
 msgid "Paste your credentials below and click Save, then Connect."
 msgstr ""
 
+msgid "your_client_id"
+msgstr ""
+
+msgid "your_client_secret"
+msgstr ""
+
 msgid "Disable"
 msgstr ""
 
@@ -411,9 +375,8 @@ msgstr ""
 
 msgid ""
 "Important: Microsoft Teams meeting creation requires a Microsoft 365 work or "
-"school account with a Teams license. Personal Microsoft accounts "
-"(@outlook.com, @hotmail.com, @live.com) are not supported by the Microsoft "
-"Graph API."
+"school account with a Teams license. Personal Microsoft accounts (@outlook."
+"com, @hotmail.com, @live.com) are not supported by the Microsoft Graph API."
 msgstr ""
 
 msgid "Go to Azure Portal"
@@ -449,11 +412,23 @@ msgid "Add API permissions"
 msgstr ""
 
 msgid ""
-"API permissions → Add → Microsoft Graph → Delegated → add "
-"OnlineMeetings.ReadWrite and User.Read. Then click \"Grant admin consent\"."
+"API permissions → Add → Microsoft Graph → Delegated → add OnlineMeetings."
+"ReadWrite and User.Read. Then click \"Grant admin consent\"."
 msgstr ""
 
 msgid "From Overview, copy Application (client) ID and Directory (tenant) ID."
+msgstr ""
+
+msgid "Application (client) ID"
+msgstr ""
+
+msgid "Secret Value"
+msgstr ""
+
+msgid "Directory (tenant) ID"
+msgstr ""
+
+msgid "No active company found.Cannot save settings."
 msgstr ""
 
 msgid "Meeting integration enabled."
@@ -463,6 +438,18 @@ msgid "Meeting integration disabled and all credentials cleared."
 msgstr ""
 
 msgid "Access set to All Users."
+msgstr ""
+
+msgid "Full Name"
+msgstr ""
+
+msgid "Role"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Role Name"
 msgstr ""
 
 msgid "Allowed roles updated."
@@ -502,19 +489,4 @@ msgid "Please save your Teams Client ID, Secret and Tenant ID first."
 msgstr ""
 
 msgid "Teams account connected successfully."
-msgstr ""
-
-msgid "Meeting integration is not currently enabled for your account."
-msgstr ""
-
-msgid "Meeting link created successfully."
-msgstr ""
-
-msgid "Meeting link not found."
-msgstr ""
-
-msgid "Meeting link updated."
-msgstr ""
-
-msgid "Meeting link deleted."
 msgstr ""

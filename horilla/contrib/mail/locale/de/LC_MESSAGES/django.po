@@ -1,17 +1,16 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# German translations for Horilla Mail module.
+# Copyright (C) 2024 Horilla
+# This file is distributed under the same license as the Horilla package.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Horilla\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-21 07:51+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2026-06-12 09:24+0000\n"
+"PO-Revision-Date: 2026-06-12 00:00+0000\n"
+"Last-Translator: Horilla Team\n"
+"Language-Team: German\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,8 +20,64 @@ msgid ""
 "Module for managing incoming and outgoing emails through mail servers and "
 "Outlook."
 msgstr ""
-"Modul zur Verwaltung eingehender und ausgehender E-Mails über Mailserver und "
-"Outlook."
+"Modul zur Verwaltung eingehender und ausgehender E-Mails ueber Mailserver "
+"und Outlook."
+
+msgid ""
+"Security: fixed SSTI information disclosure and IDOR in the preview endpoint "
+"by blocking dangerous template paths and adding a per-object permission "
+"check. HorillaMail permissions replaced admin-config perms with correct add/"
+"view/change/delete own-record permissions across all mail views and the "
+"activity email tab. Standardized first-party imports and added docstrings "
+"for pylint compliance."
+msgstr ""
+"Sicherheit: SSTI-Informationsoffenbarung und IDOR im Vorschau-Endpunkt "
+"behoben. HorillaMail-Berechtigungen aktualisiert, Imports standardisiert und "
+"Docstrings fuer pylint-Konformitaet hinzugefuegt."
+
+msgid ""
+"Mail forms aligned with HorillaModelForm / ModelForm layout: field_order, "
+"Meta.fields = \"__all__\", Meta.exclude, and keep_on_form on configuration "
+"forms."
+msgstr ""
+"Mail-Formulare am HorillaModelForm / ModelForm-Layout ausgerichtet: "
+"field_order, Meta.fields, Meta.exclude und keep_on_form auf "
+"Konfigurationsformularen."
+
+msgid ""
+"Release 1.10: mail ships under the contrib package tree with Django app "
+"label mail. Imports, API routes, URLs, permissions, templates, and static "
+"asset paths updated to drop the legacy prefixed mail app name."
+msgstr ""
+"Version 1.10: Mail wird unter der contrib-Paketstruktur mit dem App-Label "
+"mail ausgeliefert. Importe, API-Routen, URLs, Berechtigungen, Vorlagen und "
+"statische Pfade aktualisiert."
+
+msgid ""
+"Improved mail template standardization, async mail handling with background "
+"thread execution, and enhanced notification and mail action separation for "
+"approval workflows."
+msgstr ""
+"Verbesserte Mail-Vorlagen-Standardisierung, asynchrone Mail-Verarbeitung mit "
+"Hintergrundthread-Ausfuehrung und verbesserte Trennung von "
+"Benachrichtigungs- und Mail-Aktionen fuer Genehmigungs-Workflows."
+
+msgid ""
+"Minor compatibility improvements and internal stability updates to align "
+"with the enhanced generics framework and visualization system."
+msgstr ""
+"Geringfuegige Kompatibilitaetsverbesserungen und interne "
+"Stabilitaetsupdates zur Ausrichtung auf das verbesserte Generics-Framework "
+"und Visualisierungssystem."
+
+msgid ""
+"Migrated from Django AppConfig to Horilla AppLauncher and and replacedDjango "
+"utilities with horilla.utils.decorators, horilla.utils.translation, and "
+"horilla.shortcuts where applicable."
+msgstr ""
+"Migration von Django AppConfig zu Horilla AppLauncher und Ersatz der "
+"Django-Hilfsprogramme durch horilla.utils.decorators, "
+"horilla.utils.translation und horilla.shortcuts wo anwendbar."
 
 msgid "Mail System"
 msgstr "E-Mail-System"
@@ -31,25 +86,37 @@ msgid "To Email"
 msgstr "An E-Mail"
 
 msgid "Enter email address to send test email"
-msgstr "Geben Sie die E-Mail-Adresse für den Testversand ein"
+msgstr "Geben Sie die E-Mail-Adresse fuer den Testversand ein"
 
 msgid "Enter the email address where you want to send the test email."
-msgstr ""
-"Geben Sie die E-Mail-Adresse ein, an die Sie die Test-E-Mail senden möchten."
-"Geben Sie die E-Mail-Adresse ein, an die die Test-E-Mail gesendet werden "
-"soll."
+msgstr "Geben Sie die E-Mail-Adresse ein, an die Sie die Test-E-Mail senden moechten."
 
 msgid "Please enter a valid email address."
-msgstr "Bitte geben Sie eine gültige E-Mail-Adresse ein."
+msgstr "Bitte geben Sie eine gueltige E-Mail-Adresse ein."
+
+msgid "Template title is required."
+msgstr "Vorlagentitel ist erforderlich."
+
+msgid "Template body is required."
+msgstr "Vorlageninhalt ist erforderlich."
+
+msgid "Select Mail Template"
+msgstr "E-Mail-Vorlage auswaehlen"
+
+msgid "Choose a template"
+msgstr "Vorlage auswaehlen"
+
+msgid "Body content cannot be empty."
+msgstr "Nachrichteninhalt darf nicht leer sein."
 
 msgid "Enter app password"
 msgstr "App-Passwort eingeben"
 
 msgid "Enter the app-specific password for your mail account."
-msgstr "Geben Sie das app-spezifische Passwort für Ihr E-Mail-Konto ein."
+msgstr "Geben Sie das app-spezifische Passwort fuer Ihr E-Mail-Konto ein."
 
 msgid "Enter the app-specific password  for your mail account."
-msgstr "Geben Sie das app-spezifische Passwort für Ihr E-Mail-Konto ein."
+msgstr "Geben Sie das app-spezifische Passwort fuer Ihr E-Mail-Konto ein."
 
 msgid "Enter client secret"
 msgstr "Client-Geheimnis eingeben"
@@ -60,46 +127,8 @@ msgid ""
 "securely."
 msgstr ""
 "Geben Sie das Client-Geheimnis ein, das bei der Registrierung Ihrer "
-"Microsoft Azure-App erstellt wurde. Dieses Geheimnis wird für die sichere "
+"Microsoft Azure-App erstellt wurde. Dieses Geheimnis wird fuer die sichere "
 "Authentifizierung der Outlook-Integration verwendet."
-
-msgid "Related Model"
-msgstr "Verknüpftes Modell"
-
-msgid "Update Mail Template"
-msgstr "E-Mail-Vorlage aktualisieren"
-
-msgid "Update Template"
-msgstr "Vorlage aktualisieren"
-
-msgid "Create Mail Template"
-msgstr "E-Mail-Vorlage erstellen"
-
-msgid "Save Template"
-msgstr "Vorlage speichern"
-
-msgid "Mail template \"{}\" updated successfully."
-msgstr "E-Mail-Vorlage „{}“ erfolgreich aktualisiert."
-
-msgid "Mail template \"{}\" created successfully."
-msgstr "E-Mail-Vorlage „{}“ erfolgreich erstellt."
-
-msgid "Token not refreshed, Login required"
-msgstr "Token nicht aktualisiert, Anmeldung erforderlich"
-
-msgid "Token refreshed successfully"
-msgstr "Token erfolgreich aktualisiert"
-
-#, python-brace-format
-msgid "Token refresh failed: {error}. Please re-authenticate."
-msgstr "Token-Aktualisierung fehlgeschlagen: {error}. Bitte authentifizieren Sie sich erneut."
-
-#, python-brace-format
-msgid "Token refresh failed: {error}"
-msgstr "Token-Aktualisierung fehlgeschlagen: {error}"
-
-msgid "Incoming Mail Configurations"
-msgstr "Einstellungen für eingehende E-Mails"
 
 msgid "Mail"
 msgstr "E-Mail"
@@ -163,13 +192,10 @@ msgid "Fail Silently"
 msgstr "Fehler stillschweigend behandeln"
 
 msgid "Primary Mail Server"
-msgstr "Primärer Mail-Server"
+msgstr "Primaerer Mail-Server"
 
 msgid "By enabling this the display name will take from who triggered the mail"
-msgstr ""
-"Wenn dies aktiviert ist, wird der Anzeigename von der Person übernommen, die "
-"die E-Mail ausgelöst hatWenn aktiviert, wird der Anzeigename von dem "
-"Benutzer übernommen, der die E-Mail ausgelöst hat."
+msgstr "Wenn aktiviert, wird der Anzeigename von dem Benutzer uebernommen, der die E-Mail ausgeloest hat"
 
 msgid "Email Send Timeout (seconds)"
 msgstr "E-Mail-Sende-Timeout (Sekunden)"
@@ -213,6 +239,15 @@ msgstr "Geplant"
 msgid "Sent"
 msgstr "Gesendet"
 
+msgid "Delivered"
+msgstr "Zugestellt"
+
+msgid "Bounced"
+msgstr "Zurueckgewiesen"
+
+msgid "Opened"
+msgstr "Geoeffnet"
+
 msgid "Failed"
 msgstr "Fehlgeschlagen"
 
@@ -220,7 +255,7 @@ msgid "From"
 msgstr "Von"
 
 msgid "Comma separated recipient email addresses"
-msgstr "Empfänger-E-Mail-Adressen, durch Komma getrennt"
+msgstr "Empfaenger-E-Mail-Adressen, durch Komma getrennt"
 
 msgid "To"
 msgstr "An"
@@ -238,21 +273,7 @@ msgid "Body"
 msgstr "Inhalt"
 
 msgid "When the mail should be sent (for scheduled mails)."
-msgstr "Wann die E-Mail gesendet werden soll (für geplante E-Mails)."
-
-msgid ""
-"Subject contains potentially dangerous content (XSS detected). Please remove "
-"any scripts or malicious code."
-msgstr ""
-"Der Betreff enthält potenziell gefährliche Inhalte (XSS erkannt). "
-"Bitte entfernen Sie alle Skripte oder bösartigen Code."
-
-msgid ""
-"Body contains potentially dangerous content (XSS detected). Please remove "
-"any scripts or malicious code."
-msgstr ""
-"Der Nachrichtentext enthält potenziell gefährliche Inhalte (XSS erkannt). "
-"Bitte entfernen Sie alle Skripte oder bösartigen Code."
+msgstr "Wann die E-Mail gesendet werden soll (fuer geplante E-Mails)."
 
 msgid "Mails"
 msgstr "E-Mails"
@@ -261,25 +282,22 @@ msgid "Mail Attachment"
 msgstr "E-Mail-Anhang"
 
 msgid "Mail Attachments"
-msgstr "E-Mail-Anhänge"
+msgstr "E-Mail-Anhaenge"
 
 msgid "Template title"
 msgstr "Vorlagentitel"
 
+msgid "Related Model"
+msgstr "Verknuepftes Modell"
+
 msgid "Mail Templates"
 msgstr "E-Mail-Vorlagen"
 
-msgid "Outgoing Mail Configurations"
-msgstr "إعدادات البريد الصادر"
-
-msgid "Mail sent successfully"
-msgstr "E-Mail erfolgreich gesendet"
-
 msgid "Save Changes?"
-msgstr "Änderungen speichern?"
+msgstr "Aenderungen speichern?"
 
 msgid "Do you want to save your changes as a draft or discard them?"
-msgstr "Möchten Sie Ihre Änderungen als Entwurf speichern oder verwerfen?"
+msgstr "Moechten Sie Ihre Aenderungen als Entwurf speichern oder verwerfen?"
 
 msgid "Discard"
 msgstr "Verwerfen"
@@ -288,21 +306,19 @@ msgid "Save as Draft"
 msgstr "Als Entwurf speichern"
 
 msgid "No emails found for"
-msgstr "Keine E-Mails gefunden für"
+msgstr "Keine E-Mails gefunden fuer"
 
 msgid "Start typing to search emails..."
 msgstr "Beginnen Sie mit der Eingabe, um E-Mails zu durchsuchen..."
 
 msgid "Insert Fields"
-msgstr "Felder einfügen"
+msgstr "Felder einfuegen"
 
 msgid "Close"
-msgstr "Schließen"
+msgstr "Schliessen"
 
 msgid "Select fields to insert into your email template."
-msgstr ""
-"Wählen Sie Felder aus, die in Ihre E-Mail-Vorlage eingefügt werden sollen."
-"Wählen Sie die Felder aus, die in die E-Mail-Vorlage eingefügt werden sollen."
+msgstr "Waehlen Sie Felder aus, die in Ihre E-Mail-Vorlage eingefuegt werden sollen."
 
 msgid "Instance"
 msgstr "Instanz"
@@ -329,16 +345,16 @@ msgid "Request Fields"
 msgstr "Anfragefelder"
 
 msgid "Related Fields"
-msgstr "Verknüpfte Felder"
+msgstr "Verknuepfte Felder"
 
 msgid "Reverse Related Fields"
-msgstr "Umgekehrte verknüpfte Felder"
+msgstr "Umgekehrte verknuepfte Felder"
 
 msgid "No fields available for this model"
-msgstr "Keine Felder für dieses Modell verfügbar"
+msgstr "Keine Felder fuer dieses Modell verfuegbar"
 
 msgid "Insert Selected Fields"
-msgstr "Ausgewählte Felder einfügen"
+msgstr "Ausgewaehlte Felder einfuegen"
 
 msgid "Test Email Configuration"
 msgstr "Test-E-Mail-Konfiguration"
@@ -350,7 +366,7 @@ msgid "Send Test Email"
 msgstr "Test-E-Mail senden"
 
 msgid "Select Mail Server Type"
-msgstr "Mail-Server-Typ auswählen"
+msgstr "Mail-Server-Typ auswaehlen"
 
 msgid "Outlook Mail Server"
 msgstr "Outlook-Mail-Server"
@@ -359,7 +375,7 @@ msgid "Configure using Microsoft Azure/Office 365 OAuth authentication"
 msgstr "Konfigurieren mit Microsoft Azure/Office 365 OAuth-Authentifizierung"
 
 msgid "Select Outlook"
-msgstr "Outlook auswählen"
+msgstr "Outlook auswaehlen"
 
 msgid "mail"
 msgstr "E-Mail"
@@ -371,19 +387,22 @@ msgid "Configure SMTP, Gmail, Yahoo, or any other mail server"
 msgstr "Konfigurieren Sie SMTP, Gmail, Yahoo oder einen anderen Mail-Server"
 
 msgid "Select Other"
-msgstr "Andere auswählen"
+msgstr "Andere auswaehlen"
 
-msgid "Refresh"
-msgstr "Aktualisieren"
+msgid "Refresh Token"
+msgstr "Token aktualisieren"
 
 msgid "Login"
 msgstr "Anmelden"
+
+msgid "Send Test Mail"
+msgstr "Test-E-Mail senden"
 
 msgid "Edit"
 msgstr "Bearbeiten"
 
 msgid "Delete"
-msgstr "Löschen"
+msgstr "Loeschen"
 
 msgid "Mail Configuration Required"
 msgstr "E-Mail-Konfiguration erforderlich"
@@ -392,17 +411,13 @@ msgid "Cannot send email"
 msgstr "E-Mail kann nicht gesendet werden"
 
 msgid "Mail can only be sent after outgoing mail is configured."
-msgstr ""
-"E-Mail kann nur gesendet werden, nachdem ausgehende E-Mail konfiguriert "
-"wurde."
+msgstr "E-Mail kann nur gesendet werden, nachdem ausgehende E-Mail konfiguriert wurde."
 
 msgid "Configure Outgoing Mail"
 msgstr "Ausgehende E-Mail konfigurieren"
 
 msgid "Please contact your administrator to configure outgoing mail settings."
-msgstr ""
-"Bitte kontaktieren Sie Ihren Administrator, um die Einstellungen für "
-"ausgehende E-Mail zu konfigurieren."
+msgstr "Bitte kontaktieren Sie Ihren Administrator, um die Einstellungen fuer ausgehende E-Mail zu konfigurieren."
 
 msgid "Send Mail"
 msgstr "E-Mail senden"
@@ -410,11 +425,32 @@ msgstr "E-Mail senden"
 msgid "No mail server configured"
 msgstr "Kein Mail-Server konfiguriert"
 
+msgid "Enter Subject"
+msgstr "Betreff eingeben"
+
 msgid "Related to"
-msgstr "Verknüpft mit"
+msgstr "Verknuepft mit"
 
 msgid "Message"
 msgstr "Nachricht"
+
+msgid "Insert Field"
+msgstr "Feld einfuegen"
+
+msgid "Add mail template"
+msgstr "E-Mail-Vorlage hinzufuegen"
+
+msgid "Save as template"
+msgstr "Als Vorlage speichern"
+
+msgid "Preview"
+msgstr "Vorschau"
+
+msgid "Preview Error"
+msgstr "Vorschau-Fehler"
+
+msgid "Error generating preview:"
+msgstr "Fehler beim Erstellen der Vorschau:"
 
 msgid "Mail Preview"
 msgstr "E-Mail-Vorschau"
@@ -428,6 +464,9 @@ msgstr "Von:"
 msgid "No sender configured"
 msgstr "Kein Absender konfiguriert"
 
+msgid "To:"
+msgstr "An:"
+
 msgid "No subject"
 msgstr "Kein Betreff"
 
@@ -437,11 +476,14 @@ msgstr "Kein Nachrichteninhalt"
 msgid "This is how your email will look when sent"
 msgstr "So wird Ihre E-Mail beim Senden aussehen"
 
+msgid "Enter template title"
+msgstr "Vorlagentitel eingeben"
+
 msgid "Enter email subject (optional)"
 msgstr "E-Mail-Betreff eingeben (optional)"
 
 msgid "Select content type (optional)"
-msgstr "Inhaltstyp auswählen (optional)"
+msgstr "Inhaltstyp auswaehlen (optional)"
 
 msgid "Save as mail template"
 msgstr "Als E-Mail-Vorlage speichern"
@@ -449,11 +491,14 @@ msgstr "Als E-Mail-Vorlage speichern"
 msgid "Title"
 msgstr "Titel"
 
-msgid "Select Mail Template"
-msgstr "E-Mail-Vorlage auswählen"
+msgid "Enter title"
+msgstr "Titel eingeben"
+
+msgid "Save Template"
+msgstr "Vorlage speichern"
 
 msgid "Select Template"
-msgstr "Vorlage auswählen"
+msgstr "Vorlage auswaehlen"
 
 msgid "Email Template Preview"
 msgstr "E-Mail-Vorlagen-Vorschau"
@@ -471,9 +516,7 @@ msgid "Schedule"
 msgstr "Planen"
 
 msgid "Cannot send email. Outgoing mail must be configured first."
-msgstr ""
-"E-Mail kann nicht gesendet werden. Ausgehende E-Mail muss zuerst "
-"konfiguriert werden."
+msgstr "E-Mail kann nicht gesendet werden. Ausgehende E-Mail muss zuerst konfiguriert werden."
 
 msgid "To email is required"
 msgstr "E-Mail-Adresse (An) ist erforderlich"
@@ -483,20 +526,35 @@ msgstr "E-Mail-Konfiguration (Von) ist erforderlich"
 
 msgid ""
 "Both model_name and object_id are required to send mail related to an object."
-msgstr ""
-"Sowohl model_name als auch object_id sind erforderlich, um eine E-Mail zu einem Objekt zu senden."
+msgstr "Sowohl model_name als auch object_id sind erforderlich, um eine E-Mail zu einem Objekt zu senden."
 
 msgid ""
 "Cannot send mail: model information is missing. Please try again from the "
 "opportunity page."
 msgstr ""
-"E-Mail kann nicht gesendet werden: Modellinformationen fehlen. Bitte versuchen Sie es erneut von der Opportunity-Seite."
+"E-Mail kann nicht gesendet werden: Modellinformationen fehlen. Bitte "
+"versuchen Sie es erneut von der Opportunity-Seite."
+
+msgid "Mail sent successfully"
+msgstr "E-Mail erfolgreich gesendet"
+
+msgid "Mail bounced: "
+msgstr "E-Mail zurueckgewiesen: "
 
 msgid "Failed to send mail: "
 msgstr "Fehler beim Senden der E-Mail: "
 
 msgid "Error sending mail: "
 msgstr "Fehler beim Senden der E-Mail: "
+
+msgid "Subject contains dangerous content."
+msgstr "Der Betreff enthaelt gefaehrlichen Inhalt."
+
+msgid "Message body contains dangerous content."
+msgstr "Der Nachrichtentext enthaelt gefaehrlichen Inhalt."
+
+msgid "You do not have permission to access this record."
+msgstr "Sie haben keine Berechtigung, auf diesen Datensatz zuzugreifen."
 
 msgid "Draft saved successfully"
 msgstr "Entwurf erfolgreich gespeichert"
@@ -517,19 +575,117 @@ msgid "Scheduled time must be in the future"
 msgstr "Die geplante Zeit muss in der Zukunft liegen"
 
 msgid "Invalid date/time format"
-msgstr "Ungültiges Datums-/Zeitformat"
+msgstr "Ungueltiges Datums-/Zeitformat"
 
 msgid "Scheduled mail not found or you don't have permission"
 msgstr "Geplante E-Mail nicht gefunden oder Sie haben keine Berechtigung"
 
+msgid "You do not have permission to reschedule this mail."
+msgstr "Sie haben keine Berechtigung, diese E-Mail neu zu planen."
+
 msgid "Mail rescheduled successfully for "
-msgstr "E-Mail erfolgreich neu geplant für "
+msgstr "E-Mail erfolgreich neu geplant fuer "
 
 msgid "Invalid mail configuration selected"
-msgstr "Ungültige E-Mail-Konfiguration ausgewählt"
+msgstr "Ungueltige E-Mail-Konfiguration ausgewaehlt"
+
+msgid "You do not have permission to send mail for this record."
+msgstr "Sie haben keine Berechtigung, fuer diesen Datensatz eine E-Mail zu senden."
 
 msgid "Mail scheduled successfully for "
-msgstr "E-Mail erfolgreich geplant für "
+msgstr "E-Mail erfolgreich geplant fuer "
 
 msgid "Error scheduling mail: "
 msgstr "Fehler beim Planen der E-Mail: "
+
+msgid "Incoming Mail Configurations"
+msgstr "Einstellungen fuer eingehende E-Mails"
+
+msgid "Channel"
+msgstr "Kanal"
+
+msgid "Primary"
+msgstr "Primaer"
+
+msgid "From Email"
+msgstr "Von E-Mail"
+
+msgid "Dynamic Display Name"
+msgstr "Dynamischer Anzeigename"
+
+msgid "Timeout (seconds)"
+msgstr "Timeout (Sekunden)"
+
+msgid "Redirect URI"
+msgstr "Weiterleitungs-URI"
+
+msgid "Authorization URL"
+msgstr "Autorisierungs-URL"
+
+msgid "Token URL"
+msgstr "Token-URL"
+
+msgid "API Endpoint"
+msgstr "API-Endpunkt"
+
+msgid "Token Last Refreshed"
+msgstr "Token zuletzt aktualisiert"
+
+msgid "Update Mail Template"
+msgstr "E-Mail-Vorlage aktualisieren"
+
+msgid "Update Template"
+msgstr "Vorlage aktualisieren"
+
+msgid "Create Mail Template"
+msgstr "E-Mail-Vorlage erstellen"
+
+msgid "Mail template \"{}\" updated successfully."
+msgstr "E-Mail-Vorlage \"{}\" erfolgreich aktualisiert."
+
+msgid "Mail template \"{}\" created successfully."
+msgstr "E-Mail-Vorlage \"{}\" erfolgreich erstellt."
+
+msgid "Outgoing Mail Configurations"
+msgstr "Einstellungen fuer ausgehende E-Mails"
+
+msgid "Outgoing Mail Server Configuration"
+msgstr "Konfiguration des ausgehenden Mail-Servers"
+
+msgid "Not configured outlook"
+msgstr "Outlook nicht konfiguriert"
+
+msgid "Outlook Client ID is not configured"
+msgstr "Outlook Client-ID ist nicht konfiguriert"
+
+msgid "Outlook Redirect URI is not configured"
+msgstr "Outlook Weiterleitungs-URI ist nicht konfiguriert"
+
+msgid "Outlook Authorization URL is not configured"
+msgstr "Outlook Autorisierungs-URL ist nicht konfiguriert"
+
+msgid "Invalid Outlook configuration"
+msgstr "Ungueltige Outlook-Konfiguration"
+
+msgid "Outlook Token URL is not configured"
+msgstr "Outlook Token-URL ist nicht konfiguriert"
+
+msgid "Outlook Client Secret is not configured"
+msgstr "Outlook Client-Geheimnis ist nicht konfiguriert"
+
+msgid "Unable to build authorization response URI"
+msgstr "Autorisierungsantwort-URI kann nicht erstellt werden"
+
+msgid "Token not refreshed, Login required"
+msgstr "Token nicht aktualisiert, Anmeldung erforderlich"
+
+msgid "Token refreshed successfully"
+msgstr "Token erfolgreich aktualisiert"
+
+#, python-brace-format
+msgid "Token refresh failed: {error}. Please re-authenticate."
+msgstr "Token-Aktualisierung fehlgeschlagen: {error}. Bitte authentifizieren Sie sich erneut."
+
+#, python-brace-format
+msgid "Token refresh failed: {error}"
+msgstr "Token-Aktualisierung fehlgeschlagen: {error}"

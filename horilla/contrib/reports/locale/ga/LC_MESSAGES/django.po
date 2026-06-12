@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-19 10:06+0000\n"
+"POT-Creation-Date: 2026-06-12 09:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,6 +20,41 @@ msgstr ""
 "4);\n"
 
 msgid "Module for creating and customizing reports across all system modules."
+msgstr ""
+
+msgid ""
+"Removed redundant fields attributes superseded by form_class on report CRUD "
+"views, standardized first-party import groups, and added docstrings for "
+"pylint compliance."
+msgstr ""
+
+msgid ""
+"Report forms aligned with HorillaModelForm layout: field_order and Meta."
+"fields = \"__all__\" with Meta.exclude; folder and column HTMX unchanged."
+msgstr ""
+
+msgid ""
+"Release 1.10: reports ship under contrib with app label reports. Cross-app "
+"report wiring, ContentType references, namespaces, and registrations updated "
+"for the contrib naming scheme."
+msgstr ""
+
+msgid ""
+"Improved report compatibility with dashboard multi-widget support, enhanced "
+"chart_value_field handling, and minor stability improvements for report "
+"rendering and filter processing."
+msgstr ""
+
+msgid ""
+"Added support for advanced chart types including Treemap, Area charts, "
+"Heatmaps, Sankey diagrams, and Radar charts. Improved compatibility with the "
+"new visualization and analytics framework."
+msgstr ""
+
+msgid ""
+"Migrated from Django AppConfig to Horilla AppLauncher and and replacedDjango "
+"utilities with horilla.utils.decorators, horilla.utils.translation,and "
+"horilla.shortcuts where applicable."
 msgstr ""
 
 msgid "Reports"
@@ -70,6 +105,21 @@ msgstr ""
 msgid "Scatter Chart"
 msgstr ""
 
+msgid "Treemap"
+msgstr ""
+
+msgid "Area Chart"
+msgstr ""
+
+msgid "Heatmap"
+msgstr ""
+
+msgid "Sankey"
+msgstr ""
+
+msgid "Radar Chart"
+msgstr ""
+
 msgid "Report Owner"
 msgstr ""
 
@@ -83,6 +133,9 @@ msgid "Chart Field"
 msgstr ""
 
 msgid "Secondary Field"
+msgstr ""
+
+msgid "Value Field (Y-axis)"
 msgstr ""
 
 msgid "Report"
@@ -121,42 +174,6 @@ msgstr ""
 msgid "A"
 msgstr ""
 
-msgid "Down"
-msgstr ""
-
-msgid "Add to Dashboard"
-msgstr ""
-
-msgid "Record Count"
-msgstr ""
-
-msgid "Is"
-msgstr ""
-
-msgid "Contains"
-msgstr ""
-
-msgid "Greater than"
-msgstr ""
-
-msgid "Less than"
-msgstr ""
-
-msgid "Greater or equal"
-msgstr ""
-
-msgid "Less or equal"
-msgstr ""
-
-msgid "Close"
-msgstr ""
-
-msgid "AND"
-msgstr ""
-
-msgid "OR"
-msgstr ""
-
 msgid "Summary Report"
 msgstr ""
 
@@ -191,6 +208,9 @@ msgid "Grouping"
 msgstr ""
 
 msgid "Filter"
+msgstr ""
+
+msgid "Search Columns"
 msgstr ""
 
 msgid "Search"
@@ -229,6 +249,9 @@ msgstr ""
 msgid "Apply Filters"
 msgstr ""
 
+msgid "Select..."
+msgstr ""
+
 msgid "Report:"
 msgstr ""
 
@@ -236,6 +259,18 @@ msgid "Refresh"
 msgstr ""
 
 msgid "Save"
+msgstr ""
+
+msgid "Discard Changes"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Close Panel"
+msgstr ""
+
+msgid "Edit Report"
 msgstr ""
 
 msgid "Edit"
@@ -259,6 +294,12 @@ msgstr ""
 msgid "Detail table"
 msgstr ""
 
+msgid "Filtered by pivot:"
+msgstr ""
+
+msgid "Clear pivot filter"
+msgstr ""
+
 msgid "Pivot table"
 msgstr ""
 
@@ -268,16 +309,19 @@ msgstr ""
 msgid "Change Chart"
 msgstr ""
 
-msgid "Change Field"
-msgstr ""
-
 msgid "Export as PDF"
 msgstr ""
 
 msgid "Export as PNG"
 msgstr ""
 
+msgid "Add to Dashboard"
+msgstr ""
+
 msgid "Record Count:"
+msgstr ""
+
+msgid "Favourite"
 msgstr ""
 
 msgid "Move"
@@ -311,4 +355,38 @@ msgid "Name"
 msgstr ""
 
 msgid "Type"
+msgstr ""
+
+msgid "Average"
+msgstr ""
+
+msgid "Minimum"
+msgstr ""
+
+msgid "Maximum"
+msgstr ""
+
+msgid "Record count"
+msgstr ""
+
+#, python-format
+msgid "%(metric)s of %(field)s"
+msgstr ""
+
+msgid "Chart type"
+msgstr ""
+
+msgid "X-axis (Group by)"
+msgstr ""
+
+msgid "Stack by (second group)"
+msgstr ""
+
+msgid "Y-axis (Value)"
+msgstr ""
+
+msgid "Invalid field '{}'. This field does not exist on the model."
+msgstr ""
+
+msgid "Invalid filter value: {}"
 msgstr ""
