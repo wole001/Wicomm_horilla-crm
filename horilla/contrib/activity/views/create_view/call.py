@@ -43,7 +43,7 @@ class CallCreateForm(
         initial = super().get_initial()
         object_id = self.request.GET.get("object_id")
         model_name = self.request.GET.get("model_name")
-        pk = self.kwargs.get("pk") or self.request.GET.get("id")
+        # pk = self.kwargs.get("pk") or self.request.GET.get("id")
         if object_id and model_name:
             initial["object_id"] = object_id
             content_type = HorillaContentType.objects.get(model=model_name.lower())
