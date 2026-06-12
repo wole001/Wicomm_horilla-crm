@@ -14,7 +14,7 @@ import logging
 from celery import shared_task
 
 from horilla.auth.models import User
-from horilla.contrib.utils.methods import has_xss
+from horilla.contrib.utils.methods import sanitize_html, sanitize_plain_text
 from horilla.contrib.utils.middlewares import _thread_local
 
 # First party imports (Horilla)
@@ -121,13 +121,11 @@ def send_scheduled_mail_task(self, mail_id):
             "request": mock_request,
         }
 
-        # Check for XSS before rendering (on templates)
-        if has_xss(mail.subject or "") or has_xss(mail.body or ""):
-            logger.warning("XSS detected in mail templates %s", mail_id)
-            mail.mail_status = "failed"
-            mail.mail_status_message = "XSS content detected in email templates"
-            mail.save(update_fields=["mail_status", "mail_status_message"])
-            return f"XSS detected in mail {mail_id}"
+        # Sanitize before rendering — strip dangerous content rather than aborting.
+        if mail.subject:
+            mail.subject = sanitize_plain_text(mail.subject)
+        if mail.body:
+            mail.body = sanitize_html(mail.body)
 
         # Use HorillaMailManager to send the mail
         HorillaMailManager.send_mail(mail, context=context)

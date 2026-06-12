@@ -4,9 +4,6 @@
 import logging
 import re
 
-# Third-party imports
-import bleach
-
 # Third-party imports (Django)
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -17,7 +14,7 @@ from django.views import View
 # First party imports (Horilla)
 from horilla.apps import apps
 from horilla.contrib.core.models import HorillaContentType
-from horilla.contrib.utils.methods import has_ssti, has_xss
+from horilla.contrib.utils.methods import has_ssti, has_xss, sanitize_html
 from horilla.http import HttpResponse
 from horilla.shortcuts import render
 from horilla.utils.decorators import (
@@ -32,75 +29,9 @@ from ...models import HorillaMail, HorillaMailAttachment, HorillaMailConfigurati
 
 logger = logging.getLogger(__name__)
 
-_ALLOWED_TAGS = [
-    "a",
-    "abbr",
-    "b",
-    "blockquote",
-    "br",
-    "caption",
-    "cite",
-    "code",
-    "col",
-    "colgroup",
-    "dd",
-    "del",
-    "details",
-    "div",
-    "dl",
-    "dt",
-    "em",
-    "figcaption",
-    "figure",
-    "h1",
-    "h2",
-    "h3",
-    "h4",
-    "h5",
-    "h6",
-    "hr",
-    "i",
-    "img",
-    "ins",
-    "kbd",
-    "li",
-    "mark",
-    "ol",
-    "p",
-    "pre",
-    "q",
-    "s",
-    "small",
-    "span",
-    "strong",
-    "sub",
-    "summary",
-    "sup",
-    "table",
-    "tbody",
-    "td",
-    "tfoot",
-    "th",
-    "thead",
-    "tr",
-    "u",
-    "ul",
-]
-_ALLOWED_ATTRS = {
-    "*": ["class", "style", "id"],
-    "a": ["href", "title", "target", "rel"],
-    "img": ["src", "alt", "width", "height"],
-    "td": ["colspan", "rowspan"],
-    "th": ["colspan", "rowspan", "scope"],
-    "col": ["span"],
-    "colgroup": ["span"],
-}
-
 
 def _sanitize_html(content):
-    return mark_safe(
-        bleach.clean(content, tags=_ALLOWED_TAGS, attributes=_ALLOWED_ATTRS, strip=True)
-    )
+    return mark_safe(sanitize_html(content))
 
 
 @method_decorator(htmx_required, name="dispatch")

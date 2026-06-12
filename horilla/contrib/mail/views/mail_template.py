@@ -20,6 +20,7 @@ from horilla.contrib.generics.views import (
     HorillaSingleDeleteView,
     HorillaView,
 )
+from horilla.contrib.utils.methods import sanitize_html
 from horilla.contrib.utils.middlewares import _thread_local
 from horilla.core.exceptions import ValidationError
 from horilla.http import HttpNotFound, HttpResponse, JsonResponse, RefreshResponse
@@ -307,9 +308,13 @@ class MailTemplatePreviewView(LoginRequiredMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         """Handle POST for large body content"""
         context = self.get_context_data(**kwargs)
+        from django.utils.safestring import mark_safe
+
         body_content = request.POST.get("body")
         subject = request.POST.get("subject")
-        context["body"] = body_content
+        context["body"] = (
+            mark_safe(sanitize_html(body_content)) if body_content else body_content
+        )
         context["subject"] = subject
         return self.render_to_response(context)
 
@@ -512,3 +517,10 @@ class MailTemplateDetailView(LoginRequiredMixin, DetailView):
     model = HorillaMailTemplate
     template_name = "mail_template/mail_template_detail.html"
     context_object_name = "mail_template"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        from django.utils.safestring import mark_safe
+
+        context["safe_body"] = mark_safe(sanitize_html(self.object.body or ""))
+        return context

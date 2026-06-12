@@ -9,7 +9,11 @@ import uuid
 from django.template import engines
 
 from horilla.contrib.core.models import HorillaContentType, HorillaCoreModel
-from horilla.contrib.utils.methods import has_xss, render_template
+from horilla.contrib.utils.methods import (
+    render_template,
+    sanitize_html,
+    sanitize_plain_text,
+)
 from horilla.contrib.utils.middlewares import _thread_local
 from horilla.core.exceptions import ValidationError
 
@@ -295,23 +299,11 @@ class HorillaMail(HorillaCoreModel):
         return django_engine.from_string(template_str).render(context)
 
     def clean(self):
-        """Validate model fields for XSS at model level (works for admin, forms, and API)."""
-        errors = {}
-
-        if self.subject and has_xss(self.subject):
-            errors["subject"] = _(
-                "Subject contains potentially dangerous content (XSS detected). "
-                "Please remove any scripts or malicious code."
-            )
-
-        if self.body and has_xss(self.body):
-            errors["body"] = _(
-                "Body contains potentially dangerous content (XSS detected). "
-                "Please remove any scripts or malicious code."
-            )
-
-        if errors:
-            raise ValidationError(errors)
+        """Sanitize XSS content from mail fields."""
+        if self.subject:
+            self.subject = sanitize_plain_text(self.subject)
+        if self.body:
+            self.body = sanitize_html(self.body)
 
     def save(self, *args, **kwargs):
         """Override save to ensure clean() is called for validation."""
@@ -454,23 +446,11 @@ class HorillaMailTemplate(HorillaCoreModel):
         return "General"
 
     def clean(self):
-        """Validate model fields for XSS at model level (works for admin, forms, and API)."""
-        errors = {}
-
-        if self.subject and has_xss(self.subject):
-            errors["subject"] = _(
-                "Subject contains potentially dangerous content (XSS detected). "
-                "Please remove any scripts or malicious code."
-            )
-
-        if self.body and has_xss(self.body):
-            errors["body"] = _(
-                "Body contains potentially dangerous content (XSS detected). "
-                "Please remove any scripts or malicious code."
-            )
-
-        if errors:
-            raise ValidationError(errors)
+        """Sanitize XSS content from mail fields."""
+        if self.subject:
+            self.subject = sanitize_plain_text(self.subject)
+        if self.body:
+            self.body = sanitize_html(self.body)
 
     def save(self, *args, **kwargs):
         """Override save to ensure clean() is called for validation."""
