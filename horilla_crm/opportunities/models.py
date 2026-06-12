@@ -778,6 +778,8 @@ class OpportunitySettings(HorillaCoreModel):
     @classmethod
     def get_settings(cls, company):
         """Get or create settings for the given company"""
+        if not company:
+            return None
         settings, _created = cls.objects.get_or_create(
             company=company, defaults={"team_selling_enabled": False}
         )

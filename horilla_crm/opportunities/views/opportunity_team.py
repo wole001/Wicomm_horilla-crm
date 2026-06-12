@@ -902,6 +902,10 @@ class TeamSellingSetupView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         company = self.request.active_company
         settings = OpportunitySettings.get_settings(company)
+        if not settings:
+            context["settings"] = None
+            context["team_selling_enabled"] = False
+            return context
         context["settings"] = settings
         context["team_selling_enabled"] = settings.team_selling_enabled
         return context
@@ -919,6 +923,19 @@ class ToggleTeamSellingView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         """Handle POST request to toggle team selling feature."""
         company = self.request.active_company
+        view_url = reverse_lazy("opportunities:team_selling_setup")
+
+        response_html = format_html(
+            '<span hx-trigger="load" hx-get="{}" '
+            'hx-select="#opportunity-team-settings" '
+            'hx-target="#opportunity-team-settings" '
+            'hx-swap="outerHTML" hx-push-url="false" '
+            'hx-select-oob="#settings-sidebar"></span>',
+            view_url,
+        )
+        if not company:
+            messages.error(request, _("No active company found. Cannot save settings."))
+            return HttpResponse(response_html)
         settings = OpportunitySettings.get_settings(company)
         action = request.POST.get("action")
 
@@ -944,14 +961,5 @@ class ToggleTeamSellingView(LoginRequiredMixin, View):
                     "and their members have been deleted."
                 ),
             )
-        view_url = reverse_lazy("opportunities:team_selling_setup")
 
-        response_html = format_html(
-            '<span hx-trigger="load" hx-get="{}" '
-            'hx-select="#opportunity-team-settings" '
-            'hx-target="#opportunity-team-settings" '
-            'hx-swap="outerHTML" hx-push-url="false" '
-            'hx-select-oob="#settings-sidebar"></span>',
-            view_url,
-        )
         return HttpResponse(response_html)
