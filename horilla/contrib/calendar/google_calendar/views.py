@@ -20,6 +20,7 @@ from datetime import timezone as dt_timezone
 # Third-party imports (Django)
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import IntegrityError
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from requests_oauthlib import OAuth2Session
@@ -45,11 +46,21 @@ _SETTINGS_TEMPLATE = "google_calendar/google_calendar_settings.html"
 
 
 def _get_or_create_config(user):
-    """Get or create a GoogleCalendarConfig for a user."""
-    config, _ = GoogleCalendarConfig.objects.get_or_create(
-        user=user,
-        defaults={"company": user.company},
-    )
+    """Get or create a GoogleCalendarConfig for a user.
+
+    Uses all_objects (unfiltered manager) because GoogleCalendarConfig is a
+    per-user singleton — one row per user regardless of company. The default
+    CompanyFilteredManager would hide the row when an admin switches to a
+    different company, causing spurious DoesNotExist / UNIQUE constraint errors.
+    """
+    try:
+        config, _ = GoogleCalendarConfig.all_objects.get_or_create(
+            user=user,
+            defaults={"company": user.company},
+        )
+    except IntegrityError:
+        # Concurrent request already created the row; just fetch it.
+        config = GoogleCalendarConfig.all_objects.get(user=user)
     return config
 
 
@@ -271,7 +282,7 @@ class GoogleCalendarCallbackView(View):
             return redirect(reverse_lazy("core:my_settings_view"))
 
         try:
-            config = GoogleCalendarConfig.objects.get(oauth_state=state)
+            config = GoogleCalendarConfig.all_objects.get(oauth_state=state)
         except GoogleCalendarConfig.DoesNotExist:
             messages.error(request, _("OAuth state mismatch. Please try again."))
             return redirect(reverse_lazy("core:my_settings_view"))
@@ -538,7 +549,7 @@ class GoogleCalendarWebhookView(View):
             logger.warning("Webhook rejected: no channel_id in headers")
             return HttpResponse(status=404)
 
-        config = GoogleCalendarConfig.objects.filter(
+        config = GoogleCalendarConfig.all_objects.filter(
             watch_channel_id=channel_id
         ).first()
         if config is None:

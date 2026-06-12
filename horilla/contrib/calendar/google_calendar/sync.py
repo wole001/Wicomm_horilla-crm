@@ -171,7 +171,7 @@ def push_activity_to_google(activity, user):
     Saves the returned Google ID back to activity.google_event_id.
     """
     try:
-        config = GoogleCalendarConfig.objects.get(user=user)
+        config = GoogleCalendarConfig.all_objects.get(user=user)
     except GoogleCalendarConfig.DoesNotExist:
         return
     if not config.is_connected():
@@ -222,7 +222,7 @@ def push_unavailability_to_google(ua):
     Saves the returned Google event ID back to ua.google_event_id.
     """
     try:
-        config = GoogleCalendarConfig.objects.get(user=ua.user)
+        config = GoogleCalendarConfig.all_objects.get(user=ua.user)
     except GoogleCalendarConfig.DoesNotExist:
         return
     if not config.is_connected():
@@ -263,7 +263,7 @@ def delete_activity_google_event(activity, user):
     if not activity.google_event_id:
         return
     try:
-        config = GoogleCalendarConfig.objects.get(user=user)
+        config = GoogleCalendarConfig.all_objects.get(user=user)
     except GoogleCalendarConfig.DoesNotExist:
         return
     if not config.is_connected():
@@ -287,7 +287,7 @@ def delete_unavailability_google_event(ua):
     if not ua.google_event_id:
         return
     try:
-        config = GoogleCalendarConfig.objects.get(user=ua.user)
+        config = GoogleCalendarConfig.all_objects.get(user=ua.user)
     except GoogleCalendarConfig.DoesNotExist:
         return
     if not config.is_connected():
