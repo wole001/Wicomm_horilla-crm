@@ -68,17 +68,11 @@ class UserloginHistoryListView(LoginRequiredMixin, HorillaListView):
     def get_queryset(self):
         user = self.request.user
         opts = self.model._meta
-        perm = f"{opts.app_label}.view_{opts.model_name}"
-        queryset = (
-            self.model.objects.all()
-            if user.has_perm(perm)
-            else (
-                self.model.objects.filter(user_id=user)
-                if user.has_perm(f"{opts.app_label}.view_own_{opts.model_name}")
-                else self.model.objects.none()
-            )
-        )
-        return queryset
+        if user.has_perm(f"{opts.app_label}.view_{opts.model_name}") or user.has_perm(
+            f"{opts.app_label}.view_own_{opts.model_name}"
+        ):
+            return self.model.objects.filter(user_id=user)
+        return self.model.objects.none()
 
     columns = [
         (_("Browser"), "short_user_agent"),
