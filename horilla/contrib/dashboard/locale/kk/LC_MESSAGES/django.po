@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-21 07:35+0000\n"
+"POT-Creation-Date: 2026-06-12 08:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,51 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
 msgid "Module for building and customizing interactive dashboards."
+msgstr ""
+
+msgid ""
+"Removed redundant fields attributes superseded by form_class on dashboard "
+"action views, and added admin and component view docstrings for pylint "
+"compliance."
+msgstr ""
+
+msgid ""
+"Dashboard forms aligned with HorillaModelForm layout: field_order and Meta."
+"fields = \"__all__\" with Meta.exclude; component form __init__ unchanged."
+msgstr ""
+
+msgid ""
+"Release 1.10: dashboards ship under contrib with app label dashboard. Widget "
+"and KPI wiring aligned to short app labels across contrib modules so filters "
+"and lookups resolve consistently."
+msgstr ""
+
+msgid ""
+"Extended dashboard generator to support multiple charts, multiple table "
+"widgets, and custom KPI functions. Added more KPI widgets and improved "
+"charts and reporting components for the dashboard."
+msgstr ""
+
+msgid ""
+"Added configurable Y-axis metrics for charts reusing KPI options, plus new "
+"chart types: Area, Tree Map, Heat Map, Radar, Sankey, and Scatter."
+msgstr ""
+
+msgid ""
+"Added advanced visualization capabilities including multi-series charts, "
+"improved stacked chart rendering, interactive chart previews in dashboard "
+"editor, and enhanced analytics widgets for deeper insights."
+msgstr ""
+
+msgid ""
+"Migrated from Django AppConfig to Horilla AppLauncher and and replaced "
+"Django utilitieswith horilla.utils.decorators, horilla.utils.translation, "
+"and horilla.shortcuts where applicable."
+msgstr ""
+
+msgid ""
+"Added drag and drop reordering from home page, date range filter,and set to "
+"default options for enhanced dashboard customization and data visualization."
 msgstr ""
 
 msgid "Dashboard"
@@ -93,19 +138,22 @@ msgstr ""
 msgid "Stacked Horizontal Chart"
 msgstr ""
 
-msgid "Count"
+msgid "Scatter"
 msgstr ""
 
-msgid "Sum"
+msgid "Heat Map"
 msgstr ""
 
-msgid "Average"
+msgid "Tree Map"
 msgstr ""
 
-msgid "Minimum"
+msgid "Area Chart"
 msgstr ""
 
-msgid "Maximum"
+msgid "Sankey Chart"
+msgstr ""
+
+msgid "Radar Chart"
 msgstr ""
 
 msgid "Component Name"
@@ -129,7 +177,10 @@ msgstr ""
 msgid "Grouping Field"
 msgstr ""
 
-msgid "Secondary Grouping (For Stacked)"
+msgid "Secondary Grouping"
+msgstr ""
+
+msgid "Y-axis Metric Type"
 msgstr ""
 
 msgid "Table Columns"
@@ -185,6 +236,60 @@ msgstr ""
 
 #, python-format
 msgid "Default home layout order for %(user)s"
+msgstr ""
+
+msgid "Company Name"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Contact Number"
+msgstr ""
+
+msgid "Summit Logistics"
+msgstr ""
+
+msgid "sales@summitlogistics.com"
+msgstr ""
+
+msgid "+1 (415) 555-0182"
+msgstr ""
+
+msgid "Brightline Media"
+msgstr ""
+
+msgid "hello@brightlinemedia.io"
+msgstr ""
+
+msgid "+1 (312) 555-0247"
+msgstr ""
+
+msgid "Northstar Consulting"
+msgstr ""
+
+msgid "contact@northstarconsulting.co"
+msgstr ""
+
+msgid "+1 (646) 555-0119"
+msgstr ""
+
+msgid "BluePeak Technologies"
+msgstr ""
+
+msgid "info@bluepeaktech.ai"
+msgstr ""
+
+msgid "+1 (206) 555-0134"
+msgstr ""
+
+msgid "Evergreen Retail Group"
+msgstr ""
+
+msgid "partnerships@evergreenretail.com"
+msgstr ""
+
+msgid "+1 (718) 555-0176"
 msgstr ""
 
 msgid "Edit"
@@ -348,15 +453,13 @@ msgstr ""
 msgid "KPI icon"
 msgstr ""
 
-msgid ""
-"Your saved layout order was invalid and has been reset. Please reorder the "
-"dashboard again if needed."
+msgid "Metric type"
 msgstr ""
 
-msgid "New Dashboard"
+msgid "Secondary Grouping Field"
 msgstr ""
 
-msgid "New Folder"
+msgid "Y-axis metric"
 msgstr ""
 
 msgid "Move to Dashboard"
@@ -365,16 +468,37 @@ msgstr ""
 msgid "Original component not found."
 msgstr ""
 
-msgid "Chart successfully added to another dashboard!"
+msgid "Chart successfully added to another dashboard."
 msgstr ""
 
-msgid "Name"
+msgid "Add to Dashboard"
 msgstr ""
 
-msgid "Type"
+msgid "This report '{}' is already added to the '{}' dashboard."
 msgstr ""
 
-msgid "Favourite Dashboards"
+msgid "Report added to dashboard successfully."
+msgstr ""
+
+msgid "Report not found."
+msgstr ""
+
+msgid "Component name"
+msgstr ""
+
+msgid "Enter component name"
+msgstr ""
+
+msgid "Missing module or grouping field; reload the chart and try again."
+msgstr ""
+
+msgid "Invalid module."
+msgstr ""
+
+msgid "Please enter a component name."
+msgstr ""
+
+msgid "Chart added to dashboard successfully."
 msgstr ""
 
 msgid "No component order provided. Please try reordering again."
@@ -389,7 +513,39 @@ msgstr ""
 msgid "Invalid component order."
 msgstr ""
 
-msgid "Components reordered successfully!"
+msgid "Components reordered successfully."
+msgstr ""
+
+msgid "New Dashboard"
+msgstr ""
+
+msgid "New Folder"
+msgstr ""
+
+msgid "Dashboard layout reset to default order."
+msgstr ""
+
+msgid "Dashboard layout reset to default."
+msgstr ""
+
+msgid "Favourite Dashboards"
+msgstr ""
+
+msgid "Select Grouping Field"
+msgstr ""
+
+msgid "Select Secondary Grouping Field"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid ""
+"Your saved layout order was invalid and has been reset. Please reorder the "
+"dashboard again if needed."
 msgstr ""
 
 msgid "KPI data is missing in the request"
@@ -431,22 +587,4 @@ msgid "Layout order saved."
 msgstr ""
 
 msgid "Layout reset to default."
-msgstr ""
-
-msgid "Dashboard layout reset to default order."
-msgstr ""
-
-msgid "Dashboard layout reset to default."
-msgstr ""
-
-msgid "Add to Dashboard"
-msgstr ""
-
-msgid "This report '{}' is already added to the '{}' dashboard."
-msgstr ""
-
-msgid "Report added to dashboard successfully!"
-msgstr ""
-
-msgid "Report not found."
 msgstr ""
