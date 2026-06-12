@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-17 06:09+0000\n"
+"POT-Creation-Date: 2026-06-12 08:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,10 +17,30 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
 msgid "Module for managing cadence workflows and runtime activity sequences."
 msgstr ""
 
-msgid "Implemented cadence signals for runtime activities, enabling automated cadence-driven workflow execution and activity tracking."
+msgid ""
+"Migrated signal and timezone imports to the horilla shims, standardized "
+"first-party import groups, and added class and method docstrings for pylint "
+"compliance."
+msgstr ""
+
+msgid ""
+"Cadence forms aligned with HorillaModelForm layout: field_order, Meta.fields "
+"= \"__all__\", Meta.exclude, and keep_on_form; save logic and HTMX unchanged."
+msgstr ""
+
+msgid ""
+"Release 1.10: cadences ship under contrib with app label cadences. Signals, "
+"registrations, URLs, and static paths updated to match the new contrib "
+"layout."
+msgstr ""
+
+msgid ""
+"Implemented cadence signals for runtime activities, enabling automated "
+"cadence-driven workflow execution and activity tracking."
 msgstr ""
 
 msgid "Cadences"
@@ -35,10 +55,12 @@ msgstr ""
 msgid "Mail to"
 msgstr ""
 
-msgid "Choose which user or email field on the record should receive this mail."
+msgid ""
+"Choose which user or email field on the record should receive this mail."
 msgstr ""
 
-msgid "Email follow-up is unavailable until an outgoing mail server is configured."
+msgid ""
+"Email follow-up is unavailable until an outgoing mail server is configured."
 msgstr ""
 
 msgid "Parent follow-up is required for this stage."
@@ -131,7 +153,8 @@ msgstr ""
 msgid "Branched from"
 msgstr ""
 
-msgid "Set when this step was created from a specific parent card’s + (next stage)."
+msgid ""
+"Set when this step was created from a specific parent card’s + (next stage)."
 msgstr ""
 
 msgid "Do This"
@@ -206,6 +229,9 @@ msgstr ""
 msgid "This field is required for selected follow-up type."
 msgstr ""
 
+msgid "Invalid follow-up type."
+msgstr ""
+
 msgid "Back"
 msgstr ""
 
@@ -251,7 +277,8 @@ msgstr ""
 msgid "Add another follow-up in this stage"
 msgstr ""
 
-msgid "Get started by adding an Email, Task, or Call follow-up to your Cadence."
+msgid ""
+"Get started by adding an Email, Task, or Call follow-up to your Cadence."
 msgstr ""
 
 msgid "Add Follow Ups"
@@ -293,7 +320,16 @@ msgstr ""
 msgid "Email Delivered"
 msgstr ""
 
+msgid "Bounced Emails"
+msgstr ""
+
+msgid "Opened Emails"
+msgstr ""
+
 msgid "Failed Mails"
+msgstr ""
+
+msgid "Report"
 msgstr ""
 
 msgid "Cadences Report"
@@ -347,6 +383,12 @@ msgstr ""
 msgid "Delivered"
 msgstr ""
 
+msgid "Bounced"
+msgstr ""
+
+msgid "Opened"
+msgstr ""
+
 msgid "Failed"
 msgstr ""
 
@@ -356,7 +398,8 @@ msgstr ""
 msgid "Follow-up removed."
 msgstr ""
 
-msgid "Remove or reassign follow-ups in later stages before deleting this step."
+msgid ""
+"Remove or reassign follow-ups in later stages before deleting this step."
 msgstr ""
 
 msgid "Next Follow-up Response"
@@ -369,10 +412,4 @@ msgid "Object not found."
 msgstr ""
 
 msgid "You don't have permission to view this item."
-msgstr ""
-
-msgid "Active"
-msgstr ""
-
-msgid "Inactive"
 msgstr ""
