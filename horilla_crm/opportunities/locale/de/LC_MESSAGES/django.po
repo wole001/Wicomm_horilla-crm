@@ -564,7 +564,7 @@ msgid ""
 "Won and Closed Lost stages first."
 msgstr ""
 "Für dieses Unternehmen sind keine abgeschlossenen Phasen konfiguriert. "
-"Bitte konfigurieren Sie zuerst die Phasen „Abgeschlossen Gewonnen" und „Abgeschlossen Verloren"."
+"Bitte konfigurieren Sie zuerst die Phasen \"Abgeschlossen Gewonnen\" und \"Abgeschlossen Verloren\"."
 
 
 msgid "Update Stage"
