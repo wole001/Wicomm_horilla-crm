@@ -121,7 +121,15 @@ def _patch_horilla_list_view():
                 status__in=["pending", "rejected"],
                 is_active=True,
             ).values_list("object_id", flat=True)
-            return queryset.exclude(pk__in=pending_object_ids)
+            # ApprovalInstance.object_id is a CharField (GenericForeignKey id).
+            # Coerce to int before comparing against the integer PK: on PostgreSQL
+            # `pk IN (<varchar>)` raises "operator does not exist: bigint = character
+            # varying" (SQLite coerces silently), which broke every HorillaListView
+            # on Postgres deployments even with no approval rules configured.
+            pending_pks = [int(oid) for oid in pending_object_ids if str(oid).isdigit()]
+            if not pending_pks:
+                return queryset
+            return queryset.exclude(pk__in=pending_pks)
         except Exception:
             return queryset
 
