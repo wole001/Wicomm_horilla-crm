@@ -106,6 +106,7 @@ class ForecastTargetForm(HorillaModelForm):
 
         model = ForecastTarget
         fields = "__all__"
+        exclude = ["currency", "current_amount"]
         widgets = {
             "target_amount": forms.NumberInput(
                 attrs={"step": "0.01", "min": "0", "placeholder": "Enter target"}
