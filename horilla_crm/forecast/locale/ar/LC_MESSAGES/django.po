@@ -391,6 +391,9 @@ msgstr "الفجوة"
 msgid "Closed"
 msgstr "مغلق"
 
+msgid "Committed"
+msgstr "ملتزم"
+
 msgid "Commit Forecast"
 msgstr "توقع الالتزام"
 

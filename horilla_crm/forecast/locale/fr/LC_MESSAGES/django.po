@@ -391,6 +391,9 @@ msgstr "Écart"
 msgid "Closed"
 msgstr "Clôturé"
 
+msgid "Committed"
+msgstr "Engagé"
+
 msgid "Commit Forecast"
 msgstr "Prévision engagée"
 

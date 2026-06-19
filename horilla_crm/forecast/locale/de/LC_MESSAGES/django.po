@@ -391,6 +391,9 @@ msgstr "Lücke"
 msgid "Closed"
 msgstr "Abgeschlossen"
 
+msgid "Committed"
+msgstr "Zugesagt"
+
 msgid "Commit Forecast"
 msgstr "Verpflichtete Prognose"
 
