@@ -185,7 +185,7 @@ class ApprovalJobDetailDetailsTabView(LoginRequiredMixin, TemplateView):
         body = ApprovalJobReviewView._detail_tab_body(record)
         field_permissions = {}
         editable_now = job.status == "pending"
-        for _, field_name in body:
+        for _label, field_name in body:
             if not editable_now:
                 field_permissions[field_name] = "readonly"
             elif editable_fields is None:
