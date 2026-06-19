@@ -3,586 +3,703 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-22 17:35+0530\n"
+"POT-Creation-Date: 2026-06-15 05:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
 msgid "Booking"
+msgstr "Réservation"
+
+msgid ""
+"Public scheduling pages with slot availability, online meeting links (Zoom, "
+"Google Meet, Microsoft Teams), CRM lead integration, and confirmation, "
+"reminder, reschedule, and cancellation emails."
 msgstr ""
+"Pages de planification publiques avec disponibilité des créneaux, liens de "
+"réunion en ligne (Zoom, Google Meet, Microsoft Teams), intégration des "
+"prospects CRM, et e-mails de confirmation, rappel, report et annulation."
+
+msgid ""
+"Added HorillaModalDetailView with clickable rows, prev/next navigation, and "
+"status change actions; replaced hardcoded modal colors with Horilla theme "
+"variables. Split booking/views.py into booking_page, booking_list, and "
+"public modules. Use load_branding() TITLE as the fallback company name in "
+"reminder and confirmation emails."
+msgstr ""
+"Ajout de HorillaModalDetailView avec lignes cliquables, navigation "
+"précédent/suivant et actions de changement de statut ; remplacement des "
+"couleurs de modal codées en dur par les variables de thème Horilla. "
+"Découpage de booking/views.py en modules booking_page, booking_list et "
+"public. Utilisation du TITRE load_branding() comme nom d'entreprise de "
+"secours dans les e-mails de rappel et de confirmation."
+
+msgid ""
+"Improved booking calendar UX with timezone-aware slot display and "
+"confirmation rendering. Fixed the public date-strip to read date-object "
+"properties instead of stale outer-scope month/day variables. Adopted the "
+"horilla.utils.timezone shim and standardized first-party import groups "
+"across booking models, tasks, utils, and views."
+msgstr ""
+"Amélioration de l'expérience calendrier de réservation avec affichage des "
+"créneaux tenant compte du fuseau horaire et rendu de confirmation. "
+"Correction de la bande de dates publique pour lire les propriétés de l'objet"
+" date plutôt que les variables mois/jour obsolètes de la portée externe. "
+"Adoption du shim horilla.utils.timezone et standardisation des groupes "
+"d'imports internes dans les modèles, tâches, utilitaires et vues de "
+"réservation."
+
+msgid ""
+"Select2 timezone picker and clearer public scheduling layout. HTMX toggles "
+"for allow_cancel, allow_reschedule, and is_online with better online/offline"
+" location controls and brand-color widget rendering. Per-booking-page mail "
+"templates for confirmation, cancellation, and reschedule — plus Celery "
+"reminder emails aligned with CRM lead/contact/activity hooks."
+msgstr ""
+"Sélecteur de fuseau horaire Select2 et mise en page de planification "
+"publique plus claire. Bascules HTMX pour allow_cancel, allow_reschedule et "
+"is_online avec de meilleurs contrôles de localisation en ligne/hors ligne et"
+" rendu des widgets en couleur de marque. Modèles d'e-mails par page de "
+"réservation pour la confirmation, l'annulation et le report — ainsi que des "
+"e-mails de rappel Celery alignés sur les hooks lead/contact/activité du CRM."
+
+msgid ""
+"Initial release: booking pages with business-hour or shift-hour "
+"availability, public booking forms, embed URLs, custom questions and brand "
+"colors, My Bookings under My Jobs, settings under General Settings, optional"
+" mail templates for confirmation/cancellation/reschedule, Celery reminder "
+"tasks, and automatic lead and activity creation on booking submission."
+msgstr ""
+"Version initiale : pages de réservation avec disponibilité selon les heures "
+"de bureau ou de shift, formulaires de réservation publics, URLs "
+"d'intégration, questions personnalisées et couleurs de marque, Mes "
+"réservations sous Mes tâches, paramètres sous Paramètres généraux, modèles "
+"d'e-mails optionnels pour confirmation/annulation/report, tâches de rappel "
+"Celery, et création automatique de prospect et d'activité à la soumission "
+"d'une réservation."
 
 msgid "e.g. 30-Minute Intro Call"
-msgstr ""
+msgstr "ex. Appel d'introduction de 30 minutes"
 
 msgid "Booking Form Information"
-msgstr ""
+msgstr "Informations du formulaire de réservation"
 
 msgid "Meeting Scheduling Settings"
-msgstr ""
+msgstr "Paramètres de planification de réunion"
 
 msgid ""
 "Meeting details that are not collected from the user but required for "
 "scheduling."
 msgstr ""
+"Détails de la réunion non collectés auprès de l'utilisateur mais requis pour"
+" la planification."
 
 msgid "Minimum minutes before a slot can be booked"
-msgstr ""
+msgstr "Nombre minimum de minutes avant qu'un créneau puisse être réservé"
 
 msgid "How many days ahead visitors can book"
-msgstr ""
+msgstr "Combien de jours à l'avance les visiteurs peuvent réserver"
 
 msgid "Minutes before each meeting"
-msgstr ""
+msgstr "Minutes avant chaque réunion"
 
 msgid "Minutes after each meeting"
-msgstr ""
+msgstr "Minutes après chaque réunion"
 
-msgid "Send reminder email X hours before the meeting. Leave blank to disable."
+msgid ""
+"Send reminder email X hours before the meeting. Leave blank to disable."
 msgstr ""
+"Envoyer un e-mail de rappel X heures avant la réunion. Laisser vide pour "
+"désactiver."
 
 msgid "Meeting provider is required for online meetings."
-msgstr ""
+msgstr "Le fournisseur de réunion est requis pour les réunions en ligne."
 
 msgid "Your Name"
-msgstr ""
+msgstr "Votre nom"
 
 msgid "Full name"
-msgstr ""
+msgstr "Nom complet"
 
 msgid "Your Email"
-msgstr ""
+msgstr "Votre e-mail"
 
 msgid "email@example.com"
-msgstr ""
+msgstr "email@exemple.com"
 
 msgid "Notes"
-msgstr ""
+msgstr "Notes"
 
 msgid "Any additional information..."
-msgstr ""
+msgstr "Toute information supplémentaire..."
 
 msgid "My Bookings"
-msgstr ""
+msgstr "Mes réservations"
 
 msgid "Calendar Booking"
-msgstr ""
+msgstr "Réservation de calendrier"
 
 msgid "Zoom"
-msgstr ""
+msgstr "Zoom"
 
 msgid "Google Meet"
-msgstr ""
+msgstr "Google Meet"
 
 msgid "Microsoft Teams"
-msgstr ""
+msgstr "Microsoft Teams"
 
 msgid "Pending"
-msgstr ""
+msgstr "En attente"
 
 msgid "Confirmed"
-msgstr ""
+msgstr "Confirmé"
 
 msgid "Cancelled"
-msgstr ""
+msgstr "Annulé"
 
 msgid "Completed"
-msgstr ""
+msgstr "Terminé"
 
 msgid "No Show"
-msgstr ""
+msgstr "Absence"
 
 msgid "Business Hour"
-msgstr ""
+msgstr "Heures de bureau"
 
 msgid "Company business hours that govern available booking slots."
 msgstr ""
+"Heures de bureau de l'entreprise régissant les créneaux de réservation "
+"disponibles."
 
 msgid "Shift Hours"
-msgstr ""
+msgstr "Heures de shift"
 
 msgid ""
 "Use shift hours schedule for slot availability instead of business hours."
 msgstr ""
+"Utiliser le planning des heures de shift pour la disponibilité des créneaux "
+"au lieu des heures de bureau."
 
 msgid "Slug"
-msgstr ""
+msgstr "Identifiant URL"
 
 msgid "Unique URL identifier for the booking page."
-msgstr ""
+msgstr "Identifiant URL unique pour la page de réservation."
 
 msgid "Title"
-msgstr ""
+msgstr "Titre"
 
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 msgid "Duration (minutes)"
-msgstr ""
+msgstr "Durée (minutes)"
 
 msgid "Online Meeting"
-msgstr ""
+msgstr "Réunion en ligne"
 
 msgid "Meeting Provider"
-msgstr ""
+msgstr "Fournisseur de réunion"
 
 msgid "Required when Online Meeting is enabled."
-msgstr ""
+msgstr "Requis lorsque la réunion en ligne est activée."
 
 msgid "Location"
-msgstr ""
+msgstr "Lieu"
 
 msgid "Physical address for in-person meetings."
-msgstr ""
+msgstr "Adresse physique pour les réunions en présentiel."
 
 msgid "Buffer Before (minutes)"
-msgstr ""
+msgstr "Tampon avant (minutes)"
 
 msgid "Buffer After (minutes)"
-msgstr ""
+msgstr "Tampon après (minutes)"
 
 msgid "Max Bookings Per Day"
-msgstr ""
+msgstr "Nombre maximum de réservations par jour"
 
 msgid "Leave blank for unlimited."
-msgstr ""
+msgstr "Laisser vide pour illimité."
 
 msgid "Advance Notice (minutes)"
-msgstr ""
+msgstr "Délai de préavis (minutes)"
 
 msgid "Minimum notice required before a booking can be made."
 msgstr ""
+"Préavis minimum requis avant qu'une réservation puisse être effectuée."
 
 msgid "Booking Window (days)"
-msgstr ""
+msgstr "Fenêtre de réservation (jours)"
 
 msgid "How many days into the future visitors can book."
-msgstr ""
+msgstr "Combien de jours dans le futur les visiteurs peuvent réserver."
 
 msgid "Custom Questions"
-msgstr ""
+msgstr "Questions personnalisées"
 
 msgid "List of questions to ask the booker."
-msgstr ""
+msgstr "Liste des questions à poser au réservant."
 
 msgid "Reminder (hours before)"
-msgstr ""
+msgstr "Rappel (heures avant)"
 
 msgid "Allow Rescheduling"
-msgstr ""
+msgstr "Autoriser le report"
 
 msgid "Reschedule Cutoff (days)"
-msgstr ""
+msgstr "Délai limite de report (jours)"
 
 msgid "Prevent rescheduling if less than X days before the meeting."
-msgstr ""
+msgstr "Empêcher le report si moins de X jours avant la réunion."
 
 msgid "Allow Cancellation"
-msgstr ""
+msgstr "Autoriser l'annulation"
 
 msgid "Cancel Cutoff (days)"
-msgstr ""
+msgstr "Délai limite d'annulation (jours)"
 
 msgid "Prevent cancellation if less than X days before the meeting."
-msgstr ""
+msgstr "Empêcher l'annulation si moins de X jours avant la réunion."
 
 msgid "Brand Color"
-msgstr ""
+msgstr "Couleur de marque"
 
 msgid "Hex color used on the public booking page (e.g. #e54f38)."
 msgstr ""
+"Couleur hexadécimale utilisée sur la page de réservation publique (ex. "
+"#e54f38)."
 
 msgid "Host"
-msgstr ""
+msgstr "Hôte"
 
 msgid "Participants"
-msgstr ""
+msgstr "Participants"
 
 msgid ""
 "Users who will be added as participants to every meeting booked via this "
 "page."
 msgstr ""
+"Utilisateurs qui seront ajoutés comme participants à chaque réunion réservée"
+" via cette page."
 
 msgid "Confirmation Email Template"
-msgstr ""
+msgstr "Modèle d'e-mail de confirmation"
 
 msgid "Optional. Overrides the default confirmation email design."
 msgstr ""
+"Optionnel. Remplace la conception par défaut de l'e-mail de confirmation."
 
 msgid "Cancellation Email Template"
-msgstr ""
+msgstr "Modèle d'e-mail d'annulation"
 
 msgid "Optional. Overrides the default cancellation email design."
 msgstr ""
+"Optionnel. Remplace la conception par défaut de l'e-mail d'annulation."
 
 msgid "Reschedule Email Template"
-msgstr ""
+msgstr "Modèle d'e-mail de report"
 
 msgid "Optional. Overrides the default reschedule email design."
-msgstr ""
+msgstr "Optionnel. Remplace la conception par défaut de l'e-mail de report."
 
 msgid "Booking Page"
-msgstr ""
+msgstr "Page de réservation"
 
 msgid "Booking Pages"
-msgstr ""
+msgstr "Pages de réservation"
 
 msgid "Booker Name"
-msgstr ""
+msgstr "Nom du réservant"
 
 msgid "Booker Email"
-msgstr ""
+msgstr "E-mail du réservant"
 
 msgid "Start Date & Time"
-msgstr ""
+msgstr "Date et heure de début"
 
 msgid "End Date & Time"
-msgstr ""
+msgstr "Date et heure de fin"
 
 msgid "Status"
-msgstr ""
+msgstr "Statut"
 
 msgid "Question Answers"
-msgstr ""
+msgstr "Réponses aux questions"
 
 msgid "Meeting URL"
-msgstr ""
+msgstr "URL de la réunion"
 
 msgid "Cancellation Token"
-msgstr ""
+msgstr "Jeton d'annulation"
 
 msgid "Cancellation Reason"
-msgstr ""
+msgstr "Motif d'annulation"
+
+msgid "Booker Timezone"
+msgstr "Fuseau horaire du réservant"
 
 msgid "Meeting Activity"
-msgstr ""
+msgstr "Activité de réunion"
 
 msgid "Bookings"
-msgstr ""
+msgstr "Réservations"
 
 msgid "Enter meeting location"
-msgstr ""
+msgstr "Saisir le lieu de la réunion"
 
 msgid "Select a date to see available times."
-msgstr ""
+msgstr "Sélectionnez une date pour voir les horaires disponibles."
 
 msgid "Available times"
-msgstr ""
+msgstr "Horaires disponibles"
 
 msgid "No available slots for this date."
-msgstr ""
+msgstr "Aucun créneau disponible pour cette date."
 
 msgid "Cancel Booking"
-msgstr ""
+msgstr "Annuler la réservation"
 
 msgid "Booking Cancelled"
-msgstr ""
+msgstr "Réservation annulée"
 
 msgid "Your booking for"
-msgstr ""
+msgstr "Votre réservation pour"
 
 msgid "has been cancelled."
-msgstr ""
+msgstr "a été annulée."
 
 msgid "Already "
-msgstr ""
+msgstr "Déjà "
 
 msgid "This booking has already been"
-msgstr ""
+msgstr "Cette réservation a déjà été"
 
 msgid "Cancellation Unavailable"
-msgstr ""
+msgstr "Annulation impossible"
 
 msgid "Cancellation is no longer available as the meeting is too soon."
-msgstr ""
+msgstr "L'annulation n'est plus disponible car la réunion est trop proche."
 
 #, python-format
 msgid ""
 "\n"
-"            Cancellation is not allowed within %(days)s day(s) of the "
-"meeting.\n"
+"            Cancellation is not allowed within %(days)s day(s) of the meeting.\n"
 "            "
 msgstr ""
+"\n"
+"            L'annulation n'est pas autorisée dans les %(days)s jour(s) précédant la réunion.\n"
+"            "
 
 msgid "Cancel Booking?"
-msgstr ""
+msgstr "Annuler la réservation ?"
 
 msgid "Meeting:"
-msgstr ""
+msgstr "Réunion :"
 
 msgid "Date:"
-msgstr ""
+msgstr "Date :"
 
 msgid "at"
-msgstr ""
+msgstr "à"
 
 msgid "Host:"
-msgstr ""
+msgstr "Hôte :"
 
 msgid "Reason for cancellation"
-msgstr ""
+msgstr "Motif d'annulation"
 
 msgid "optional"
-msgstr ""
+msgstr "optionnel"
 
 msgid "Let the host know why you are cancelling..."
-msgstr ""
+msgstr "Indiquez à l'hôte pourquoi vous annulez..."
 
 msgid "Yes, Cancel Booking"
-msgstr ""
+msgstr "Oui, annuler la réservation"
 
 msgid "Booking Confirmed"
-msgstr ""
+msgstr "Réservation confirmée"
 
 msgid "You're booked!"
-msgstr ""
+msgstr "Votre réservation est confirmée !"
 
 msgid "A confirmation has been sent to your email."
-msgstr ""
+msgstr "Une confirmation a été envoyée à votre adresse e-mail."
 
 msgid "Your booking has been rescheduled successfully."
-msgstr ""
+msgstr "Votre réservation a été reportée avec succès."
 
 msgid "Meeting"
-msgstr ""
+msgstr "Réunion"
 
 msgid "Date & Time"
-msgstr ""
+msgstr "Date et heure"
 
 msgid "Duration"
-msgstr ""
+msgstr "Durée"
 
 msgid "min"
-msgstr ""
+msgstr "min"
 
 msgid "Meeting Link"
-msgstr ""
+msgstr "Lien de la réunion"
 
 msgid "Join Meeting"
-msgstr ""
+msgstr "Rejoindre la réunion"
 
 msgid "Reschedule"
-msgstr ""
+msgstr "Reporter"
 
 msgid "Hosted by"
-msgstr ""
+msgstr "Organisé par"
 
 msgid "Online"
-msgstr ""
+msgstr "En ligne"
 
 msgid "Select Date"
-msgstr ""
+msgstr "Sélectionner une date"
 
 msgid "Select Time"
-msgstr ""
+msgstr "Sélectionner une heure"
 
 msgid "Your Details"
-msgstr ""
+msgstr "Vos coordonnées"
 
 msgid "Back"
-msgstr ""
+msgstr "Retour"
+
+msgid "12hr"
+msgstr "12h"
+
+msgid "24hr"
+msgstr "24h"
 
 msgid "Pick a date first"
-msgstr ""
+msgstr "Choisissez d'abord une date"
 
 msgid "Booking Summary"
-msgstr ""
+msgstr "Récapitulatif de la réservation"
 
 msgid "Personal Details"
-msgstr ""
+msgstr "Informations personnelles"
 
 msgid "Full Name"
-msgstr ""
+msgstr "Nom complet"
 
 msgid "Enter your full name"
-msgstr ""
+msgstr "Saisissez votre nom complet"
 
 msgid "Email Address"
-msgstr ""
+msgstr "Adresse e-mail"
 
 msgid "Select"
-msgstr ""
+msgstr "Sélectionner"
 
 msgid "Additional Notes"
-msgstr ""
+msgstr "Notes supplémentaires"
 
 msgid "Previous"
-msgstr ""
+msgstr "Précédent"
 
 msgid "Confirm Booking"
-msgstr ""
+msgstr "Confirmer la réservation"
+
+msgid "No slots available for this day"
+msgstr "Aucun créneau disponible pour ce jour"
+
+msgid "Failed to load slots."
+msgstr "Échec du chargement des créneaux."
 
 msgid "Reschedule Booking"
-msgstr ""
+msgstr "Reporter la réservation"
 
 msgid "Current:"
-msgstr ""
+msgstr "Actuel :"
 
 msgid "Rescheduling Unavailable"
-msgstr ""
+msgstr "Report impossible"
 
 msgid "This booking cannot be rescheduled."
-msgstr ""
+msgstr "Cette réservation ne peut pas être reportée."
 
 msgid "Status:"
-msgstr ""
+msgstr "Statut :"
 
 msgid "Loading..."
-msgstr ""
+msgstr "Chargement..."
 
 msgid "Confirm Reschedule"
-msgstr ""
+msgstr "Confirmer le report"
+
+msgid "No slots available."
+msgstr "Aucun créneau disponible."
 
 msgid "Availability"
-msgstr ""
+msgstr "Disponibilité"
 
 msgid "Close"
-msgstr ""
+msgstr "Fermer"
 
 msgid "Business Hours"
-msgstr ""
+msgstr "Heures de bureau"
 
 msgid "Weekly Schedule"
-msgstr ""
+msgstr "Planning hebdomadaire"
 
 msgid "Closed"
-msgstr ""
+msgstr "Fermé"
 
 msgid "Host Unavailability"
-msgstr ""
+msgstr "Indisponibilité de l'hôte"
 
 msgid "User"
-msgstr ""
+msgstr "Utilisateur"
 
 msgid "From"
-msgstr ""
+msgstr "De"
 
 msgid "To"
-msgstr ""
+msgstr "À"
 
 msgid "Reason"
-msgstr ""
+msgstr "Motif"
 
 msgid "Open-ended"
-msgstr ""
+msgstr "Sans date de fin"
 
 msgid "No unavailability blocks set."
-msgstr ""
+msgstr "Aucune période d'indisponibilité définie."
 
 msgid "Share & Embed"
-msgstr ""
+msgstr "Partager et intégrer"
 
 msgid "Public Booking Link"
-msgstr ""
+msgstr "Lien de réservation public"
 
 msgid "Copy"
-msgstr ""
+msgstr "Copier"
 
 msgid "Link copied!"
-msgstr ""
+msgstr "Lien copié !"
 
 msgid "Embed Code"
-msgstr ""
+msgstr "Code d'intégration"
 
 msgid "Embed code copied!"
-msgstr ""
+msgstr "Code d'intégration copié !"
 
 msgid "New Booking Page"
-msgstr ""
+msgstr "Nouvelle page de réservation"
 
 msgid "Business Hours Required"
-msgstr ""
+msgstr "Heures de bureau requises"
 
 msgid ""
 "Please configure Business Hours for your company before creating a Booking "
 "Page."
 msgstr ""
+"Veuillez configurer les heures de bureau de votre entreprise avant de créer "
+"une page de réservation."
 
 msgid "Set up Business Hours"
-msgstr ""
+msgstr "Configurer les heures de bureau"
 
 msgid "Change Booking Status"
-msgstr ""
+msgstr "Modifier le statut de la réservation"
 
 msgid "New Status"
-msgstr ""
+msgstr "Nouveau statut"
 
 msgid "Update"
-msgstr ""
-
-msgid "Monday"
-msgstr ""
-
-msgid "Tuesday"
-msgstr ""
-
-msgid "Wednesday"
-msgstr ""
-
-msgid "Thursday"
-msgstr ""
-
-msgid "Friday"
-msgstr ""
-
-msgid "Saturday"
-msgstr ""
-
-msgid "Sunday"
-msgstr ""
-
-msgid "Duration (min)"
-msgstr ""
-
-msgid "Active"
-msgstr ""
-
-msgid "Edit"
-msgstr ""
-
-msgid "Embed"
-msgstr ""
-
-msgid "Delete"
-msgstr ""
+msgstr "Mettre à jour"
 
 msgid "Booker"
-msgstr ""
+msgstr "Réservant"
 
 msgid "Email"
-msgstr ""
+msgstr "E-mail"
 
 msgid "Change Status"
-msgstr ""
+msgstr "Modifier le statut"
+
+msgid "Booking Detail"
+msgstr "Détail de la réservation"
+
+msgid "Start"
+msgstr "Début"
+
+msgid "End"
+msgstr "Fin"
+
+msgid "Timezone"
+msgstr "Fuseau horaire"
+
+msgid "Monday"
+msgstr "Lundi"
+
+msgid "Tuesday"
+msgstr "Mardi"
+
+msgid "Wednesday"
+msgstr "Mercredi"
+
+msgid "Thursday"
+msgstr "Jeudi"
+
+msgid "Friday"
+msgstr "Vendredi"
+
+msgid "Saturday"
+msgstr "Samedi"
+
+msgid "Sunday"
+msgstr "Dimanche"
+
+msgid "Duration (min)"
+msgstr "Durée (min)"
+
+msgid "Active"
+msgstr "Actif"
+
+msgid "Edit"
+msgstr "Modifier"
+
+msgid "Embed"
+msgstr "Intégrer"
+
+msgid "Delete"
+msgstr "Supprimer"
 
 msgid "Your name is required."
-msgstr ""
+msgstr "Votre nom est requis."
 
 msgid "Your email is required."
-msgstr ""
+msgstr "Votre adresse e-mail est requise."
 
 msgid "Please select a date."
-msgstr ""
+msgstr "Veuillez sélectionner une date."
 
 msgid "Please select a time slot."
-msgstr ""
+msgstr "Veuillez sélectionner un créneau horaire."
 
 msgid "Invalid date or time."
-msgstr ""
+msgstr "Date ou heure invalide."
 
 msgid "That slot is no longer available. Please choose another."
-msgstr ""
+msgstr "Ce créneau n'est plus disponible. Veuillez en choisir un autre."
 
 msgid "Please select a date and time."
-msgstr ""
+msgstr "Veuillez sélectionner une date et une heure."
 
 msgid "That slot is no longer available."
-msgstr ""
+msgstr "Ce créneau n'est plus disponible."
