@@ -334,6 +334,9 @@ class EmailListView(HorillaListView):
     table_width = False
     table_height_as_class = "h-[calc(_100vh_-_520px_)]"
     list_column_visibility = False
+    # HorillaMail has no OWNER_FIELDS, so the base owner_filtration would return
+    # queryset.none() for view_own users. Ownership is handled manually below.
+    owner_filtration = False
 
     columns = [
         ("Subject", "render_subject"),
