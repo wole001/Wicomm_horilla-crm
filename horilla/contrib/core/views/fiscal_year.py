@@ -16,14 +16,14 @@ from django.views.generic import DetailView, TemplateView
 from django.views.generic.edit import FormView
 
 from horilla.contrib.generics.views import HorillaSingleFormView
-
-# First party imports (Horilla)
-from horilla.http import HttpNotFound, HttpResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.decorators.wrapper import permission_required_or_denied
 from horilla.utils.translation import gettext_lazy as _
+
+# First party imports (Horilla)
+from horilla.web import HttpNotFound, HttpResponse
 
 # Local imports
 from ..forms import FiscalYearForm

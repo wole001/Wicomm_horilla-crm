@@ -12,11 +12,11 @@ from django.contrib import messages
 from django.template.loader import render_to_string
 
 from horilla.contrib.core.models import QuickFilter
-from horilla.http import HttpResponse
 
 # First party imports (Horilla)
 from horilla.shortcuts import render
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse
 
 logger = logging.getLogger(__name__)
 

@@ -263,7 +263,13 @@ document.body.addEventListener("htmx:configRequest", (event) => {
 });
 ```
 
-Server-side HTMX helpers (`RefreshResponse`, `RedirectResponse`) live in `horilla/http/response.py`. Use those instead of hand-rolling `HX-Refresh` / `HX-Redirect` headers in views when possible.
+Server-side HTMX helpers (`RefreshResponse`, `RedirectResponse`) live in **`horilla.web`** (`horilla/web/response.py`). Import them from the package entry point when possible:
+
+```python
+from horilla.web import RedirectResponse, RefreshResponse
+```
+
+Use those instead of hand-rolling `HX-Refresh` / `HX-Redirect` headers in views when possible.
 
 ### Messages reload
 

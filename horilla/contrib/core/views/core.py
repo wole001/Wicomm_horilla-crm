@@ -28,14 +28,6 @@ from rest_framework_simplejwt.tokens import UntypedToken
 # First party imports (Horilla)
 from horilla import settings
 from horilla.contrib.mail.models import HorillaMailConfiguration
-from horilla.http import (
-    FileResponse,
-    HttpNotFound,
-    HttpResponse,
-    JsonResponse,
-    RedirectResponse,
-    safe_url,
-)
 from horilla.shortcuts import redirect, render
 from horilla.urls import reverse_lazy
 from horilla.utils.branding import load_branding
@@ -46,6 +38,14 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import (
+    FileResponse,
+    HttpNotFound,
+    HttpResponse,
+    JsonResponse,
+    RedirectResponse,
+    safe_url,
+)
 
 from ..models import ActiveTab, Company
 from ..signals import pre_login_render_signal, pre_logout_signal

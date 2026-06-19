@@ -21,10 +21,10 @@ from horilla.core.exceptions import ImproperlyConfigured
 
 # First party imports (Horilla)
 from horilla.db import models
-from horilla.http import HttpResponse, RefreshResponse
 from horilla.shortcuts import render
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse, RefreshResponse
 
 # Local imports
 from ..forms import HorillaHistoryForm, HorillaModelForm

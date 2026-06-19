@@ -14,12 +14,12 @@ from django.views import View
 from django.views.generic import FormView
 
 from horilla.contrib.core.models import PinnedView
-from horilla.http import HttpResponse, RedirectResponse
 
 # First party imports (Horilla)
 from horilla.shortcuts import render
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse, RedirectResponse
 
 # Local imports
 from ...forms import SaveFilterListForm

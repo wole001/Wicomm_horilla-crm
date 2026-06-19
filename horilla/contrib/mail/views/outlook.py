@@ -14,7 +14,6 @@ from django.views import View
 from requests_oauthlib import OAuth2Session
 
 from horilla.contrib.generics.views import HorillaSingleFormView
-from horilla.http import HttpResponse, RedirectResponse
 from horilla.shortcuts import redirect
 from horilla.urls import reverse_lazy
 
@@ -26,6 +25,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse, RedirectResponse
 
 # Local imports
 from ..forms import OutlookMailConfigurationForm

@@ -12,9 +12,9 @@ from horilla.contrib.utils.middlewares import _thread_local
 # First party imports (Horilla)
 from horilla.db import transaction
 from horilla.db.models.signals import post_delete, post_save, pre_save
-from horilla.http import HttpResponse
 from horilla.registry.feature import FEATURE_REGISTRY
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse
 
 # Local imports
 from .models import ApprovalInstance
@@ -121,15 +121,7 @@ def _patch_horilla_list_view():
                 status__in=["pending", "rejected"],
                 is_active=True,
             ).values_list("object_id", flat=True)
-            # ApprovalInstance.object_id is a CharField (GenericForeignKey id).
-            # Coerce to int before comparing against the integer PK: on PostgreSQL
-            # `pk IN (<varchar>)` raises "operator does not exist: bigint = character
-            # varying" (SQLite coerces silently), which broke every HorillaListView
-            # on Postgres deployments even with no approval rules configured.
-            pending_pks = [int(oid) for oid in pending_object_ids if str(oid).isdigit()]
-            if not pending_pks:
-                return queryset
-            return queryset.exclude(pk__in=pending_pks)
+            return queryset.exclude(pk__in=pending_object_ids)
         except Exception:
             return queryset
 

@@ -17,9 +17,9 @@ from django.views import View
 
 # First party imports (Horilla)
 from horilla.apps import apps
-from horilla.http import HttpResponse
 from horilla.shortcuts import render
 from horilla.utils.choices import FIELD_TYPE_MAP
+from horilla.web import HttpResponse
 
 logger = logging.getLogger(__name__)
 

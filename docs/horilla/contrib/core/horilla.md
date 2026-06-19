@@ -305,3 +305,4 @@ Exports:
 | `horilla/context_processors.py` | global template context (menus, floating menu, currency, branding, etc.) |
 | `horilla/horilla_celery.py` | Celery app config (`app`) |
 | `horilla/wsgi.py` | WSGI application (`application`) |
+| `horilla/web/` | HTTP re-exports and helpers — **`horilla.web`** (`RedirectResponse`, `RefreshResponse`, `safe_url`, `HttpNotFound`); see [web/web.md](../web/web.md) |

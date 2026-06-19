@@ -1,4 +1,4 @@
-﻿"""Views for matching-rule workflows."""
+"""Views for matching-rule workflows."""
 
 # Standard library imports
 import json
@@ -23,7 +23,6 @@ from horilla.contrib.generics.views import (
 )
 from horilla.db import models
 from horilla.db.models import Prefetch
-from horilla.http import HttpResponse
 from horilla.shortcuts import render
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import (
@@ -33,6 +32,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse
 
 # Local imports
 from ..filters import MatchingRuleFilter

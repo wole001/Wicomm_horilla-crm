@@ -253,7 +253,7 @@ Booking follows Horilla platform import shims (not raw Django URL/HTTP helpers):
 |---|---|
 | Model URL helpers (`get_public_url`, `get_edit_url`, …) | `from horilla.urls import reverse` |
 | Celery tasks (cancel/reschedule links in HTML) | `from horilla.urls import reverse_lazy` |
-| Views | `from horilla.http import HttpResponse, HttpResponseRedirect, JsonResponse` |
+| Views | `from horilla.web import HttpResponse, HttpResponseRedirect, JsonResponse` |
 | Template rendering / 404 | `from horilla.shortcuts import get_object_or_404, render` |
 
 `BookingPage` and `Booking` URL helper methods call `reverse("booking:…")` at module level — no inline `django.urls` imports.

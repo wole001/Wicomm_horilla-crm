@@ -13,7 +13,6 @@ from horilla.apps import apps
 from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.generics.views import HorillaSingleDeleteView
 from horilla.contrib.utils.middlewares import _thread_local
-from horilla.http import HttpResponse
 from horilla.shortcuts import get_object_or_404, render
 
 # First party imports (Horilla)
@@ -24,6 +23,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext as _
+from horilla.web import HttpResponse
 
 # Local imports
 from ...models import HorillaMail, HorillaMailAttachment, HorillaMailConfiguration

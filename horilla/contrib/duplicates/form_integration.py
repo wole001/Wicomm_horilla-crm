@@ -20,12 +20,12 @@ from horilla.apps import apps
 from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.utils.middlewares import _thread_local
 from horilla.db import models as db_models
-from horilla.http import HttpResponse, QueryDict
 from horilla.urls import reverse
 
 # First party imports (Horilla)
 from horilla.utils import timezone
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse, QueryDict
 
 from .duplicate_checker import check_duplicates
 

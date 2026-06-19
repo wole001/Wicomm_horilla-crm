@@ -17,7 +17,6 @@ from horilla.contrib.generics.views import (
     HorillaSingleDeleteView,
     HorillaSingleFormView,
 )
-from horilla.http import Http404, HttpResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse_lazy
 from horilla.utils import timezone
@@ -27,6 +26,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import Http404, HttpResponse
 
 # Local imports
 from horilla_crm.accounts.forms import (

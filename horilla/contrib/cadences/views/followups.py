@@ -14,9 +14,6 @@ from horilla.contrib.generics.views import (
     HorillaSingleFormView,
 )
 from horilla.contrib.mail.models import HorillaMailConfiguration
-
-# First party imports (Horilla)
-from horilla.http import Http404, HttpResponse
 from horilla.shortcuts import get_object_or_404
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import (
@@ -25,6 +22,9 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+
+# First party imports (Horilla)
+from horilla.web import Http404, HttpResponse
 
 # Local imports
 from ..forms import CadenceFollowUpForm

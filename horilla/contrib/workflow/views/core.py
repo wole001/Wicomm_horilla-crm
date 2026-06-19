@@ -20,7 +20,6 @@ from horilla.auth.models import User
 from horilla.contrib.generics.views import HorillaListView, HorillaNavView, HorillaView
 from horilla.contrib.mail.models import HorillaMailTemplate
 from horilla.contrib.notifications.models import NotificationTemplate
-from horilla.http import HttpNotFound, RefreshResponse
 from horilla.urls import reverse, reverse_lazy
 from horilla.utils.decorators import (
     htmx_required,
@@ -28,6 +27,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpNotFound, RefreshResponse
 
 from ..filters import ScheduledWorkflowExecutionFilter, WorkflowRuleFilter
 

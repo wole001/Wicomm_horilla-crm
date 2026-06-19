@@ -1,8 +1,18 @@
-# Horilla HTTP Utilities
+# Horilla Web Utilities
+
+## 📛 Package name
+
+Import path: **`horilla.web`** (on disk: `horilla/web/`).
+
+This module was formerly named **`horilla.http`**. It was renamed to **`horilla.web`** because a directory named `http` inside `horilla/` shadowed Python’s standard-library `http` package when Django added the app folder to `sys.path` — for example when running `python manage.py makemessages` from inside `horilla/`. That caused circular import errors in `django.http`.
+
+**Migration:** replace `from horilla.http import …` with `from horilla.web import …`. Submodule imports use `horilla.web.response` and `horilla.web.url_safety` (for example `from horilla.web.response import RedirectResponse`).
+
+---
 
 ## 🎯 Purpose
 
-The `horilla.http` module provides:
+The `horilla.web` module provides:
 
 - **Centralized HTTP imports** — common Django HTTP types in one place
 - **Secure redirect handling** — validation against open redirects (CWE-601)
@@ -20,25 +30,36 @@ It is the preferred entry point for the symbols it re-exports and for Horilla’
 ### ❌ Avoid direct Django imports (for what this package exposes)
 
 ```python
-# Less ideal when horilla.http already exports it
+# Less ideal when horilla.web already exports it
 from django.http import HttpResponse, StreamingHttpResponse
 ```
 
 ```python
 # ✅ Preferred
-from horilla.http import HttpResponse, StreamingHttpResponse
+from horilla.web import HttpResponse, StreamingHttpResponse
 ```
 
-**Simple rule:** If a name appears in the **re-export list** below (for example `HttpResponse`, `StreamingHttpResponse`), import it from **`horilla.http`**. If you need something from Django that is **not** in that list, import it from **`django.http`** instead — `horilla.http` does not include every class Django offers, only the ones Horilla chose to forward.
+**Simple rule:** If a name appears in the **re-export list** below (for example `HttpResponse`, `StreamingHttpResponse`), import it from **`horilla.web`**. If you need something from Django that is **not** in that list, import it from **`django.http`** instead — `horilla.web` does not include every class Django offers, only the ones Horilla chose to forward.
+
+### Import patterns
+
+```python
+# Preferred — package entry (matches __all__)
+from horilla.web import HttpResponse, RedirectResponse, safe_url
+
+# Submodule — when importing one helper class directly
+from horilla.web.response import RedirectResponse
+from horilla.web.url_safety import safe_url
+```
 
 ---
 
 ## 📦 Module location
 
-On disk, `horilla/http/` contains the following layout (as in the package directory):
+On disk, `horilla/web/` contains the following layout (as in the package directory):
 
 ```text
-horilla/http/
+horilla/web/
 ├── response.py      # HttpNotFound, RedirectResponse, RefreshResponse
 ├── url_safety.py    # safe_url() — open-redirect safe URL validation (CWE-601)
 └── __init__.py      # Package entry: re-exports Django HTTP types + Horilla helpers (__all__)
@@ -48,11 +69,22 @@ horilla/http/
 |------------------|------|
 | `response.py` | Custom responses and `HttpNotFound` (`as_response` → Horilla templates). |
 | `url_safety.py` | `safe_url(request, next_url, fallback=…)` using `url_has_allowed_host_and_scheme`. |
-| `__init__.py` | Re-exports: Django `HttpResponse`, `JsonResponse`, `FileResponse`, redirects, `Http404`, `QueryDict`, plus `safe_url`, `HttpNotFound`, `RedirectResponse`, `RefreshResponse`. |
+| `__init__.py` | Re-exports: Django `HttpResponse`, `JsonResponse`, `FileResponse`, redirects, `Http404`, `QueryDict`, plus `safe_url`, `HttpNotFound`, `RedirectResponse`, `RefreshResponse`. See **`__all__`** in `horilla/web/__init__.py` for the authoritative list. |
+
+### Translation workflow (`makemessages`)
+
+You can run **`makemessages` scoped to the platform tree** from inside `horilla/`:
+
+```bash
+cd horilla
+python ../manage.py makemessages -l ar
+```
+
+Django walks the current working directory (`.`) for translatable strings. Output goes to `horilla/locale/` via `LOCALE_PATHS` in settings. This works with the `horilla.web` package name; the old `horilla/http/` path caused stdlib import conflicts when using this workflow.
 
 ---
 
-## 🔁 What `horilla.http` provides
+## 🔁 What `horilla.web` provides
 
 ### 📍 Re-exported Django classes
 
@@ -289,7 +321,7 @@ Ensures the value you pass into the template (and later into redirects) is safe.
 `horilla.contrib.mail.views.core.track.TrackOpenView` returns a 1×1 GIF for email open detection:
 
 ```python
-from horilla.http import HttpResponse
+from horilla.web import HttpResponse
 
 return HttpResponse(_PIXEL_GIF, content_type="image/gif")
 ```
@@ -302,7 +334,7 @@ The pixel URL is built in `horilla.contrib.mail.services` with `horilla.urls.rev
 
 | Avoid | Prefer |
 |-------|--------|
-| `from django.http import *` | `from horilla.http import ...` for exported names |
+| `from django.http import *` | `from horilla.web import ...` for exported names |
 | Raw `HttpResponseRedirect(untrusted_url)` | `safe_url(request, url, fallback=...)` or `RedirectResponse` |
 
 **Always validate redirects** with `safe_url` or use `RedirectResponse` / `RefreshResponse`.
@@ -320,22 +352,23 @@ The pixel URL is built in `horilla.contrib.mail.services` with `horilla.urls.rev
 
 ## 📌 Summary
 
-| Feature | Django alone | Horilla `horilla.http` |
+| Feature | Django alone | Horilla `horilla.web` |
 |---------|----------------|------------------------|
 | HTTP imports | Direct, per file | Centralized re-exports + helpers |
 | Redirect safety | Manual | Built-in (`safe_url`, response classes) |
 | HTMX support | Manual headers | Built into `RedirectResponse` / `RefreshResponse` |
 | Custom 404 UX | Varies | `HttpNotFound` + shared templates |
-| Streaming responses | `django.http` | Same class via `horilla.http` re-export |
+| Streaming responses | `django.http` | Same class via `horilla.web` re-export |
 
 ---
 
 ## 🏁 Conclusion
 
-The `horilla.http` module:
+The `horilla.web` module:
 
 - Wraps and re-exports selected Django HTTP utilities (including `StreamingHttpResponse`)
 - Adds **security** (safe redirects) and **HTMX** behavior
 - Standardizes **404** handling through `HttpNotFound` and Horilla error templates
+- Replaces the former **`horilla.http`** package (renamed to avoid shadowing Python’s stdlib `http` module)
 
 Use it wherever you would otherwise duplicate redirect validation or HTMX header logic.

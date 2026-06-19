@@ -13,12 +13,12 @@ from django.views.generic import TemplateView, View
 # First party imports (Horilla)
 from horilla.apps import apps
 from horilla.contrib.core.models import HorillaContentType
-from horilla.http import HttpResponse
 from horilla.utils.decorators import (
     htmx_required,
     method_decorator,
     permission_required_or_denied,
 )
+from horilla.web import HttpResponse
 
 # Local imports
 from ..models import Report, ReportFolder

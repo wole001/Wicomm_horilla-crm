@@ -11,9 +11,9 @@ from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.core.utils import is_owner
 from horilla.contrib.generics.views import HorillaListView
 from horilla.contrib.mail.models import HorillaMail
-from horilla.http import Http404
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import Http404
 
 # Local imports
 from ..models import Cadence

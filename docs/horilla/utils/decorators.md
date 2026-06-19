@@ -219,8 +219,13 @@ Allow a view to run **only** when:
 - the database still needs initialization (`not model.objects.exists()`), and
 - the session password matches `settings.DB_INIT_PASSWORD`
 
-Otherwise it redirects to a safe `next` URL:
-- `safe_url(request, request.GET.get("next", "/"))`
+Otherwise it redirects to a safe `next` URL using **`safe_url`** from **`horilla.web`**:
+
+```python
+from horilla.web import safe_url
+
+safe_url(request, request.GET.get("next", "/"))
+```
 
 ### ✅ Behavior details
 

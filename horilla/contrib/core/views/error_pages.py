@@ -3,9 +3,9 @@
 from django.conf import settings
 from django.views.csrf import csrf_failure as django_csrf_failure
 
-from horilla.http import HttpResponse
 from horilla.shortcuts import render
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse
 
 
 def csrf_failure(request, reason=""):

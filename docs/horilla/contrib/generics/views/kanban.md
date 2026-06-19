@@ -48,7 +48,7 @@ This powers helper endpoints like `kanban_load_more` and update routes that need
 
 1. Redirects anonymous users to login.
 2. Resolves `self.model` from URL kwargs (`app_label`, `model_name`) or POST `model_name`.
-3. Validates model exists; raises `HttpNotFound` for invalid pair.
+3. Validates model exists; raises **`HttpNotFound`** (`horilla.web`) for invalid pair.
 4. Raises `ImproperlyConfigured` if no model is available.
 
 This allows one generic update endpoint to work across many model-specific kanban subclasses.

@@ -115,7 +115,7 @@ Same shape as `ZoomOAuthConfig` plus `tenant_id` (Azure AD tenant or `"common"`)
 
 `ZoomAuthorizeView` / `ZoomCallbackView` and `TeamsAuthorizeView` / `TeamsCallbackView` each redirect to the provider consent screen and handle the code-exchange callback. All delegates to the helpers in `oauth/`.
 
-Authorize views return the provider URL with **`HttpResponseRedirect`** from **`horilla.http`** (not `django.http`). Callback views and permission-denied paths use **`horilla.shortcuts.redirect`**.
+Authorize views return the provider URL with **`HttpResponseRedirect`** from **`horilla.web`** (not `django.http`). Callback views and permission-denied paths use **`horilla.shortcuts.redirect`**.
 
 ---
 

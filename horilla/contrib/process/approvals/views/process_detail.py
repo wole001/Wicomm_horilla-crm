@@ -18,7 +18,6 @@ from horilla.apps import apps
 
 # First party imports (Horilla)
 from horilla.contrib.generics.views import HorillaNavView, HorillaSingleDeleteView
-from horilla.http import HttpNotFound, HttpResponse, RefreshResponse
 from horilla.shortcuts import render
 from horilla.urls import reverse, reverse_lazy
 from horilla.utils.decorators import (
@@ -27,6 +26,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpNotFound, HttpResponse, RefreshResponse
 
 # Local imports
 from ..filters import ApprovalRuleFilter

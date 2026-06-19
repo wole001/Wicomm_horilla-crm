@@ -10,10 +10,11 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, View
 
-# First party imports (Horilla)
-from horilla.http import JsonResponse
 from horilla.shortcuts import redirect
 from horilla.utils.translation import gettext_lazy as _
+
+# First party imports (Horilla)
+from horilla.web import JsonResponse
 
 # Local imports
 from ..models import Dashboard, DefaultHomeLayoutOrder

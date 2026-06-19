@@ -20,11 +20,11 @@ from django.contrib import messages
 from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.core.utils import get_editable_fields
 from horilla.db.models import Q
-from horilla.http import HttpResponse
 from horilla.shortcuts import render
 
 # First party imports (Horilla)
 from horilla.utils import timezone
+from horilla.web import HttpResponse
 
 logger = logging.getLogger(__name__)
 

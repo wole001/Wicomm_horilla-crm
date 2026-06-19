@@ -10,9 +10,10 @@ import logging
 # Third-party imports (Django)
 from django.template.loader import render_to_string
 
-# First party imports (Horilla)
-from horilla.http import HttpResponse
 from horilla.shortcuts import render
+
+# First party imports (Horilla)
+from horilla.web import HttpResponse
 
 # Local imports
 from .list import HorillaListView

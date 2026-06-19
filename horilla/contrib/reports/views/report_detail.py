@@ -18,12 +18,12 @@ from horilla.contrib.generics.mixins import RecentlyViewedMixin
 from horilla.contrib.generics.views import HorillaListView
 from horilla.contrib.utils.methods import get_section_info_for_model
 from horilla.db.models import ForeignKey, Q
-from horilla.http import HttpNotFound, HttpResponse, RefreshResponse
 from horilla.shortcuts import render
 
 # First party imports (Horilla)
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import method_decorator, permission_required_or_denied
+from horilla.web import HttpNotFound, HttpResponse, RefreshResponse
 
 # Local imports
 from ..models import Report

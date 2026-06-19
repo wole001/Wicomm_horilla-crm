@@ -140,7 +140,7 @@ Render model history/audit timeline in `history_tab.html` with:
 - resolves `self.object = self.get_object()`
 - on failure:
   - adds error message
-  - returns `RefreshResponse(request)` (HTMX refresh behavior)
+  - returns `RefreshResponse(request)` (**`horilla.web`** — HTMX refresh behavior)
 
 #### `get_context_data()`
 

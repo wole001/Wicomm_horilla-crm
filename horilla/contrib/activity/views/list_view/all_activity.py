@@ -10,7 +10,6 @@ from django.utils.functional import cached_property  # type: ignore
 from django.views import View
 
 from horilla.contrib.generics.views import HorillaListView
-from horilla.http import HttpResponse
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import (
     htmx_required,
@@ -18,6 +17,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse
 
 from ...filters import ActivityFilter
 from ...models import Activity

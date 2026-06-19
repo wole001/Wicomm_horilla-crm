@@ -18,7 +18,6 @@ from django.views.generic import TemplateView
 from horilla.apps import apps
 from horilla.auth.models import User
 from horilla.contrib.generics.views import HorillaListView, HorillaTabView
-from horilla.http import HttpResponse, JsonResponse
 from horilla.registry.permission_registry import PERMISSION_EXEMPT_MODELS
 from horilla.shortcuts import get_object_or_404, redirect, render
 from horilla.urls import reverse_lazy
@@ -28,6 +27,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse, JsonResponse
 
 from ...models import FieldPermission, HorillaContentType, Role
 

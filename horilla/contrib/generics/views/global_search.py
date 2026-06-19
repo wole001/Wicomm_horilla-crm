@@ -22,10 +22,10 @@ from django.views import View
 from horilla.apps import apps
 from horilla.contrib.utils.methods import get_section_info_for_model
 from horilla.db.models import CharField, ForeignKey, ManyToManyField, Q, TextField
-from horilla.http import HttpResponse, safe_url
 from horilla.registry.feature import FEATURE_REGISTRY
 from horilla.shortcuts import redirect, render
 from horilla.urls import reverse_lazy
+from horilla.web import HttpResponse, safe_url
 
 # Local imports
 from .list import HorillaListView

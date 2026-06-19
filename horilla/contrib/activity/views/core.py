@@ -26,7 +26,6 @@ from horilla.contrib.generics.views import (
     HorillaTabView,
     HorillaView,
 )
-from horilla.http import HttpResponse, RefreshResponse
 
 # First-party imports (Horilla)
 from horilla.urls import reverse_lazy
@@ -37,6 +36,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse, RefreshResponse
 
 from ..filters import ActivityFilter
 from ..models import Activity

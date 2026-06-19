@@ -11,7 +11,6 @@ from django.views.generic import TemplateView, View
 # First party imports (Horilla)
 from horilla.auth.models import User
 from horilla.contrib.generics.views import HorillaTabView
-from horilla.http import HttpResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import (
@@ -20,6 +19,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse
 
 # Local imports
 from horilla_crm.opportunities.models import (

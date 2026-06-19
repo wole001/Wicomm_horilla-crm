@@ -20,10 +20,10 @@ from horilla.core.exceptions import FieldDoesNotExist
 
 # First party imports (Horilla)
 from horilla.db import models
-from horilla.http import HttpResponse
 from horilla.urls import reverse, reverse_lazy
 from horilla.utils.choices import TABLE_FALLBACK_FIELD_TYPES
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse
 
 from .toolkit import single_form_builder
 

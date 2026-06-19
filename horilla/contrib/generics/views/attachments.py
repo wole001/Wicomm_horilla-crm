@@ -13,7 +13,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView, FormView
 
 from horilla.contrib.core.models import HorillaAttachment, HorillaContentType
-from horilla.http import Http404, HttpResponse
 from horilla.shortcuts import get_object_or_404, render
 
 # First party imports (Horilla)
@@ -24,6 +23,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import Http404, HttpResponse
 
 from ..forms import HorillaAttachmentForm
 from .delete import HorillaSingleDeleteView
@@ -174,7 +174,7 @@ class HorillaNotesAttachementSectionView(DetailView):
         try:
             content_type = HorillaContentType.objects.get_for_model(model=self.model)
         except HorillaContentType.DoesNotExist:
-            from horilla.http import HttpResponseNotFound
+            from horilla.web import HttpResponseNotFound
 
             return HttpResponseNotFound("Model not found")
 

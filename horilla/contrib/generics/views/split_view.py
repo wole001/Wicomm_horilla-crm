@@ -10,10 +10,9 @@ from urllib.parse import urlencode
 # Third-party imports (Django)
 from django.template.loader import render_to_string
 
-from horilla.http import HttpResponse
-
 # First party imports (Horilla)
 from horilla.shortcuts import render
+from horilla.web import HttpResponse
 
 # Local imports
 from .list import HorillaListView

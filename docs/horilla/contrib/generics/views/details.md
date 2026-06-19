@@ -43,7 +43,7 @@ Subclasses that set **`model`** are stored in **`HorillaDetailView._view_registr
 
 1. Unauthenticated → **`redirect_to_login`** with `next` full path.
 2. Optionally **`model`** from **`GET`/`POST`** `app_label` + `model_name` via **`apps.get_model`**.
-3. **`get_object()`** — failures: HTMX → **`RefreshResponse`** + message; else **`HttpNotFound`**.
+3. **`get_object()`** — failures: HTMX → **`RefreshResponse`** + message; else **`HttpNotFound`** (both from **`horilla.web`**).
 4. Permission: **`view_{model}`** **or** (**owner** per **`OWNER_FIELDS`** and **`view_own_{model}`**). Owner detection supports **FK** (`== user`) and **M2M** (`user in field.all()`).
 5. Denied → **`403.html`**.
 

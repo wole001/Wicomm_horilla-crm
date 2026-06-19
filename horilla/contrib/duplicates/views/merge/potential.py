@@ -15,10 +15,10 @@ from horilla.contrib.generics.views import HorillaListView
 # First party imports (Horilla)
 from horilla.db import models
 from horilla.db.models import Case, QuerySet, When
-from horilla.http.response import RedirectResponse
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web.response import RedirectResponse
 
 # Local imports
 from ...duplicate_checker import check_duplicates

@@ -4,8 +4,8 @@ Shared permission-checking mixin for activity create/update form views.
 
 from horilla.apps import apps
 from horilla.db import models
-from horilla.http import Http404, HttpResponse
 from horilla.shortcuts import get_object_or_404, render
+from horilla.web import Http404, HttpResponse
 
 from ...models import Activity
 

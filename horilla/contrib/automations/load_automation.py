@@ -13,13 +13,13 @@ from django.views.generic import TemplateView, View
 from horilla.apps import apps
 from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.mail.models import HorillaMailConfiguration, HorillaMailTemplate
-from horilla.http import HttpResponse
 from horilla.utils.decorators import (
     htmx_required,
     method_decorator,
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse
 
 # Local imports
 from .models import HorillaAutomation

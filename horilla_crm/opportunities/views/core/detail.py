@@ -16,10 +16,10 @@ from horilla.contrib.generics.views import (
 
 # First party imports (Horilla)
 from horilla.db.models import ForeignKey
-from horilla.http import Http404
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import method_decorator, permission_required_or_denied
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import Http404
 
 # Local imports
 from horilla_crm.opportunities.models import Opportunity

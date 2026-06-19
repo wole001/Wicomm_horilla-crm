@@ -23,7 +23,6 @@ from horilla.contrib.generics.views import (
 from horilla.contrib.utils.methods import sanitize_html
 from horilla.contrib.utils.middlewares import _thread_local
 from horilla.core.exceptions import ValidationError
-from horilla.http import HttpNotFound, HttpResponse, JsonResponse, RefreshResponse
 from horilla.shortcuts import get_object_or_404, render
 
 # First party imports (Horilla)
@@ -34,6 +33,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpNotFound, HttpResponse, JsonResponse, RefreshResponse
 
 # Local imports
 from ..filters import HorillaMailTemplateFilter

@@ -28,7 +28,6 @@ from horilla.contrib.utils.middlewares import _thread_local
 
 # First party imports (Horilla)
 from horilla.db import models
-from horilla.http import HttpNotFound, HttpResponse, QueryDict, RefreshResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse, reverse_lazy
 from horilla.utils.decorators import (
@@ -38,6 +37,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpNotFound, HttpResponse, QueryDict, RefreshResponse
 
 # Local imports
 from ..filters import ReportFilter

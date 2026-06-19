@@ -20,7 +20,6 @@ from openpyxl.styles import Alignment, Font, PatternFill
 from horilla.apps import apps
 from horilla.contrib.generics.views import HorillaListView
 from horilla.db.models import CharField, ForeignKey
-from horilla.http import HttpNotFound, HttpResponse
 from horilla.registry.feature import FEATURE_REGISTRY
 from horilla.shortcuts import render
 from horilla.urls import reverse_lazy
@@ -30,6 +29,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpNotFound, HttpResponse
 
 from ...models import ImportHistory
 

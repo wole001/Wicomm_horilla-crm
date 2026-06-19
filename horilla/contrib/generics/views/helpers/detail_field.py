@@ -17,11 +17,11 @@ from django.views import View
 from horilla.apps import apps
 from horilla.contrib.core.models import DetailFieldVisibility
 from horilla.contrib.core.utils import filter_hidden_fields
-from horilla.http import HttpResponse
 from horilla.shortcuts import render
 from horilla.urls import resolve, reverse
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse
 
 # Local imports
 from ..details import HorillaDetailView

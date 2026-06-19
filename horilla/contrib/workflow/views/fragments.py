@@ -16,7 +16,6 @@ from horilla.apps import apps
 from horilla.auth.models import User
 from horilla.contrib.mail.models import HorillaMailTemplate
 from horilla.contrib.notifications.models import NotificationTemplate
-from horilla.http import HttpResponse
 from horilla.shortcuts import render
 from horilla.utils.decorators import (
     htmx_required,
@@ -24,6 +23,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse
 
 from ..forms import (
     WorkflowActionForm,

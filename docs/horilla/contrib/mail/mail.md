@@ -114,7 +114,7 @@ Outbound HTML from **`HorillaMailManager.send_mail()`** appends a 1×1 tracking 
 - Public GET endpoint (no login).
 - Looks up `HorillaMail` by `tracking_uid`.
 - On first open: sets `opened_at`, updates `mail_status` to `"opened"`, saves.
-- Returns a transparent GIF via **`horilla.http.HttpResponse`** (`content_type="image/gif"`).
+- Returns a transparent GIF via **`horilla.web.HttpResponse`** (`content_type="image/gif"`).
 
 Model fields involved: `HorillaMail.tracking_uid` (UUID, set on create), `opened_at`, and `mail_status` choice `"opened"`.
 

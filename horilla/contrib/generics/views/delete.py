@@ -21,10 +21,10 @@ from horilla.core.exceptions import (
     PermissionDenied,
 )
 from horilla.db import transaction
-from horilla.http import Http404, HttpResponse
 from horilla.shortcuts import redirect, render
 from horilla.urls import reverse_lazy
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import Http404, HttpResponse
 
 # Local imports
 from .toolkit.delete_mixins import (

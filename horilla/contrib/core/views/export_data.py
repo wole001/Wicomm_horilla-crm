@@ -35,7 +35,6 @@ from horilla.contrib.generics.views import (
     HorillaSingleDeleteView,
 )
 from horilla.db.models import ForeignKey
-from horilla.http import HttpResponse
 from horilla.registry.feature import FEATURE_REGISTRY
 from horilla.shortcuts import render
 
@@ -47,6 +46,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse
 
 # Local imports
 from ..models import ExportSchedule

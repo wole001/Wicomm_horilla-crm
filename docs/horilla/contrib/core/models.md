@@ -131,7 +131,7 @@ __all__ = list(_django_models.__all__) + ["GenericForeignKey"]
 
 ## 📡 Model signals (`horilla.db.models.signals`)
 
-Prefer Horilla imports for ORM signal receivers (same pattern as `horilla.http`, `horilla.shortcuts`):
+Prefer Horilla imports for ORM signal receivers (same pattern as `horilla.web`, `horilla.shortcuts`):
 
 ```python
 from horilla.db.models.signals import post_save, pre_save, post_delete

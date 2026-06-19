@@ -31,7 +31,7 @@ This page is an **index and orientation**. Detailed topics live in focused files
 Registered from **`horilla.contrib.core.middlewares`** in project settings:
 
 - **`TimezoneMiddleware`**, **`ActiveCompanyMiddleware`** — per-request active company + tz.
-- **`HorillaExceptionMiddleware`** — maps **`HttpNotFound`** to the custom 404 flow.
+- **`HorillaExceptionMiddleware`** — maps **`HttpNotFound`** (`horilla.web`) to the custom 404 flow.
 - **`Horilla405Middleware`** — when the view returns **405 Method Not Allowed**, renders **`templates/405.html`** (same card layout as other error pages).
 - **`SVGSecurityMiddleware`**, **`HTMXRedirectMiddleware`**, **`EnsureSectionMiddleware`** — security + HTMX navigation polish.
 
@@ -106,7 +106,7 @@ Theme app listens to **`pre_logout_signal`** / **`pre_login_render_signal`**—s
 | Menus (floating, main, settings, sub-section, my settings) | [Menu/](Menu/floating_menu.md) |
 | Registry (features, permissions, assets, limiters) | [Registry/feature.md](Registry/feature.md) |
 | URL helpers (`horilla.urls`) | [Urls/urls.md](Urls/urls.md) |
-| HTTP helpers in core package path | [Http/http.md](Http/http.md) |
+| Web utilities (`horilla.web`) | [web/web.md](../../web/web.md) |
 | Decorators (legacy path name) | [Decorator ( Utils )/decorators.md](Decorator%20(%20Utils%20)/decorators.md) |
 | Translation shim | [Translation (Utils )/translation.md](Translation%20(Utils%20)/translation.md) |
 | Settings / `horilla_apps` / passwords / `CSRF_FAILURE_VIEW` | [settings `base.py`](../../settings/base.md) |

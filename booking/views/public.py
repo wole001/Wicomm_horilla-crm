@@ -11,13 +11,13 @@ from datetime import date, datetime, timedelta
 # Third-party imports (Django)
 from django.views.generic import View
 
-from horilla.http import JsonResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse_lazy
 
 # First party imports (Horilla)
 from horilla.utils import timezone
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import JsonResponse
 
 # Local imports
 from ..models import Booking, BookingPage

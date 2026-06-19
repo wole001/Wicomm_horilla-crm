@@ -41,8 +41,8 @@ The condition form resolves field choices based on the parent rule's target mode
 
 ### Missing object handling
 
-- **HTMX requests** on a missing object → `RefreshResponse` (HTMX-aware partial refresh).
-- **Non-HTMX requests** on a missing object → `HttpNotFound` (standard 404 page).
+- **HTMX requests** on a missing object → **`RefreshResponse`** (`horilla.web`) — HTMX-aware partial refresh.
+- **Non-HTMX requests** on a missing object → **`HttpNotFound`** (`horilla.web`) — standard 404 page.
 
 ### Condition delete refresh
 

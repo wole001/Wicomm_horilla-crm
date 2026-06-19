@@ -9,12 +9,12 @@ import logging
 from datetime import date, datetime, timedelta
 
 from horilla.db.models import CharField, DateField, DateTimeField, ForeignKey
-from horilla.http import QueryDict
 from horilla.shortcuts import redirect
 
 # First party imports (Horilla)
 from horilla.utils import timezone as django_tz
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import QueryDict
 
 # Local imports
 from .list import HorillaListView

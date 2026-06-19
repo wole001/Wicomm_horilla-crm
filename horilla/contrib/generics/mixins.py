@@ -20,12 +20,12 @@ from horilla.contrib.core.mixins import get_allowed_users_queryset_for_model
 from horilla.contrib.core.models import ListColumnVisibility, RecentlyViewed
 from horilla.contrib.core.utils import filter_hidden_fields
 from horilla.core.exceptions import FieldDoesNotExist
-from horilla.http import HttpResponse, QueryDict
 from horilla.shortcuts import redirect, render
 
 # First party imports (Horilla)
 from horilla.urls import resolve
 from horilla.utils.choices import FIELD_TYPE_MAP
+from horilla.web import HttpResponse, QueryDict
 
 
 class RecentlyViewedMixin(LoginRequiredMixin):

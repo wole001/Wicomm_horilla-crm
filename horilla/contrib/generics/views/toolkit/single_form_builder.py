@@ -17,8 +17,8 @@ from horilla.core.exceptions import FieldDoesNotExist
 
 # First party imports (Horilla)
 from horilla.db import models
-from horilla.http import HttpResponse, QueryDict
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse, QueryDict
 
 from ...forms import HORILLA_FORM_EXCLUDE, HorillaModelForm
 from ...forms.condition_fields import get_model_field_choices

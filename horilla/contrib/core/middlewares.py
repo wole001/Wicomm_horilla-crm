@@ -12,13 +12,13 @@ import logging
 # Third-party imports (Django)
 from django.utils.deprecation import MiddlewareMixin
 
-from horilla.http import HttpNotFound, HttpResponse, HttpResponseNotAllowed
 from horilla.menu.sub_section_menu import sub_section_menu as menu_registry
 from horilla.shortcuts import redirect, render
 from horilla.urls import Resolver404, resolve
 
 # First party imports (Horilla)
 from horilla.utils import timezone
+from horilla.web import HttpNotFound, HttpResponse, HttpResponseNotAllowed
 
 # Local imports
 from .models import Company

@@ -15,7 +15,6 @@ from django.views import View
 from horilla.apps import apps
 from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.utils.methods import has_ssti, has_xss, sanitize_html
-from horilla.http import HttpResponse
 from horilla.shortcuts import render
 from horilla.utils.decorators import (
     htmx_required,
@@ -23,6 +22,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext as _
+from horilla.web import HttpResponse
 
 # Local imports
 from ...models import HorillaMail, HorillaMailAttachment, HorillaMailConfiguration

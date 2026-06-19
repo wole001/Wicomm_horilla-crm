@@ -26,7 +26,6 @@ from horilla.contrib.notifications.models import NotificationTemplate
 from horilla.contrib.utils.middlewares import _thread_local
 from horilla.db import transaction
 from horilla.db.models import Q
-from horilla.http import HttpNotFound, HttpResponse, HttpResponseRedirect
 from horilla.shortcuts import get_object_or_404
 from horilla.urls import reverse_lazy
 
@@ -34,6 +33,7 @@ from horilla.urls import reverse_lazy
 from horilla.utils import timezone
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpNotFound, HttpResponse, HttpResponseRedirect
 
 # Local imports
 from ..models import ApprovalDecision, ApprovalInstance, ApprovalStep

@@ -19,9 +19,6 @@ from horilla.contrib.generics.views import (
 )
 from horilla.contrib.generics.views.card import HorillaCardView
 from horilla.contrib.generics.views.timeline import HorillaTimelineView
-
-# First party imports (Horilla)
-from horilla.http import HttpResponse
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import (
     htmx_required,
@@ -30,6 +27,9 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+
+# First party imports (Horilla)
+from horilla.web import HttpResponse
 
 # Local imports
 from horilla_crm.opportunities.filters import OpportunityFilter

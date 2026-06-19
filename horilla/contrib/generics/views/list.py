@@ -17,11 +17,11 @@ from horilla.contrib.core.models import PinnedView, RecentlyViewed, SavedFilterL
 from horilla.contrib.core.utils import filter_hidden_fields, get_editable_fields
 from horilla.db.models import Case, Q, When
 from horilla.db.models.fields import GenericForeignKey
-from horilla.http import HttpResponse, QueryDict
 
 # First party imports (Horilla)
 from horilla.shortcuts import render
 from horilla.utils import translation
+from horilla.web import HttpResponse, QueryDict
 
 from ..mixins import HorillaListViewMixin
 

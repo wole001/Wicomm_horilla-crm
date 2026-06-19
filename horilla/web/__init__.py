@@ -1,5 +1,5 @@
 """
-Horilla HTTP utilities.
+Horilla web utilities.
 
 Provides safe redirect and refresh response classes for use with Django
 and HTMX (HX-* headers).

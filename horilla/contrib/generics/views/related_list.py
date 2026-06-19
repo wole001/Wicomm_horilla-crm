@@ -19,10 +19,10 @@ from django.views.generic import DetailView
 from horilla.apps import apps
 from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.utils.methods import get_section_info_for_model
-from horilla.http import HttpNotFound, HttpResponse
 from horilla.shortcuts import render
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpNotFound, HttpResponse
 
 # Local imports
 from .list import HorillaListView

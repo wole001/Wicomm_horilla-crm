@@ -9,10 +9,10 @@ from django.views.generic import TemplateView
 
 # First party imports (Horilla)
 from horilla.db import transaction
-from horilla.http import HttpResponse
 from horilla.shortcuts import get_object_or_404
 from horilla.utils.decorators import method_decorator, permission_required_or_denied
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse
 
 # Local imports
 from .models import CompanyTheme, HorillaColorTheme

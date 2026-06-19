@@ -22,9 +22,9 @@ from horilla.core.exceptions import ValidationError
 
 # First party imports (Horilla)
 from horilla.db.models import Q
-from horilla.http import HttpResponse
 from horilla.shortcuts import redirect, render
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse
 
 # Local imports
 from ..models import Company

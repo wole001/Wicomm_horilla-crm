@@ -12,7 +12,6 @@ from horilla.auth.models import User
 
 # First party imports (Horilla)
 from horilla.db.models import Q
-from horilla.http import HttpResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.utils.decorators import (
     htmx_required,
@@ -20,6 +19,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse
 
 from ...models import Role
 

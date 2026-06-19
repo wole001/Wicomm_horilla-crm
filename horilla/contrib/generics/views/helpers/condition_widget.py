@@ -21,12 +21,12 @@ from horilla.contrib.core.models import HorillaContentType
 
 # First-party (Horilla)
 from horilla.db import models
-from horilla.http import HttpResponse
 from horilla.shortcuts import render
 from horilla.urls import reverse_lazy
 from horilla.utils.choices import FIELD_TYPE_MAP
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse
 
 # Local imports
 from ...filters import OPERATOR_CHOICES

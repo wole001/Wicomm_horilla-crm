@@ -10,12 +10,12 @@ from django.views.generic import FormView
 
 # First party imports (Horilla)
 from horilla.db import transaction
-from horilla.http import Http404, HttpResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse
 from horilla.utils import timezone
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import Http404, HttpResponse
 
 # Local imports
 from horilla_crm.accounts.models import Account

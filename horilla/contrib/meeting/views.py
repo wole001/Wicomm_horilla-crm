@@ -12,9 +12,6 @@ from django.views import View
 
 from horilla.contrib.generics.views import HorillaListView
 from horilla.contrib.generics.views.single_form import HorillaSingleFormView
-
-# First party imports (Horilla)
-from horilla.http import HttpResponse, HttpResponseRedirect
 from horilla.shortcuts import redirect, render
 from horilla.urls import reverse, reverse_lazy
 from horilla.utils.decorators import (
@@ -23,6 +20,9 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+
+# First party imports (Horilla)
+from horilla.web import HttpResponse, HttpResponseRedirect
 
 # Local imports
 from .forms import (
@@ -539,7 +539,7 @@ class GenerateMeetingLinkView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         """Create a Zoom, Teams, Google Meet, or manual meeting URL and return JSON."""
-        from horilla.http import JsonResponse
+        from horilla.web import JsonResponse
 
         provider = request.POST.get("provider", "zoom")
         title = request.POST.get("title", "Meeting")

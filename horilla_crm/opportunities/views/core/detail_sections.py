@@ -14,9 +14,6 @@ from horilla.contrib.generics.views import (
     HorillaSingleDeleteView,
     HorillaSingleFormView,
 )
-
-# First party imports (Horilla)
-from horilla.http import HttpResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import (
@@ -25,6 +22,9 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+
+# First party imports (Horilla)
+from horilla.web import HttpResponse
 
 # Local imports
 from horilla_crm.contacts.models import ContactAccountRelationship

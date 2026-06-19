@@ -16,9 +16,9 @@ from django.views import View
 
 # First party imports (Horilla)
 from horilla.apps import apps
-from horilla.http import HttpNotFound, JsonResponse
 from horilla.shortcuts import render
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpNotFound, JsonResponse
 
 # Local imports
 from ...methods import get_dynamic_form_for_model

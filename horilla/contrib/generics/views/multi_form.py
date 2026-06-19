@@ -20,9 +20,9 @@ from horilla.contrib.utils.middlewares import _thread_local
 
 # First party imports (Horilla)
 from horilla.db import models
-from horilla.http import HttpResponse
 from horilla.urls import reverse
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse
 
 # Local imports
 from ..forms import HorillaMultiStepForm

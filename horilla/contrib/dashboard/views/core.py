@@ -14,7 +14,6 @@ from django.views.generic import TemplateView
 from horilla.contrib.generics.mixins import RecentlyViewedMixin
 from horilla.contrib.generics.views import HorillaListView, HorillaNavView
 from horilla.db.models import Case, When
-from horilla.http import HttpNotFound, HttpResponse, RefreshResponse
 from horilla.shortcuts import get_object_or_404, redirect, render
 
 # First party imports (Horilla)
@@ -26,6 +25,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpNotFound, HttpResponse, RefreshResponse
 
 # Local imports
 from ..filters import DashboardFilter

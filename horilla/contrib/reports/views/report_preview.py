@@ -11,12 +11,12 @@ from django.views import View
 from django.views.decorators.http import require_POST
 
 from horilla.core.exceptions import FieldDoesNotExist
-
-# First party imports (Horilla)
-from horilla.http import RefreshResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.utils.decorators import method_decorator, permission_required_or_denied
 from horilla.utils.translation import gettext_lazy as _
+
+# First party imports (Horilla)
+from horilla.web import RefreshResponse
 
 # Local imports
 from ..models import Report

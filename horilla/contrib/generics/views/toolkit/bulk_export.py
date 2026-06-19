@@ -20,10 +20,10 @@ from reportlab.pdfgen import canvas
 
 from horilla.contrib.core.utils import sanitize_export_value
 from horilla.db.models import ForeignKey
-from horilla.http import HttpResponse
 
 # First party imports (Horilla)
 from horilla.utils import timezone
+from horilla.web import HttpResponse
 
 logger = logging.getLogger(__name__)
 

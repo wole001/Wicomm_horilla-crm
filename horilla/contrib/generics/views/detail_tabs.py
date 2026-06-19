@@ -16,13 +16,13 @@ from horilla.contrib.core.models import DetailFieldVisibility
 # First party imports (Horilla)
 from horilla.contrib.core.utils import get_field_permissions_for_model
 from horilla.core.exceptions import FieldDoesNotExist
-from horilla.http import HttpResponse
 
 # First-party (Horilla)
 from horilla.shortcuts import render
 from horilla.urls import reverse, reverse_lazy
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse
 
 # Local imports
 from .core import HorillaTabView

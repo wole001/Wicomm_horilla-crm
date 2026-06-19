@@ -17,10 +17,10 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 
 # First party imports (Horilla)
 from horilla.db.models import Q
-from horilla.http import HttpNotFound, HttpResponse, RefreshResponse
 from horilla.shortcuts import get_object_or_404
 from horilla.utils.decorators import method_decorator, permission_required_or_denied
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpNotFound, HttpResponse, RefreshResponse
 
 # Local imports
 from ..models import Report

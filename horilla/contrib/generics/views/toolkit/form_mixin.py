@@ -11,9 +11,9 @@ from horilla.contrib.core.utils import get_field_permissions_for_model
 
 # First party imports (Horilla)
 from horilla.db import models
-from horilla.http import HttpResponse
 from horilla.shortcuts import get_object_or_404, render
 from horilla.urls import reverse
+from horilla.web import HttpResponse
 
 
 class FormViewCommonMixin:

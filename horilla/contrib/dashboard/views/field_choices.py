@@ -10,7 +10,6 @@ from django.views.generic import View
 # First party imports (Horilla)
 from horilla.apps import apps
 from horilla.contrib.core.models import HorillaContentType
-from horilla.http import HttpResponse
 from horilla.shortcuts import render
 from horilla.utils.choices import DISPLAYABLE_FIELD_TYPES
 from horilla.utils.decorators import (
@@ -19,6 +18,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse
 
 # Local imports
 from ..forms import get_dashboard_component_models

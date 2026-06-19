@@ -19,11 +19,11 @@ from horilla.contrib.core.utils import get_user_field_permission
 from horilla.core.exceptions import FieldDoesNotExist, FieldError, ImproperlyConfigured
 from horilla.db import transaction
 from horilla.db.models import ForeignKey, Max
-from horilla.http import HttpNotFound, HttpResponse, QueryDict
 from horilla.shortcuts import redirect
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpNotFound, HttpResponse, QueryDict
 
 # Local imports
 from .list import HorillaListView

@@ -23,7 +23,6 @@ from horilla.contrib.generics.views.timeline import HorillaTimelineView
 
 # First party imports (Horilla)
 from horilla.db.models import Avg, Count, Max, Min, Sum
-from horilla.http import RedirectResponse
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import (
     htmx_required,
@@ -32,6 +31,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import RedirectResponse
 
 # Local imports
 from horilla_crm.leads.filters import LeadFilter

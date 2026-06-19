@@ -14,7 +14,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 
 # First-party / Horilla imports
-from horilla.http import safe_url
+from horilla.web import safe_url
 
 
 def permission_required_or_denied(

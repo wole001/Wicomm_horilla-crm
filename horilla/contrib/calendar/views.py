@@ -26,7 +26,6 @@ from horilla.contrib.generics.views.helpers.queryset_utils import (
     get_queryset_for_module,
 )
 from horilla.contrib.utils.middlewares import _thread_local
-from horilla.http import HttpResponse, JsonResponse
 from horilla.shortcuts import render
 from horilla.urls import reverse_lazy
 
@@ -38,6 +37,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext as _
+from horilla.web import HttpResponse, JsonResponse
 
 # Local imports
 from .forms import CustomCalendarForm

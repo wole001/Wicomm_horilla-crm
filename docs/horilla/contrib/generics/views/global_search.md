@@ -108,7 +108,7 @@ The template/list layer substitutes **`{get_detail_url}`** per row with each ins
 |-----|------|
 | `q` | Search string (trimmed). **Empty** → see below. |
 | `filter` | `all` (default) or a **capitalized** model name (e.g. `Lead`) to show **only** that model’s tab/results. |
-| `prev_url` | Where to go when **`q`** is empty; **sanitized** with **`safe_url`**, `section` may be stripped from query, and nested global-search URLs fall back to **`session["pre_search_url"]`**. |
+| `prev_url` | Where to go when **`q`** is empty; **sanitized** with **`safe_url`** from **`horilla.web`**, `section` may be stripped from query, and nested global-search URLs fall back to **`session["pre_search_url"]`**. |
 | `section` | Passed through when redirecting; used in close button and tab links. |
 | `tab_model` | With **HTMX** + non-empty **`q`**, returns **only** `get_tab_content(...)` HTML for that model (tab switch). |
 

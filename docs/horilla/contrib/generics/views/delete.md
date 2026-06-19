@@ -89,7 +89,7 @@ If not authenticated → redirect to login:
 
 ### Errors
 
-On unexpected exceptions → `raise HttpNotFound(e)` (Horilla custom 404 path).
+On unexpected exceptions → `raise HttpNotFound(e)` (**`horilla.web`** — Horilla custom 404 path).
 
 ---
 

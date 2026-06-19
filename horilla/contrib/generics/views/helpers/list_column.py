@@ -24,9 +24,9 @@ from django.views.generic import FormView
 from horilla.apps import apps
 from horilla.contrib.core.models import ListColumnVisibility
 from horilla.contrib.core.utils import filter_hidden_fields
-from horilla.http import HttpResponse, JsonResponse
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse, JsonResponse
 
 from ...forms import ColumnSelectionForm
 

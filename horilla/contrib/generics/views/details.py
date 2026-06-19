@@ -20,10 +20,10 @@ from horilla.apps import apps
 from horilla.contrib.utils.methods import closest_numbers, get_section_info_for_model
 from horilla.core.exceptions import FieldDoesNotExist, ValidationError
 from horilla.db.models import ForeignKey
-from horilla.http import Http404, HttpNotFound, HttpResponse, QueryDict, RefreshResponse
 from horilla.shortcuts import redirect, render
 from horilla.urls import resolve, reverse, reverse_lazy
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import Http404, HttpNotFound, HttpResponse, QueryDict, RefreshResponse
 
 logger = logging.getLogger(__name__)
 

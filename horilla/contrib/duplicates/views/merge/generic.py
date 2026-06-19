@@ -13,11 +13,11 @@ from horilla.contrib.core.models.base import HorillaContentType
 from horilla.contrib.generics.views import HorillaModalDetailView
 from horilla.db import models
 from horilla.db.models import QuerySet
-from horilla.http import HttpResponse, RedirectResponse
 from horilla.shortcuts import render
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import htmx_required, method_decorator
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse, RedirectResponse
 
 
 @method_decorator(htmx_required, name="dispatch")

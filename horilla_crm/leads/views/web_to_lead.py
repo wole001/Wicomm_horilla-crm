@@ -16,7 +16,6 @@ from django.views.generic import CreateView, FormView, TemplateView
 
 # First party imports (Horilla)
 from horilla.auth.models import User
-from horilla.http import HttpNotFound, HttpResponse, RedirectResponse
 from horilla.shortcuts import render
 from horilla.urls import reverse, reverse_lazy
 from horilla.utils.decorators import (
@@ -24,6 +23,7 @@ from horilla.utils.decorators import (
     method_decorator,
     permission_required_or_denied,
 )
+from horilla.web import HttpNotFound, HttpResponse, RedirectResponse
 
 # Local imports
 from horilla_crm.leads.models import Lead, LeadCaptureForm, LeadStatus

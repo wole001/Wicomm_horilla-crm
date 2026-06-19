@@ -30,11 +30,13 @@ Details: [docs/horilla/contrib/core/models.md](horilla/contrib/core/models.md)
 
 | Import from | Instead of | Symbols (common) |
 |-------------|------------|------------------|
-| `horilla.http` | `django.http` | `HttpResponse`, `JsonResponse`, `QueryDict`, `Http404`, `StreamingHttpResponse`, `HttpNotFound`, `RedirectResponse`, … |
+| `horilla.web` | `django.http` | `HttpResponse`, `JsonResponse`, `QueryDict`, `Http404`, `StreamingHttpResponse`, `HttpNotFound`, `RedirectResponse`, … |
 | `horilla.shortcuts` | `django.shortcuts` | `redirect`, `render`, `get_object_or_404` |
 | `horilla.urls` | `django.urls` | `path`, `re_path`, `include`, `reverse`, `reverse_lazy`, `resolve` |
 
-Details: [docs/horilla/http/http.md](horilla/http/http.md), [docs/horilla/shortcuts/shortcuts.md](horilla/shortcuts/shortcuts.md), [docs/horilla/urls/urls.md](horilla/urls/urls.md)
+> **Note:** The platform package was renamed from `horilla.http` to **`horilla.web`**. The old name shadowed Python’s standard-library `http` module when Django management commands ran from inside the `horilla/` directory (for example `makemessages`). Update any remaining `from horilla.http import …` imports to `from horilla.web import …`. Do not keep a `horilla/http/` compatibility shim — it would restore the import conflict.
+
+Details: [docs/horilla/web/web.md](horilla/web/web.md), [docs/horilla/shortcuts/shortcuts.md](horilla/shortcuts/shortcuts.md), [docs/horilla/urls/urls.md](horilla/urls/urls.md)
 
 #### Apps, auth, exceptions
 
@@ -82,7 +84,7 @@ from django.apps import apps
 
 # ✅ Prefer — Horilla import map
 from horilla.db import models, transaction
-from horilla.http import HttpResponse
+from horilla.web import HttpResponse
 from horilla.urls import reverse_lazy
 from horilla.shortcuts import render, redirect
 from horilla.utils.translation import gettext_lazy as _
@@ -111,7 +113,7 @@ Examples (not exhaustive):
 
 - **Migrations** — `from django.db import migrations` in `migrations/*.py` only.
 - **Early bootstrap** — e.g. `horilla/extension/models/metaclass.py` uses Django `Field` only (no `horilla.db` at import time) to avoid `AppRegistryNotReady`; see [docs/Plan_HORILLA_INHERIT_MIGRATION.md](Plan_HORILLA_INHERIT_MIGRATION.md).
-- **Re-export implementation** — only the Horilla wrapper module (e.g. `horilla/db/__init__.py`, `horilla/http/__init__.py`) may import the symbol from Django.
+- **Re-export implementation** — only the Horilla wrapper module (e.g. `horilla/db/__init__.py`, `horilla/web/__init__.py`) may import the symbol from Django.
 - **Gaps** — any symbol not in the Horilla package’s `__all__` / docs stays on Django.
 
 ### Import order and section comments
@@ -134,13 +136,13 @@ Within **`# First party imports (Horilla)`**, use **two sub-blocks** (do not mix
 
 | Sub-order | Packages | Notes |
 |-----------|----------|--------|
-| **1 — Platform** | `horilla.apps`, `horilla.auth`, `horilla.core`, `horilla.db`, `horilla.http`, `horilla.menu`, `horilla.registry`, `horilla.shortcuts`, `horilla.urls`, `horilla.utils`, … | Top-level Horilla infrastructure — **not** `horilla.contrib` |
+| **1 — Platform** | `horilla.apps`, `horilla.auth`, `horilla.core`, `horilla.db`, `horilla.web`, `horilla.menu`, `horilla.registry`, `horilla.shortcuts`, `horilla.urls`, `horilla.utils`, … | Top-level Horilla infrastructure — **not** `horilla.contrib` |
 | **2 — Contrib apps** | `horilla.contrib.*` | Always **last** in the Horilla block; contrib is a bundle of horilla apps (core, generics, mail, …) |
 
 Sort **alphabetically by full module path** inside each sub-block. Typical platform order (all before any `horilla.contrib` line):
 
 ```text
-horilla.apps → horilla.auth → horilla.core → horilla.db → horilla.http → horilla.menu
+horilla.apps → horilla.auth → horilla.core → horilla.db → horilla.web → horilla.menu
 → horilla.registry → horilla.shortcuts → horilla.urls → horilla.utils → …
 ```
 
@@ -164,7 +166,7 @@ from djmoney.models.fields import MoneyField
 from horilla.apps import apps
 from horilla.auth.models import User
 from horilla.db import models, transaction
-from horilla.http import HttpResponse
+from horilla.web import HttpResponse
 from horilla.shortcuts import redirect, render
 from horilla.urls import reverse_lazy
 from horilla.utils import timezone
@@ -196,10 +198,10 @@ See also [.claude/rules/horilla-coding-style.md](../.claude/rules/horilla-coding
 ### Reviewer checklist
 
 - [ ] All `horilla.*` imports are under `# First party imports (Horilla)` only.
-- [ ] Within First party: platform (`horilla.db`, `horilla.auth`, `horilla.http`, …) before `horilla.contrib.*`.
+- [ ] Within First party: platform (`horilla.db`, `horilla.auth`, `horilla.web`, …) before `horilla.contrib.*`.
 - [ ] Django block contains only `django.*` (and no `horilla.*`).
 - [ ] Database: `models`, `transaction`, `connection`, and model signals use `horilla.db` / `horilla.db.models.signals`.
-- [ ] HTTP/views: responses and shortcuts use `horilla.http` / `horilla.shortcuts` when listed above.
+- [ ] HTTP/views: responses and shortcuts use `horilla.web` / `horilla.shortcuts` when listed above.
 - [ ] URLs: `path`, `reverse`, `reverse_lazy` use `horilla.urls`.
 - [ ] i18n / time / decorators: use `horilla.utils.translation`, `horilla.utils.timezone` (or `from horilla.utils import timezone`), `horilla.utils.decorators`.
 - [ ] User model and registry: `horilla.auth.models.User`, `horilla.apps.apps` — not `django.contrib.auth.models.User`.

@@ -16,7 +16,6 @@ from django.views.generic import DetailView
 from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.generics.forms import HorillaModelForm
 from horilla.contrib.generics.views import HorillaSingleFormView
-from horilla.http import Http404, HttpNotFound, HttpResponse, RefreshResponse
 from horilla.shortcuts import get_object_or_404, redirect, render
 
 # First party imports (Horilla)
@@ -27,6 +26,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import Http404, HttpNotFound, HttpResponse, RefreshResponse
 
 # Local imports
 from ..forms import ReportForm

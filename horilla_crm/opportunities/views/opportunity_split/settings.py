@@ -6,9 +6,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, View
 
 from horilla.contrib.generics.views import HorillaListView, HorillaNavView
-
-# First party imports (Horilla)
-from horilla.http import HttpResponse
 from horilla.shortcuts import render
 from horilla.urls import reverse, reverse_lazy
 from horilla.utils.decorators import (
@@ -18,6 +15,9 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+
+# First party imports (Horilla)
+from horilla.web import HttpResponse
 
 # Local imports
 from horilla_crm.opportunities.models import (

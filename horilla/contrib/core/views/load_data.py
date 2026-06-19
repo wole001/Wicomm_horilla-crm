@@ -17,10 +17,10 @@ from django.views import View
 from horilla.apps import apps
 from horilla.auth.models import User
 from horilla.db import connection, transaction
-from horilla.http import JsonResponse, safe_url
 from horilla.shortcuts import redirect, render
 from horilla.utils import timezone
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import JsonResponse, safe_url
 
 
 def set_sqlite_foreign_keys(enabled: bool):

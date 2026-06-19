@@ -23,7 +23,6 @@ from horilla.contrib.notifications.models import NotificationTemplate
 
 # First party imports (Horilla)
 from horilla.db.models import Q
-from horilla.http import HttpNotFound, HttpResponse, RefreshResponse
 from horilla.urls import reverse, reverse_lazy
 from horilla.utils.decorators import (
     htmx_required,
@@ -32,6 +31,7 @@ from horilla.utils.decorators import (
     permission_required_or_denied,
 )
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpNotFound, HttpResponse, RefreshResponse
 
 # Local imports
 from horilla_crm.leads.filters import LeadAssignmentFilter
