@@ -243,15 +243,16 @@
                             id="colorInput"
                             name="header_color"
                             readonly
-                            value="{{ form_data.color|default:'#ffffff' }}"
-                            placeholder="{% trans '#ffffff' %}"
+                            value="{{ form_data.color|default:'' }}"
+                            placeholder="{% trans 'Default (primary color)' %}"
                             class="w-full pl-10 border-gray-300 focus:outline-none focus:border-primary-600 transition duration-300 mb-3 text-color-600 p-2 placeholder:text-xs pr-[40px] border border-dark-50 rounded-md mt-1 focus-visible:outline-0 placeholder:text-dark-100 text-sm [transition:.3s] focus:border-primary-600"
                         >
                         <input
                             type="color"
                             id="colorPicker"
                             name="color"
-                            value="{{ form_data.color|default:'#ffffff' }}"
+                            value="{{ form_data.color }}"
+                            data-saved="{{ form_data.color }}"
                             hx-post="{% url 'leads:update_preview' %}"
                             hx-trigger="change"
                             hx-include="[name='selected_fields[]'], [name='language'], [name='form_name']"
@@ -289,6 +290,21 @@
 
         <script>
             const _clickFieldsToAdd = "{% trans 'Click fields to add' %}";
+
+            // Initialise color picker to primary-600 when no saved color.
+            // Use setTimeout(0) so the browser has painted injected theme styles before we read the CSS variable.
+            function initColorPicker() {
+                const picker = document.getElementById('colorPicker');
+                if (picker && !picker.dataset.saved) {
+                    setTimeout(function () {
+                        picker.value = getComputedStyle(document.documentElement)
+                            .getPropertyValue('--split-view-active-border').trim() || '#E54F38';
+                    }, 0);
+                }
+            }
+            initColorPicker();
+            document.body.addEventListener('htmx:afterSettle', initColorPicker);
+
             // Handle field addition and removal tracking
             document.body.addEventListener('htmx:afterSwap', function(event) {
 

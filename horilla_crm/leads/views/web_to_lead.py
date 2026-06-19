@@ -93,7 +93,7 @@ class UpdateFormHeadingView(LoginRequiredMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         """Handle POST request to update form heading."""
         form_name = request.POST.get("form_name", "").strip()
-        color = request.POST.get("color", "#ffffff")
+        color = request.POST.get("color", "")
 
         language = request.POST.get("language", "en")  # Add language
 
@@ -239,7 +239,7 @@ class SaveLeadFormView(LoginRequiredMixin, FormView):
                 "lead_owner_id": lead_owner,
                 "form_name": form.cleaned_data.get("form_name", "Contact Us"),
                 "language": form.cleaned_data.get("language", "en"),
-                "header_color": self.request.POST.get("color", "#ffffff"),
+                "header_color": self.request.POST.get("color", ""),
             },
         )
 
@@ -346,7 +346,7 @@ class SaveLeadFormView(LoginRequiredMixin, FormView):
                 "success_message": self.request.POST.get("success_message", ""),
                 "success_description": self.request.POST.get("success_description", ""),
                 "language": self.request.POST.get("language", "en"),
-                "color": self.request.POST.get("color", "#ffffff"),
+                "color": self.request.POST.get("color", ""),
                 "selected_fields": self.request.POST.getlist("selected_fields[]"),
                 "lead_owner": self.request.POST.get("lead_owner"),
             }
@@ -536,11 +536,7 @@ class PublicLeadFormView(CreateView):
                 response["HX-Redirect"] = return_url
                 return response
 
-            header_color = (
-                form_config.header_color
-                if form_config.header_color and form_config.header_color != "#ffffff"
-                else "hsl(8, 77%, 56%)"
-            )
+            header_color = form_config.header_color or "hsl(8, 77%, 56%)"
             success_message = (
                 form_config.success_message
                 if form_config.success_message
