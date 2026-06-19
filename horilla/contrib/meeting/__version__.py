@@ -2,7 +2,7 @@
 
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.11.2"
+__version__ = "1.11.3"
 __module_name__ = _("Meeting Integration")
 __release_date__ = ""
 __description__ = _(
@@ -10,6 +10,10 @@ __description__ = _(
     "OAuth connections, personal meeting URLs, and activity meeting links."
 )
 __icon__ = "meeting/assets/icons/meetings.svg"
+
+__1_11_3__ = _(
+    "Restricted allowed-users and allowed-roles list views to HTMX requests."
+)
 
 __1_11_2__ = _(
     "Google Meet option now hides when Google Calendar integration is disabled. Resolve "

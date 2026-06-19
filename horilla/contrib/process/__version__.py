@@ -5,13 +5,18 @@ Version information for the Process Builder
 # First party imports (Horilla)
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.11.1"
+__version__ = "1.11.2"
 __module_name__ = "Process Builder"
 __release_date__ = ""
 __description__ = _(
     "Module for managing the process, including approval processes and review processes."
 )
 __icon__ = "assets/icons/process-management.svg"
+
+__1_11_2__ = _(
+    "Approvals: fixed type mismatch when excluding pending approval objects from list "
+    "view; added job detail body template and adjusted tab container height."
+)
 
 __1_11_1__ = _(
     'ApprovalRuleForm refactored to fields="__all__" with field_order, dropping the '

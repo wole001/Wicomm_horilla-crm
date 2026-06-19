@@ -2,11 +2,19 @@
 
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.11.2"
+__version__ = "1.11.3"
 __module_name__ = "CRM"
 __release_date__ = ""
 __description__ = _("CRM module for managing leads, contacts, and opportunities.")
 __icon__ = "assets/icons/icon2.svg"
+
+__1_11_3__ = _(
+    "Forecast: excluded currency and current_amount from ForecastTargetForm; fixed "
+    "active-tab detection and wrapped opportunity-type labels with i18n; refactored "
+    "forecast-type table period-cell layout and sticky-column sizing; reduced N+1 "
+    "queries and cached repeated fiscal-year checks. Normalized contact fixture country "
+    "values to ISO 3166-1 alpha-2 codes."
+)
 
 __1_11_2__ = _(
     "Refactored leads core views into tab sub-packages and opportunities split and stages "

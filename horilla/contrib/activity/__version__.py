@@ -2,13 +2,22 @@
 
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.11.2"
+__version__ = "1.11.3"
 __module_name__ = "Activity"
 __release_date__ = ""
 __description__ = _(
     "Module for tracking and managing activities such as tasks,calls, events, and emails."
 )
 __icon__ = "activity/assets/icons/activity-red.svg"
+
+__1_11_3__ = _(
+    "Disabled base owner_filtration on EmailListView. Centralised get_main_url in the "
+    "list-view mixin and fixed tab-calls typo in status update and activity tab template. "
+    "Task and activity creates now navigate directly to the correct tab instead of "
+    "reverting to the first tab after reload; aligned task-create reload trigger with "
+    "project-wide jQuery convention. Fixed delete and bulk-action views that reverted "
+    "to the wrong tab."
+)
 
 __1_11_2__ = _(
     "Fixed call duration field ordering and removed redundant validation; history tab now "

@@ -2,13 +2,21 @@
 
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "1.12.1"
+__version__ = "1.12.2"
 __module_name__ = _("Core System")
 __release_date__ = ""
 __description__ = _(
     "Core system providing authentication, configuration, utilities, and platform-level services."
 )
 __icon__ = "assets/icons/logo.png"
+
+__1_12_2__ = _(
+    "Added IP-based brute-force lockout on login and uniform forgot-password responses to "
+    "prevent user enumeration. Fixed local settings to apply after app extensions. "
+    "Generics: fixed filter-panel toggle in tabbed views with duplicate element IDs; "
+    "sanitized notes-and-attachments fields against XSS and updated delete-button styling "
+    "with themed icons. Menu: improved sub-sidebar active-link detection and unique item IDs."
+)
 
 __1_12_1__ = _(
     "Extension tests now use contrib.core examples instead of CRM-specific modules. Added "
