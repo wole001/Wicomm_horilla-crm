@@ -498,6 +498,13 @@ msgstr "Google Calendar-Integration deaktivieren?"
 msgid "Enable Google Calendar integration?"
 msgstr "Google Calendar-Integration aktivieren?"
 
+msgid ""
+"Enable Google Calendar integration to allow users in your company to connect "
+"their Google account and sync calendar events."
+msgstr ""
+"Google Calendar-Integration aktivieren, damit Benutzer in Ihrem Unternehmen "
+"ihr Google-Konto verbinden und Kalenderereignisse synchronisieren koennen."
+
 msgid "Integration enabled — users can now connect Google Calendar"
 msgstr "Integration aktiviert — Benutzer koennen jetzt Google Calendar verbinden"
 

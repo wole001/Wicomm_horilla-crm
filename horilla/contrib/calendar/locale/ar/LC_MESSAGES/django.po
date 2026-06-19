@@ -142,7 +142,7 @@ msgid "Google Calendar integration has been enabled for users."
 msgstr "تم تفعيل تكامل Google Calendar للمستخدمين."
 
 msgid "Google Calendar Sync"
-msgstr "مزامنة Google Calendar"
+msgstr "مزامنة تقويم جوجل"
 
 msgid "Schedule"
 msgstr "الجدول"
@@ -495,6 +495,13 @@ msgstr "هل تريد تعطيل تكامل Google Calendar؟"
 
 msgid "Enable Google Calendar integration?"
 msgstr "هل تريد تفعيل تكامل Google Calendar؟"
+
+msgid ""
+"Enable Google Calendar integration to allow users in your company to connect "
+"their Google account and sync calendar events."
+msgstr ""
+"تفعيل تكامل Google Calendar للسماح للمستخدمين في شركتك بربط حساباتهم على "
+"Google ومزامنة أحداث التقويم."
 
 msgid "Integration enabled — users can now connect Google Calendar"
 msgstr "تم تفعيل التكامل — يمكن للمستخدمين الآن ربط Google Calendar"
