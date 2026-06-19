@@ -6,6 +6,7 @@ Features: Period-based forecasts, trend analysis, user/aggregated views, optimiz
 
 # Third-party imports (Django)
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.cache import cache
 from django.views.generic import TemplateView
 
 # First party imports (Horilla)
@@ -60,12 +61,12 @@ class ForecastView(LoginRequiredMixin, TemplateView):
         fiscal_year_id = self.request.GET.get("fiscal_year_id")
         user_id = self.request.GET.get("user_id")
 
-        selected_instance = (
-            FiscalYearInstance.objects.get(id=fiscal_year_id)
-            if fiscal_year_id
-            and FiscalYearInstance.objects.filter(id=fiscal_year_id).exists()
-            else current_instance
-        )
+        selected_instance = current_instance
+        if fiscal_year_id:
+            try:
+                selected_instance = FiscalYearInstance.objects.get(id=fiscal_year_id)
+            except FiscalYearInstance.DoesNotExist:
+                selected_instance = current_instance
 
         query_params = self.request.GET.copy()
         query_string = query_params.urlencode() if query_params else ""
@@ -127,7 +128,10 @@ class ForecastNavbarView(LoginRequiredMixin, TemplateView):
             )
         )
         if company:
-            FiscalYearService.check_and_update_fiscal_years(company=company)
+            fy_cache_key = f"fy_check_{company.id}"
+            if not cache.get(fy_cache_key):
+                FiscalYearService.check_and_update_fiscal_years(company=company)
+                cache.set(fy_cache_key, True, 600)
 
         # Forecast page is always active-company scoped.
         forcast_types = (
@@ -146,12 +150,12 @@ class ForecastNavbarView(LoginRequiredMixin, TemplateView):
         fiscal_year_id = self.request.GET.get("fiscal_year_id")
         user_id = self.request.GET.get("user_id")
 
-        selected_instance = (
-            FiscalYearInstance.objects.get(id=fiscal_year_id)
-            if fiscal_year_id
-            and FiscalYearInstance.objects.filter(id=fiscal_year_id).exists()
-            else current_instance
-        )
+        selected_instance = current_instance
+        if fiscal_year_id:
+            try:
+                selected_instance = FiscalYearInstance.objects.get(id=fiscal_year_id)
+            except FiscalYearInstance.DoesNotExist:
+                selected_instance = current_instance
 
         query_params = self.request.GET.copy()
         query_string = query_params.urlencode() if query_params else ""

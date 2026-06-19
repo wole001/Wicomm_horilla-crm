@@ -2,9 +2,11 @@
 
 # Third-party imports (Django)
 from django.contrib import messages
+from django.core.cache import cache
+from django.db.models import Sum
 from django.views.generic import TemplateView
 
-from horilla.contrib.core.models import FiscalYearInstance
+from horilla.contrib.core.models import FiscalYearInstance, Period
 from horilla.contrib.core.services.fiscal_year_service import FiscalYearService
 from horilla.shortcuts import get_object_or_404, render
 from horilla.utils.decorators import (
@@ -18,7 +20,7 @@ from horilla.utils.translation import gettext_lazy as _
 from horilla.web import HttpResponse
 
 # Local imports
-from horilla_crm.forecast.models import ForecastType
+from horilla_crm.forecast.models import Forecast, ForecastType
 from horilla_crm.forecast.views.core.helpers import (
     ForecastTypeTabHelpersMixin,
     get_forecast_chart_data,
@@ -64,6 +66,12 @@ class ForecastTypeTabView(
 
     def get_context_data(self, **kwargs):
         """Assemble forecast type tab context for table and chart rendering."""
+        import logging
+        import time
+
+        _log = logging.getLogger("forecast.perf")
+        _t0 = time.perf_counter()
+
         context = super().get_context_data(**kwargs)
         forecast_type_id = kwargs.get("pk")
         try:
@@ -74,6 +82,8 @@ class ForecastTypeTabView(
             messages.error(self.request, str(e))
             context["error"] = True
             return context
+        _log.debug("PERF forecast_type fetch: %.3fs", time.perf_counter() - _t0)
+        _t1 = time.perf_counter()
 
         # Automatically check and update fiscal years before displaying
         company = (
@@ -86,7 +96,12 @@ class ForecastTypeTabView(
             )
         )
         if company:
-            FiscalYearService.check_and_update_fiscal_years(company=company)
+            fy_cache_key = f"fy_check_{getattr(company, 'id', 0)}"
+            if not cache.get(fy_cache_key):
+                FiscalYearService.check_and_update_fiscal_years(company=company)
+                cache.set(fy_cache_key, True, 600)
+        _log.debug("PERF fiscal_year_service: %.3fs", time.perf_counter() - _t1)
+        _t1 = time.perf_counter()
 
         fiscal_year_id = self.request.GET.get("fiscal_year_id")
         fiscal_year = None
@@ -97,8 +112,12 @@ class ForecastTypeTabView(
                 fiscal_year = None
         if not fiscal_year:
             fiscal_year = self.get_current_fiscal_year
+        _log.debug("PERF fiscal_year fetch: %.3fs", time.perf_counter() - _t1)
+        _t1 = time.perf_counter()
 
         self.ensure_forecasts_exist(forecast_type, fiscal_year)
+        _log.debug("PERF ensure_forecasts_exist: %.3fs", time.perf_counter() - _t1)
+        _t1 = time.perf_counter()
 
         # Get user_id - this will be current user if they only have view_own permission
         user_id = self.request.GET.get("user_id")
@@ -123,9 +142,13 @@ class ForecastTypeTabView(
             beginning_period_id=beginning_period_id,
             ending_period_id=ending_period_id,
         )
+        _log.debug("PERF get_forecast_data: %.3fs", time.perf_counter() - _t1)
+        _t1 = time.perf_counter()
 
         # Calculate totals for all periods
         forecast_totals = self.calculate_forecast_totals(forecasts, forecast_type)
+        _log.debug("PERF calculate_totals: %.3fs", time.perf_counter() - _t1)
+        _t1 = time.perf_counter()
 
         currency_symbol = (
             self.get_company_for_user.currency if self.get_company_for_user else "USD"
@@ -160,6 +183,7 @@ class ForecastTypeTabView(
                 "forecast_chart_data": forecast_chart_data,
             }
         )
+        _log.debug("PERF get_context_data TOTAL: %.3fs", time.perf_counter() - _t0)
         return context
 
     def calculate_forecast_totals(self, forecasts, forecast_type):
@@ -311,25 +335,87 @@ class ForecastChartsModalView(
             )
         )
         if company:
-            FiscalYearService.check_and_update_fiscal_years(company=company)
+            fy_cache_key = f"fy_check_{getattr(company, 'id', 0)}"
+            if not cache.get(fy_cache_key):
+                FiscalYearService.check_and_update_fiscal_years(company=company)
+                cache.set(fy_cache_key, True, 600)
 
         has_view_all = self.request.user.has_perm("opportunities.view_opportunity")
         has_view_own = self.request.user.has_perm("opportunities.view_own_opportunity")
         if has_view_own and not has_view_all:
             user_id = str(self.request.user.pk)
 
-        self.ensure_forecasts_exist(forecast_type, fiscal_year)
         beginning_period_id = self.request.GET.get("beginning_period_id") or None
         ending_period_id = self.request.GET.get("ending_period_id") or None
-        forecasts = self.get_forecast_data(
-            forecast_type,
-            fiscal_year,
-            user_id,
-            page=1,
-            beginning_period_id=beginning_period_id,
-            ending_period_id=ending_period_id,
+
+        # Build period list
+        periods_qs = Period.all_objects.select_related(
+            "quarter", "quarter__fiscal_year"
+        ).order_by("quarter__fiscal_year__start_date", "period_number")
+        if self.get_company_for_user:
+            periods_qs = periods_qs.filter(company=self.get_company_for_user)
+
+        if beginning_period_id and ending_period_id:
+            begin_p = periods_qs.filter(id=beginning_period_id).first()
+            end_p = periods_qs.filter(id=ending_period_id).first()
+            if begin_p and end_p:
+                all_p = list(periods_qs)
+                try:
+                    si = next(i for i, p in enumerate(all_p) if p.id == begin_p.id)
+                    ei = next(i for i, p in enumerate(all_p) if p.id == end_p.id)
+                except StopIteration:
+                    si = ei = 0
+                if si > ei:
+                    si, ei = ei, si
+                periods_list = all_p[si : ei + 1]
+            else:
+                periods_list = list(periods_qs.filter(quarter__fiscal_year=fiscal_year))
+        else:
+            periods_list = list(periods_qs.filter(quarter__fiscal_year=fiscal_year))
+
+        # Aggregate sums per period in one query — chart needs totals only, not user rows
+        suffix = "quantity" if forecast_type.is_quantity_based else "amount"
+        fq = Forecast.all_objects.filter(
+            forecast_type=forecast_type,
+            period_id__in=[p.id for p in periods_list],
+            company=self.get_company_for_user,
+            owner__is_active=True,
         )
-        forecast_chart_data = get_forecast_chart_data(forecasts, forecast_type)
+        if user_id:
+            fq = fq.filter(owner_id=user_id)
+
+        agg_rows = {
+            row["period_id"]: row
+            for row in fq.values("period_id").annotate(
+                sum_pipeline=Sum(f"pipeline_{suffix}"),
+                sum_best_case=Sum(f"best_case_{suffix}"),
+                sum_commit=Sum(f"commit_{suffix}"),
+                sum_closed=Sum(f"closed_{suffix}"),
+                sum_actual=Sum(f"actual_{suffix}"),
+                sum_target=Sum(f"target_{suffix}"),
+            )
+        }
+
+        class _ChartProxy:
+            pass
+
+        chart_forecasts = []
+        for p in periods_list:
+            row = agg_rows.get(p.id, {})
+            obj = _ChartProxy()
+            obj.period = p
+            obj.quarter = p.quarter
+            obj.fiscal_year = p.quarter.fiscal_year
+            obj.forecast_type = forecast_type
+            setattr(obj, f"target_{suffix}", float(row.get("sum_target") or 0))
+            setattr(obj, f"actual_{suffix}", float(row.get("sum_actual") or 0))
+            setattr(obj, f"closed_{suffix}", float(row.get("sum_closed") or 0))
+            setattr(obj, f"commit_{suffix}", float(row.get("sum_commit") or 0))
+            setattr(obj, f"best_case_{suffix}", float(row.get("sum_best_case") or 0))
+            setattr(obj, f"pipeline_{suffix}", float(row.get("sum_pipeline") or 0))
+            chart_forecasts.append(obj)
+
+        forecast_chart_data = get_forecast_chart_data(chart_forecasts, forecast_type)
         currency_symbol = (
             self.get_company_for_user.currency if self.get_company_for_user else "USD"
         )

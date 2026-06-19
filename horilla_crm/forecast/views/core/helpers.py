@@ -237,8 +237,17 @@ class ForecastTypeTabHelpersMixin:
             {"commit": 0, "best_case": 0, "pipeline": 0, "closed": 0},
         )
 
-        # Get the previous period name for change text
-        previous_period = Period.objects.get(id=previous_period_id)
+        # Look up the previous period name from user_period_data (already in memory)
+        # to avoid a per-call DB query.
+        previous_period_name = ""
+        for owner_data in user_period_data.values():
+            period_entry = owner_data.get(previous_period_id)
+            if period_entry and period_entry.get("name"):
+                previous_period_name = period_entry["name"]
+                break
+        if not previous_period_name:
+            _prev = Period.objects.filter(id=previous_period_id).values("name").first()
+            previous_period_name = _prev["name"] if _prev else ""
 
         return {
             "commit_trend": self.calculate_trend_direction(
@@ -256,71 +265,157 @@ class ForecastTypeTabHelpersMixin:
             "commit_change_text": self.format_change_text(
                 current_data["commit"],
                 previous_data["commit"],
-                previous_period.name,
+                previous_period_name,
                 forecast_type.is_quantity_based,
                 self.get_company_for_user.currency,
             ),
             "best_case_change_text": self.format_change_text(
                 current_data["best_case"],
                 previous_data["best_case"],
-                previous_period.name,
+                previous_period_name,
                 forecast_type.is_quantity_based,
                 self.get_company_for_user.currency,
             ),
             "pipeline_change_text": self.format_change_text(
                 current_data["pipeline"],
                 previous_data["pipeline"],
-                previous_period.name,
+                previous_period_name,
                 forecast_type.is_quantity_based,
                 self.get_company_for_user.currency,
             ),
             "closed_change_text": self.format_change_text(
                 current_data["closed"],
                 previous_data["closed"],
-                previous_period.name,
+                previous_period_name,
                 forecast_type.is_quantity_based,
                 self.get_company_for_user.currency,
             ),
         }
 
-    def get_bulk_trend_data(self, periods, forecast_type, user_id=None):
+    def get_bulk_trend_data(
+        self,
+        periods,
+        forecast_type,
+        user_id=None,
+        prefetched_forecasts=None,
+        period_agg=None,
+    ):
         """
-        Properly handle both single user and multi-user individual trends
+        Build period-over-period trend data.
+        - prefetched_forecasts: list of Forecast objects (single-user path) — no extra query.
+        - period_agg: dict of period_id → DB aggregation row (multi-user path) — no extra query.
+        - Falls back to a DB query only when neither is provided.
         """
         if len(periods) < 2:
             return {}
-
-        query_params = {
-            "forecast_type": forecast_type,
-            "period__in": periods,
-        }
-        if user_id:
-            query_params["owner_id"] = user_id
-
-        all_forecasts = Forecast.objects.filter(**query_params).values(
-            "period_id",
-            "period__period_number",
-            "owner_id",
-            "commit_quantity" if forecast_type.is_quantity_based else "commit_amount",
-            (
-                "best_case_quantity"
-                if forecast_type.is_quantity_based
-                else "best_case_amount"
-            ),
-            (
-                "pipeline_quantity"
-                if forecast_type.is_quantity_based
-                else "pipeline_amount"
-            ),
-            "closed_quantity" if forecast_type.is_quantity_based else "closed_amount",
-        )
 
         field_suffix = "quantity" if forecast_type.is_quantity_based else "amount"
 
         period_data = {}
         user_period_data = {}
 
-        for forecast in all_forecasts:
+        if period_agg is not None:
+            # Multi-user path: period-level totals come from DB aggregation sums (no query).
+            # Per-user data for expanded rows comes from prefetched_forecasts when provided.
+            for p in periods:
+                row = period_agg.get(p.id, {})
+                period_data[p.id] = {
+                    "period_number": p.period_number,
+                    "commit": float(row.get("sum_commit") or 0),
+                    "best_case": float(row.get("sum_best_case") or 0),
+                    "pipeline": float(row.get("sum_pipeline") or 0),
+                    "closed": float(row.get("sum_closed") or 0),
+                }
+            # Build per-user data from paginated rows so expanded user rows get real trends
+            if prefetched_forecasts:
+                period_map = {p.id: p for p in periods}
+                all_rows = []
+                for f in prefetched_forecasts:
+                    p = period_map.get(f.period_id)
+                    all_rows.append(
+                        {
+                            "period_id": f.period_id,
+                            "period__period_number": p.period_number if p else 0,
+                            "period__name": p.name if p else "",
+                            "owner_id": f.owner_id,
+                            f"commit_{field_suffix}": getattr(
+                                f, f"commit_{field_suffix}", 0
+                            ),
+                            f"best_case_{field_suffix}": getattr(
+                                f, f"best_case_{field_suffix}", 0
+                            ),
+                            f"pipeline_{field_suffix}": getattr(
+                                f, f"pipeline_{field_suffix}", 0
+                            ),
+                            f"closed_{field_suffix}": getattr(
+                                f, f"closed_{field_suffix}", 0
+                            ),
+                        }
+                    )
+            else:
+                all_rows = []
+        elif prefetched_forecasts is not None:
+            # Single-user path: build from already-fetched objects — zero extra DB queries
+            period_map = {p.id: p for p in periods}
+            all_rows = []
+            for f in prefetched_forecasts:
+                p = period_map.get(f.period_id)
+                all_rows.append(
+                    {
+                        "period_id": f.period_id,
+                        "period__period_number": p.period_number if p else 0,
+                        "period__name": p.name if p else "",
+                        "owner_id": f.owner_id,
+                        f"commit_{field_suffix}": getattr(
+                            f, f"commit_{field_suffix}", 0
+                        ),
+                        f"best_case_{field_suffix}": getattr(
+                            f, f"best_case_{field_suffix}", 0
+                        ),
+                        f"pipeline_{field_suffix}": getattr(
+                            f, f"pipeline_{field_suffix}", 0
+                        ),
+                        f"closed_{field_suffix}": getattr(
+                            f, f"closed_{field_suffix}", 0
+                        ),
+                    }
+                )
+        else:
+            query_params = {
+                "forecast_type": forecast_type,
+                "period__in": periods,
+            }
+            if user_id:
+                query_params["owner_id"] = user_id
+
+            all_rows = Forecast.objects.filter(**query_params).values(
+                "period_id",
+                "period__period_number",
+                "period__name",
+                "owner_id",
+                (
+                    "commit_quantity"
+                    if forecast_type.is_quantity_based
+                    else "commit_amount"
+                ),
+                (
+                    "best_case_quantity"
+                    if forecast_type.is_quantity_based
+                    else "best_case_amount"
+                ),
+                (
+                    "pipeline_quantity"
+                    if forecast_type.is_quantity_based
+                    else "pipeline_amount"
+                ),
+                (
+                    "closed_quantity"
+                    if forecast_type.is_quantity_based
+                    else "closed_amount"
+                ),
+            )
+
+        for forecast in all_rows:
             period_id = forecast["period_id"]
             owner_id = forecast["owner_id"]
 
@@ -333,16 +428,16 @@ class ForecastTypeTabHelpersMixin:
                     "closed": 0,
                 }
 
-            period_data[period_id]["commit"] += (
+            period_data[period_id]["commit"] += float(
                 forecast.get(f"commit_{field_suffix}", 0) or 0
             )
-            period_data[period_id]["best_case"] += (
+            period_data[period_id]["best_case"] += float(
                 forecast.get(f"best_case_{field_suffix}", 0) or 0
             )
-            period_data[period_id]["pipeline"] += (
+            period_data[period_id]["pipeline"] += float(
                 forecast.get(f"pipeline_{field_suffix}", 0) or 0
             )
-            period_data[period_id]["closed"] += (
+            period_data[period_id]["closed"] += float(
                 forecast.get(f"closed_{field_suffix}", 0) or 0
             )
 
@@ -352,22 +447,23 @@ class ForecastTypeTabHelpersMixin:
             if period_id not in user_period_data[owner_id]:
                 user_period_data[owner_id][period_id] = {
                     "period_number": forecast["period__period_number"],
+                    "name": forecast.get("period__name", ""),
                     "commit": 0,
                     "best_case": 0,
                     "pipeline": 0,
                     "closed": 0,
                 }
 
-            user_period_data[owner_id][period_id]["commit"] = (
+            user_period_data[owner_id][period_id]["commit"] = float(
                 forecast.get(f"commit_{field_suffix}", 0) or 0
             )
-            user_period_data[owner_id][period_id]["best_case"] = (
+            user_period_data[owner_id][period_id]["best_case"] = float(
                 forecast.get(f"best_case_{field_suffix}", 0) or 0
             )
-            user_period_data[owner_id][period_id]["pipeline"] = (
+            user_period_data[owner_id][period_id]["pipeline"] = float(
                 forecast.get(f"pipeline_{field_suffix}", 0) or 0
             )
-            user_period_data[owner_id][period_id]["closed"] = (
+            user_period_data[owner_id][period_id]["closed"] = float(
                 forecast.get(f"closed_{field_suffix}", 0) or 0
             )
 
