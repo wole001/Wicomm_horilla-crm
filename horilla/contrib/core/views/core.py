@@ -15,6 +15,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.staticfiles.storage import staticfiles_storage
+from django.core.cache import cache
 from django.utils._os import safe_join
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
@@ -204,12 +205,43 @@ class LoginUserView(View):
         secret = request.POST.get("password")
         next_url = safe_url(request, request.POST.get("next", "/"))
 
+        ip = (
+            request.META.get(
+                "HTTP_X_FORWARDED_FOR", request.META.get("REMOTE_ADDR", "")
+            )
+            .split(",")[0]
+            .strip()
+        )
+        lockout_key = f"login_lockout_{ip}"
+        attempt_key = f"login_attempts_{ip}"
+
+        # Block IP if currently locked out
+        if cache.get(lockout_key):
+            messages.error(
+                request,
+                _("Too many failed login attempts. Please try again in 15 minutes."),
+            )
+            return redirect(reverse_lazy("core:login") + f"?next={next_url}")
+
         user = authenticate(request, username=identifier, password=secret)
 
         if not user:
-            messages.error(
-                request, _("Invalid credentials. Please check and try again.")
-            )
+            attempts = cache.get(attempt_key, 0) + 1
+            if attempts >= 5:
+                cache.set(lockout_key, True, timeout=900)  # lock for 15 minutes
+                cache.delete(attempt_key)
+                logger.warning("Brute force lockout triggered for IP %s", ip)
+                messages.error(
+                    request,
+                    _(
+                        "Too many failed login attempts. Please try again in 15 minutes."
+                    ),
+                )
+            else:
+                cache.set(attempt_key, attempts, timeout=900)
+                messages.error(
+                    request, _("Invalid credentials. Please check and try again.")
+                )
             return redirect(reverse_lazy("core:login") + f"?next={next_url}")
 
         if not user.is_active:
@@ -218,6 +250,10 @@ class LoginUserView(View):
                 _("This user is archived or blocked. Please contact support."),
             )
             return redirect(reverse_lazy("core:login") + f"?next={next_url}")
+
+        # Clear failed attempt counters on successful login
+        cache.delete(attempt_key)
+        cache.delete(lockout_key)
 
         login(request, user)
         messages.success(request, _("Login successful."))
