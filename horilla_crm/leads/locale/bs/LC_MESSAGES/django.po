@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-21 08:28+0000\n"
+"POT-Creation-Date: 2026-06-15 05:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,6 +20,24 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 msgid "Leads"
+msgstr ""
+
+msgid "Won Leads"
+msgstr ""
+
+msgid "Open Leads (pipeline)"
+msgstr ""
+
+msgid "Select Account"
+msgstr ""
+
+msgid "Select Contact"
+msgstr ""
+
+msgid "Select Opportunity"
+msgstr ""
+
+msgid "Select Owner"
 msgstr ""
 
 msgid "CRM"
@@ -37,19 +55,103 @@ msgstr ""
 msgid "Please sign up to access Horilla CRM"
 msgstr ""
 
-msgid "Is Final Stage"
+msgid "Lead"
+msgstr ""
+
+msgid "Assignment Rules"
 msgstr ""
 
 msgid "Mail to Lead"
-msgstr ""
-
-msgid "Lead"
 msgstr ""
 
 msgid "Web to Lead"
 msgstr ""
 
 msgid "Sales"
+msgstr ""
+
+msgid "Notify as Email"
+msgstr ""
+
+msgid "Notify as Notification"
+msgstr ""
+
+msgid "Both"
+msgstr ""
+
+msgid "User"
+msgstr ""
+
+msgid "Role"
+msgstr ""
+
+msgid "Rule Name"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Lead Assignment Rule"
+msgstr ""
+
+msgid "Lead Assignment Rules"
+msgstr ""
+
+msgid "Assignment Rule"
+msgstr ""
+
+msgid "Assign To"
+msgstr ""
+
+msgid "Assign To Users"
+msgstr ""
+
+msgid "Assign To Roles"
+msgstr ""
+
+msgid "Notify Method"
+msgstr ""
+
+msgid "Mail Template"
+msgstr ""
+
+msgid "Notification Template"
+msgstr ""
+
+msgid "Lead Assignment Condition"
+msgstr ""
+
+msgid "Lead Assignment Conditions"
+msgstr ""
+
+msgid "Mail template is required for email notification."
+msgstr ""
+
+msgid "Notification template is required for in-app notification."
+msgstr ""
+
+msgid "Assignment Condition"
+msgstr ""
+
+msgid "Field"
+msgstr ""
+
+msgid "Operator"
+msgstr ""
+
+msgid "Value"
+msgstr ""
+
+msgid "AND"
+msgstr ""
+
+msgid "OR"
+msgstr ""
+
+msgid "Logical Operator"
+msgstr ""
+
+msgid "Lead Assignment Match Criteria"
 msgstr ""
 
 msgid "Status Name"
@@ -62,6 +164,9 @@ msgid "Status Color"
 msgstr ""
 
 msgid "Leave blank for default (primary theme colour)."
+msgstr ""
+
+msgid "Is Final Stage"
 msgstr ""
 
 msgid "Probability"
@@ -130,9 +235,6 @@ msgstr ""
 msgid "Insurance"
 msgstr ""
 
-msgid "Lead Owner"
-msgstr ""
-
 msgid "Title"
 msgstr ""
 
@@ -140,6 +242,9 @@ msgid "First Name"
 msgstr ""
 
 msgid "Last Name"
+msgstr ""
+
+msgid "Lead Owner"
 msgstr ""
 
 msgid "Contact Number"
@@ -245,100 +350,52 @@ msgstr ""
 msgid "Header Color"
 msgstr ""
 
+msgid "Generated HTML"
+msgstr ""
+
 msgid "Lead Capture Form"
 msgstr ""
 
 msgid "Lead Capture Forms"
 msgstr ""
 
-msgid "Rule Name"
+msgid "Filter"
 msgstr ""
 
-msgid "Opportunity"
+msgid "Select Assign To Users"
 msgstr ""
 
-msgid "Account"
+msgid "Select Assign To Roles"
 msgstr ""
 
-msgid "Contact"
+msgid "No conditions added"
 msgstr ""
 
-msgid "Module"
+msgid "Add a condition to define when and to whom a lead should be assigned."
 msgstr ""
 
-msgid "Description"
+msgid "Rule"
 msgstr ""
 
-msgid "Scoring Rule"
+msgid "Edit"
 msgstr ""
 
-msgid "Scoring Rules"
+msgid "Delete"
 msgstr ""
 
-msgid "Criterion Name"
+msgid "Conditions"
 msgstr ""
 
-msgid "Points to Award"
+msgid "Users"
 msgstr ""
 
-msgid "Add"
+msgid "Roles"
 msgstr ""
 
-msgid "Sub"
+msgid "Select Mail Template"
 msgstr ""
 
-msgid "Operation Type"
-msgstr ""
-
-msgid "Order"
-msgstr ""
-
-msgid "Scoring Criterion"
-msgstr ""
-
-msgid "Scoring Criteria"
-msgstr ""
-
-msgid "Field Name"
-msgstr ""
-
-msgid "Operator"
-msgstr ""
-
-msgid "Value"
-msgstr ""
-
-msgid "AND"
-msgstr ""
-
-msgid "OR"
-msgstr ""
-
-msgid "Logical Operator"
-msgstr ""
-
-msgid "Scoring Condition"
-msgstr ""
-
-msgid "Scoring Conditions"
-msgstr ""
-
-msgid "Opened"
-msgstr ""
-
-msgid "Clicked"
-msgstr ""
-
-msgid "Bounced"
-msgstr ""
-
-msgid "Add Column to List"
-msgstr ""
-
-msgid "Is Active"
-msgstr ""
-
-msgid "Create New Rule Criteria"
+msgid "Select Notification Template"
 msgstr ""
 
 msgid "Lead Conversion"
@@ -347,13 +404,25 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+msgid "Account"
+msgstr ""
+
 msgid "Create New"
 msgstr ""
 
 msgid "Select Existing"
 msgstr ""
 
+msgid "Contact"
+msgstr ""
+
+msgid "Opportunity"
+msgstr ""
+
 msgid "Owner"
+msgstr ""
+
+msgid "Select owner"
 msgstr ""
 
 msgid "Convert"
@@ -362,13 +431,25 @@ msgstr ""
 msgid "Account Name"
 msgstr ""
 
-msgid "Select Contact"
+msgid "Enter Account Name"
+msgstr ""
+
+msgid "Select account"
+msgstr ""
+
+msgid "Enter First Name"
+msgstr ""
+
+msgid "Enter Last Name"
 msgstr ""
 
 msgid "Opportunity Name"
 msgstr ""
 
-msgid "Select Opportunity"
+msgid "Enter Opportunity Name"
+msgstr ""
+
+msgid "Select opportunity"
 msgstr ""
 
 msgid "Please select an account first"
@@ -386,9 +467,6 @@ msgstr ""
 msgid "Comapny"
 msgstr ""
 
-msgid "User"
-msgstr ""
-
 msgid "crown"
 msgstr ""
 
@@ -401,10 +479,13 @@ msgstr ""
 msgid "Drag"
 msgstr ""
 
+msgid "Final"
+msgstr ""
+
 msgid "Add Stage"
 msgstr ""
 
-msgid " Changes"
+msgid "Save"
 msgstr ""
 
 msgid "Cancel"
@@ -428,19 +509,10 @@ msgstr ""
 msgid "Custom Stages"
 msgstr ""
 
-msgid "Criteria"
+msgid "Order"
 msgstr ""
 
-msgid "Points"
-msgstr ""
-
-msgid "Edit"
-msgstr ""
-
-msgid "Delete"
-msgstr ""
-
-msgid "Nothing to show yet. Please add your Criteria"
+msgid "Enter Order"
 msgstr ""
 
 msgid "Enter return url"
@@ -452,6 +524,9 @@ msgstr ""
 msgid "Enter success description"
 msgstr ""
 
+msgid "We have received your information and will get back to you soon."
+msgstr ""
+
 msgid "Contact Us"
 msgstr ""
 
@@ -460,7 +535,9 @@ msgid "Enter %(vname)s"
 msgstr ""
 
 #, python-format
-msgid "Select %(vname)s"
+msgid ""
+"Select\n"
+"                        %(vname)s"
 msgstr ""
 
 msgid "Submit"
@@ -495,28 +572,37 @@ msgstr ""
 msgid "Form Builder"
 msgstr ""
 
+msgid "Enter form name"
+msgstr ""
+
 msgid "Fields"
 msgstr ""
 
 msgid "Click fields to add"
 msgstr ""
 
+msgid "https://example.com/thank-you"
+msgstr ""
+
 msgid "Select Lead Owner"
+msgstr ""
+
+msgid "Color"
+msgstr ""
+
+msgid "#ffffff"
 msgstr ""
 
 msgid "Generate"
 msgstr ""
 
-msgid "Enter"
-msgstr ""
-
 msgid "Select"
 msgstr ""
 
-msgid "Submitting..."
+msgid "Enter"
 msgstr ""
 
-msgid "Save"
+msgid "Submitting..."
 msgstr ""
 
 msgid "Loading..."
@@ -525,10 +611,25 @@ msgstr ""
 msgid "Page Not Found"
 msgstr ""
 
+msgid "The requested data does not exist."
+msgstr ""
+
+msgid "Add Condition"
+msgstr ""
+
+msgid "Edit Rule"
+msgstr ""
+
 msgid "Converted Lead"
 msgstr ""
 
 msgid "Duplicate"
+msgstr ""
+
+msgid "Selected Y-axis field must be numeric."
+msgstr ""
+
+msgid "No data after excluding final stages."
 msgstr ""
 
 msgid "Basic Information"
@@ -541,4 +642,10 @@ msgid "Location"
 msgstr ""
 
 msgid "Change Owner"
+msgstr ""
+
+msgid "Lead not found or no longer exists."
+msgstr ""
+
+msgid "Final Stage  changed successfully."
 msgstr ""

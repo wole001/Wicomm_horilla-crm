@@ -8,16 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-21 08:00+0000\n"
+"POT-Creation-Date: 2026-06-15 05:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
-"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 msgid "Accounts"
 msgstr "الحسابات"
@@ -217,21 +216,11 @@ msgstr "دور حساب الشريك"
 msgid "Partner Account Roles"
 msgstr "أدوار حساب الشريك"
 
-
 msgid "Account Hierarchy"
 msgstr "موقع الحساب"
 
 msgid "Close"
 msgstr "إغلاق"
-
-msgid "Edit"
-msgstr "تعديل"
-
-msgid "Change Owner"
-msgstr "تغيير المالك"
-
-msgid "Duplicate"
-msgstr "نسخ"
 
 msgid "Account Information"
 msgstr "معلومات الحساب"
@@ -242,26 +231,14 @@ msgstr "معلومات العنوان"
 msgid "Additional Information"
 msgstr "معلومات إضافية"
 
-msgid "New Contact"
-msgstr "جهة اتصال جديدة"
-
-msgid "Add Relationship"
-msgstr "إضافة علاقة"
-
-msgid "Related Contacts"
-msgstr "جهات اتصال ذات صلة"
-
-msgid "Child Accounts"
-msgstr "الحسابات الفرعية"
-
-msgid "View Hierarchy"
-msgstr "عرض التسلسل الهرمي"
-
-msgid "Opportunities"
-msgstr "الفرص"
+msgid "Change Owner"
+msgstr "تغيير المالك"
 
 msgid "Add Contact Relationships"
 msgstr "إضافة علاقات جهة الاتصال"
+
+msgid "Account not found or no longer exists."
+msgstr "الحساب غير موجود أو لم يعد موجوداً."
 
 msgid "Add Child Account"
 msgstr "إضافة حساب فرعي"
@@ -275,8 +252,9 @@ msgstr "لم يتم تحديد حساب رئيسي في الطلب."
 msgid "This account already has a parent account."
 msgstr "هذا الحساب لديه حساب رئيسي بالفعل."
 
-msgid "Child account assigned successfully!"
-msgstr "تم تعيين الحساب الفرعي بنجاح!"
+#| msgid "Child account assigned successfully!"
+msgid "Child account assigned successfully."
+msgstr "تم تعيين الحساب الفرعي بنجاح."
 
 msgid "Invalid parent account ID format."
 msgstr "تنسيق معرف الحساب الرئيسي غير صالح."
@@ -301,3 +279,27 @@ msgstr ""
 
 msgid "An error occurred while removing the child account."
 msgstr "حدث خطأ أثناء إزالة الحساب الفرعي."
+
+msgid "Edit"
+msgstr "تعديل"
+
+msgid "Duplicate"
+msgstr "نسخ"
+
+msgid "New Contact"
+msgstr "جهة اتصال جديدة"
+
+msgid "Add Relationship"
+msgstr "إضافة علاقة"
+
+msgid "Related Contacts"
+msgstr "جهات اتصال ذات صلة"
+
+msgid "Child Accounts"
+msgstr "الحسابات الفرعية"
+
+msgid "View Hierarchy"
+msgstr "عرض التسلسل الهرمي"
+
+msgid "Opportunities"
+msgstr "الفرص"

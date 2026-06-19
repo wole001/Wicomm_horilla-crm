@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-21 08:00+0000\n"
+"POT-Creation-Date: 2026-06-15 05:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -223,15 +223,6 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-msgid "Edit"
-msgstr ""
-
-msgid "Change Owner"
-msgstr ""
-
-msgid "Duplicate"
-msgstr ""
-
 msgid "Account Information"
 msgstr ""
 
@@ -241,25 +232,13 @@ msgstr ""
 msgid "Additional Information"
 msgstr ""
 
-msgid "New Contact"
-msgstr ""
-
-msgid "Add Relationship"
-msgstr ""
-
-msgid "Related Contacts"
-msgstr ""
-
-msgid "Child Accounts"
-msgstr ""
-
-msgid "View Hierarchy"
-msgstr ""
-
-msgid "Opportunities"
+msgid "Change Owner"
 msgstr ""
 
 msgid "Add Contact Relationships"
+msgstr ""
+
+msgid "Account not found or no longer exists."
 msgstr ""
 
 msgid "Add Child Account"
@@ -274,7 +253,7 @@ msgstr ""
 msgid "This account already has a parent account."
 msgstr ""
 
-msgid "Child account assigned successfully!"
+msgid "Child account assigned successfully."
 msgstr ""
 
 msgid "Invalid parent account ID format."
@@ -298,4 +277,28 @@ msgid ""
 msgstr ""
 
 msgid "An error occurred while removing the child account."
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Duplicate"
+msgstr ""
+
+msgid "New Contact"
+msgstr ""
+
+msgid "Add Relationship"
+msgstr ""
+
+msgid "Related Contacts"
+msgstr ""
+
+msgid "Child Accounts"
+msgstr ""
+
+msgid "View Hierarchy"
+msgstr ""
+
+msgid "Opportunities"
 msgstr ""

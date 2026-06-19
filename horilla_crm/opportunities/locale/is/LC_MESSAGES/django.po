@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-21 08:11+0000\n"
+"POT-Creation-Date: 2026-06-15 05:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,26 +21,11 @@ msgstr ""
 msgid "Opportunities"
 msgstr ""
 
-msgid "Big Deal Alerts"
-msgstr ""
-
-msgid "Update Big Deal Alert"
-msgstr ""
-
-msgid "Create Big Deal Alert"
-msgstr ""
-
-msgid "duplicated"
-msgstr ""
-
-msgid "updated"
-msgstr ""
-
-msgid "created"
+msgid "Closed Won Opportunities"
 msgstr ""
 
 #, python-format
-msgid "%(model)s %(action)s successfully!"
+msgid "%(fields)s is required for each team member (row %(row_id)s)."
 msgstr ""
 
 msgid "At least one valid condition row must be provided."
@@ -64,6 +49,9 @@ msgstr ""
 msgid "Opportunity Split Settings"
 msgstr ""
 
+msgid "Big Deal Alerts"
+msgstr ""
+
 msgid "Open"
 msgstr ""
 
@@ -80,6 +68,9 @@ msgid "Order"
 msgstr ""
 
 msgid "Probability"
+msgstr ""
+
+msgid "Default probability percentage for this stage"
 msgstr ""
 
 msgid "Is Final Stage"
@@ -139,10 +130,16 @@ msgstr ""
 msgid "Quantity"
 msgstr ""
 
+msgid "Total Opportunity Quantity"
+msgstr ""
+
 msgid "Close Date"
 msgstr ""
 
 msgid "Stage"
+msgstr ""
+
+msgid "Probability percentage (0-100)"
 msgstr ""
 
 msgid "Description"
@@ -158,6 +155,9 @@ msgid "Primary Campaign Source"
 msgstr ""
 
 msgid "Owner"
+msgstr ""
+
+msgid "Opportunity Owner"
 msgstr ""
 
 msgid "Type"
@@ -330,140 +330,10 @@ msgstr ""
 msgid "Opportunity Splits"
 msgstr ""
 
-msgid "Is Active"
-msgstr ""
-
-msgid ""
-"Opportunity Splits has been enabled successfully! Users can now split "
-"opportunities and assign percentages to team members."
-msgstr ""
-
-msgid ""
-"Opportunity Splits has been disabled. Existing splits will no longer be "
-"visible or accessible."
-msgstr ""
-
-msgid ""
-"All users can now be added to opportunity splits. Users can assign splits to "
-"any active user in the company."
-msgstr ""
-
-msgid ""
-"Only opportunity team members can now be added to splits. Adding other users "
-"has been restricted."
-msgstr ""
-
-msgid "Opportunity splits are not enabled."
-msgstr ""
-
-msgid "Opportunity splits saved successfully"
-msgstr ""
-
-msgid "Added to opportunity team: {}"
-msgstr ""
-
-msgid "At least one split must be added."
-msgstr ""
-
-msgid "Invalid percentage value."
-msgstr ""
-
-#, python-brace-format
-msgid "Total percentage must equal 100%. Current total: {total_percentage}%"
-msgstr ""
-
-msgid "Percentage must be between 0 and 100."
-msgstr ""
-
-msgid "Cannot assign multiple splits to the same user for one split type."
-msgstr ""
-
-msgid "Create Opportunity Team"
-msgstr ""
-
-msgid "Add Members"
-msgstr ""
-
-msgid "Update Team Member"
-msgstr ""
-
-msgid ""
-"Cannot delete {user.get_full_name() or user.username} from the opportunity "
-"team. "
-msgstr ""
-
-msgid "An error occurred while deleting the team member."
-msgstr ""
-
-msgid "Add Default Team"
-msgstr ""
-
-msgid "Opportunity ID is required"
-msgstr ""
-
-msgid "The selected team has no default members configured."
-msgstr ""
-
-#, python-brace-format
-msgid ""
-"Successfully added {added_count} team member(s) from {selected_team."
-"team_name}."
-msgstr ""
-
-#, python-brace-format
-msgid "{skipped_count} member(s) were already part of the opportunity team."
-msgstr ""
-
-msgid "Error adding default team members: {str(e)}"
-msgstr ""
-
-msgid "Add Opportunity Members"
-msgstr ""
-
-msgid ""
-"Team Selling has been enabled successfully! Users can now create opportunity "
-"teams and add team members."
-msgstr ""
-
-msgid ""
-"Team Selling has been disabled and all existing opportunity teams and their "
-"members have been deleted."
-msgstr ""
-
 msgid "Edit"
 msgstr ""
 
 msgid "Delete"
-msgstr ""
-
-msgid "Final stage changed successfully."
-msgstr ""
-
-msgid "Stage not found."
-msgstr ""
-
-msgid "Prospecting"
-msgstr ""
-
-msgid "Qualification"
-msgstr ""
-
-msgid "Needs Analysis"
-msgstr ""
-
-msgid "Value Proposition"
-msgstr ""
-
-msgid "Id. Decision Makers"
-msgstr ""
-
-msgid "Perception Analysis"
-msgstr ""
-
-msgid "Proposal/Price Quote"
-msgstr ""
-
-msgid "Negotiation/Review"
 msgstr ""
 
 msgid "Trigger Amount"
@@ -528,10 +398,10 @@ msgstr ""
 msgid "Are you sure you want to delete this split?"
 msgstr ""
 
-msgid "Delete Split"
+msgid "Cannot delete opportunity owner"
 msgstr ""
 
-msgid "Cannot delete opportunity owner"
+msgid "Delete Split"
 msgstr ""
 
 msgid "Edit All Opportunity Splits"
@@ -621,10 +491,10 @@ msgstr ""
 msgid "Drag"
 msgstr ""
 
-msgid "Add Stage"
+msgid "Final"
 msgstr ""
 
-msgid " Changes"
+msgid "Add Stage"
 msgstr ""
 
 msgid "Cancel"
@@ -646,6 +516,9 @@ msgid "Select Opportunity Stages for"
 msgstr ""
 
 msgid "Custom Stages"
+msgstr ""
+
+msgid "Enter Order"
 msgstr ""
 
 msgid "Team Selling Setup"
@@ -688,16 +561,29 @@ msgid ""
 "opportunities."
 msgstr ""
 
+msgid "Update Big Deal Alert"
+msgstr ""
+
+msgid "Create Big Deal Alert"
+msgstr ""
+
+msgid "duplicated"
+msgstr ""
+
+msgid "updated"
+msgstr ""
+
+msgid "created"
+msgstr ""
+
+#, python-format
+msgid "%(model)s %(action)s successfully!"
+msgstr ""
+
 msgid "Change Owner"
 msgstr ""
 
 msgid "Duplicate"
-msgstr ""
-
-msgid "Opportunity Information"
-msgstr ""
-
-msgid "Additional Information"
 msgstr ""
 
 msgid "Closed"
@@ -709,8 +595,168 @@ msgstr ""
 msgid "Add Team"
 msgstr ""
 
+msgid "Add Members"
+msgstr ""
+
 msgid "Manage Opportunity Splits"
 msgstr ""
 
 msgid "Add Contact Role"
+msgstr ""
+
+msgid "Opportunity Information"
+msgstr ""
+
+msgid "Additional Information"
+msgstr ""
+
+msgid "Opportunity splits are not enabled."
+msgstr ""
+
+msgid "Opportunity splits saved successfully"
+msgstr ""
+
+msgid "Added to opportunity team: {}"
+msgstr ""
+
+msgid "At least one split must be added."
+msgstr ""
+
+msgid "Invalid percentage value."
+msgstr ""
+
+#, python-brace-format
+msgid "Total percentage must equal 100%. Current total: {total_percentage}%"
+msgstr ""
+
+msgid "Percentage must be between 0 and 100."
+msgstr ""
+
+msgid "Cannot assign multiple splits to the same user for one split type."
+msgstr ""
+
+msgid "You don't have permission to delete this split."
+msgstr ""
+
+msgid "Team Selling is not enabled."
+msgstr ""
+
+msgid "Team Selling has not been enabled by your administrator."
+msgstr ""
+
+msgid "Opportunity Splits are not enabled."
+msgstr ""
+
+msgid "Opportunity Splits have not been enabled by your administrator."
+msgstr ""
+
+msgid "Is Active"
+msgstr ""
+
+msgid ""
+"Opportunity Splits has been enabled successfully.Users can now split "
+"opportunities and assign percentages to team members."
+msgstr ""
+
+msgid ""
+"Opportunity Splits has been disabled. Existing splits will no longer be "
+"visible or accessible."
+msgstr ""
+
+msgid ""
+"All users can now be added to opportunity splits. Users can assign splits to "
+"any active user in the company."
+msgstr ""
+
+msgid ""
+"Only opportunity team members can now be added to splits. Adding other users "
+"has been restricted."
+msgstr ""
+
+msgid "You don’t have permission to change split types."
+msgstr ""
+
+msgid "Split Type not found."
+msgstr ""
+
+msgid "Final stage changed successfully."
+msgstr ""
+
+msgid "Stage not found."
+msgstr ""
+
+msgid "Prospecting"
+msgstr ""
+
+msgid "Qualification"
+msgstr ""
+
+msgid "Needs Analysis"
+msgstr ""
+
+msgid "Value Proposition"
+msgstr ""
+
+msgid "Id. Decision Makers"
+msgstr ""
+
+msgid "Perception Analysis"
+msgstr ""
+
+msgid "Proposal/Price Quote"
+msgstr ""
+
+msgid "Negotiation/Review"
+msgstr ""
+
+msgid "Create Opportunity Team"
+msgstr ""
+
+msgid "Update Team Member"
+msgstr ""
+
+msgid ""
+"Cannot delete {user.get_full_name() or user.username} from the opportunity "
+"team. "
+msgstr ""
+
+msgid "An error occurred while deleting the team member."
+msgstr ""
+
+msgid "Add Default Team"
+msgstr ""
+
+msgid "Opportunity ID is required"
+msgstr ""
+
+msgid "The selected team has no default members configured."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Successfully added {added_count} team member(s) from {selected_team."
+"team_name}."
+msgstr ""
+
+#, python-brace-format
+msgid "{skipped_count} member(s) were already part of the opportunity team."
+msgstr ""
+
+msgid "Error adding default team members: {str(e)}"
+msgstr ""
+
+msgid "Add Opportunity Members"
+msgstr ""
+
+msgid "No active company found. Cannot save settings."
+msgstr ""
+
+msgid ""
+"Team Selling has been enabled successfully. Users can now create opportunity "
+"teams and add team members."
+msgstr ""
+
+msgid ""
+"Team Selling has been disabled and all existing opportunity teams and their "
+"members have been deleted."
 msgstr ""

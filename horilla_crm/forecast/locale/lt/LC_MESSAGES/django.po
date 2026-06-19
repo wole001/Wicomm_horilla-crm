@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-19 10:06+0000\n"
+"POT-Creation-Date: 2026-06-15 05:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,7 +23,31 @@ msgstr ""
 msgid "Forecast"
 msgstr ""
 
-msgid "Update Target"
+msgid "Role-Based Assignment"
+msgstr ""
+
+msgid "Filter users by selected role"
+msgstr ""
+
+msgid "Same Period for All"
+msgstr ""
+
+msgid "Apply the same period for all users"
+msgstr ""
+
+msgid "Same Target for All"
+msgstr ""
+
+msgid "Apply the same target amount for all users"
+msgstr ""
+
+msgid "Same Forecast Type for All"
+msgstr ""
+
+msgid "Apply the same forecast type for all users"
+msgstr ""
+
+msgid "Target amount cannot be negative."
 msgstr ""
 
 msgid "Deal Revenue Amount"
@@ -230,19 +254,58 @@ msgstr ""
 msgid "Forecast Target Users"
 msgstr ""
 
+msgid "Chart Analysis"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Values in number of deals."
+msgstr ""
+
+msgid "Values in"
+msgstr ""
+
+msgid "Forecast vs Actual"
+msgstr ""
+
+msgid "Trend"
+msgstr ""
+
+msgid "Forecast Category"
+msgstr ""
+
+msgid "Forecast (Target)"
+msgstr ""
+
+msgid "Actual"
+msgstr ""
+
+msgid "Amount"
+msgstr ""
+
+msgid "No chart data available for this forecast."
+msgstr ""
+
 msgid "My Forecast"
 msgstr ""
 
 msgid "All Users"
 msgstr ""
 
-msgid "Select Fiscal Year"
+msgid "Showing all periods"
 msgstr ""
 
-msgid "- Current"
+msgid "Beginning Period"
 msgstr ""
 
-msgid "Close"
+msgid "Current"
+msgstr ""
+
+msgid "Ending Period"
+msgstr ""
+
+msgid "Apply"
 msgstr ""
 
 msgid "deals"
@@ -263,13 +326,22 @@ msgstr ""
 msgid "Select User"
 msgstr ""
 
+msgid "This field is required."
+msgstr ""
+
 msgid "Select Period"
 msgstr ""
 
 msgid "Select Forecast Type"
 msgstr ""
 
+msgid "Enter target"
+msgstr ""
+
 msgid "Remove"
+msgstr ""
+
+msgid "Enter the target amount"
 msgstr ""
 
 msgid "Conditions"
@@ -291,6 +363,12 @@ msgid "No Forecast Type set. Set it from settings."
 msgstr ""
 
 msgid "Go To Forecast Type"
+msgstr ""
+
+msgid "Forecast Type:"
+msgstr ""
+
+msgid "Loading..."
 msgstr ""
 
 msgid "Achievement"
@@ -329,11 +407,34 @@ msgstr ""
 msgid "No forecast data available for this period"
 msgstr ""
 
-msgid "Forecast Type:"
-msgstr ""
-
 msgid "Permission Denied"
 msgstr ""
 
 msgid "You do not have permission to view this page."
+msgstr ""
+
+#, python-format
+msgid "Period %(num)s"
+msgstr ""
+
+msgid "Commit"
+msgstr ""
+
+msgid "Pipeline"
+msgstr ""
+
+#, python-format
+msgid "Invalid value for: %(params)s."
+msgstr ""
+
+msgid "Enter the quantity"
+msgstr ""
+
+msgid "Enter the revenue amount"
+msgstr ""
+
+msgid "Update Target"
+msgstr ""
+
+msgid "Filter Opportunities"
 msgstr ""

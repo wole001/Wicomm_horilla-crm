@@ -8,11 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-21 08:07+0000\n"
+"POT-Creation-Date: 2026-06-15 05:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -71,6 +71,14 @@ msgstr "Kampagnenmitglied"
 
 msgid "Campaign Members"
 msgstr "Kampagnenmitglieder"
+
+#| msgid "This campaign already has a parent campaign."
+msgid "This lead already has this campaign."
+msgstr "Dieser Lead ist bereits dieser Kampagne zugeordnet."
+
+#| msgid "This campaign already has a parent campaign."
+msgid "This contact already has this campaign."
+msgstr "Dieser Kontakt ist bereits dieser Kampagne zugeordnet."
 
 msgid "New"
 msgstr "Neu"
@@ -171,9 +179,6 @@ msgstr "Kampagnenhierarchie"
 msgid "Close"
 msgstr "Schließen"
 
-msgid "Duplicate"
-msgstr "Duplizieren"
-
 msgid "Campaign Information"
 msgstr "Kampagneninformationen"
 
@@ -185,9 +190,6 @@ msgstr "Zusätzliche Informationen"
 
 msgid "Change Owner"
 msgstr "Besitzer ändern"
-
-msgid "View Hierarchy"
-msgstr "Hierarchie anzeigen"
 
 msgid "Add Child Campaign"
 msgstr "Unterkampagne hinzufügen"
@@ -204,8 +206,9 @@ msgstr "Eine Kampagne kann nicht ihre eigene übergeordnete Kampagne sein."
 msgid "This campaign already has a parent campaign."
 msgstr "Diese Kampagne hat bereits eine übergeordnete Kampagne."
 
-msgid "Child campaign assigned successfully!"
-msgstr "Unterkampagne erfolgreich zugewiesen!"
+#| msgid "Child campaign assigned successfully!"
+msgid "Child campaign assigned successfully."
+msgstr "Untergeordnete Kampagne erfolgreich zugewiesen."
 
 msgid "Invalid parent campaign ID format."
 msgstr "Ungültiges Format der übergeordneten Kampagnen-ID."
@@ -218,8 +221,8 @@ msgstr "Diese Kampagne hat keine übergeordnete Kampagne."
 
 #, python-brace-format
 msgid ""
-"Successfully removed {child_campaign.campaign_name} from {parent_campaign."
-"campaign_name}'s child campaigns."
+"Successfully removed {child_campaign.campaign_name} from "
+"{parent_campaign.campaign_name}'s child campaigns."
 msgstr ""
 "{child_campaign.campaign_name} wurde erfolgreich aus den Unterkampagnen von "
 "{parent_campaign.campaign_name} entfernt."
@@ -232,3 +235,9 @@ msgstr "Zur Kampagne hinzufügen"
 
 msgid "Add Campaign Members"
 msgstr "Kampagnenmitglieder hinzufügen"
+
+msgid "Duplicate"
+msgstr "Duplizieren"
+
+msgid "View Hierarchy"
+msgstr "Hierarchie anzeigen"

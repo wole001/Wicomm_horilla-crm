@@ -8,11 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-21 08:00+0000\n"
+"POT-Creation-Date: 2026-06-15 05:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -216,21 +216,11 @@ msgstr "Rôle du compte partenaire"
 msgid "Partner Account Roles"
 msgstr "Rôles du compte partenaire"
 
-
 msgid "Account Hierarchy"
 msgstr "Site du compte"
 
 msgid "Close"
 msgstr "Fermer"
-
-msgid "Edit"
-msgstr "Modifier"
-
-msgid "Change Owner"
-msgstr "Changer de propriétaire"
-
-msgid "Duplicate"
-msgstr "Dupliquer"
 
 msgid "Account Information"
 msgstr "Informations sur le compte"
@@ -241,26 +231,14 @@ msgstr "Informations d'adresse"
 msgid "Additional Information"
 msgstr "Informations supplémentaires"
 
-msgid "New Contact"
-msgstr "Nouveau contact"
-
-msgid "Add Relationship"
-msgstr "Ajouter une relation"
-
-msgid "Related Contacts"
-msgstr "Contacts associés"
-
-msgid "Child Accounts"
-msgstr "Comptes enfants"
-
-msgid "View Hierarchy"
-msgstr "Voir la hiérarchie"
-
-msgid "Opportunities"
-msgstr "Opportunités"
+msgid "Change Owner"
+msgstr "Changer de propriétaire"
 
 msgid "Add Contact Relationships"
 msgstr "Ajouter des relations de contact"
+
+msgid "Account not found or no longer exists."
+msgstr "Le compte est introuvable ou n'existe plus."
 
 msgid "Add Child Account"
 msgstr "Ajouter un compte enfant"
@@ -274,8 +252,9 @@ msgstr "Aucun compte parent spécifié dans la requête."
 msgid "This account already has a parent account."
 msgstr "Ce compte a déjà un compte parent."
 
-msgid "Child account assigned successfully!"
-msgstr "Compte enfant attribué avec succès !"
+#| msgid "Child account assigned successfully!"
+msgid "Child account assigned successfully."
+msgstr "Le compte enfant a été affecté avec succès."
 
 msgid "Invalid parent account ID format."
 msgstr "Format d'identifiant du compte parent invalide."
@@ -302,3 +281,27 @@ msgstr ""
 
 msgid "An error occurred while removing the child account."
 msgstr "Une erreur s'est produite lors de la suppression du compte enfant."
+
+msgid "Edit"
+msgstr "Modifier"
+
+msgid "Duplicate"
+msgstr "Dupliquer"
+
+msgid "New Contact"
+msgstr "Nouveau contact"
+
+msgid "Add Relationship"
+msgstr "Ajouter une relation"
+
+msgid "Related Contacts"
+msgstr "Contacts associés"
+
+msgid "Child Accounts"
+msgstr "Comptes enfants"
+
+msgid "View Hierarchy"
+msgstr "Voir la hiérarchie"
+
+msgid "Opportunities"
+msgstr "Opportunités"

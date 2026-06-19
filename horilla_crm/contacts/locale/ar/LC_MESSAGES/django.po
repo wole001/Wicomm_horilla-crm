@@ -8,16 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-21 08:07+0000\n"
+"POT-Creation-Date: 2026-06-15 05:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
-"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 msgid "Contacts"
 msgstr "جهات الاتصال"
@@ -82,11 +81,11 @@ msgstr "المدينة"
 msgid "State"
 msgstr "الولاية"
 
-msgid "Zip"
-msgstr "الرمز البريدي"
-
 msgid "Country"
 msgstr "الدولة"
+
+msgid "Zip"
+msgstr "الرمز البريدي"
 
 msgid "Parent Contact"
 msgstr "جهة الاتصال الرئيسية"
@@ -130,21 +129,11 @@ msgstr "علاقة جهة الاتصال بالحساب"
 msgid "Contact Account Relationships"
 msgstr "علاقات جهة الاتصال بالحساب"
 
-
 msgid "contact Hierarchy"
 msgstr "مالك جهة الاتصال"
 
 msgid "Close"
 msgstr "إغلاق"
-
-msgid "Edit"
-msgstr "تعديل"
-
-msgid "Change Owner"
-msgstr "تغيير المالك"
-
-msgid "Duplicate"
-msgstr "نسخ"
 
 msgid "Contact Information"
 msgstr "معلومات جهة الاتصال"
@@ -155,20 +144,8 @@ msgstr "معلومات العنوان"
 msgid "Additional Information"
 msgstr "معلومات إضافية"
 
-msgid "Related Campaigns"
-msgstr "الحملات المرتبطة"
-
-msgid "Related Opportunities"
-msgstr "الفرص المرتبطة"
-
-msgid "Related Accounts"
-msgstr "الحسابات المرتبطة"
-
-msgid "Child Contacts"
-msgstr "جهات الاتصال الفرعية"
-
-msgid "View Hierarchy"
-msgstr "عرض التسلسل الهرمي"
+msgid "Change Owner"
+msgstr "تغيير المالك"
 
 msgid "Add Account Contact Relationships"
 msgstr "إضافة علاقات جهة الاتصال بالحساب"
@@ -188,8 +165,9 @@ msgstr "لا يمكن لجهة الاتصال أن تكون جهة اتصال ر
 msgid "This contact already has a parent contact."
 msgstr "هذه جهة الاتصال لديها بالفعل جهة اتصال رئيسية."
 
-msgid "Child contact assigned successfully!"
-msgstr "تم تعيين جهة الاتصال الفرعية بنجاح!"
+#| msgid "Child contact assigned successfully!"
+msgid "Child contact assigned successfully."
+msgstr "تم تعيين جهة الاتصال الفرعية بنجاح."
 
 msgid "Invalid parent contact ID format."
 msgstr "تنسيق معرف جهة الاتصال الرئيسية غير صالح."
@@ -211,3 +189,24 @@ msgstr ""
 
 msgid "An error occurred while removing the child contact."
 msgstr "حدث خطأ أثناء إزالة جهة الاتصال الفرعية."
+
+msgid "Edit"
+msgstr "تعديل"
+
+msgid "Duplicate"
+msgstr "نسخ"
+
+msgid "Related Campaigns"
+msgstr "الحملات المرتبطة"
+
+msgid "Related Opportunities"
+msgstr "الفرص المرتبطة"
+
+msgid "Related Accounts"
+msgstr "الحسابات المرتبطة"
+
+msgid "Child Contacts"
+msgstr "جهات الاتصال الفرعية"
+
+msgid "View Hierarchy"
+msgstr "عرض التسلسل الهرمي"

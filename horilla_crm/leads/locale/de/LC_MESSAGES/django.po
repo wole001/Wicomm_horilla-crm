@@ -8,11 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-21 08:28+0000\n"
+"POT-Creation-Date: 2026-06-15 05:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,6 +20,27 @@ msgstr ""
 
 msgid "Leads"
 msgstr "Interessenten"
+
+#| msgid "Leads"
+msgid "Won Leads"
+msgstr "Gewonnene Leads"
+
+msgid "Open Leads (pipeline)"
+msgstr "Offene Leads (Pipeline)"
+
+#| msgid "Select Contact"
+msgid "Select Account"
+msgstr "Konto auswählen"
+
+msgid "Select Contact"
+msgstr "Kontakt auswählen"
+
+msgid "Select Opportunity"
+msgstr "Chance auswählen"
+
+#| msgid "Select Lead Owner"
+msgid "Select Owner"
+msgstr "Eigentümer auswählen"
 
 msgid "CRM"
 msgstr "CRM"
@@ -36,20 +57,109 @@ msgstr "Willkommen bei Horilla CRM"
 msgid "Please sign up to access Horilla CRM"
 msgstr "Bitte registrieren Sie sich, um auf Horilla CRM zuzugreifen"
 
-msgid "Is Final Stage"
-msgstr "Ist Endphase"
+msgid "Lead"
+msgstr "Interessent"
+
+msgid "Assignment Rules"
+msgstr "Zuweisungsregeln"
 
 msgid "Mail to Lead"
 msgstr "E-Mail an Interessenten"
-
-msgid "Lead"
-msgstr "Interessent"
 
 msgid "Web to Lead"
 msgstr "Web zu Interessent"
 
 msgid "Sales"
 msgstr "Vertrieb"
+
+msgid "Notify as Email"
+msgstr "Per E-Mail benachrichtigen"
+
+msgid "Notify as Notification"
+msgstr "Per Benachrichtigung informieren"
+
+msgid "Both"
+msgstr "Beides"
+
+msgid "User"
+msgstr "Benutzer"
+
+msgid "Role"
+msgstr "Rolle"
+
+msgid "Rule Name"
+msgstr "Regelname"
+
+msgid "Description"
+msgstr "Beschreibung"
+
+msgid "Lead Assignment Rule"
+msgstr "Lead-Zuweisungsregel"
+
+msgid "Lead Assignment Rules"
+msgstr "Lead-Zuweisungsregeln"
+
+msgid "Assignment Rule"
+msgstr "Zuweisungsregel"
+
+msgid "Assign To"
+msgstr "Zuweisen an"
+
+msgid "Assign To Users"
+msgstr "Benutzern zuweisen"
+
+msgid "Assign To Roles"
+msgstr "Rollen zuweisen"
+
+msgid "Notify Method"
+msgstr "Benachrichtigungsmethode"
+
+msgid "Mail Template"
+msgstr "E-Mail-Vorlage"
+
+msgid "Notification Template"
+msgstr "Benachrichtigungsvorlage"
+
+msgid "Lead Assignment Condition"
+msgstr "Lead-Zuweisungsbedingung"
+
+msgid "Lead Assignment Conditions"
+msgstr "Lead-Zuweisungsbedingungen"
+
+msgid "Mail template is required for email notification."
+msgstr ""
+"Eine E-Mail-Vorlage ist fuer die E-Mail-Benachrichtigung erforderlich."
+
+msgid "Notification template is required for in-app notification."
+msgstr ""
+"Eine Benachrichtigungsvorlage ist fuer die In-App-Benachrichtigung "
+"erforderlich."
+
+#| msgid "Scoring Condition"
+msgid "Assignment Condition"
+msgstr "Zuweisungsbedingung"
+
+#| msgid "Fields"
+msgid "Field"
+msgstr "Feld"
+
+msgid "Operator"
+msgstr "Operator"
+
+msgid "Value"
+msgstr "Wert"
+
+msgid "AND"
+msgstr "UND"
+
+msgid "OR"
+msgstr "ODER"
+
+msgid "Logical Operator"
+msgstr "Logischer Operator"
+
+msgid "Lead Assignment Match Criteria"
+msgstr "Uebereinstimmungskriterien fuer die Lead-Zuweisung"
 
 msgid "Status Name"
 msgstr "Statusname"
@@ -62,6 +172,9 @@ msgstr "Statusfarbe"
 
 msgid "Leave blank for default (primary theme colour)."
 msgstr "Leer lassen für Standard (primäre Designfarbe)."
+
+msgid "Is Final Stage"
+msgstr "Ist Endphase"
 
 msgid "Probability"
 msgstr "Wahrscheinlichkeit"
@@ -129,9 +242,6 @@ msgstr "Bildung"
 msgid "Insurance"
 msgstr "Versicherung"
 
-msgid "Lead Owner"
-msgstr "Interessenteninhaber"
-
 msgid "Title"
 msgstr "Titel"
 
@@ -140,6 +250,9 @@ msgstr "Vorname"
 
 msgid "Last Name"
 msgstr "Nachname"
+
+msgid "Lead Owner"
+msgstr "Interessenteninhaber"
 
 msgid "Contact Number"
 msgstr "Kontaktnummer"
@@ -248,102 +361,59 @@ msgstr "Sprache"
 msgid "Header Color"
 msgstr "Kopfzeilenfarbe"
 
+#| msgid "Generate"
+msgid "Generated HTML"
+msgstr "Generiertes HTML"
+
 msgid "Lead Capture Form"
 msgstr "Interessentenformular"
 
 msgid "Lead Capture Forms"
 msgstr "Interessentenformulare"
 
-msgid "Rule Name"
-msgstr "Regelname"
+msgid "Filter"
+msgstr "Filtern"
 
-msgid "Opportunity"
-msgstr "Verkaufschance"
+msgid "Select Assign To Users"
+msgstr "Zuzuweisende Benutzer auswaehlen"
 
-msgid "Account"
-msgstr "Konto"
+msgid "Select Assign To Roles"
+msgstr "Zuzuweisende Rollen auswaehlen"
 
-msgid "Contact"
-msgstr "Kontakt"
+msgid "No conditions added"
+msgstr "Keine Bedingungen hinzugefuegt"
 
-msgid "Module"
-msgstr "Modul"
+msgid "Add a condition to define when and to whom a lead should be assigned."
+msgstr ""
+"Fuegen Sie eine Bedingung hinzu, um festzulegen, wann und wem ein Lead "
+"zugewiesen werden soll."
 
-msgid "Description"
-msgstr "Beschreibung"
+#| msgid "Rule Name"
+msgid "Rule"
+msgstr "Regel"
 
-msgid "Scoring Rule"
-msgstr "Bewertungsregel"
+msgid "Edit"
+msgstr "Bearbeiten"
 
-msgid "Scoring Rules"
-msgstr "Bewertungsregeln"
+msgid "Delete"
+msgstr "Löschen"
 
-msgid "Criterion Name"
-msgstr "Kriteriumsname"
+#| msgid "Scoring Conditions"
+msgid "Conditions"
+msgstr "Bedingungen"
 
-msgid "Points to Award"
-msgstr "Zu vergebende Punkte"
+#| msgid "User"
+msgid "Users"
+msgstr "Benutzer"
 
-msgid "Add"
-msgstr "Hinzufügen"
+msgid "Roles"
+msgstr "Rollen"
 
-msgid "Sub"
-msgstr "Subtrahieren"
+msgid "Select Mail Template"
+msgstr "E-Mail-Vorlage auswaehlen"
 
-msgid "Operation Type"
-msgstr "Operationstyp"
-
-msgid "Order"
-msgstr "Reihenfolge"
-
-msgid "Scoring Criterion"
-msgstr "Bewertungskriterium"
-
-msgid "Scoring Criteria"
-msgstr "Bewertungskriterien"
-
-msgid "Field Name"
-msgstr "Feldname"
-
-msgid "Operator"
-msgstr "Operator"
-
-msgid "Value"
-msgstr "Wert"
-
-msgid "AND"
-msgstr "UND"
-
-msgid "OR"
-msgstr "ODER"
-
-msgid "Logical Operator"
-msgstr "Logischer Operator"
-
-msgid "Scoring Condition"
-msgstr "Bewertungsbedingung"
-
-msgid "Scoring Conditions"
-msgstr "Bewertungsbedingungen"
-
-msgid "Opened"
-msgstr "Geöffnet"
-
-msgid "Clicked"
-msgstr "Geklickt"
-
-msgid "Bounced"
-msgstr "Zurückgewiesen"
-
-
-msgid "Add Column to List"
-msgstr "Spalte zur Liste hinzufügen"
-
-msgid "Is Active"
-msgstr "Ist aktiv"
-
-msgid "Create New Rule Criteria"
-msgstr "Neue Regelkriterien erstellen"
+msgid "Select Notification Template"
+msgstr "Benachrichtigungsvorlage auswaehlen"
 
 msgid "Lead Conversion"
 msgstr "Interessenten-Konvertierung"
@@ -351,14 +421,27 @@ msgstr "Interessenten-Konvertierung"
 msgid "Close"
 msgstr "Schließen"
 
+msgid "Account"
+msgstr "Konto"
+
 msgid "Create New"
 msgstr "Neu erstellen"
 
 msgid "Select Existing"
 msgstr "Bestehendes auswählen"
 
+msgid "Contact"
+msgstr "Kontakt"
+
+msgid "Opportunity"
+msgstr "Verkaufschance"
+
 msgid "Owner"
 msgstr "Besitzer"
+
+#| msgid "Select Lead Owner"
+msgid "Select owner"
+msgstr "Eigentümer auswählen"
 
 msgid "Convert"
 msgstr "Konvertieren"
@@ -366,21 +449,38 @@ msgstr "Konvertieren"
 msgid "Account Name"
 msgstr "Kontoname"
 
-msgid "Select Contact"
-msgstr "Kontakt auswählen"
+#| msgid "Account Name"
+msgid "Enter Account Name"
+msgstr "Kontoname eingeben"
+
+#| msgid "Select Contact"
+msgid "Select account"
+msgstr "Konto auswählen"
+
+#| msgid "First Name"
+msgid "Enter First Name"
+msgstr "Vorname eingeben"
+
+#| msgid "Last Name"
+msgid "Enter Last Name"
+msgstr "Nachname eingeben"
 
 msgid "Opportunity Name"
 msgstr "Chancenname"
 
-msgid "Select Opportunity"
-msgstr "Chance auswählen"
+#| msgid "Opportunity Name"
+msgid "Enter Opportunity Name"
+msgstr "Name der Verkaufschance eingeben"
+
+#| msgid "Select Opportunity"
+msgid "Select opportunity"
+msgstr "Verkaufschance auswählen"
 
 msgid "Please select an account first"
 msgstr "Bitte zuerst ein Konto auswählen"
 
 msgid "Select an account to see available opportunities"
 msgstr "Wählen Sie ein Konto, um verfügbare Chancen anzuzeigen"
-
 
 msgid "Success"
 msgstr "Erfolg"
@@ -390,9 +490,6 @@ msgstr "Ihr Interessent wurde konvertiert"
 
 msgid "Comapny"
 msgstr "Unternehmen"
-
-msgid "User"
-msgstr "Benutzer"
 
 msgid "crown"
 msgstr "Krone"
@@ -406,11 +503,15 @@ msgstr "Benutzerdefinierte Phasen verwalten"
 msgid "Drag"
 msgstr "Ziehen"
 
+#| msgid "Finance"
+msgid "Final"
+msgstr "Abschliessend"
+
 msgid "Add Stage"
 msgstr "Phase hinzufügen"
 
-msgid " Changes"
-msgstr " Änderungen"
+msgid "Save"
+msgstr "Speichern"
 
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -435,20 +536,12 @@ msgstr "Interessentenphasen auswählen für"
 msgid "Custom Stages"
 msgstr "Benutzerdefinierte Phasen"
 
-msgid "Criteria"
-msgstr "Kriterien"
+msgid "Order"
+msgstr "Reihenfolge"
 
-msgid "Points"
-msgstr "Punkte"
-
-msgid "Edit"
-msgstr "Bearbeiten"
-
-msgid "Delete"
-msgstr "Löschen"
-
-msgid "Nothing to show yet. Please add your Criteria"
-msgstr "Noch nichts zum Anzeigen. Bitte fügen Sie Ihre Kriterien hinzu"
+#| msgid "Enter return url"
+msgid "Enter Order"
+msgstr "Reihenfolge eingeben"
 
 msgid "Enter return url"
 msgstr "Rückkehr-URL eingeben"
@@ -459,6 +552,11 @@ msgstr "Erfolgsmeldung eingeben"
 msgid "Enter success description"
 msgstr "Erfolgsbeschreibung eingeben"
 
+msgid "We have received your information and will get back to you soon."
+msgstr ""
+"Wir haben Ihre Informationen erhalten und werden uns in Kuerze bei Ihnen "
+"melden."
+
 msgid "Contact Us"
 msgstr "Kontaktieren Sie uns"
 
@@ -467,8 +565,12 @@ msgid "Enter %(vname)s"
 msgstr "Geben Sie %(vname)s ein"
 
 #, python-format
-msgid "Select %(vname)s"
-msgstr "Wählen Sie %(vname)s aus"
+msgid ""
+"Select\n"
+"                        %(vname)s"
+msgstr ""
+"%(vname)s\n"
+"                        auswaehlen"
 
 msgid "Submit"
 msgstr "Absenden"
@@ -489,8 +591,8 @@ msgid ""
 "Copy and paste this embed code into your website's HTML where you want the "
 "form to appear."
 msgstr ""
-"Kopieren Sie diesen Einbettungscode und fügen Sie ihn in den HTML-Code Ihrer "
-"Website ein, wo das Formular erscheinen soll."
+"Kopieren Sie diesen Einbettungscode und fügen Sie ihn in den HTML-Code Ihrer"
+" Website ein, wo das Formular erscheinen soll."
 
 msgid "GENERATED HTML CODE"
 msgstr "Generierter HTML-Code"
@@ -504,29 +606,39 @@ msgstr "Vorschau"
 msgid "Form Builder"
 msgstr "Formular-Generator"
 
+#| msgid "Enter %(vname)s"
+msgid "Enter form name"
+msgstr "Formularnamen eingeben"
+
 msgid "Fields"
 msgstr "Felder"
 
 msgid "Click fields to add"
 msgstr "Felder anklicken zum Hinzufügen"
 
+msgid "https://example.com/thank-you"
+msgstr "https://example.com/thank-you"
+
 msgid "Select Lead Owner"
 msgstr "Interessenteninhaber auswählen"
+
+msgid "Color"
+msgstr "Farbe"
+
+msgid "#ffffff"
+msgstr "#ffffff"
 
 msgid "Generate"
 msgstr "Generieren"
 
-msgid "Enter"
-msgstr "Eingeben"
-
 msgid "Select"
 msgstr "Auswählen"
 
+msgid "Enter"
+msgstr "Eingeben"
+
 msgid "Submitting..."
 msgstr "Wird gesendet..."
-
-msgid "Save"
-msgstr "Speichern"
 
 msgid "Loading..."
 msgstr "Wird geladen..."
@@ -534,11 +646,28 @@ msgstr "Wird geladen..."
 msgid "Page Not Found"
 msgstr "Seite nicht gefunden"
 
+msgid "The requested data does not exist."
+msgstr "Die angeforderten Daten existieren nicht."
+
+#| msgid "Scoring Condition"
+msgid "Add Condition"
+msgstr "Bedingung hinzufügen"
+
+#| msgid "Edit"
+msgid "Edit Rule"
+msgstr "Regel bearbeiten"
+
 msgid "Converted Lead"
 msgstr "Konvertierter Lead"
 
 msgid "Duplicate"
 msgstr "Duplizieren"
+
+msgid "Selected Y-axis field must be numeric."
+msgstr "Das ausgewaehlte Y-Achsen-Feld muss numerisch sein."
+
+msgid "No data after excluding final stages."
+msgstr "Keine Daten nach Ausschluss der Abschlussphasen."
 
 msgid "Basic Information"
 msgstr "Grundlegende Informationen"
@@ -551,3 +680,76 @@ msgstr "Standort"
 
 msgid "Change Owner"
 msgstr "Besitzer ändern"
+
+msgid "Lead not found or no longer exists."
+msgstr "Lead nicht gefunden oder nicht mehr vorhanden."
+
+msgid "Final Stage  changed successfully."
+msgstr "Abschlussphase erfolgreich geaendert."
+
+#~ msgid "Module"
+#~ msgstr "Modul"
+
+#~ msgid "Scoring Rule"
+#~ msgstr "Bewertungsregel"
+
+#~ msgid "Scoring Rules"
+#~ msgstr "Bewertungsregeln"
+
+#~ msgid "Criterion Name"
+#~ msgstr "Kriteriumsname"
+
+#~ msgid "Points to Award"
+#~ msgstr "Zu vergebende Punkte"
+
+#~ msgid "Add"
+#~ msgstr "Hinzufügen"
+
+#~ msgid "Sub"
+#~ msgstr "Subtrahieren"
+
+#~ msgid "Operation Type"
+#~ msgstr "Operationstyp"
+
+#~ msgid "Scoring Criterion"
+#~ msgstr "Bewertungskriterium"
+
+#~ msgid "Scoring Criteria"
+#~ msgstr "Bewertungskriterien"
+
+#~ msgid "Field Name"
+#~ msgstr "Feldname"
+
+#~ msgid "Opened"
+#~ msgstr "Geöffnet"
+
+#~ msgid "Clicked"
+#~ msgstr "Geklickt"
+
+#~ msgid "Bounced"
+#~ msgstr "Zurückgewiesen"
+
+#~ msgid "Add Column to List"
+#~ msgstr "Spalte zur Liste hinzufügen"
+
+#~ msgid "Is Active"
+#~ msgstr "Ist aktiv"
+
+#~ msgid "Create New Rule Criteria"
+#~ msgstr "Neue Regelkriterien erstellen"
+
+#~ msgid " Changes"
+#~ msgstr " Änderungen"
+
+#~ msgid "Criteria"
+#~ msgstr "Kriterien"
+
+#~ msgid "Points"
+#~ msgstr "Punkte"
+
+#~ msgid "Nothing to show yet. Please add your Criteria"
+#~ msgstr "Noch nichts zum Anzeigen. Bitte fügen Sie Ihre Kriterien hinzu"
+
+#, python-format
+#~ msgid "Select %(vname)s"
+#~ msgstr "Wählen Sie %(vname)s aus"

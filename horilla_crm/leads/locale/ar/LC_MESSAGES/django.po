@@ -8,25 +8,46 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-21 08:28+0000\n"
+"POT-Creation-Date: 2026-06-15 05:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
-"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 msgid "Leads"
 msgstr "العملاء المتوقعون"
+
+#| msgid "Leads"
+msgid "Won Leads"
+msgstr "العملاء المحتملون الفائزون"
+
+msgid "Open Leads (pipeline)"
+msgstr "العملاء المحتملون المفتوحون (المسار)"
+
+#| msgid "Select Contact"
+msgid "Select Account"
+msgstr "اختر الحساب"
+
+msgid "Select Contact"
+msgstr "اختر جهة اتصال"
+
+msgid "Select Opportunity"
+msgstr "اختر الفرصة"
+
+#| msgid "Select Lead Owner"
+msgid "Select Owner"
+msgstr "اختر المالك"
 
 msgid "CRM"
 msgstr "إدارة علاقات العملاء"
 
 msgid "CRM module for managing leads, contacts, and opportunities."
-msgstr "وحدة إدارة علاقات العملاء لإدارة العملاء المحتملين وجهات الاتصال والفرص."
+msgstr ""
+"وحدة إدارة علاقات العملاء لإدارة العملاء المحتملين وجهات الاتصال والفرص."
 
 msgid "Horilla CRM"
 msgstr "هوريلا لإدارة علاقات العملاء"
@@ -37,20 +58,106 @@ msgstr "مرحبًا بك في هوريلا لإدارة علاقات العمل
 msgid "Please sign up to access Horilla CRM"
 msgstr "يرجى التسجيل للوصول إلى هوريلا لإدارة علاقات العملاء"
 
-msgid "Is Final Stage"
-msgstr "هل هي المرحلة النهائية"
+msgid "Lead"
+msgstr "عميل متوقع"
+
+msgid "Assignment Rules"
+msgstr "قواعد التعيين"
 
 msgid "Mail to Lead"
 msgstr "بريد إلى العميل المتوقع"
-
-msgid "Lead"
-msgstr "عميل متوقع"
 
 msgid "Web to Lead"
 msgstr "تحويل من الويب إلى عميل متوقع"
 
 msgid "Sales"
 msgstr "المبيعات"
+
+msgid "Notify as Email"
+msgstr "إشعار عبر البريد الإلكتروني"
+
+msgid "Notify as Notification"
+msgstr "إشعار عبر التنبيه"
+
+msgid "Both"
+msgstr "كلاهما"
+
+msgid "User"
+msgstr "مستخدم"
+
+msgid "Role"
+msgstr "الدور"
+
+msgid "Rule Name"
+msgstr "اسم القاعدة"
+
+msgid "Description"
+msgstr "الوصف"
+
+msgid "Lead Assignment Rule"
+msgstr "قاعدة تعيين العميل المحتمل"
+
+msgid "Lead Assignment Rules"
+msgstr "قواعد تعيين العملاء المحتملين"
+
+msgid "Assignment Rule"
+msgstr "قاعدة التعيين"
+
+msgid "Assign To"
+msgstr "تعيين إلى"
+
+msgid "Assign To Users"
+msgstr "تعيين إلى مستخدمين"
+
+msgid "Assign To Roles"
+msgstr "تعيين إلى أدوار"
+
+msgid "Notify Method"
+msgstr "طريقة الإشعار"
+
+msgid "Mail Template"
+msgstr "قالب البريد"
+
+msgid "Notification Template"
+msgstr "قالب الإشعار"
+
+msgid "Lead Assignment Condition"
+msgstr "شرط تعيين العميل المحتمل"
+
+msgid "Lead Assignment Conditions"
+msgstr "شروط تعيين العملاء المحتملين"
+
+msgid "Mail template is required for email notification."
+msgstr "قالب البريد مطلوب للإشعار بالبريد الإلكتروني."
+
+msgid "Notification template is required for in-app notification."
+msgstr "قالب الإشعار مطلوب للإشعار داخل التطبيق."
+
+#| msgid "Scoring Condition"
+msgid "Assignment Condition"
+msgstr "شرط التعيين"
+
+#| msgid "Fields"
+msgid "Field"
+msgstr "الحقل"
+
+msgid "Operator"
+msgstr "المشغل"
+
+msgid "Value"
+msgstr "القيمة"
+
+msgid "AND"
+msgstr "و"
+
+msgid "OR"
+msgstr "أو"
+
+msgid "Logical Operator"
+msgstr "المشغل المنطقي"
+
+msgid "Lead Assignment Match Criteria"
+msgstr "معايير مطابقة تعيين العميل المحتمل"
 
 msgid "Status Name"
 msgstr "اسم الحالة"
@@ -63,6 +170,9 @@ msgstr "لون الحالة"
 
 msgid "Leave blank for default (primary theme colour)."
 msgstr "اتركه فارغًا للون الافتراضي (اللون الأساسي للسمة)."
+
+msgid "Is Final Stage"
+msgstr "هل هي المرحلة النهائية"
 
 msgid "Probability"
 msgstr "احتمالية"
@@ -130,9 +240,6 @@ msgstr "التعليم"
 msgid "Insurance"
 msgstr "التأمين"
 
-msgid "Lead Owner"
-msgstr "مالك العميل المتوقع"
-
 msgid "Title"
 msgstr "اللقب"
 
@@ -141,6 +248,9 @@ msgstr "الاسم الأول"
 
 msgid "Last Name"
 msgstr "اسم العائلة"
+
+msgid "Lead Owner"
+msgstr "مالك العميل المتوقع"
 
 msgid "Contact Number"
 msgstr "رقم الاتصال"
@@ -249,102 +359,57 @@ msgstr "اللغة"
 msgid "Header Color"
 msgstr "لون الرأس"
 
+#| msgid "Generate"
+msgid "Generated HTML"
+msgstr "HTML المُنشأ"
+
 msgid "Lead Capture Form"
 msgstr "نموذج تسجيل العميل المتوقع"
 
 msgid "Lead Capture Forms"
 msgstr "نماذج تسجيل العملاء المتوقعين"
 
-msgid "Rule Name"
-msgstr "اسم القاعدة"
+msgid "Filter"
+msgstr "تصفية"
 
-msgid "Opportunity"
-msgstr "فرصة"
+msgid "Select Assign To Users"
+msgstr "اختر المستخدمين للتعيين"
 
-msgid "Account"
-msgstr "حساب"
+msgid "Select Assign To Roles"
+msgstr "اختر الأدوار للتعيين"
 
-msgid "Contact"
-msgstr "جهة اتصال"
+msgid "No conditions added"
+msgstr "لم تُضف أي شروط"
 
-msgid "Module"
-msgstr "الوحدة"
+msgid "Add a condition to define when and to whom a lead should be assigned."
+msgstr "أضف شرطاً لتحديد متى ولمن يجب تعيين العميل المحتمل."
 
-msgid "Description"
-msgstr "الوصف"
+#| msgid "Rule Name"
+msgid "Rule"
+msgstr "القاعدة"
 
-msgid "Scoring Rule"
-msgstr "قاعدة التقييم"
+msgid "Edit"
+msgstr "تعديل"
 
-msgid "Scoring Rules"
-msgstr "قواعد التقييم"
+msgid "Delete"
+msgstr "حذف"
 
-msgid "Criterion Name"
-msgstr "اسم المعيار"
+#| msgid "Scoring Conditions"
+msgid "Conditions"
+msgstr "الشروط"
 
-msgid "Points to Award"
-msgstr "النقاط الممنوحة"
+#| msgid "User"
+msgid "Users"
+msgstr "المستخدمون"
 
-msgid "Add"
-msgstr "إضافة"
+msgid "Roles"
+msgstr "الأدوار"
 
-msgid "Sub"
-msgstr "طرح"
+msgid "Select Mail Template"
+msgstr "اختر قالب البريد"
 
-msgid "Operation Type"
-msgstr "نوع العملية"
-
-msgid "Order"
-msgstr "الترتيب"
-
-msgid "Scoring Criterion"
-msgstr "معيار التقييم"
-
-msgid "Scoring Criteria"
-msgstr "معايير التقييم"
-
-msgid "Field Name"
-msgstr "اسم الحقل"
-
-msgid "Operator"
-msgstr "المشغل"
-
-msgid "Value"
-msgstr "القيمة"
-
-msgid "AND"
-msgstr "و"
-
-msgid "OR"
-msgstr "أو"
-
-msgid "Logical Operator"
-msgstr "المشغل المنطقي"
-
-msgid "Scoring Condition"
-msgstr "شرط التقييم"
-
-msgid "Scoring Conditions"
-msgstr "شروط التقييم"
-
-msgid "Opened"
-msgstr "تم الفتح"
-
-msgid "Clicked"
-msgstr "تم النقر"
-
-msgid "Bounced"
-msgstr "تم الارتداد"
-
-
-msgid "Add Column to List"
-msgstr "إضافة عمود إلى القائمة"
-
-msgid "Is Active"
-msgstr "نشط"
-
-msgid "Create New Rule Criteria"
-msgstr "إنشاء معيار قاعدة جديد"
+msgid "Select Notification Template"
+msgstr "اختر قالب الإشعار"
 
 msgid "Lead Conversion"
 msgstr "تحويل العميل المتوقع"
@@ -352,14 +417,27 @@ msgstr "تحويل العميل المتوقع"
 msgid "Close"
 msgstr "إغلاق"
 
+msgid "Account"
+msgstr "حساب"
+
 msgid "Create New"
 msgstr "إنشاء جديد"
 
 msgid "Select Existing"
 msgstr "اختر الموجود"
 
+msgid "Contact"
+msgstr "جهة اتصال"
+
+msgid "Opportunity"
+msgstr "فرصة"
+
 msgid "Owner"
 msgstr "المالك"
+
+#| msgid "Select Lead Owner"
+msgid "Select owner"
+msgstr "اختر المالك"
 
 msgid "Convert"
 msgstr "تحويل"
@@ -367,13 +445,31 @@ msgstr "تحويل"
 msgid "Account Name"
 msgstr "اسم الحساب"
 
-msgid "Select Contact"
-msgstr "اختر جهة اتصال"
+#| msgid "Account Name"
+msgid "Enter Account Name"
+msgstr "أدخل اسم الحساب"
+
+#| msgid "Select Contact"
+msgid "Select account"
+msgstr "اختر الحساب"
+
+#| msgid "First Name"
+msgid "Enter First Name"
+msgstr "أدخل الاسم الأول"
+
+#| msgid "Last Name"
+msgid "Enter Last Name"
+msgstr "أدخل اسم العائلة"
 
 msgid "Opportunity Name"
 msgstr "اسم الفرصة"
 
-msgid "Select Opportunity"
+#| msgid "Opportunity Name"
+msgid "Enter Opportunity Name"
+msgstr "أدخل اسم الفرصة"
+
+#| msgid "Select Opportunity"
+msgid "Select opportunity"
 msgstr "اختر الفرصة"
 
 msgid "Please select an account first"
@@ -381,7 +477,6 @@ msgstr "يرجى اختيار حساب أولاً"
 
 msgid "Select an account to see available opportunities"
 msgstr "اختر حسابًا لرؤية الفرص المتاحة"
-
 
 msgid "Success"
 msgstr "نجاح"
@@ -391,9 +486,6 @@ msgstr "تم تحويل العميل المتوقع الخاص بك"
 
 msgid "Comapny"
 msgstr "الشركة"
-
-msgid "User"
-msgstr "مستخدم"
 
 msgid "crown"
 msgstr "تاج"
@@ -407,11 +499,15 @@ msgstr "إدارة المراحل المخصصة"
 msgid "Drag"
 msgstr "سحب"
 
+#| msgid "Finance"
+msgid "Final"
+msgstr "نهائي"
+
 msgid "Add Stage"
 msgstr "إضافة مرحلة"
 
-msgid " Changes"
-msgstr " تغييرات"
+msgid "Save"
+msgstr "حفظ"
 
 msgid "Cancel"
 msgstr "إلغاء"
@@ -434,20 +530,12 @@ msgstr "اختر مراحل العميل المتوقع لـ"
 msgid "Custom Stages"
 msgstr "المراحل المخصصة"
 
-msgid "Criteria"
-msgstr "المعايير"
+msgid "Order"
+msgstr "الترتيب"
 
-msgid "Points"
-msgstr "النقاط"
-
-msgid "Edit"
-msgstr ""
-
-msgid "Delete"
-msgstr "حذف"
-
-msgid "Nothing to show yet. Please add your Criteria"
-msgstr "لا يوجد شيء للعرض بعد. يرجى إضافة معاييرك"
+#| msgid "Enter return url"
+msgid "Enter Order"
+msgstr "أدخل الترتيب"
 
 msgid "Enter return url"
 msgstr "أدخل رابط العودة"
@@ -458,6 +546,9 @@ msgstr "أدخل رسالة النجاح"
 msgid "Enter success description"
 msgstr "أدخل وصف النجاح"
 
+msgid "We have received your information and will get back to you soon."
+msgstr "لقد استلمنا معلوماتك وسنتواصل معك قريباً."
+
 msgid "Contact Us"
 msgstr "اتصل بنا"
 
@@ -466,8 +557,12 @@ msgid "Enter %(vname)s"
 msgstr "أدخل %(vname)s"
 
 #, python-format
-msgid "Select %(vname)s"
-msgstr "اختر %(vname)s"
+msgid ""
+"Select\n"
+"                        %(vname)s"
+msgstr ""
+"اختر\n"
+"                        %(vname)s"
 
 msgid "Submit"
 msgstr "إرسال"
@@ -502,29 +597,39 @@ msgstr "معاينة"
 msgid "Form Builder"
 msgstr "منشئ النموذج"
 
+#| msgid "Enter %(vname)s"
+msgid "Enter form name"
+msgstr "أدخل اسم النموذج"
+
 msgid "Fields"
 msgstr "الحقول"
 
 msgid "Click fields to add"
 msgstr "انقر على الحقول لإضافتها"
 
+msgid "https://example.com/thank-you"
+msgstr "https://example.com/thank-you"
+
 msgid "Select Lead Owner"
 msgstr "اختر مالك العميل المتوقع"
+
+msgid "Color"
+msgstr "اللون"
+
+msgid "#ffffff"
+msgstr "#ffffff"
 
 msgid "Generate"
 msgstr "إنشاء"
 
-msgid "Enter"
-msgstr "أدخل"
-
 msgid "Select"
 msgstr "اختر"
 
+msgid "Enter"
+msgstr "أدخل"
+
 msgid "Submitting..."
 msgstr "جارٍ الإرسال..."
-
-msgid "Save"
-msgstr "حفظ"
 
 msgid "Loading..."
 msgstr "جارٍ التحميل..."
@@ -532,11 +637,27 @@ msgstr "جارٍ التحميل..."
 msgid "Page Not Found"
 msgstr "الصفحة غير موجودة"
 
+msgid "The requested data does not exist."
+msgstr "البيانات المطلوبة غير موجودة."
+
+#| msgid "Scoring Condition"
+msgid "Add Condition"
+msgstr "إضافة شرط"
+
+msgid "Edit Rule"
+msgstr "تعديل القاعدة"
+
 msgid "Converted Lead"
 msgstr "عميل محتمل محوَّل"
 
 msgid "Duplicate"
 msgstr "تكرار"
+
+msgid "Selected Y-axis field must be numeric."
+msgstr "يجب أن يكون حقل المحور الصادي المحدد رقمياً."
+
+msgid "No data after excluding final stages."
+msgstr "لا توجد بيانات بعد استبعاد المراحل النهائية."
 
 msgid "Basic Information"
 msgstr "المعلومات الأساسية"
@@ -549,3 +670,76 @@ msgstr "الموقع"
 
 msgid "Change Owner"
 msgstr "تغيير المالك"
+
+msgid "Lead not found or no longer exists."
+msgstr "العميل المحتمل غير موجود أو لم يعد موجوداً."
+
+msgid "Final Stage  changed successfully."
+msgstr "تم تغيير المرحلة النهائية بنجاح."
+
+#~ msgid "Module"
+#~ msgstr "الوحدة"
+
+#~ msgid "Scoring Rule"
+#~ msgstr "قاعدة التقييم"
+
+#~ msgid "Scoring Rules"
+#~ msgstr "قواعد التقييم"
+
+#~ msgid "Criterion Name"
+#~ msgstr "اسم المعيار"
+
+#~ msgid "Points to Award"
+#~ msgstr "النقاط الممنوحة"
+
+#~ msgid "Add"
+#~ msgstr "إضافة"
+
+#~ msgid "Sub"
+#~ msgstr "طرح"
+
+#~ msgid "Operation Type"
+#~ msgstr "نوع العملية"
+
+#~ msgid "Scoring Criterion"
+#~ msgstr "معيار التقييم"
+
+#~ msgid "Scoring Criteria"
+#~ msgstr "معايير التقييم"
+
+#~ msgid "Field Name"
+#~ msgstr "اسم الحقل"
+
+#~ msgid "Opened"
+#~ msgstr "تم الفتح"
+
+#~ msgid "Clicked"
+#~ msgstr "تم النقر"
+
+#~ msgid "Bounced"
+#~ msgstr "تم الارتداد"
+
+#~ msgid "Add Column to List"
+#~ msgstr "إضافة عمود إلى القائمة"
+
+#~ msgid "Is Active"
+#~ msgstr "نشط"
+
+#~ msgid "Create New Rule Criteria"
+#~ msgstr "إنشاء معيار قاعدة جديد"
+
+#~ msgid " Changes"
+#~ msgstr " تغييرات"
+
+#~ msgid "Criteria"
+#~ msgstr "المعايير"
+
+#~ msgid "Points"
+#~ msgstr "النقاط"
+
+#~ msgid "Nothing to show yet. Please add your Criteria"
+#~ msgstr "لا يوجد شيء للعرض بعد. يرجى إضافة معاييرك"
+
+#, python-format
+#~ msgid "Select %(vname)s"
+#~ msgstr "اختر %(vname)s"

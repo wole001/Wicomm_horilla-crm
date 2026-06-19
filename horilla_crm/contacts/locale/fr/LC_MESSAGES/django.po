@@ -8,11 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-21 08:07+0000\n"
+"POT-Creation-Date: 2026-06-15 05:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -81,11 +81,11 @@ msgstr "Ville"
 msgid "State"
 msgstr "État"
 
-msgid "Zip"
-msgstr "Code postal"
-
 msgid "Country"
 msgstr "Pays"
+
+msgid "Zip"
+msgstr "Code postal"
 
 msgid "Parent Contact"
 msgstr "Contact parent"
@@ -129,21 +129,11 @@ msgstr "Relation contact-compte"
 msgid "Contact Account Relationships"
 msgstr "Relations contact-compte"
 
-
 msgid "contact Hierarchy"
 msgstr "Propriétaire du contact"
 
 msgid "Close"
 msgstr "Fermer"
-
-msgid "Edit"
-msgstr "Modifier"
-
-msgid "Change Owner"
-msgstr "Changer de propriétaire"
-
-msgid "Duplicate"
-msgstr "Dupliquer"
 
 msgid "Contact Information"
 msgstr "Informations du contact"
@@ -154,20 +144,8 @@ msgstr "Informations d’adresse"
 msgid "Additional Information"
 msgstr "Informations supplémentaires"
 
-msgid "Related Campaigns"
-msgstr "Campagnes liées"
-
-msgid "Related Opportunities"
-msgstr "Opportunités liées"
-
-msgid "Related Accounts"
-msgstr "Comptes liés"
-
-msgid "Child Contacts"
-msgstr "Contacts enfants"
-
-msgid "View Hierarchy"
-msgstr "Voir la hiérarchie"
+msgid "Change Owner"
+msgstr "Changer de propriétaire"
 
 msgid "Add Account Contact Relationships"
 msgstr "Ajouter des relations contact-compte"
@@ -187,8 +165,9 @@ msgstr "Un contact ne peut pas être son propre parent."
 msgid "This contact already has a parent contact."
 msgstr "Ce contact a déjà un contact parent."
 
-msgid "Child contact assigned successfully!"
-msgstr "Contact enfant attribué avec succès !"
+#| msgid "Child contact assigned successfully!"
+msgid "Child contact assigned successfully."
+msgstr "Le contact enfant a été affecté avec succès."
 
 msgid "Invalid parent contact ID format."
 msgstr "Format d’identifiant du contact parent invalide."
@@ -212,3 +191,24 @@ msgstr ""
 
 msgid "An error occurred while removing the child contact."
 msgstr "Une erreur s’est produite lors de la suppression du contact enfant."
+
+msgid "Edit"
+msgstr "Modifier"
+
+msgid "Duplicate"
+msgstr "Dupliquer"
+
+msgid "Related Campaigns"
+msgstr "Campagnes liées"
+
+msgid "Related Opportunities"
+msgstr "Opportunités liées"
+
+msgid "Related Accounts"
+msgstr "Comptes liés"
+
+msgid "Child Contacts"
+msgstr "Contacts enfants"
+
+msgid "View Hierarchy"
+msgstr "Voir la hiérarchie"

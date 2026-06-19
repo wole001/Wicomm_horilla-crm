@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-21 08:07+0000\n"
+"POT-Creation-Date: 2026-06-15 05:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -72,6 +72,12 @@ msgid "Campaign Member"
 msgstr ""
 
 msgid "Campaign Members"
+msgstr ""
+
+msgid "This lead already has this campaign."
+msgstr ""
+
+msgid "This contact already has this campaign."
 msgstr ""
 
 msgid "New"
@@ -173,9 +179,6 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-msgid "Duplicate"
-msgstr ""
-
 msgid "Campaign Information"
 msgstr ""
 
@@ -186,9 +189,6 @@ msgid "Additional Information"
 msgstr ""
 
 msgid "Change Owner"
-msgstr ""
-
-msgid "View Hierarchy"
 msgstr ""
 
 msgid "Add Child Campaign"
@@ -206,7 +206,7 @@ msgstr ""
 msgid "This campaign already has a parent campaign."
 msgstr ""
 
-msgid "Child campaign assigned successfully!"
+msgid "Child campaign assigned successfully."
 msgstr ""
 
 msgid "Invalid parent campaign ID format."
@@ -231,4 +231,10 @@ msgid "Add to Campaign"
 msgstr ""
 
 msgid "Add Campaign Members"
+msgstr ""
+
+msgid "Duplicate"
+msgstr ""
+
+msgid "View Hierarchy"
 msgstr ""
