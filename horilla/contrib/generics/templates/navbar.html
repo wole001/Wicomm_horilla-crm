@@ -164,8 +164,28 @@
                         id="filterToggleWrapper"
                         class="relative bg-[#f3f4f6] w-6 h-6 md:w-10 md:h-10 flex items-center justify-center rounded transition duration-300 cursor-pointer"
                         hx-on:click="
-            const filterPanel = document.getElementById('filterpanel');
-            const filterContainer = document.getElementById('filtercontainer');
+            function getActiveFilterPanel() {
+              // When inside a tabbed view, multiple #filterpanel elements may exist — one
+              // per loaded tab. Only the one inside the currently visible tab panel is relevant.
+              const allPanels = document.querySelectorAll('#filterpanel');
+              if (allPanels.length === 1) return allPanels[0];
+              for (const panel of allPanels) {
+                const tabPanel = panel.closest('[role=\'tabpanel\']');
+                if (!tabPanel || !tabPanel.classList.contains('hidden')) return panel;
+              }
+              return allPanels[0];
+            }
+            function getActiveFilterContainer() {
+              const allContainers = document.querySelectorAll('#filtercontainer');
+              if (allContainers.length === 1) return allContainers[0];
+              for (const container of allContainers) {
+                const tabPanel = container.closest('[role=\'tabpanel\']');
+                if (!tabPanel || !tabPanel.classList.contains('hidden')) return container;
+              }
+              return allContainers[0];
+            }
+            const filterPanel = getActiveFilterPanel();
+            const filterContainer = getActiveFilterContainer();
             const wrapper = document.getElementById('filterToggleWrapper');
             const storageKey = 'filterPanelVisible:' + window.location.pathname;
 

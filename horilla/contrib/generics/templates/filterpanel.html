@@ -34,8 +34,8 @@
                         title="{% trans 'Close' %}"
                         class="filter-panel-close p-1 rounded-md hover:bg-[#f3f4f6] transition-colors cursor-pointer"
                         hx-on:click="
-            const filterPanel = document.getElementById('filterpanel');
-            const filterContainer = document.getElementById('filtercontainer');
+            const filterPanel = this.closest('#filterpanel');
+            const filterContainer = filterPanel.querySelector('#filtercontainer');
             const storageKey = 'filterPanelVisible:' + window.location.pathname;
             filterPanel.classList.remove('visible');
             filterContainer.classList.remove('visible');
