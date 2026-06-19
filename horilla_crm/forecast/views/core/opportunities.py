@@ -117,10 +117,10 @@ class ForecastOpportunitiesView(LoginRequiredMixin, View):
             currency_symbol = company.currency if company else "USD"
 
             opportunity_types = [
-                {"key": "closed", "display_name": "Closed"},
-                {"key": "committed", "display_name": "Committed"},
-                {"key": "best_case", "display_name": "Best Case"},
-                {"key": "open_pipeline", "display_name": "Open Pipeline"},
+                {"key": "closed", "display_name": _("Closed")},
+                {"key": "committed", "display_name": _("Committed")},
+                {"key": "best_case", "display_name": _("Best Case")},
+                {"key": "open_pipeline", "display_name": _("Open Pipeline")},
             ]
 
             page = request.GET.get("page")
@@ -202,13 +202,10 @@ class ForecastOpportunitiesView(LoginRequiredMixin, View):
             opportunities = self.get_opportunities_by_type(
                 forecast, opportunity_type, user_id
             )
-            display_type = opportunity_type.replace("_", " ").title()
-            if opportunity_type == "best_case":
-                display_type = "Best Case"
 
             context = {
                 "opportunities": opportunities,
-                "opportunity_type": display_type,
+                "opportunity_type": opportunity_type,
                 "opportunity_types": opportunity_types,
                 "forecast": forecast,
                 "currency_symbol": currency_symbol,

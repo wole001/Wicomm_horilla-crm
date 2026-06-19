@@ -19,13 +19,13 @@
                 {% for type in opportunity_types %}
                     <li class="flex-[1_0] me-2" role="presentation">
                         <button
-                            class="js-tab inline-block px-5 py-3 text-sm rounded-t-lg transition duration-300 w-full {% if opportunity_type == type.display_name %}text-primary-600 border-b-2 border-primary-600{% else %}text-[#333] hover:text-primary-600 border-b-0 border-transparent{% endif %}"
+                            class="js-tab inline-block px-5 py-3 text-sm rounded-t-lg transition duration-300 w-full {% if opportunity_type == type.key %}text-primary-600 border-b-2 border-primary-600{% else %}text-[#333] hover:text-primary-600 border-b-0 border-transparent{% endif %}"
                             id="{{ type.key }}-tab"
                             data-tabs-target="#{{ type.key }}-panel"
                             type="button"
                             role="tab"
                             aria-controls="{{ type.key }}-panel"
-                            aria-selected="{% if opportunity_type == type.display_name %}true{% else %}false{% endif %}"
+                            aria-selected="{% if opportunity_type == type.key %}true{% else %}false{% endif %}"
                             hx-get="{% url 'forecast:forecast_opportunities' forecast_id=forecast.id opportunity_type=type.key %}?{% if request.GET.user_id %}user_id={{ request.GET.user_id }}{% endif %}{% if request.GET.fiscal_year_id %}&fiscal_year_id={{ request.GET.fiscal_year_id }}{% endif %}"
                             hx-target="#{{ type.key }}-panel"
                             hx-swap="outerHTML"
@@ -36,7 +36,7 @@
                             </div>
                             <p class="flex items-center gap-3">
                                 <span
-                                    class="text-[white] bg-[#ff9627] w-[20px] flex h-[20px] justify-center items-center rounded-sm text-xs"
+                                    class="text-[white] bg-[#ff9627] min-w-[24px] px-2 py-0.5 inline-flex justify-center items-center rounded-sm text-xs"
                                 >
                                     {{ type.opportunities.count }}
                                 </span>
@@ -58,7 +58,7 @@
             <div id="default-styled-tab-content" class="overflow-hidden">
                 {% for type in opportunity_types %}
                     <div
-                        class="{% if opportunity_type != type.display_name %}hidden{% endif %} p-4"
+                        class="{% if opportunity_type != type.key %}hidden{% endif %} p-4"
                         id="{{ type.key }}-panel"
                         role="tabpanel"
                         aria-labelledby="{{ type.key }}-tab"
