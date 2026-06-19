@@ -133,7 +133,7 @@ class MailTemplateListView(LoginRequiredMixin, HorillaListView):
             "action": "Edit",
             "src": "assets/icons/edit.svg",
             "img_class": "w-4 h-4",
-            "permission": "mail.change_horillaemailconfiguration",
+            "permission": "mail.change_horillamailtemplate",
             "attrs": """
                         hx-get="{get_edit_url}"
                         hx-target="#horillaModalBox"
@@ -145,7 +145,7 @@ class MailTemplateListView(LoginRequiredMixin, HorillaListView):
             "action": "Delete",
             "src": "assets/icons/a4.svg",
             "img_class": "w-4 h-4",
-            "permission": "mail.delete_horillaemailconfiguration",
+            "permission": "mail.delete_horillamailtemplate",
             "attrs": """
                     hx-post="{get_delete_url}"
                     hx-target="#modalBox"
@@ -158,18 +158,22 @@ class MailTemplateListView(LoginRequiredMixin, HorillaListView):
     ]
 
     @cached_property
-    def raw_attrs(self):
-        """Get row attributes for HTMX detail view loading"""
+    def col_attrs(self):
+        """Get first-column attributes for HTMX detail view loading"""
         if self.request.user.has_perm("mail.view_horillamailtemplate"):
-            return {
-                "hx-get": "{get_detail_view_url}",
-                "hx-target": "#contentModalBox",
-                "hx-swap": "innerHTML",
-                "hx-on:click": "openContentModal();",
-                "style": "cursor:pointer",
-                "class": "hover:text-primary-600",
-            }
-        return ""
+            return [
+                {
+                    "title": {
+                        "hx-get": "{get_detail_view_url}",
+                        "hx-target": "#contentModalBox",
+                        "hx-swap": "innerHTML",
+                        "hx-on:click": "openContentModal();",
+                        "style": "cursor:pointer",
+                        "class": "hover:text-primary-600",
+                    }
+                }
+            ]
+        return []
 
 
 @method_decorator(htmx_required, name="dispatch")
