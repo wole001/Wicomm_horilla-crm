@@ -87,9 +87,11 @@ class HorillaMailPreviewView(LoginRequiredMixin, View):
             else:
                 attachments.append(attachment)
 
-        # Render subject and body
-        rendered_subject = draft_mail.render_subject()
-        rendered_body = draft_mail.render_body()
+        # Use the snapshot saved at send time when available so that
+        # insert-field variables (e.g. {{ request.user.first_name }}) reflect
+        # the sender's context, not the current viewer's.
+        rendered_subject = draft_mail.rendered_subject or draft_mail.render_subject()
+        rendered_body = draft_mail.rendered_body or draft_mail.render_body()
 
         # Pattern to find cid: in src attributes and capture data-filename if present
         cid_pattern = re.compile(
@@ -190,7 +192,10 @@ class HorillaMailPreviewView(LoginRequiredMixin, View):
                     "mail_preview_error.html",
                     {"error_message": _("Subject contains dangerous content.")},
                 )
-            if has_xss(message_content) or has_ssti(message_content):
+            # The body is HTML from a rich-text editor so has_xss will always fire
+            # on normal tags like <p>. Only check for SSTI (template injection) here;
+            # HTML is sanitized by sanitize_html before rendering.
+            if has_ssti(message_content):
                 return render(
                     request,
                     "mail_preview_error.html",
@@ -227,23 +232,30 @@ class HorillaMailPreviewView(LoginRequiredMixin, View):
                     # IDOR fix: verify the requesting user has view permission
                     # for this model before loading the object
                     perm = f"{content_type.app_label}.view_{content_type.model}"
-                    if not request.user.has_perm(perm):
-                        logger.warning(
-                            "User %s attempted to access %s pk=%s without permission",
-                            request.user,
-                            content_type.model,
-                            object_id,
-                        )
-                        return render(
-                            request,
-                            "mail_preview_error.html",
-                            {
-                                "error_message": _(
-                                    "You do not have permission to access this record."
-                                )
-                            },
-                        )
                     related_object = model_class.objects.get(pk=object_id)
+                    if not request.user.has_perm(perm):
+                        # Fall back to ownership check via OWNER_FIELDS
+                        owner_fields = getattr(model_class, "OWNER_FIELDS", [])
+                        is_owner = any(
+                            getattr(related_object, f, None) == request.user
+                            for f in owner_fields
+                        )
+                        if not is_owner:
+                            logger.warning(
+                                "User %s attempted to access %s pk=%s without permission",
+                                request.user,
+                                content_type.model,
+                                object_id,
+                            )
+                            return render(
+                                request,
+                                "mail_preview_error.html",
+                                {
+                                    "error_message": _(
+                                        "You do not have permission to access this record."
+                                    )
+                                },
+                            )
                     template_context["instance"] = related_object
                     draft_mail.related_to = related_object
                 except Exception as e:
