@@ -93,6 +93,4 @@ class TaskCreateForm(
 
     def form_valid(self, form):
         super().form_valid(form)
-        return HttpResponse(
-            "<script>htmx.trigger('#reloadButton','click');closeModal();</script>"
-        )
+        return HttpResponse("<script>$('#reloadButton').click();closeModal();</script>")
