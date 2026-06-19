@@ -10,9 +10,17 @@ from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.utils.methods import get_section_info_for_model
 from horilla.urls import resolve
 from horilla.utils.translation import gettext_lazy as _
+from horilla.web import HttpResponse
 
 from ...filters import ActivityFilter
 from ...models import Activity
+
+_ACTIVITY_TYPE_TO_TAB = {
+    "task": "tab-tasks",
+    "meeting": "tab-meetings",
+    "log_call": "tab-calls",
+    "event": "tab-events",
+}
 
 # ---------------------------------------------------------------------------
 # Shared action / col-attr constants used by global type list views
@@ -187,3 +195,23 @@ class GlobalTypeListMixin:
     def main_url(self):
         """Return the main URL for this global list view."""
         return self.get_main_url()
+
+    def post(self, request, *args, **kwargs):
+        """
+        Intercept bulk action responses and replace the generic #reloadButton trigger
+        with a tab-specific click so the correct tab reloads instead of always
+        reverting to the first tab.
+        """
+        response = super().post(request, *args, **kwargs)
+        tab_id = _ACTIVITY_TYPE_TO_TAB.get(self._activity_type)
+        if (
+            tab_id
+            and isinstance(response, HttpResponse)
+            and b"$('#reloadButton').click()" in response.content
+        ):
+            patched = response.content.replace(
+                b"$('#reloadButton').click()",
+                f"htmx.trigger('#{tab_id}','click')".encode(),
+            )
+            return HttpResponse(patched, content_type="text/html")
+        return response
