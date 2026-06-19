@@ -116,12 +116,15 @@ def _patch_horilla_list_view():
             return queryset
         try:
             content_type = HorillaContentType.objects.get_for_model(model)
-            pending_object_ids = ApprovalInstance.objects.filter(
-                content_type=content_type,
-                status__in=["pending", "rejected"],
-                is_active=True,
-            ).values_list("object_id", flat=True)
-            return queryset.exclude(pk__in=pending_object_ids)
+            pending_object_ids = list(
+                ApprovalInstance.objects.filter(
+                    content_type=content_type,
+                    status__in=["pending", "rejected"],
+                    is_active=True,
+                ).values_list("object_id", flat=True)
+            )
+            pending_pks = [int(oid) for oid in pending_object_ids if str(oid).isdigit()]
+            return queryset.exclude(pk__in=pending_pks)
         except Exception:
             return queryset
 
