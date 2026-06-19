@@ -3,8 +3,13 @@ Module providing forgot password and password reset functionality for Horilla us
 Includes HTMX support for dynamic interactions.
 """
 
+# Standard library imports
+import logging
+
 # Third-party imports (Django)
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.password_validation import validate_password
@@ -96,20 +101,18 @@ class ForgotPasswordView(View):
             email.body = html_message
 
             email.send(fail_silently=False)
-            return render(request, self.success_template)
 
         except User.DoesNotExist:
-            messages.error(
-                request, _("User with this email or username does not exist.")
+            # Intentionally silent — do not reveal whether account exists
+            logger.info(
+                "Password reset requested for unknown account: %s", email_or_username
             )
 
-        except Exception as e:
-            messages.error(
-                request, "An error occurred. Please try again later. %s", str(e)
-            )
-        return render(
-            request, self.template_name, {"email_or_username": email_or_username}
-        )
+        except Exception:
+            logger.exception("Password reset email failed for: %s", email_or_username)
+
+        # Always return the same success response regardless of account existence
+        return render(request, self.success_template)
 
 
 class PasswordResetConfirmView(View):
