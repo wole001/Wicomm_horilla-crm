@@ -89,3 +89,4 @@ webencodings
 whitenoise
 zope.interface
 user-agents
+psycopg2-binary
