@@ -53,12 +53,14 @@ def get_sub_section_menu(request=None) -> Dict[str, List[Dict]]:
                 if perm and not any(request.user.has_perm(p) for p in perm):
                     continue
 
+        app_label = getattr(obj, "app_label", None)
         item = {
             "label": getattr(obj, "verbose_name", None),
             "icon": getattr(obj, "icon", None),
             "url": getattr(obj, "url", None),
             "class": getattr(obj, "css_class", "sidebar-link"),
-            "app_label": getattr(obj, "app_label", None),
+            "app_label": app_label,
+            "id": getattr(obj, "id", app_label),
             "perm": {
                 "perms": perm,
                 "all_perms": all_perms,

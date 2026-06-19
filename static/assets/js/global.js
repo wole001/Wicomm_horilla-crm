@@ -349,10 +349,10 @@ const SidebarManager = {
             const linkSegments = pathNorm.split("/").filter(Boolean);
             const linkBasePath = linkSegments.length > 1 ? "/" + linkSegments.slice(0, -1).join("/") : null;
             const appScopeMatch = linkBasePath && (currentNorm === linkBasePath || currentNorm.startsWith(linkBasePath + "/"));
-            if (exactMatch && pathNorm.length >= exactLongest) {
+            if (exactMatch && pathNorm.length > exactLongest) {
                 exactLongest = pathNorm.length;
                 $exactFound = $(this);
-            } else if (appScopeMatch && pathNorm.length >= segmentLongest) {
+            } else if (!exactMatch && appScopeMatch && pathNorm.length > segmentLongest) {
                 segmentLongest = pathNorm.length;
                 $segmentFound = $(this);
             }
@@ -1842,7 +1842,6 @@ document.body.addEventListener("htmx:afterSwap", function () {
     if ($sectionLink.length) {
         SidebarManager.setActiveNavLink($sectionLink, currentSection);
     }
-    SidebarManager.activateFirstSubsectionItem(currentSection);
 
     // Settings Content Script Reload
     if (event.detail && event.detail.target && event.detail.target.id === 'settings-content') {

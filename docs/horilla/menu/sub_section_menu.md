@@ -1,41 +1,39 @@
-# Settings Menu
+# Sub-Section Menu
 
 ## 🎯 Purpose
 
-The `horilla.menu.settings_menu` module provides:
+The `horilla.menu.sub_section_menu` module provides:
 
-- **Registration system** — a decorator-based registry for grouped settings sidebar entries
-- **Two-level structure** — each registered class represents a collapsible **group** containing one or more **items**
-- **Permission-based filtering** — groups are shown only when the user holds at least one permission from within the group's items (`has_any_perms`)
-- **Condition-based filtering** — both groups and individual items support static flags or dynamic callables
-- **Order-based sorting** — both groups and items within a group are sorted by an explicit `order` value
-- **HTMX-compatible navigation** — each item carries arbitrary HTML attributes (e.g. `hx-target`, `hx-select`)
-- **Context processor integration** — auto-injected into every template as `settings_menu`
+- **Registration system** — a decorator-based registry for sidebar sub-navigation entries
+- **Section grouping** — each registered class belongs to a named main section (e.g. `"sales"`, `"people"`)
+- **Permission-based filtering** — items are shown only when the user holds at least one of the declared permissions (`any` mode) or all of them (`all_perms = True`)
+- **Position-based sorting** — items within a section are sorted by an explicit `position` integer
+- **HTMX-compatible navigation** — each item carries arbitrary HTML attributes via `attrs`
+- **Unique HTML id support** — each item renders a unique `id` on its `<a>` tag; when two items share the same `app_label`, a separate `id` attribute disambiguates them
+- **Context processor integration** — auto-injected into every template as `sub_section_menu`
 
-It is the standard way for any Horilla app to add a collapsible group of links to the **Settings** sidebar without modifying core templates.
-
-**Note:** Code examples below use **explicit arguments** (including optional ones) so the full call shape is visible at a glance.
+It is the standard way for any Horilla app to add a link to the **main sidebar sub-navigation** without modifying core templates.
 
 ---
 
 ## 🧠 Core concept
 
-### ❌ Avoid hardcoding entries in the settings sidebar
+### ❌ Avoid hardcoding entries in the sidebar template
 
 ```python
-# Do not add settings groups or links directly in settings.html or base templates
+# Do not add sub-section links directly in sub_sidebar.html
 ```
 
 ```python
 # ✅ Preferred — register via the decorator in the app's menu.py
-from horilla.menu import settings_menu
+from horilla.menu import sub_section_menu
 
-@settings_menu.register
-class MySettingsGroup:
+@sub_section_menu.register
+class MySubSection:
     ...
 ```
 
-**Simple rule:** Every settings group that belongs to a specific app must be defined in that app's `menu.py` and registered with `@settings_menu.register`. The sidebar renders whatever passes filtering — apps never need to touch the settings template directly.
+**Simple rule:** Every sidebar link that belongs to a specific app must be defined in that app's `menu.py` and registered with `@sub_section_menu.register`. The sidebar renders whatever passes permission filtering — apps never need to touch the sidebar template directly.
 
 ---
 
@@ -44,23 +42,23 @@ class MySettingsGroup:
 ```text
 horilla/menu/
 │
-├── settings_menu.py     # Registry, register(), get_settings_menu()
+├── sub_section_menu.py     # Registry, register(), get_sub_section_menu()
 └── ...
 
 <app>/
-├── menu.py              # Where apps define and register their settings group
-└── apps.py              # Where "menu" is listed in auto_import_modules
+├── menu.py                 # Where apps define and register their sub-section entries
+└── apps.py                 # Where "menu" is listed in auto_import_modules
 ```
 
 ---
 
-## 🔁 What `horilla.menu.settings_menu` provides
+## 🔁 What `horilla.menu.sub_section_menu` provides
 
 ### ➕ Registry & utilities
 
-- `settings_registry` — module-level list holding all registered classes
-- `register` — decorator that appends a class to `settings_registry`
-- `get_settings_menu` — returns a filtered, order-sorted list of group dicts for the current request
+- `sub_section_menu` — module-level list holding all registered classes
+- `register` — decorator that appends a class to the registry
+- `get_sub_section_menu` — returns a filtered, position-sorted dict of sections → item lists for the current request
 
 ---
 
@@ -69,12 +67,12 @@ horilla/menu/
 ### 📍 Variable
 
 ```python
-settings_registry: List[Any] = []
+sub_section_menu: List[Any] = []
 ```
 
 ### 🎯 Purpose
 
-A module-level list that accumulates every class decorated with `@settings_menu.register`. It is populated at startup when each app's `menu.py` is imported via `auto_import_modules`.
+A module-level list that accumulates every class decorated with `@sub_section_menu.register`. It is populated at startup when each app's `menu.py` is imported via `auto_import_modules`.
 
 ---
 
@@ -89,372 +87,290 @@ def register(cls: Type[Any]) -> Type[Any]:
 
 ### 🎯 Purpose
 
-Appends the decorated class to `settings_registry` and returns it unchanged. Works as a **class decorator** — the class itself is not modified.
+Appends the decorated class to `sub_section_menu` and returns it unchanged. Works as a **class decorator** — the class itself is not modified.
 
 ### 🧪 Example
 
 ```python
-from horilla.menu import settings_menu
+from horilla.menu import sub_section_menu
 
-@settings_menu.register
-class AutomationSettings:
-    """Settings group for the automation module."""
+@sub_section_menu.register
+class LeadSubSection:
     ...
 ```
 
-After this runs (at import time), `AutomationSettings` is in `settings_registry`.
+After this runs (at import time), `LeadSubSection` is in the registry.
 
 ---
 
-## 🔍 `get_settings_menu`
+## 🔍 `get_sub_section_menu`
 
 ### 📍 Function
 
 ```python
-get_settings_menu(request=None) -> List[Dict]
+get_sub_section_menu(request=None) -> Dict[str, List[Dict]]
 ```
 
 ### 🎯 Purpose
 
-Iterates `settings_registry` (pre-sorted by `order`), instantiates each class, applies group-level and item-level filtering, and returns a list of group dicts ready for the template.
+Iterates the registry, instantiates each class, applies permission filtering, groups items by section, and returns a dict ready for the template.
 
-### ✅ Behavior — Group level
+### ✅ Behavior
 
-**Step 1 — Sort registry** by `order` using the three-tier key before iteration.
+**Step 1 — Validate section:** The item's `section` must match a registered main section. If not, `ImproperlyConfigured` is raised at startup.
 
-**Step 2 — Group condition check:**
-- If `condition` is a **callable**, it is called with `request`. The group is skipped if it returns falsy or if `request` is `None`.
-- If `condition` is a **static value**, the group is skipped when falsy.
-- If `condition` is absent (defaults to `True`), the group always passes.
+**Step 2 — Permission check:**
+- If `all_perms = True`, the user must hold **all** permissions in `perm`.
+- If `all_perms` is absent or `False` (default), the user must hold **at least one** permission in `perm`.
+- If `perm` is empty, the item is always included.
 
-**Step 3 — Item processing:** Each item in `items` is evaluated:
-- If an item is a **callable**, it is called with `request`; a falsy return skips that item.
-- If the item has a `condition` key (static or callable), it is evaluated; falsy skips the item.
-- Surviving items are **sorted by their own `order`** key.
+**Step 3 — Build item dict:** Keys `label`, `icon`, `url`, `class`, `app_label`, `id`, `perm`, `position`, `attrs` are extracted from the class.
 
-**Step 4 — Group permission check:**
-- `perm` values are collected from all surviving items.
-- The group is included only if `request.user.has_any_perms(perm_list)` is `True` — the user needs **at least one** permission, not all.
-- Unauthenticated users are always excluded.
+**Step 4 — Sort:** Items within each section are sorted by `position` (items without a position come last).
 
-### 📐 Sort key logic (groups and items)
+### 📐 Returned dict shape
 
-| `order` value | Sort bucket | Order within bucket |
-|--------------|-------------|---------------------|
-| `>= 0` (e.g. `1`, `4`) | `0` — first | Ascending by value |
-| not present / `None` | `1` — middle | Stable insertion order |
-| `< 0` (e.g. `-1`) | `2` — last | Ascending by value |
+```python
+{
+    "sales": [
+        {
+            "label": "Leads",
+            "icon": "/assets/icons/leads.svg",
+            "url": "/crm/leads-view/",
+            "class": "sidebar-link",
+            "app_label": "leads",
+            "id": "leads",          # HTML id rendered on the <a> tag
+            "perm": {"perms": ["leads.view_lead", "leads.view_own_lead"], "all_perms": False},
+            "position": 1,
+            "attrs": {...},
+        },
+        ...
+    ],
+    "people": [...],
+}
+```
 
-### 📐 Returned group dict shape
+### 📐 Item dict keys
 
 | Key | Source on the class | Description |
 |-----|---------------------|-------------|
-| `title` | `cls.title` | Collapsible group heading label |
-| `icon` | `cls.icon` | Static path to the group's icon |
-| `items` | `cls.items` (filtered & sorted) | List of item dicts that passed filtering |
-
-### 📐 Item dict shape
-
-| Key | Type | Description |
-|-----|------|-------------|
-| `label` | `str` | Visible link text |
-| `url` | `str` | HTMX GET target URL |
-| `perm` | `str` | Django permission string — used for group-level `has_any_perms` check and template `has_perm` tag |
-| `order` | `int` | Controls order within the group |
-| `condition` | `bool` or `callable` | Item-level visibility (optional) |
-| *(any HTMX key)* | `str` | Rendered verbatim as HTML attributes on the `<a>` element |
-
-### 🧪 Example
-
-```python
-from horilla.menu.settings_menu import get_settings_menu
-
-groups = get_settings_menu(request=request)
-# → [
-#     {
-#       "title": "Automations",
-#       "icon": "/assets/icons/automation.svg",
-#       "items": [
-#           {"label": "Mail & Notifications", "url": "/automations/", "perm": "...", ...},
-#       ]
-#     },
-#     ...
-#   ]
-```
+| `label` | `verbose_name` | Visible sidebar link text |
+| `icon` | `icon` | Static path to the item's icon |
+| `url` | `url` | Navigation target URL |
+| `class` | `css_class` (default: `"sidebar-link"`) | CSS class on the `<a>` element |
+| `app_label` | `app_label` | Django app label — used for section mapping and JS URL matching |
+| `id` | `id` (falls back to `app_label`) | **HTML `id` rendered on the `<a>` tag** — must be unique across all items |
+| `perm` | `perm` | Dict with `perms` list and `all_perms` flag |
+| `position` | `position` | Controls order within the section |
+| `attrs` | `attrs` | Dict of extra HTML attributes (HTMX, data, etc.) |
 
 ---
 
 ## 🌐 Context Processor
 
-`get_settings_menu` is called inside `menu_context_processor` and exposed as `settings_menu` to every template automatically:
+`get_sub_section_menu` is called inside `menu_context_processor` and exposed as `sub_section_menu` to every template automatically:
 
 ```python
 # horilla/menu/context_processors.py
 
 def menu_context_processor(request):
-    """Return context for various menus."""
-
-    current_app_label = (
-        request.resolver_match.app_name if request.resolver_match else None
-    )
-    section_param = request.GET.get("section")
-
     return {
         "main_section_menu": get_main_section_menu(request),
-        "sub_section_menu": get_sub_section_menu(request),
-        "settings_menu": get_settings_menu(request),   # ← injected here
+        "sub_section_menu": get_sub_section_menu(request),   # ← injected here
+        "settings_menu": get_settings_menu(request),
         "floating_menu": get_floating_menu(request),
         "my_settings_menu": get_my_settings_menu(request),
-        "current_section": section_param,
-        "current_app_label": current_app_label,
+        "current_section": request.GET.get("section"),
+        "current_app_label": request.resolver_match.app_name if request.resolver_match else None,
     }
 ```
 
-No manual context passing is needed in individual views — `settings_menu` is always available in templates.
+No manual context passing is needed in individual views.
 
 ---
 
 ## 🎨 Template rendering
 
-The `settings_menu` context variable is consumed in `settings.html`. The entire settings page is **conditionally rendered** — if `settings_menu` is empty (the user has no permitted groups), an error page is shown instead.
-
-Each group renders as a collapsible accordion; items within a group are individually permission-checked again in the template via `{% has_perm %}`.
+The `sub_section_menu` context variable is consumed in `templates/components/sub_sidebar.html`:
 
 ```django
-{# templates/settings.html #}
+{# templates/components/sub_sidebar.html #}
 
-{% if settings_menu %}
-    {% for menu in settings_menu %}
-        <div class="border-t border-primary-100">
-
-            {# ── Group header (accordion toggle) ── #}
-            <button type="button" onclick="toggleAccordion(this)" ...>
-                <img src="{% static menu.icon %}" alt="{% trans 'Icon' %}" width="18" />
-                {{ menu.title }}
-                <svg class="{% is_open_collapse menu.items %}">...</svg>
-            </button>
-
-            {# ── Group body (collapsible item list) ── #}
-            <div class="accordion-content {% is_open menu.items %}">
-                <ul class="px-4 border-t border-primary-100 pt-3">
-                    {% for item in menu.items %}
-                        {% has_perm item.perm as can_view_item %}
-                        {% if can_view_item %}
-                            <li class="py-1">
-                                <a role="button"
-                                   hx-get="{{ item.url }}"
-                                   {% for key, value in item.items %}
-                                       {% if key not in "label,url" %}
-                                           {{ key }}="{{ value }}"
-                                       {% endif %}
-                                   {% endfor %}
-                                   class="... {% is_active item.url %}">
-                                    {{ item.label }}
-                                </a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                </ul>
-            </div>
-
-        </div>
-    {% endfor %}
-{% else %}
-    {% include "error/settings_403.html" with embed=True %}
-{% endif %}
+{% with current_items=sub_section_menu|get_item:current_section %}
+    {% if current_items %}
+        <ul class="flex flex-col gap-[5px] p-5 pt-8" id="subSidebar">
+            {% for item in current_items %}
+                {% if not item.perm or request.user|has_super_user:item.perm %}
+                    <li class="subSidebarItem">
+                        <a
+                            id="{{ item.id }}"
+                            href="{{ item.url }}?section={{ current_section }}"
+                            data-section="{{ current_section }}"
+                            {% for attr, value in item.attrs.items %}
+                                {{ attr }}="{{ value }}"
+                            {% endfor %}
+                            class="sidebar-link group flex items-center gap-3 ..."
+                        >
+                            {% if item.icon %}
+                                <img src="{% static item.icon %}" ...>
+                            {% endif %}
+                            {{ item.label }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
 ```
 
 Key rendering details:
-- `{% is_open_collapse menu.items %}` / `{% is_open menu.items %}` — template tags that auto-expand the group whose item URL matches the current page.
-- `{% has_perm item.perm %}` — per-item permission check in the template (in addition to the Python-level group check).
-- HTMX keys (`hx-target`, `hx-select`, etc.) are iterated from `item.items` and rendered as HTML attributes, excluding `label` and `url`.
-- `{% is_active item.url %}` — highlights the currently active settings link.
+- `id="{{ item.id }}"` — renders the unique HTML id used by `SidebarManager` in JS for active-state tracking. This is **`item.id`**, not `item.app_label`.
+- `href="{{ item.url }}?section={{ current_section }}"` — appends the current section as a query param so page reloads restore the correct sidebar state.
+- `data-section="{{ current_section }}"` — used by JS to group links by section.
+- `attrs` — arbitrary key/value pairs rendered as HTML attributes (e.g. `hx-get`, `hx-target`).
 
 ---
 
-## ➕ Registering a settings group
+## ➕ Registering a sub-section entry
 
 ### Step 1 — Define the class in the app's `menu.py`
 
 ```python
-# horilla_automations/menu.py
+# horilla_crm/leads/menu.py
 
+from horilla.menu import MAIN_CONTENT_HX_ATTRS, sub_section_menu
 from horilla.urls import reverse_lazy
 from horilla.utils.translation import gettext_lazy as _
-from horilla.menu import settings_menu
 
-@settings_menu.register
-class AutomationSettings:
-    """Settings group for the automation module."""
+@sub_section_menu.register
+class LeadSubSection:
+    """Registers the Leads link in the Sales sidebar."""
 
-    title = _("Automations")
-    icon = "/assets/icons/automation.svg"
-    order = 4
-    items = [
-        {
-            "label": _("Mail & Notifications"),
-            "url": reverse_lazy("horilla_automations:automation_view"),
-            "hx-target": "#settings-content",
-            "hx-push-url": "true",
-            "hx-select": "#automation-view",
-            "hx-select-oob": "#settings-sidebar",
-            "perm": "horilla_automation.view_horillaautomation",
-        },
-    ]
+    section = "sales"
+    app_label = "leads"
+    position = 1
+
+    verbose_name = _("Leads")
+    icon = "/assets/icons/leads.svg"
+
+    url = reverse_lazy("leads:leads_view")
+    attrs = MAIN_CONTENT_HX_ATTRS
+
+    perm = ["leads.view_lead", "leads.view_own_lead"]
 ```
 
 ### Step 2 — Add `"menu"` to `auto_import_modules` in `apps.py`
 
 ```python
-# horilla_automations/apps.py
+# horilla_crm/leads/apps.py
 
 from horilla.apps import AppLauncher
 from horilla.utils.translation import gettext_lazy as _
 
-class HorillaAutomationsConfig(AppLauncher):
-    """App configuration class for horilla_automations."""
-
+class LeadsConfig(AppLauncher):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "horilla_automations"
-    verbose_name = _("Automations")
+    name = "horilla_crm.leads"
+    verbose_name = _("Leads")
 
-    url_prefix = "automations/"
-    url_module = "horilla_automations.urls"
-    url_namespace = "horilla_automations"
+    url_prefix = "crm/"
+    url_module = "horilla_crm.leads.urls"
 
     auto_import_modules = [
         "registration",
-        "menu",       # ← triggers @settings_menu.register at startup
+        "menu",       # ← triggers @sub_section_menu.register at startup
         "signals",
     ]
 ```
 
-`AppLauncher.ready()` calls `_auto_import_modules()`, which runs:
-
-```python
-importlib.import_module("horilla_automations.menu")
-```
-
-This executes the `@settings_menu.register` decorator, appending `AutomationSettings` to `settings_registry` before the first request is served.
+`AppLauncher.ready()` imports `menu.py`, which executes the decorator and appends the class to the registry before the first request.
 
 ---
 
 ## 🧩 Class reference
 
-### Group attributes
+### Required attributes
+
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| `section` | `str` | Main section this item belongs to (must match a registered `main_section_menu` entry) |
+| `app_label` | `str` | Django app label — used for JS URL-to-sidebar matching |
+| `verbose_name` | `str` or lazy string | Visible sidebar link text |
+| `url` | `str` or `reverse_lazy(...)` | Navigation target URL |
+
+### Optional attributes
 
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `title` | `str` or lazy string | — | Collapsible accordion heading label |
-| `icon` | `str` | — | Static path to the group icon |
-| `items` | `list` | `[]` | List of item dicts (or callables) for this group |
-| `order` | `int` | not set | Controls group ordering in the sidebar |
-| `condition` | `bool` or `callable` | `True` | Group-level visibility — static flag or `def condition(request) -> bool` |
-
-### Item dict keys
-
-| Key | Type | Required | Description |
-|-----|------|----------|-------------|
-| `label` | `str` or lazy string | ✅ | Visible link text in the sidebar |
-| `url` | `str` or `reverse_lazy(...)` | ✅ | HTMX GET endpoint |
-| `perm` | `str` | ✅ | Django permission string — used for both group inclusion and template `{% has_perm %}` |
-| `order` | `int` | ❌ | Controls order within the group |
-| `condition` | `bool` or `callable` | ❌ | Item-level visibility |
-| `hx-target` | `str` | ❌ | CSS selector for HTMX swap target |
-| `hx-select` | `str` | ❌ | CSS selector to extract from the response |
-| `hx-select-oob` | `str` | ❌ | Out-of-band selector (e.g. refresh sidebar active state) |
-| `hx-push-url` | `str` | ❌ | Push the navigated URL to browser history |
-
-Any additional key in the item dict (other than `label` and `url`) is rendered verbatim as an HTML attribute on the `<a>` element.
-
-### Using a callable item
-
-When an item is a **function** rather than a dict, it is called with `request` at render time:
-
-```python
-@settings_menu.register
-class LeaveSettings:
-    title = _("Leave")
-    icon = "/assets/icons/leave.svg"
-    order = 2
-    items = [
-        {
-            "label": _("Leave Types"),
-            "url": reverse_lazy("leave:leave_type_view"),
-            "perm": "leave.view_leavetype",
-            "hx-target": "#settings-content",
-            "hx-select": "#leave-type-view",
-            "hx-select-oob": "#settings-sidebar",
-            "hx-push-url": "true",
-        },
-        lambda request: {
-            "label": _("Leave Allocation"),
-            "url": reverse_lazy("leave:leave_allocation_view"),
-            "perm": "leave.view_leaveallocation",
-            "hx-target": "#settings-content",
-            "hx-select": "#leave-allocation-view",
-            "hx-push-url": "true",
-        } if request.user.is_superuser else None,
-    ]
-```
-
-A callable item that returns `None` or a falsy value is silently skipped.
+| `id` | `str` | `app_label` | **HTML `id` on the `<a>` tag.** Set this when two items in the same section share the same `app_label` to avoid duplicate ids |
+| `icon` | `str` | `None` | Static path to the SVG icon |
+| `position` | `int` | `None` | Controls order within the section — items without a position appear last |
+| `perm` | `str` or `list[str]` | `[]` | Required permission(s). Empty list = always shown |
+| `all_perms` | `bool` | `False` | `True` = user must hold ALL permissions; `False` = at least one |
+| `css_class` | `str` | `"sidebar-link"` | CSS class on the `<a>` element |
+| `attrs` | `dict` | `{}` | Extra HTML attributes rendered on the `<a>` (HTMX, data attributes, etc.) |
 
 ---
 
-## 🔐 Filtering in detail
+## 🆔 The `id` attribute — disambiguation
 
-`get_settings_menu` applies filtering at **two levels**:
+The HTML `id` on each sidebar `<a>` element is what `SidebarManager` (in `global.js`) uses to track which link is active. It **must be unique** across all items rendered in the same sidebar.
 
-### Group-level filtering
-
-```python
-# Static — group always hidden
-condition = False
-
-# Dynamic — show only for superusers
-def condition(self, request):
-    return request.user.is_superuser
-```
-
-### Item-level filtering
+By default `id` falls back to `app_label`. This is fine when every sub-section item has a distinct `app_label`. When two items belong to the same Django app (same `app_label`), you must explicitly set `id` on at least one of them:
 
 ```python
-# Static — item always hidden
-{
-    "label": _("Beta Feature"),
-    "condition": False,
-    ...
-}
+# Both items are in the "leads" Django app
 
-# Dynamic — item shown only in debug mode
-{
-    "label": _("Debug Panel"),
-    "condition": lambda request: settings.DEBUG,
-    ...
-}
+@sub_section_menu.register
+class LeadSubSection:
+    section = "sales"
+    app_label = "leads"       # id defaults to "leads"
+    position = 1
+    verbose_name = _("Leads")
+    url = reverse_lazy("leads:leads_view")
+    attrs = MAIN_CONTENT_HX_ATTRS
+    perm = ["leads.view_lead", "leads.view_own_lead"]
+
+
+@sub_section_menu.register
+class LeadTestBlankSubSection:
+    section = "sales"
+    app_label = "leads"           # same Django app
+    id = "leads-test-blank"       # ← explicit unique id prevents duplicate HTML ids
+    position = 2
+    verbose_name = _("Test Blank")
+    url = reverse_lazy("leads:leads_test_blank")
+    attrs = MAIN_CONTENT_HX_ATTRS
 ```
 
-### Group permission check — `has_any_perms`
+Without the explicit `id`, both `<a>` elements would render with `id="leads"`, causing `SidebarManager` to activate both simultaneously when navigating to either URL.
 
-After items are filtered, `perm` strings from surviving items are collected and the group is shown only if:
+---
+
+## 🔐 Permission filtering in detail
 
 ```python
-request.user.has_any_perms(perm_list)  # at least ONE perm is held
+# Any one permission is enough (default)
+perm = ["leads.view_lead", "leads.view_own_lead"]
+
+# User must hold ALL permissions
+perm = ["leads.view_lead", "leads.view_own_lead"]
+all_perms = True
+
+# Always visible (no permission check)
+perm = []
 ```
 
-This contrasts with `floating_menu` which uses `has_perms` (ALL perms required). In settings, a user who can access *any one* item in a group sees the group; items they cannot access are then hidden individually by `{% has_perm %}` in the template.
+### Filtering table
 
-### Combined group filtering table
-
-| `condition` | Has any item `perm` | Authenticated | Group included? |
-|-------------|---------------------|---------------|-----------------|
-| `True` / omitted | ✅ At least one | ✅ | ✅ Included |
-| `True` / omitted | ❌ None | Any | ❌ Excluded |
-| `False` | Any | Any | ❌ Excluded |
-| `callable` → `True` | ✅ At least one | ✅ | ✅ Included |
-| `callable` → `False` | Any | Any | ❌ Excluded |
-| Any | Any | ❌ Unauthenticated | ❌ Excluded |
+| `perm` | `all_perms` | User state | Item included? |
+|--------|-------------|------------|----------------|
+| `[]` (empty) | Any | Any | ✅ Always |
+| `["a", "b"]` | `False` | Has `a` OR `b` | ✅ |
+| `["a", "b"]` | `False` | Has neither | ❌ |
+| `["a", "b"]` | `True` | Has both | ✅ |
+| `["a", "b"]` | `True` | Has only `a` | ❌ |
+| Any | Any | Unauthenticated | ❌ |
 
 ---
 
@@ -462,47 +378,37 @@ This contrasts with `floating_menu` which uses `has_perms` (ALL perms required).
 
 | Avoid | Prefer |
 |-------|--------|
-| Hardcoding settings groups in the template | Register via `@settings_menu.register` in the app's `menu.py` |
+| Hardcoding sidebar links in `sub_sidebar.html` | Register via `@sub_section_menu.register` in the app's `menu.py` |
 | Omitting `"menu"` from `auto_import_modules` | Always include `"menu"` so the decorator runs at startup |
-| Bare strings for `title` or item `label` | Use `_("Text")` / `gettext_lazy` so labels are translatable |
-| Omitting `perm` from item dicts | Always set `perm` — it drives both group visibility and the template `{% has_perm %}` check |
-| Leaving `order` unset when position matters | Set explicit integers on both groups and items |
-| Using `has_perms` logic (all required) | Settings uses `has_any_perms` — the user only needs one item's permission to see the group |
-
----
-
-## 🧩 Benefits
-
-- **Two-level structure** — groups with collapsible items map directly to the accordion UI without any template changes
-- **Decoupled** — apps contribute their own settings groups; core templates require no changes
-- **Flexible filtering** — `condition` (static or callable) at both group and item level, plus `has_any_perms` for group access
-- **HTMX-ready** — arbitrary HTMX attributes flow directly from item dicts to the rendered `<a>` elements
-- **Double permission safety** — Python filters groups; the template's `{% has_perm %}` tag filters individual items within a visible group
+| Bare strings for `verbose_name` | Use `_("Text")` / `gettext_lazy` so labels are translatable |
+| Two items with the same `app_label` and no explicit `id` | Set `id = "unique-slug"` on the second item to prevent duplicate HTML ids |
+| Omitting `section` | Every item must declare which main section it belongs to |
+| Referencing a section not in `main_section_menu` | Register the section first via `@main_section_menu.register` |
 
 ---
 
 ## 📌 Summary
 
-| Feature | Without `settings_menu` | With `settings_menu` |
-|---------|--------------------------|----------------------|
-| Group definition | Edit core settings template | Define class in app's `menu.py` |
-| Item definition | Hardcoded HTML links | Dicts in the class `items` list |
-| Group permission check | Manual `{% if perms... %}` | `has_any_perms` in `get_settings_menu` |
-| Item permission check | Manual `{% if perms... %}` | Declarative `perm` key + template `{% has_perm %}` |
-| Conditional visibility | Ad-hoc template logic | Declarative `condition` at group and item level |
-| Ordering | Manual HTML position | Declarative `order` on groups and items |
-| HTMX attributes | Hardcoded in HTML | Declared in item dicts |
+| Feature | Without `sub_section_menu` | With `sub_section_menu` |
+|---------|---------------------------|------------------------|
+| Link definition | Edit `sub_sidebar.html` | Define class in app's `menu.py` |
+| Permission check | Manual `{% if perms... %}` | Declarative `perm` on the class |
+| Ordering | Manual HTML position | Declarative `position` integer |
+| HTMX attributes | Hardcoded in HTML | Declared in `attrs` dict |
+| HTML id uniqueness | Manual | `id` attribute (falls back to `app_label`) |
+| Section grouping | Template conditionals | Declarative `section` attribute |
 | Context availability | Manual view injection | Auto via `menu_context_processor` |
 
 ---
 
 ## 🏁 Conclusion
 
-The `horilla.menu.settings_menu` module:
+The `horilla.menu.sub_section_menu` module:
 
-- Provides a **decorator-based registry** so any app can add a collapsible settings group to the sidebar without touching shared templates
-- Applies **two-level filtering** — condition and `has_any_perms` at the group level, condition at the item level, and `{% has_perm %}` again in the template
-- Sorts both **groups** and **items within groups** by an explicit `order` integer
-- Passes **arbitrary HTML attributes** (including HTMX directives) straight from item dicts to the rendered `<a>` elements
+- Provides a **decorator-based registry** so any app can add a link to the main sidebar without touching shared templates
+- Applies **per-item permission filtering** — `any` mode by default, `all` mode with `all_perms = True`
+- Sorts items within each section by an explicit `position` integer
+- Passes **arbitrary HTML attributes** (including HTMX directives) straight from `attrs` to the rendered `<a>` elements
+- Renders a **unique HTML `id`** per item via the `id` attribute (falls back to `app_label`) so `SidebarManager` can track the active state correctly — set `id` explicitly whenever two items share the same `app_label`
 
-Register in `menu.py`, add `"menu"` to `auto_import_modules`, and the settings group appears in the correct position in the sidebar for every user who holds at least one of its item permissions.
+Register in `menu.py`, add `"menu"` to `auto_import_modules`, and the sidebar link appears in the correct section and position for every permitted user.

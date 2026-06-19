@@ -44,7 +44,7 @@
                         {% if not item.perm or request.user|has_super_user:item.perm %}
                             <li class="subSidebarItem">
                                 <a
-                                    id="{{ item.app_label }}"
+                                    id="{{ item.id }}"
                                     href="{{ item.url }}?section={{ current_section }}"
                                     data-section="{{ current_section }}"
                                     {% for attr, value in item.attrs.items %}
