@@ -66,7 +66,7 @@ class ShortcutKeyForm(HorillaModelForm):
                 choices.append((url, name))
 
         sub_sections = sub_section_menu.get_sub_section_menu(request)
-        for _, items in sub_sections.items():
+        for _section, items in sub_sections.items():
             for item in items:
                 app_label = item.get("app_label")
                 label = item.get("label")
