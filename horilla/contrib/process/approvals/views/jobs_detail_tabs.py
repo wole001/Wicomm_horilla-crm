@@ -136,7 +136,7 @@ class ApprovalJobDetailTabView(LoginRequiredMixin, HorillaTabView):
     """Tab container view for the approval job detail page."""
 
     view_id = "approval-job-detail-tab-view"
-    tab_class = "h-[calc(_100vh_-_300px_)] overflow-hidden"
+    tab_class = "h-[calc(_100vh_-_400px_)] overflow-hidden"
 
     def dispatch(self, request, *args, **kwargs):
         """Ensure the user is authenticated before rendering tabs."""
