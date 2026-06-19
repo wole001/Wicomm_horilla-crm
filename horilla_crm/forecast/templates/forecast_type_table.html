@@ -30,10 +30,10 @@
         </button>
     </div>
     <div id="forecast-table" class="h-[calc(_100vh_-_330px_)] overflow-x-auto overflow-y-auto">
-        <table class="min-w-max w-full whitespace-nowrap h-full">
+        <table class="min-w-max w-full whitespace-nowrap h-full border-separate border-spacing-0">
             <thead class="sticky top-0 bg-primary-100 text-primary-600 z-30">
                 <tr>
-                    <th class="sticky left-0 z-30 bg-primary-100 text-[13px] font-bold rounded-md text-left p-3">
+                    <th class="sticky left-0 z-30 bg-primary-100 text-[13px] font-bold text-left p-3 w-[200px] min-w-[200px] whitespace-nowrap">
                         {% trans "Period" %}
                     </th>
                     <th class="text-[13px] font-bold text-left p-3">{% trans "Target" %}</th>
@@ -47,7 +47,7 @@
             </thead>
             <tbody class="bg-white">
                 <tr class="bg-gray-100 font-bold sticky top-[43px] z-30">
-                    <td class="sticky left-0 z-40 bg-gray-100 text-[13px] border-[1px] border-[solid] border-[#dddddd] text-left p-3">
+                    <td class="sticky left-0 z-40 bg-gray-100 text-[13px] border border-[#dddddd] text-left p-3 w-[200px] min-w-[200px] whitespace-nowrap">
                         <div class="flex items-center gap-2">
                             <span class="font-bold">{% trans "Total" %} ({{ forecasts|length }}
                                 {% trans "Periods" %})</span>
@@ -197,36 +197,24 @@
 
                 {% for forecast in forecasts %}
                     <tr class="period-main-row">
-                        <td class="sticky left-0 z-10 bg-white text-[13px] border-[1px] border-[solid] border-[#dddddd] text-left p-3">
+                        <td class="sticky left-0 z-10 bg-white text-[13px] border border-[#dddddd] text-left p-3 w-[200px] min-w-[200px] whitespace-nowrap">
                             {% if request.GET.user_id %}
                                 {% if forecast.period %}
-                                    {% if forecast.period.quarter.fiscal_year.fiscal_year_config.fiscal_year_type == "standard" %}
-                                        {% trans "Period" %} {{ forecast.period.get_display_period_number }}
+                                    <div class="flex flex-col gap-0.5">
+                                        <div class="flex items-center gap-1 flex-wrap">
+                                            {% if forecast.period.quarter.fiscal_year.fiscal_year_config.fiscal_year_type == "standard" %}
+                                                <span class="font-medium">{% trans "Period" %} {{ forecast.period.get_display_period_number }}</span>
+                                            {% else %}
+                                                <span class="font-medium">{{ forecast.period.name }}</span>
+                                            {% endif %}
+                                            {% if forecast.period.is_current %}
+                                                <span class="inline-flex items-center px-1 py-px text-[9px] font-semibold rounded-full bg-primary-300 text-primary-600 border border-primary-600 leading-none">{% trans "Current" %}</span>
+                                            {% endif %}
+                                        </div>
                                         {% if forecast.period.start_date and forecast.period.end_date %}
-                                            - ({{ forecast.period.start_date|user_datetime_format }} -
-                                            {{ forecast.period.end_date|user_datetime_format }})
+                                            <span class="text-[11px] text-gray-500">{{ forecast.period.start_date|user_datetime_format }} – {{ forecast.period.end_date|user_datetime_format }}</span>
                                         {% endif %}
-                                        {% if forecast.period.is_current %}
-                                            <span
-                                                class="ml-1 inline-flex items-center px-2 py-0.5 text-[11px] font-semibold rounded-full bg-primary-300 text-primary-600 border border-primary-600"
-                                            >
-                                                {% trans "Current" %}
-                                            </span>
-                                        {% endif %}
-                                    {% else %}
-                                        {{ forecast.period.name }}
-                                        {% if forecast.period.start_date and forecast.period.end_date %}
-                                            ({{ forecast.period.start_date|user_datetime_format }} -
-                                            {{ forecast.period.end_date|user_datetime_format }})
-                                        {% endif %}
-                                        {% if forecast.period.is_current %}
-                                            <span
-                                                class="ml-1 inline-flex items-center px-2 py-0.5 text-[11px] font-semibold rounded-full bg-primary-300 text-primary-600 border border-primary-600"
-                                            >
-                                                {% trans "Current" %}
-                                            </span>
-                                        {% endif %}
-                                    {% endif %}
+                                    </div>
                                 {% elif forecast.quarter %}
                                     {{ forecast.quarter.name }}
                                 {% else %}
@@ -234,13 +222,13 @@
                                 {% endif %}
                             {% else %}
                                 <button
-                                    class="flex items-center gap-2 w-full text-left hover:bg-gray-50 p-1 rounded"
+                                    class="flex items-start gap-2 w-full text-left hover:bg-gray-50 p-1 rounded"
                                     onclick="togglePeriod('period-{{ forecast_type.id }}-{{ forecast.id }}')"
                                     type="button"
                                 >
                                     <svg
                                         id="arrow-{{ forecast_type.id }}-{{ forecast.id }}"
-                                        class="w-3 h-3 transform transition-transform duration-200"
+                                        class="w-3 h-3 mt-0.5 shrink-0 transform transition-transform duration-200"
                                         fill="currentColor"
                                         viewBox="0 0 20 20"
                                     >
@@ -251,33 +239,21 @@
                                         />
                                     </svg>
                                     {% if forecast.period %}
-                                        {% if forecast.period.quarter.fiscal_year.fiscal_year_config.fiscal_year_type == "standard" %}
-                                            {% trans "Period" %} {{ forecast.period.get_display_period_number }}
+                                        <div class="flex flex-col gap-0.5">
+                                            <div class="flex items-center gap-1 flex-wrap">
+                                                {% if forecast.period.quarter.fiscal_year.fiscal_year_config.fiscal_year_type == "standard" %}
+                                                    <span class="font-medium">{% trans "Period" %} {{ forecast.period.get_display_period_number }}</span>
+                                                {% else %}
+                                                    <span class="font-medium">{{ forecast.period.name }}</span>
+                                                {% endif %}
+                                                {% if forecast.period.is_current %}
+                                                    <span class="inline-flex items-center px-1 py-px text-[9px] font-semibold rounded-full bg-primary-300 text-primary-600 border border-primary-600 leading-none">{% trans "Current" %}</span>
+                                                {% endif %}
+                                            </div>
                                             {% if forecast.period.start_date and forecast.period.end_date %}
-                                                - ({{ forecast.period.start_date|user_datetime_format }} -
-                                                {{ forecast.period.end_date|user_datetime_format }})
+                                                <span class="text-[11px] text-gray-500">{{ forecast.period.start_date|user_datetime_format }} – {{ forecast.period.end_date|user_datetime_format }}</span>
                                             {% endif %}
-                                            {% if forecast.period.is_current %}
-                                                <span
-                                                    class="ml-1 inline-flex items-center px-2 py-0.5 text-[11px] font-semibold rounded-full bg-primary-300 text-primary-600 border border-primary-600"
-                                                >
-                                                    {% trans "Current" %}
-                                                </span>
-                                            {% endif %}
-                                        {% else %}
-                                            {{ forecast.period.name }}
-                                            {% if forecast.period.start_date and forecast.period.end_date %}
-                                                ({{ forecast.period.start_date|user_datetime_format }} -
-                                                {{ forecast.period.end_date|user_datetime_format }})
-                                            {% endif %}
-                                            {% if forecast.period.is_current %}
-                                                <span
-                                                    class="ml-1 inline-flex items-center px-2 py-0.5 text-[11px] font-semibold rounded-full bg-primary-300 text-primary-600 border border-primary-600"
-                                                >
-                                                    {% trans "Current" %}
-                                                </span>
-                                            {% endif %}
-                                        {% endif %}
+                                        </div>
                                     {% elif forecast.quarter %}
                                         {{ forecast.quarter.name }}
                                     {% else %}
@@ -524,7 +500,7 @@
                                         hx-indicator="#loadingIndicator-{{ forecast_type.id }}-{{ forecast.view_id }}"
                                     {% endif %}
                                 >
-                                    <td class="sticky left-0 z-10 bg-gray-50 text-[13px] border-[1px] border-[solid] border-[#dddddd] text-left p-3 pl-8">
+                                    <td class="sticky left-0 z-10 bg-gray-50 text-[13px] border border-[#dddddd] text-left p-3 pl-8 w-[200px] min-w-[200px] whitespace-nowrap">
                                         <div class="flex items-center gap-2">
                                             <div class="w-6 h-6 rounded-full flex items-center justify-center">
                                                 <svg
