@@ -147,7 +147,7 @@ class ActivityStatusUpdateView(LoginRequiredMixin, View):
         tab_map = {
             "task": "tab-tasks",
             "meeting": "tab-meetings",
-            "log_call": "tab-call",
+            "log_call": "tab-calls",
             "event": "tab-events",
         }
         sub_tab = "completed" if status == "completed" else "pending"

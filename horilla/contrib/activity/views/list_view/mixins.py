@@ -162,6 +162,17 @@ class GlobalTypeListMixin:
     bulk_update_fields = ["status"]
     actions = COMMON_ACTIONS
 
+    def get_main_url(self):
+        """
+        Return the outer shell URL so the filter panel's hx-select="#mainSession"
+        finds the element it needs. The shell (ActivityView / HorillaView) renders
+        base.html which contains #mainSession, and it forwards all GET params
+        (including apply_filter) to the tabbed list view.
+        """
+        from horilla.urls import reverse_lazy as _reverse_lazy
+
+        return _reverse_lazy("activity:activity_view")
+
     @cached_property
     def col_attrs(self):
         """Return col_attrs with HTMX attrs for navigating to the activity detail."""

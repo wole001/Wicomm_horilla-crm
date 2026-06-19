@@ -41,10 +41,6 @@ class GlobalTaskListView(GlobalTypeListMixin, LoginRequiredMixin, HorillaListVie
         """Return the search URL for the global task list."""
         return reverse_lazy("activity:global_task_list")
 
-    def get_main_url(self):
-        """Return the main URL for the activity tabbed view."""
-        return reverse_lazy("activity:activity_tabbed_view")
-
 
 @method_decorator(htmx_required, name="dispatch")
 @method_decorator(
@@ -71,10 +67,6 @@ class GlobalMeetingListView(GlobalTypeListMixin, LoginRequiredMixin, HorillaList
     def get_search_url(self):
         """Return the search URL for the global meeting list."""
         return reverse_lazy("activity:global_meeting_list")
-
-    def get_main_url(self):
-        """Return the main URL for the activity tabbed view."""
-        return reverse_lazy("activity:activity_tabbed_view")
 
 
 @method_decorator(htmx_required, name="dispatch")
@@ -103,10 +95,6 @@ class GlobalCallListView(GlobalTypeListMixin, LoginRequiredMixin, HorillaListVie
         """Return the search URL for the global call list."""
         return reverse_lazy("activity:global_call_list")
 
-    def get_main_url(self):
-        """Return the main URL for the activity tabbed view."""
-        return reverse_lazy("activity:activity_tabbed_view")
-
 
 @method_decorator(htmx_required, name="dispatch")
 @method_decorator(
@@ -133,7 +121,3 @@ class GlobalEventListView(GlobalTypeListMixin, LoginRequiredMixin, HorillaListVi
     def get_search_url(self):
         """Return the search URL for the global event list."""
         return reverse_lazy("activity:global_event_list")
-
-    def get_main_url(self):
-        """Return the main URL for the activity tabbed view."""
-        return reverse_lazy("activity:activity_tabbed_view")
