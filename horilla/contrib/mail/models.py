@@ -253,6 +253,17 @@ class HorillaMail(HorillaCoreModel):
         max_length=255, blank=True, null=True, verbose_name=_("Subject")
     )
     body = models.TextField(blank=True, null=True, verbose_name=_("Body"))
+    rendered_subject = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text=_("Rendered subject saved at send time."),
+    )
+    rendered_body = models.TextField(
+        blank=True,
+        null=True,
+        help_text=_("Rendered body saved at send time."),
+    )
     content_type = models.ForeignKey(HorillaContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     related_to = models.GenericForeignKey("content_type", "object_id")

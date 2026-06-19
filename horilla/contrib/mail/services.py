@@ -72,6 +72,12 @@ class HorillaMailManager:
             subject = mail.render_subject(context)
             body = mail.render_body(context)
 
+            # Persist the rendered snapshot immediately so the preview always
+            # shows exactly what was sent, regardless of who views it later.
+            mail.rendered_subject = subject
+            mail.rendered_body = body
+            mail.save(update_fields=["rendered_subject", "rendered_body"])
+
             to = [
                 email.strip() for email in (mail.to or "").split(",") if email.strip()
             ]
