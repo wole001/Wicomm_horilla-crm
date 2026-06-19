@@ -711,13 +711,20 @@ class ActivityDeleteView(HorillaSingleDeleteView):
         TAB_MAP = {
             "task": "tab-tasks",
             "meeting": "tab-meetings",
-            "log_call": "tab-call",
+            "log_call": "tab-calls",
             "event": "tab-events",
         }
         if activity_type in TAB_MAP:
             tab_id = TAB_MAP[activity_type]
             return HttpResponse(
-                f"<script>localStorage.setItem('horilla_active_activity_tab', '{tab_id}');</script>"
+                f"<script>"
+                f"(function(){{"
+                f"var $globalTab = $('#{tab_id}');"
+                f"if ($globalTab.length) {{ htmx.trigger($globalTab[0],'click'); return; }}"
+                f"localStorage.setItem('horilla_active_activity_tab','{tab_id}');"
+                f"$('#reloadButton').click();"
+                f"}})();"
+                f"</script>"
             )
 
         return HttpResponse("<script>$('#reloadButton').click();</script>")
