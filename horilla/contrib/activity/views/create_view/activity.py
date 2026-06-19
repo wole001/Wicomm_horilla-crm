@@ -364,7 +364,8 @@ class ActivityCreateView(LoginRequiredMixin, HorillaSingleFormView):
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
-        is_meeting = form.cleaned_data.get("activity_type") == "meeting"
+        activity_type = form.cleaned_data.get("activity_type")
+        is_meeting = activity_type == "meeting"
         if is_meeting:
             self._prepare_meeting_activity(form)
         if self._is_calendar_request():
@@ -372,9 +373,21 @@ class ActivityCreateView(LoginRequiredMixin, HorillaSingleFormView):
                 "<script>$('#reloadMainContent').click();closeModal();</script>"
             )
         else:
-            self.return_response = HttpResponse(
-                "<script>$('#reloadButton').click();closeModal();</script>"
-            )
+            TAB_MAP = {
+                "task": "tab-tasks",
+                "meeting": "tab-meetings",
+                "log_call": "tab-calls",
+                "event": "tab-events",
+            }
+            tab_id = TAB_MAP.get(activity_type)
+            if tab_id:
+                self.return_response = HttpResponse(
+                    f"<script>htmx.trigger('#{tab_id}','click');closeModal();</script>"
+                )
+            else:
+                self.return_response = HttpResponse(
+                    "<script>$('#reloadButton').click();closeModal();</script>"
+                )
         response = super().form_valid(form)
         if is_meeting:
             self._after_meeting_activity_save(form)
