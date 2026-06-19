@@ -6,6 +6,7 @@ This module defines the HorillaAttachment model,
 import logging
 
 # First party imports (Horilla)
+from horilla.contrib.utils.methods import sanitize_html, sanitize_plain_text
 from horilla.db import models
 from horilla.urls import reverse_lazy
 from horilla.utils.translation import gettext_lazy as _
@@ -62,6 +63,18 @@ class HorillaAttachment(HorillaCoreModel):
 
         verbose_name = _("Attachment")
         verbose_name_plural = _("Attachments")
+
+    def clean(self):
+        """Sanitize rich-text notes and plain-text title to prevent XSS."""
+        if self.title:
+            self.title = sanitize_plain_text(self.title)
+        if self.description:
+            self.description = sanitize_html(self.description)
+
+    def save(self, *args, **kwargs):
+        """Ensure clean() runs on every save path, including admin and API."""
+        self.clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         """
