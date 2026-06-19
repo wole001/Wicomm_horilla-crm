@@ -143,6 +143,7 @@ class MeetingIntegrationSettingsView(LoginRequiredMixin, View):
         return self._render(request)
 
 
+@method_decorator(htmx_required, name="dispatch")
 class MeetingAllowedUsersListView(LoginRequiredMixin, HorillaListView):
     """HorillaListView — allowed users for meeting integration (read-only modal)."""
 
@@ -189,6 +190,7 @@ class MeetingAllowedUsersListView(LoginRequiredMixin, HorillaListView):
         return context
 
 
+@method_decorator(htmx_required, name="dispatch")
 class MeetingAllowedRolesListView(LoginRequiredMixin, HorillaListView):
     """HorillaListView — allowed roles for meeting integration (read-only modal)."""
 
