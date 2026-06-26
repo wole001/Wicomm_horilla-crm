@@ -84,7 +84,7 @@ class ShortKeyNavbar(LoginRequiredMixin, HorillaNavView):
             "keys.add_own_shortcutkey"
         ) or self.request.user.has_perm("keys.create_shortcutkey"):
             return {
-                "url": f"""{ reverse_lazy('keys:short_key_create')}?new=true""",
+                "url": f"""{reverse_lazy("keys:short_key_create")}?new=true""",
                 "attrs": {"id": "short-key-create"},
             }
         return None

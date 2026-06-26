@@ -398,7 +398,6 @@ class CadenceCallListView(LoginRequiredMixin, HorillaListView):
         followup_ids = [row.pk for row in rows]
         stats_map = {}
         if followup_ids:
-
             now = timezone.now()
             followup_stats = (
                 Activity.objects.filter(

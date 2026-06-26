@@ -142,21 +142,21 @@ def execute_automation_task(
         setattr(_thread_local, "request", mock_request)
 
         try:
-
             if instance is None and trigger_type == "on_delete":
                 automations = HorillaAutomation.objects.filter(
                     model=content_type, trigger="on_delete"
                 )
                 for automation in automations:
                     try:
-
                         minimal_instance = type(
                             "DeletedInstance",
                             (),
                             {
                                 "pk": object_id,
                                 "_meta": model_class._meta,
-                                "__str__": lambda self: f"Deleted {model_class.__name__} {object_id}",
+                                "__str__": lambda self: (
+                                    f"Deleted {model_class.__name__} {object_id}"
+                                ),
                             },
                         )()
                         # Execute without condition check for delete

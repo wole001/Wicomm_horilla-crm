@@ -79,7 +79,6 @@ class HomePageView(LoginRequiredMixin, TemplateView):
     def render_dashboard_as_home(self, request, dashboard):
         """Render the specified dashboard as the home page."""
         try:
-
             detail_view = DashboardDetailView()
             detail_view.request = request
             detail_view.object = dashboard

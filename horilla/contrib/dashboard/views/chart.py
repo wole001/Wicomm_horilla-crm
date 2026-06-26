@@ -214,7 +214,6 @@ class DashboardComponentChartView(View):
                 ]
 
                 for condition in conditions:
-
                     operator = (
                         "exact"
                         if condition.operator == "equals"

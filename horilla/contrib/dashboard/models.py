@@ -396,7 +396,6 @@ class DashboardComponent(HorillaCoreModel):
         try:
             if isinstance(self.columns, str):
                 if self.columns.startswith("["):
-
                     return json.loads(self.columns)
                 return [col.strip() for col in self.columns.split(",") if col.strip()]
             if isinstance(self.columns, list):

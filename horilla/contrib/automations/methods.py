@@ -776,7 +776,6 @@ def send_automation_notification(automation, instance, recipients, context, user
             with transaction.atomic():
                 for notification_user in users_to_notify:
                     try:
-
                         notification = create_notification(
                             user=notification_user,
                             message=notification_message,

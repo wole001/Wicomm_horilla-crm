@@ -266,7 +266,6 @@ def create_prepare_tabs_with_duplicate_tab(original_prepare_tabs):
             if hasattr(self, "model") and self.model:
                 model = self.model
             else:
-
                 duplicate_rule_content_types = DuplicateRule.objects.values_list(
                     "content_type", flat=True
                 ).distinct()

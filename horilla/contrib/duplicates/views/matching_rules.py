@@ -77,7 +77,7 @@ class MatchingRuleNavView(LoginRequiredMixin, HorillaNavView):
         """New button configuration for the navbar."""
         if self.request.user.has_perm("duplicates.add_matchingrule"):
             return {
-                "url": f"""{reverse_lazy('duplicates:matching_rule_create_view')}?new=true""",
+                "url": f"""{reverse_lazy("duplicates:matching_rule_create_view")}?new=true""",
                 "attrs": {"id": "matching-rule-create"},
             }
         return None
@@ -249,7 +249,6 @@ class MatchingRuleCriteriaFieldChoicesView(LoginRequiredMixin, View):
                             "company",
                             "additional_info",
                         ]:
-
                             continue
                         # Allow normal fields + ForeignKey/OneToOne
                         if getattr(field, "concrete", False) or isinstance(

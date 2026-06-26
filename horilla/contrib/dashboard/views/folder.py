@@ -223,7 +223,7 @@ class FolderDetailListView(LoginRequiredMixin, HorillaListView):
             if request.headers.get("HX-Request") == "true":
                 messages.error(self.request, e)
                 return RefreshResponse(request)
-            raise HttpNotFound(e)
+            raise HttpNotFound(e) from e
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):

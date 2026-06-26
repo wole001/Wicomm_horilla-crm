@@ -99,7 +99,7 @@ class HorillaAutomationNavbar(LoginRequiredMixin, HorillaNavView):
         """New button configuration for the navbar."""
         if self.request.user.has_perm("automations.add_horillaautomation"):
             return {
-                "url": f"""{reverse_lazy('automations:automation_create_view')}?new=true""",
+                "url": f"""{reverse_lazy("automations:automation_create_view")}?new=true""",
                 "attrs": {"id": "automation-create"},
             }
         return None
@@ -113,7 +113,7 @@ class HorillaAutomationNavbar(LoginRequiredMixin, HorillaNavView):
                     "action": _("Load Automation"),
                     "attrs": f"""
                             id="automation-load"
-                            hx-get="{reverse_lazy('automations:load_automation')}"
+                            hx-get="{reverse_lazy("automations:load_automation")}"
                             hx-on:click="openModal();"
                             hx-target="#modalBox"
                             hx-swap="innerHTML"
@@ -157,7 +157,7 @@ class HorillaAutomationListView(LoginRequiredMixin, HorillaListView):
         """Return configuration for the 'no records' Load Automation button when permitted."""
         if self.request.user.has_perm("automations.add_horillaautomation"):
             return {
-                "url": f"""{reverse_lazy('automations:load_automation')}?new=true""",
+                "url": f"""{reverse_lazy("automations:load_automation")}?new=true""",
                 "attrs": 'id="automation-load"',
                 "title": _("Load Automation"),
             }

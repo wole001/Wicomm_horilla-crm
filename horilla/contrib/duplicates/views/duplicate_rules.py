@@ -70,7 +70,7 @@ class DuplicateRuleNavView(LoginRequiredMixin, HorillaNavView):
         """New button configuration for the navbar."""
         if self.request.user.has_perm("duplicates.add_duplicaterule"):
             return {
-                "url": f"""{reverse_lazy('duplicates:duplicate_rule_create_view')}?new=true""",
+                "url": f"""{reverse_lazy("duplicates:duplicate_rule_create_view")}?new=true""",
                 "attrs": {"id": "duplicate-rule-create"},
             }
         return None

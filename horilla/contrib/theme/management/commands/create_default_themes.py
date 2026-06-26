@@ -52,7 +52,7 @@ class Command(BaseCommand):
             except Exception as e:
                 self.stdout.write(
                     self.style.ERROR(
-                        f'✗ Error creating theme {theme_data["name"]}: {str(e)}'
+                        f"✗ Error creating theme {theme_data['name']}: {str(e)}"
                     )
                 )
 

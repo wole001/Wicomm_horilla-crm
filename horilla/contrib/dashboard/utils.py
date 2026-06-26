@@ -419,14 +419,12 @@ class DefaultDashboardGenerator:
             return queryset
 
         if has_view_own:
-
             if hasattr(model_class, "company") and self.company:
                 queryset = queryset.filter(company=self.company)
 
             if hasattr(model_class, "OWNER_FIELDS"):
                 owner_fields = model_class.OWNER_FIELDS
                 if owner_fields and len(owner_fields) > 0:
-
                     q_objects = Q()
                     for field_name in owner_fields:
                         if hasattr(model_class, field_name):

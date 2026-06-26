@@ -1,4 +1,4 @@
-﻿"""
+"""
 Forms for the cadences app
 """
 

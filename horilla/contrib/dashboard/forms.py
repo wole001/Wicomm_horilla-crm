@@ -212,7 +212,6 @@ class DashboardCreateForm(HorillaModelForm):
         if component_type != "kpi":
             hide_fields(["icon", "metric_type"], nullify=nullify_values)
         else:
-
             if "metric_type" in self.fields:
                 model = None
 
