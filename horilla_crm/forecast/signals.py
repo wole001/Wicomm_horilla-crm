@@ -138,7 +138,6 @@ def update_forecast_on_opportunity_save(sender, instance, created, **kwargs):
             )
 
             if owner_changed:
-
                 # Old owner - remove from their forecast
                 if (
                     instance._old_owner
@@ -175,7 +174,6 @@ def update_forecast_on_opportunity_save(sender, instance, created, **kwargs):
             )
 
             if close_date_changed and not owner_changed:
-
                 if instance.owner:
                     owners_to_update.add(instance.owner)
 

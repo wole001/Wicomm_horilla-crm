@@ -478,7 +478,6 @@ class Opportunity(HorillaCoreModel):
             if probability < 10:
                 self.forecast_category = "pipeline"
             elif 10 <= probability <= 40:
-
                 self.forecast_category = "pipeline"
             elif 41 <= probability <= 70:
                 self.forecast_category = "best_case"

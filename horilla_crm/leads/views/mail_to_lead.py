@@ -63,7 +63,7 @@ class MailToLeadNavbar(LoginRequiredMixin, HorillaNavView):
         """New button configuration"""
         if self.request.user.has_perm("leads.add_emailtoleadconfig"):
             return {
-                "url": f"""{ reverse_lazy('leads:mail_to_lead_create_view')}?new=true""",
+                "url": f"""{reverse_lazy("leads:mail_to_lead_create_view")}?new=true""",
                 "attrs": {"id": "mail-to-lead-create"},
             }
         return None
@@ -93,7 +93,7 @@ class MailToLeadListView(LoginRequiredMixin, HorillaListView):
         """Button to show when no records exist"""
         if self.request.user.has_perm("leads.add_emailtoleadconfig"):
             return {
-                "url": f"""{ reverse_lazy('leads:mail_to_lead_create_view')}?new=true""",
+                "url": f"""{reverse_lazy("leads:mail_to_lead_create_view")}?new=true""",
                 "attrs": 'id="mail-to-lead-create"',
             }
         return None

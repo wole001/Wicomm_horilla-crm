@@ -1,4 +1,4 @@
-﻿"""
+"""
 Forms for managing campaigns and campaign members.
 Includes multi-step campaign forms, member assignment forms, and child campaign selection forms.
 Handles dynamic field visibility and validation to maintain campaign integrity.

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Forms for the Accounts app.
 
 Includes forms for creating/editing accounts and assigning child accounts,

@@ -141,7 +141,7 @@ class OpportunityListView(LoginRequiredMixin, HorillaListView):
             "opportunities.add_opportunity"
         ) or self.request.user.has_perm("opportunities.add_own_opportunity"):
             return {
-                "url": f"""{ reverse_lazy('opportunities:opportunity_create')}?new=true""",
+                "url": f"""{reverse_lazy("opportunities:opportunity_create")}?new=true""",
                 "attrs": 'id="opportunity-create"',
             }
         return None

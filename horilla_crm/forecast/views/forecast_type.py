@@ -69,7 +69,7 @@ class ForecastTypeNavbar(LoginRequiredMixin, HorillaNavView):
 
         if self.request.user.has_perm("forecast.add_forecasttype"):
             return {
-                "url": f"""{ reverse_lazy('forecast:forecast_type_create_form_view')}""",
+                "url": f"""{reverse_lazy("forecast:forecast_type_create_form_view")}""",
                 "attrs": {"id": "type-create"},
                 "title": "New",
             }

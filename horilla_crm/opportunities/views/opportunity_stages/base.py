@@ -74,7 +74,7 @@ class OpportunityStageNavbar(LoginRequiredMixin, HorillaNavView):
         """Return new button configuration if user has create permission."""
         if self.request.user.has_perm("opportunities:create_opportunitystage"):
             return {
-                "url": f"""{ reverse_lazy('opportunities:create_opportunity_stage')}?new=true""",
+                "url": f"""{reverse_lazy("opportunities:create_opportunity_stage")}?new=true""",
                 "attrs": {"id": "opportunity-stage-create"},
             }
         return None
@@ -126,7 +126,7 @@ class OpportunityStageListView(LoginRequiredMixin, HorillaListView):
         """Return add button configuration when no records exist."""
         if self.request.user.has_perm("opportunities:create_opportunitystage"):
             return {
-                "url": f"""{ reverse_lazy('opportunities:create_opportunity_stage')}?new=true""",
+                "url": f"""{reverse_lazy("opportunities:create_opportunity_stage")}?new=true""",
                 "attrs": 'id="opportunity-stage-create"',
             }
         return None

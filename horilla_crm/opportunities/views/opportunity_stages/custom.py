@@ -222,7 +222,7 @@ class SaveCustomOppStagesView(LoginRequiredMixin, View):
                 name = stage_name.strip()
                 if not name:
                     return self._error_response(
-                        request, f"Stage name cannot be empty for stage {i+1}."
+                        request, f"Stage name cannot be empty for stage {i + 1}."
                     )
                 if name in seen_names:
                     return self._error_response(
@@ -234,7 +234,7 @@ class SaveCustomOppStagesView(LoginRequiredMixin, View):
                 except (ValueError, TypeError):
                     return self._error_response(
                         request,
-                        f'Invalid order for stage {i+1} ("{name}"). Use a whole number.',
+                        f'Invalid order for stage {i + 1} ("{name}"). Use a whole number.',
                     )
                 try:
                     probability = float(stage_probabilities[i])
@@ -379,7 +379,9 @@ class CreateOppStageGroupView(LoginRequiredMixin, View):
                     response = render(
                         request,
                         "common/message_fragment.html",
-                        {"message": f"Invalid numeric value for stage {i+1}: {str(e)}"},
+                        {
+                            "message": f"Invalid numeric value for stage {i + 1}: {str(e)}"
+                        },
                     )
                     response.status_code = 400
                     return response

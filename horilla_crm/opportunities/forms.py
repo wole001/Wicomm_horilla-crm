@@ -1,4 +1,4 @@
-﻿"""Forms for managing Opportunity-related models in the CRM application."""
+"""Forms for managing Opportunity-related models in the CRM application."""
 
 # Standard library imports
 import logging
@@ -215,7 +215,7 @@ class OpportunityTeamForm(HorillaModelForm):
                         widget=forms.Select(
                             attrs={
                                 "class": "js-example-basic-single headselect",
-                                "data-placeholder": f'Select {field_name.replace("_", " ").title()}',
+                                "data-placeholder": f"Select {field_name.replace('_', ' ').title()}",
                                 "id": f"id_{field_name}_0",
                                 "name": f"{field_name}_0",
                             }
@@ -230,7 +230,7 @@ class OpportunityTeamForm(HorillaModelForm):
                         widget=forms.Select(
                             attrs={
                                 "class": "js-example-basic-single headselect",
-                                "data-placeholder": f'Select {field_name.replace("_", " ").title()}',
+                                "data-placeholder": f"Select {field_name.replace('_', ' ').title()}",
                                 "id": f"id_{field_name}_0",
                                 "name": f"{field_name}_0",
                             }
@@ -280,7 +280,7 @@ class OpportunityTeamForm(HorillaModelForm):
                         widget=forms.Select(
                             attrs={
                                 "class": "js-example-basic-single headselect",
-                                "data-placeholder": f'Select {field_name.replace("_", " ").title()}',
+                                "data-placeholder": f"Select {field_name.replace('_', ' ').title()}",
                                 "id": f"id_{field_name}_0",
                                 "name": f"{field_name}_0",
                             }
@@ -295,7 +295,7 @@ class OpportunityTeamForm(HorillaModelForm):
                         widget=forms.TextInput(
                             attrs={
                                 "class": "text-color-600 p-2 placeholder:text-xs pr-[40px] w-full border border-dark-50 rounded-md mt-1 focus-visible:outline-0 placeholder:text-dark-100 text-sm [transition:.3s] focus:border-primary-600",
-                                "placeholder": f'Enter {field_name.replace("_", " ").title()}',
+                                "placeholder": f"Enter {field_name.replace('_', ' ').title()}",
                                 "id": f"id_{field_name}_0",
                                 "name": f"{field_name}_0",
                             }

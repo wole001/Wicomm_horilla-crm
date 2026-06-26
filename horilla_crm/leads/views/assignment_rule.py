@@ -79,7 +79,7 @@ class LeadAssignmentNavbar(LoginRequiredMixin, HorillaNavView):
         """New button configuration"""
         if self.request.user.has_perm("leads.add_leadassignmentrule"):
             return {
-                "url": f"""{ reverse_lazy('leads:lead_assignment_create')}?new=true""",
+                "url": f"""{reverse_lazy("leads:lead_assignment_create")}?new=true""",
                 "attrs": {"id": "lead-assignment-create"},
             }
         return None
@@ -109,7 +109,7 @@ class LeadAssignmentListView(LoginRequiredMixin, HorillaListView):
         """Button to show when no records exist"""
         if self.request.user.has_perm("leads.add_leadassignmentrule"):
             return {
-                "url": f"""{ reverse_lazy('leads:lead_assignment_create')}?new=true""",
+                "url": f"""{reverse_lazy("leads:lead_assignment_create")}?new=true""",
                 "attrs": 'id="lead-assignment-create"',
             }
         return None

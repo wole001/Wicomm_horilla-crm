@@ -73,7 +73,7 @@ class LeadStageNavbar(LoginRequiredMixin, HorillaNavView):
         """New button configuration"""
         if self.request.user.has_perm("leads.add_leadstatus"):
             return {
-                "url": f"""{ reverse_lazy('leads:create_lead_stage')}?new=true""",
+                "url": f"""{reverse_lazy("leads:create_lead_stage")}?new=true""",
                 "attrs": {"id": "lead-stage-create"},
             }
         return None
@@ -121,7 +121,7 @@ class LeadStageListView(LoginRequiredMixin, HorillaListView):
         """Button to show when no records exist"""
         if self.request.user.has_perm("leads.add_leadstatus"):
             return {
-                "url": f"""{ reverse_lazy('leads:create_lead_stage')}?new=true""",
+                "url": f"""{reverse_lazy("leads:create_lead_stage")}?new=true""",
                 "attrs": 'id="lead-stage-create"',
             }
         return None
@@ -411,7 +411,7 @@ class LoadLeadStagesView(LoginRequiredMixin, View):
             if len(companies) > 1:
                 _company_names = [comp["company_name"] for comp in companies]
                 representative["company_name"] = (
-                    f"{representative['company_name']} (+{len(companies)-1} others)"
+                    f"{representative['company_name']} (+{len(companies) - 1} others)"
                 )
 
             company_stages[f"group_{group_counter}"] = representative
@@ -591,7 +591,7 @@ class SaveCustomStagesView(LoginRequiredMixin, View, ProgressStepsMixin):
                 name = name.strip()
                 if not name:
                     return self._error_response(
-                        request, f"Stage name cannot be empty for stage {i+1}."
+                        request, f"Stage name cannot be empty for stage {i + 1}."
                     )
                 if name in seen_names:
                     return self._error_response(
@@ -603,7 +603,7 @@ class SaveCustomStagesView(LoginRequiredMixin, View, ProgressStepsMixin):
                 except (ValueError, TypeError):
                     return self._error_response(
                         request,
-                        f'Invalid order for stage {i+1} ("{name}"). Use a whole number.',
+                        f'Invalid order for stage {i + 1} ("{name}"). Use a whole number.',
                     )
                 try:
                     probability = float(stage_probabilities[i])
@@ -811,7 +811,9 @@ class CreateStageGroupView(LoginRequiredMixin, View, ProgressStepsMixin):
                     response = render(
                         request,
                         "common/message_fragment.html",
-                        {"message": f"Invalid numeric value for stage {i+1}: {str(e)}"},
+                        {
+                            "message": f"Invalid numeric value for stage {i + 1}: {str(e)}"
+                        },
                     )
                     response.status_code = 400
                     return response

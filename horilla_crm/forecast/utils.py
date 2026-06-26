@@ -174,7 +174,6 @@ class ForecastCalculator:
                     <= opp["close_date"]
                     <= forecast.period.end_date
                 ):
-
                     key = (opp["owner_id"], forecast.period_id)
                     if key not in user_period_opportunities:
                         user_period_opportunities[key] = []

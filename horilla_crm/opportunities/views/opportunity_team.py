@@ -121,7 +121,7 @@ class OpportunityTeamNavbar(
     def new_button(self):
         """Return 'New' button config if user has add permission."""
         return {
-            "url": f"""{ reverse_lazy('opportunities:create_opportunity_team')}?new=true""",
+            "url": f"""{reverse_lazy("opportunities:create_opportunity_team")}?new=true""",
             "attrs": {"id": "opportunity-team-create"},
         }
 
@@ -170,7 +170,7 @@ class OpportunityTeamListView(
     def no_record_add_button(self):
         """Return 'Add' button config for no-record state."""
         return {
-            "url": f"""{ reverse_lazy('opportunities:create_opportunity_team')}?new=true""",
+            "url": f"""{reverse_lazy("opportunities:create_opportunity_team")}?new=true""",
             "attrs": 'id="opportunity-team-create"',
         }
 
@@ -315,7 +315,7 @@ class OpportunityTeamFormView(
         else:
             base_url = reverse_lazy("opportunities:create_opportunity_team")
         if model_name:
-            return f"{base_url}?{urlencode({'model_name': model_name,'obj': obj})}"
+            return f"{base_url}?{urlencode({'model_name': model_name, 'obj': obj})}"
         return base_url
 
 

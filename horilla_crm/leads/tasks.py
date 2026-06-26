@@ -144,7 +144,7 @@ def fetch_from_outlook(config):
         config.mail = refresh_outlook_token(config.mail)
 
         # Retry with new token
-        headers["Authorization"] = f'Bearer {config.mail.token["access_token"]}'
+        headers["Authorization"] = f"Bearer {config.mail.token['access_token']}"
         response = requests.get(url, headers=headers, params=params, timeout=30)
 
     response.raise_for_status()

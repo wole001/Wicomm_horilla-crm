@@ -102,7 +102,7 @@ class AccountsNavbar(LoginRequiredMixin, HorillaNavView):
             "accounts.add_account"
         ) or self.request.user.has_perm("accounts.add_own_account"):
             return {
-                "url": f"""{ reverse_lazy('accounts:account_create_form_view')}?new=true""",
+                "url": f"""{reverse_lazy("accounts:account_create_form_view")}?new=true""",
                 "attrs": {"id": "account-create"},
             }
         return None
@@ -133,7 +133,7 @@ class AccountListView(LoginRequiredMixin, HorillaListView):
             "accounts.add_account"
         ) or self.request.user.has_perm("accounts.add_own_account"):
             return {
-                "url": f"""{reverse_lazy('accounts:account_create_form_view') }?new=true""",
+                "url": f"""{reverse_lazy("accounts:account_create_form_view")}?new=true""",
                 "attrs": 'id="account-create"',
             }
         return None
@@ -273,7 +273,7 @@ class AccountGroupByView(LoginRequiredMixin, HorillaGroupByView):
             "accounts.add_account"
         ) or self.request.user.has_perm("accounts.add_own_account"):
             return {
-                "url": f"""{reverse_lazy('accounts:account_create_form_view')}?new=true""",
+                "url": f"""{reverse_lazy("accounts:account_create_form_view")}?new=true""",
                 "attrs": 'id="account-create"',
             }
         return None
@@ -365,7 +365,7 @@ class AccountsKanbanView(LoginRequiredMixin, HorillaKanbanView):
         """Return the 'New Account' button if the user has add permission."""
         if self.request.user.has_perm("accounts.add_account"):
             return {
-                "url": f"""{ reverse_lazy('accounts:account_create_form_view')}?new=true""",
+                "url": f"""{reverse_lazy("accounts:account_create_form_view")}?new=true""",
                 "attrs": 'id="account-create"',
             }
         return None

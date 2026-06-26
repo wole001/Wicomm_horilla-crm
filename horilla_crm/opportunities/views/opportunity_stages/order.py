@@ -249,7 +249,7 @@ class LoadOpportunityStagesView(LoginRequiredMixin, View):
             if len(companies) > 1:
                 _company_names = [comp["company_name"] for comp in companies]
                 representative["company_name"] = (
-                    f"{representative['company_name']} (+{len(companies)-1} others)"
+                    f"{representative['company_name']} (+{len(companies) - 1} others)"
                 )
 
             company_stages[f"group_{group_counter}"] = representative

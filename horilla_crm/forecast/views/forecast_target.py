@@ -222,7 +222,7 @@ class ForecastTargetNavbar(LoginRequiredMixin, HorillaNavView):
         """
         if self.request.user.has_perm("forecast.add_forecasttarget"):
             return {
-                "url": f"""{ reverse_lazy('forecast:forecast_target_form_view')}""",
+                "url": f"""{reverse_lazy("forecast:forecast_target_form_view")}""",
                 "attrs": {"id": "target-create"},
                 "title": "Set Target",
             }
