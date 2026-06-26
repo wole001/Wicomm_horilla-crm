@@ -22,7 +22,7 @@ class MyProfileSettings:
     url = reverse_lazy("core:my_profile_view")
     hx_select_id = "#my-profile-view"
     active_urls = "core:my_profile_view"
-    permissions = ["core.can_view_profile"]
+    perm = "core.can_view_profile"
     attrs = {
         "hx-boost": "true",
         "hx-target": "#my-settings-content",

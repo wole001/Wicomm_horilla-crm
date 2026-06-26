@@ -26,9 +26,11 @@ def get_my_settings_menu(request=None) -> list[dict]:
         elif not condition:
             continue
 
-        perms = getattr(obj, "permissions", [])
-        if perms and request:
-            if not request.user.is_authenticated or not request.user.has_perms(perms):
+        perm = getattr(obj, "perm", None)
+        if perm and request:
+            if not request.user.is_authenticated or not request.user.has_any_perms(
+                [perm] if isinstance(perm, str) else perm
+            ):
                 continue
 
         data = {
