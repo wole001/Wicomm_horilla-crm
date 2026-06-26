@@ -229,7 +229,12 @@ class MeetingsForm(OwnerQuerysetMixin, HorillaModelForm):
             ).exists():
                 choices.append(("zoom", "Zoom"))
             gcal = GoogleCalendarConfig.objects.filter(user=user).first()
-            if gcal and gcal.is_connected():
+            from horilla.contrib.meeting.models import UserMeetingConfig
+
+            meet_enabled = UserMeetingConfig.objects.filter(
+                user=user, provider="google_meet"
+            ).exists()
+            if gcal and gcal.is_connected() and meet_enabled:
                 choices.append(("google_meet", "Google Meet"))
             if MicrosoftTeamsOAuthConfig.objects.filter(
                 user=user, token__has_key="access_token"
@@ -838,7 +843,12 @@ class ActivityCreateForm(OwnerQuerysetMixin, HorillaModelForm):
             ).exists():
                 choices.append(("zoom", "Zoom"))
             gcal = GoogleCalendarConfig.objects.filter(user=user).first()
-            if gcal and gcal.is_connected():
+            from horilla.contrib.meeting.models import UserMeetingConfig
+
+            meet_enabled = UserMeetingConfig.objects.filter(
+                user=user, provider="google_meet"
+            ).exists()
+            if gcal and gcal.is_connected() and meet_enabled:
                 choices.append(("google_meet", "Google Meet"))
             if MicrosoftTeamsOAuthConfig.objects.filter(
                 user=user, token__has_key="access_token"
