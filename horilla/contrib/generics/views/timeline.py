@@ -313,15 +313,10 @@ class HorillaTimelineView(HorillaListView):
             # Do not swap or replace with fallback — that produced wrong spans (e.g. close_date
             # replaced by updated_at). If end < start, show a single-day bar at start.
             start_dt = self._to_date(start_val)
-            end_dt = self._to_date(end_val) if end_val is not None else None
-            if end_dt is None:
-                end_dt = start_dt
-            if start_dt is None:
-                continue
-            if end_dt < start_dt:
-                end_dt = start_dt
             if not start_dt:
                 continue
+            end_dt = self._to_date(end_val) if end_val is not None else None
+            end_dt = max(start_dt, end_dt or start_dt)
 
             title = self._get_display_value(obj, title_field)
             if range_start is None:
