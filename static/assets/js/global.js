@@ -511,6 +511,7 @@ function initSidebar() {
         sideMenu.classList.remove("w-[230px]");
         arrowIcon.classList.add("scale-x-[-1]");
         mainContent.classList.remove("leftspace");
+        toggleBtn.style.left = "calc(5rem - 10px)";
 
         if (kanbanView) {
             kanbanView.classList.add("w-full");
@@ -524,6 +525,7 @@ function initSidebar() {
         sideMenu.classList.add("w-[230px]");
         arrowIcon.classList.remove("scale-x-[-1]");
         mainContent.classList.add("leftspace");
+        toggleBtn.style.left = "calc(5rem + 230px - 10px)";
 
         if (kanbanView) {
             kanbanView.classList.remove("w-full");
