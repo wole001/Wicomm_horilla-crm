@@ -381,6 +381,66 @@ def add_custom_permissions(sender, **kwargs):
 post_migrate.connect(add_custom_permissions)
 
 
+@receiver(pre_save, sender=User)
+def capture_user_old_role(sender, instance, **kwargs):
+    """Store the previous role on the instance so post_save can detect role changes."""
+    if instance.pk:
+        try:
+            instance._previous_role = User.objects.get(pk=instance.pk).role
+        except User.DoesNotExist:
+            instance._previous_role = None
+    else:
+        instance._previous_role = None
+
+
+@receiver(post_save, sender=User)
+def sync_role_permissions_on_role_change(sender, instance, created, **kwargs):
+    """
+    When a user's role changes (via any code path), sync user_permissions:
+    - Remove permissions that came from the old role (excluding view_own defaults).
+    - Add all permissions from the new role.
+    """
+    if created:
+        return
+
+    old_role = getattr(instance, "_previous_role", None)
+    new_role = instance.role
+
+    if old_role == new_role:
+        return
+
+    def sync_permissions():
+        try:
+            view_own_perm_ids = set(
+                Permission.objects.filter(codename__startswith="view_own_").values_list(
+                    "id", flat=True
+                )
+            )
+
+            if old_role is not None:
+                old_role_perm_ids = set(
+                    old_role.permissions.values_list("id", flat=True)
+                )
+                to_remove_ids = old_role_perm_ids - view_own_perm_ids
+                if to_remove_ids:
+                    perms_to_remove = Permission.objects.filter(id__in=to_remove_ids)
+                    instance.user_permissions.remove(*perms_to_remove)
+
+            if new_role is not None:
+                new_role_perms = list(new_role.permissions.all())
+                if new_role_perms:
+                    instance.user_permissions.add(*new_role_perms)
+
+        except Exception as e:
+            logger.error(
+                "Error syncing permissions for user %s on role change: %s",
+                instance.pk,
+                e,
+            )
+
+    transaction.on_commit(sync_permissions)
+
+
 @receiver(post_save, sender=User)
 def ensure_view_own_permissions(sender, instance, created, **kwargs):
     """
