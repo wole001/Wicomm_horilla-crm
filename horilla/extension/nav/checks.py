@@ -12,7 +12,7 @@ from horilla.extension.nav.registry import NAV_EXTENSION_REGISTRY
 def check_nav_extensions(app_configs, **kwargs):
     """Validate registered nav extension targets at startup."""
     errors = []
-    for target_path, specs in NAV_EXTENSION_REGISTRY.items():
+    for target_path, _ in NAV_EXTENSION_REGISTRY.items():
         parts = target_path.rsplit(".", 1)
         if len(parts) != 2:
             errors.append(

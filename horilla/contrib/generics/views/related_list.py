@@ -410,7 +410,7 @@ class HorillaRelatedListSectionView(DetailView):
 
         annotations = {}
 
-        for col_verbose, col_field in columns:
+        for _, col_field in columns:
             if "__" in col_field and col_field.startswith(intermediate_field):
                 field_parts = col_field.split("__", 1)
 
@@ -449,7 +449,7 @@ class HorillaRelatedListSectionView(DetailView):
 
         col_attrs = config.get("col_attrs", [])
         for col_attr in col_attrs:
-            for field_name, attrs in col_attr.items():
+            for _, attrs in col_attr.items():
                 if isinstance(attrs, dict):
                     for key, value in attrs.items():
                         if key in [

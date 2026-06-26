@@ -596,7 +596,7 @@ class HorillaSingleDeleteView(DeleteDependencyMixin, DeleteReassignMixin, Delete
                     return HttpResponse("No record ID provided", status=400)
                 try:
                     with transaction.atomic():
-                        obj = self.model.all_objects.get(id=main_record_id)
+                        _ = self.model.all_objects.get(id=main_record_id)
                         related_objects = self.model._meta.related_objects
                         excluded_models = self._get_excluded_models()
                         updated = False

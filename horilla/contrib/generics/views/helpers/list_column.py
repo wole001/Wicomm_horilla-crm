@@ -102,7 +102,7 @@ def get_default_columns_from_view(url_name, app_label, model_name, request):
         # Check if it's a HorillaListView and has columns defined
         if issubclass(view_class, HorillaListView):
             try:
-                model = apps.get_model(app_label=app_label, model_name=model_name)
+                apps.get_model(app_label=app_label, model_name=model_name)
 
                 # Get columns from the view class
                 # Columns might be defined as class attribute

@@ -35,12 +35,6 @@ def short_user_agent(self):
     major = ua.browser.version[0] if ua.browser.version else ""
     browser = f"{ua.browser.family} {major}".strip() if major else ua.browser.family
 
-    os_info = (
-        f"{ua.os.family} {ua.os.version_string}".strip()
-        if ua.os.version_string
-        else ua.os.family
-    )
-
     device_parts = [p for p in [ua.device.brand, ua.device.model] if p and p != "Other"]
     device = " ".join(dict.fromkeys(device_parts))
 

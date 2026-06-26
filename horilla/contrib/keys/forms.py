@@ -43,7 +43,7 @@ class ShortcutKeyForm(HorillaModelForm):
         super().__init__(*args, **kwargs)
 
         choices = []
-        company = getattr(request, "active_company", None)
+        _ = getattr(request, "active_company", None)
 
         self.fields["user"].queryset = self.fields["user"].queryset.filter(
             id=request.user.id

@@ -556,7 +556,7 @@ class ReviewProcessToggleActiveView(LoginRequiredMixin, View):
             process.save(update_fields=["is_active"])
             status = _("activated") if process.is_active else _("deactivated")
             messages.success(request, f"{process.title} {status} successfully")
-        except Exception as e:
+        except Exception:
             messages.error(
                 request,
                 _(

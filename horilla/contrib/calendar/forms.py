@@ -164,7 +164,7 @@ class CustomCalendarForm(HorillaModelForm):
         if "module" in self.fields and self.request and hasattr(self.request, "user"):
             user = self.request.user
             allowed_pks = []
-            for module_key, model_cls in get_custom_calendar_models():
+            for _, model_cls in get_custom_calendar_models():
                 app_label = model_cls._meta.app_label
                 meta_model_name = model_cls._meta.model_name
                 view_perm = f"{app_label}.view_{meta_model_name}"

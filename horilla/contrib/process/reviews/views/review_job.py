@@ -331,7 +331,7 @@ class ReviewJobDetailView(LoginRequiredMixin, TemplateView):
         """Override get to handle missing/uninstalled content-type model gracefully."""
         try:
             return super().get(request, *args, **kwargs)
-        except Exception as e:
+        except Exception:
             messages.error(
                 request,
                 _("The module for this review record is no longer available."),

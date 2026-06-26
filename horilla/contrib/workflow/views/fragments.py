@@ -199,7 +199,6 @@ def _build_tt_context(rule, instance=None, current_values=None):
 
     field_meta, email_to_choices, notification_to_choices = _build_field_meta(rule)
     rule_ct = rule.model if rule and rule.model_id else None
-    active_company = None  # resolved per-request in the view
 
     mail_templates = HorillaMailTemplate.objects.filter(
         Q(content_type__isnull=True) | Q(content_type=rule_ct)

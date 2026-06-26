@@ -166,7 +166,7 @@ class DetailFieldSelectorView(LoginRequiredMixin, View):
                 status=200,
             )
 
-        instance = model()
+        model()
         base_excluded = {
             "id",
             "created_at",

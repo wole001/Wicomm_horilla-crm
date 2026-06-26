@@ -606,10 +606,6 @@ class HorillaMultiStepFormView(FormViewCommonMixin, FormView):
                     for field_name in fields_list:
                         all_step_fields[field_name] = step_num
 
-            current_step_fields = []
-            if hasattr(form_class, "step_fields") and form_class.step_fields:
-                current_step_fields = form_class.step_fields.get(self.total_steps, [])
-
             for key, value in self.request.POST.items():
                 if key not in ["csrfmiddlewaretoken", "step", "previous"]:
                     if key in [

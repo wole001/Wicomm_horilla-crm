@@ -12,7 +12,7 @@ from horilla.extension.card.registry import CARD_EXTENSION_REGISTRY
 def check_card_extensions(app_configs, **kwargs):
     """Validate registered card extension targets at startup."""
     errors = []
-    for target_path, specs in CARD_EXTENSION_REGISTRY.items():
+    for target_path, _ in CARD_EXTENSION_REGISTRY.items():
         parts = target_path.rsplit(".", 1)
         if len(parts) != 2:
             errors.append(
