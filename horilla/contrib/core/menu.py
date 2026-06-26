@@ -75,6 +75,7 @@ class LoginHistorySettings:
     url = reverse_lazy("core:user_login_history_view")
     active_urls = "core:user_login_history_view"
     order = 3
+    perm = ["login_history.view_loginhistory", "login_history.view_own_loginhistory"]
     attrs = {
         "hx-boost": "true",
         "hx-target": "#my-settings-content",
@@ -92,6 +93,7 @@ class HolidaySettings:
     url = reverse_lazy("core:user_holiday_view")
     active_urls = "core:user_holiday_view"
     order = 4
+    perm = ["core.view_holiday", "core.view_own_holiday"]
     attrs = {
         "hx-boost": "true",
         "hx-target": "#my-settings-content",
