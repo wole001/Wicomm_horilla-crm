@@ -323,10 +323,8 @@ class HorillaTimelineView(HorillaListView):
                 range_start = start_dt
                 range_end = end_dt
             else:
-                if start_dt < range_start:
-                    range_start = start_dt
-                if end_dt > range_end:
-                    range_end = end_dt
+                range_start = min(range_start, start_dt)
+                range_end = max(range_end, end_dt)
 
             detail_url = ""
             if hasattr(obj, "get_detail_url") and callable(
