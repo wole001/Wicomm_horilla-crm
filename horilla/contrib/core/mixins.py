@@ -451,6 +451,9 @@ class OwnerQuerysetMixin:
             if not company and hasattr(request.user, "company"):
                 company = request.user.company
 
+        if company:
+            allowed_users = allowed_users.filter(company=company)
+
         for field_name, field in self.fields.items():
             try:
                 model_field = self._meta.model._meta.get_field(field_name)
