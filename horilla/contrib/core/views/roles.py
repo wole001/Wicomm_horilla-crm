@@ -473,7 +473,7 @@ class RoleNavbar(LoginRequiredMixin, HorillaNavView):
         if self.request.user.has_perm("core.add_role"):
             return {
                 "title": _("Add Role"),
-                "url": f"""{ reverse_lazy('core:create_roles_view')}?new=true""",
+                "url": f"""{reverse_lazy("core:create_roles_view")}?new=true""",
                 "attrs": {"id": "role-create"},
             }
         return None

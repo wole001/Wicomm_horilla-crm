@@ -85,7 +85,6 @@ def _get_detail_field_defaults(model, request):
             details_url = request.GET.get("details_section_url") or None
         if details_url:
             try:
-
                 resolved = resolve(reverse(details_url, kwargs={"pk": 1}))
                 section_view = getattr(resolved.func, "view_class", None)
                 if section_view:

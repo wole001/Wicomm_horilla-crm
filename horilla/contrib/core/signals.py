@@ -594,7 +594,6 @@ def clear_column_visibility_cache_on_permission_change(sender, instance, **kwarg
 
     def cleanup_visibility_records():
         try:
-
             content_type = instance.content_type
             app_label = content_type.app_label
             field_name = instance.field_name
@@ -1001,7 +1000,6 @@ def clear_list_column_cache_for_model(content_type, affected_users=None):
         affected_users: Optional list of user IDs to limit cache clearing to specific users
     """
     try:
-
         app_label = content_type.app_label
         model_name = (
             content_type.model_class().__name__ if content_type.model_class() else None

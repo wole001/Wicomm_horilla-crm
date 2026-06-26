@@ -506,7 +506,6 @@ class ExportScheduleModalView(LoginRequiredMixin, View):
         schedule = None
         if schedule_id:
             try:
-
                 schedule = ExportSchedule.objects.get(pk=schedule_id, user=request.user)
                 modules = schedule.modules
                 export_format = schedule.export_format
@@ -627,7 +626,6 @@ class ExportScheduleCreateView(LoginRequiredMixin, View):
             if not start_date:
                 field_errors["start_date"] = _("Start date is required.")
             else:
-
                 try:
                     start_date_obj = datetime.strptime(start_date, "%Y-%m-%d").date()
 

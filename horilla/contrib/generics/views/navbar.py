@@ -276,6 +276,7 @@ class HorillaNavView(TemplateView):
         can_create_perm = f"{self.model_app_label}.add_{self.model_name.lower()}"
         resolved = resolve(str(self.search_url))
         single_import = True
+        url_name = resolved.url_name
 
         actions = []
         if self.request.user.has_perm(view_perm) or self.request.user.has_perm(
@@ -286,7 +287,7 @@ class HorillaNavView(TemplateView):
                     {
                         "action": _("Import"),
                         "attrs": f"""
-                        hx-get="{reverse_lazy('core:import_data')}?single_import={str(single_import).lower()}&model_name={self.model_name}&app_label={self.model_app_label}"
+                        hx-get="{reverse_lazy("core:import_data")}?single_import={str(single_import).lower()}&model_name={self.model_name}&app_label={self.model_app_label}"
                         onclick="openModal()"
                         hx-target="#modalBox"
                         hx-swap="innerHTML"
@@ -302,7 +303,19 @@ class HorillaNavView(TemplateView):
             )
             layout = str(layout).strip().lower()
 
+            column_selector_url = (
+                f"{reverse_lazy('generics:column_selector')}"
+                f"?app_label={self.model_app_label}&model_name={self.model_name}&url_name={url_name}"
+            )
             exclude_cols = getattr(self, "column_selector_exclude_fields", None)
+            if exclude_cols:
+                exclude_list = (
+                    exclude_cols
+                    if isinstance(exclude_cols, (list, tuple))
+                    else [f.strip() for f in str(exclude_cols).split(",") if f.strip()]
+                )
+                if exclude_list:
+                    column_selector_url += "&exclude=" + ",".join(exclude_list)
 
             # Timeline settings (your branch) — shown when layout is timeline
             timeline_settings_action = None
@@ -336,7 +349,7 @@ class HorillaNavView(TemplateView):
             kanban_settings_action = {
                 "action": _("Kanban Settings"),
                 "attrs": f"""
-                    hx-get="{reverse_lazy('generics:create_kanban_group')}?model={self.model_name}&app_label={self.model_app_label}&exclude_fields={self.exclude_kanban_fields}&view_type=kanban"
+                    hx-get="{reverse_lazy("generics:create_kanban_group")}?model={self.model_name}&app_label={self.model_app_label}&exclude_fields={self.exclude_kanban_fields}&view_type=kanban"
                     onclick="openModal()"
                     hx-target="#modalBox"
                     hx-swap="innerHTML"
@@ -345,29 +358,16 @@ class HorillaNavView(TemplateView):
             group_by_settings_action = {
                 "action": _("Group By Settings"),
                 "attrs": f"""
-                    hx-get="{reverse_lazy('generics:create_kanban_group')}?model={self.model_name}&app_label={self.model_app_label}&exclude_fields={self.exclude_kanban_fields}&view_type=group_by"
+                    hx-get="{reverse_lazy("generics:create_kanban_group")}?model={self.model_name}&app_label={self.model_app_label}&exclude_fields={self.exclude_kanban_fields}&view_type=group_by"
                     onclick="openModal()"
                     hx-target="#modalBox"
                     hx-swap="innerHTML"
                     """,
             }
-            column_selector_base_url = (
-                f"{reverse_lazy('generics:column_selector')}"
-                f"?app_label={self.model_app_label}&model_name={self.model_name}"
-            )
-            if exclude_cols:
-                exclude_list = (
-                    exclude_cols
-                    if isinstance(exclude_cols, (list, tuple))
-                    else [f.strip() for f in str(exclude_cols).split(",") if f.strip()]
-                )
-                if exclude_list:
-                    column_selector_base_url += "&exclude=" + ",".join(exclude_list)
             add_column_action = {
                 "action": _("Add Column to List"),
                 "attrs": f"""
-                    hx-get="{column_selector_base_url}"
-                    hx-include="#active-list-url-name"
+                    hx-get="{column_selector_url}"
                     onclick="openModal()"
                     hx-target="#modalBox"
                     hx-swap="innerHTML"

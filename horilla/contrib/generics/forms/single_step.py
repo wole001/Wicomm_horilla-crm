@@ -535,7 +535,6 @@ class HorillaModelForm(HorillaFormMixin, forms.ModelForm):
             return None
 
         try:
-
             user = self.request.user
 
             queryset = related_model.objects.all()

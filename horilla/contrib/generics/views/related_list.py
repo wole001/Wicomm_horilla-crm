@@ -248,7 +248,6 @@ class HorillaRelatedListSectionView(DetailView):
         This method ensures CompanyFilteredManager is invoked by querying the related model directly.
         """
         try:
-
             related_model = apps.get_model(
                 custom_config["app_label"], custom_config["model_name"]
             )
@@ -355,7 +354,6 @@ class HorillaRelatedListSectionView(DetailView):
                 "is_custom": True,
             }
         except Exception as e:
-
             logger.error(
                 "Error building custom related list %s: %s",
                 custom_name,

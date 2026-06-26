@@ -537,8 +537,9 @@ class ShiftHourForm(HorillaModelForm):
                 return
 
         if mode == "same":
-            bs, be = cleaned.get(f"{slot}_default_start"), cleaned.get(
-                f"{slot}_default_end"
+            bs, be = (
+                cleaned.get(f"{slot}_default_start"),
+                cleaned.get(f"{slot}_default_end"),
             )
             if not bs or not be:
                 self.add_error(

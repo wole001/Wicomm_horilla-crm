@@ -113,7 +113,6 @@ class HorillaDetailTabView(HorillaTabView):
                 user.has_perm("core.view_horillaattachment")
                 or user.has_perm("core.view_own_horillaattachment")
             ):
-
                 self.tabs.append(
                     {
                         "title": _("Notes & Attachments"),

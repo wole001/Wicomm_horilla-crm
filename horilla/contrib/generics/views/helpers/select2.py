@@ -308,7 +308,6 @@ class HorillaSelect2DataView(LoginRequiredMixin, View):
             parent_model_path = request.GET.get("parent_model", "").strip()
             if parent_model_path and "." in parent_model_path:
                 try:
-
                     p_app, p_model = parent_model_path.rsplit(".", 1)
                     parent_model = apps.get_model(app_label=p_app, model_name=p_model)
                     return get_dynamic_form_for_model(parent_model)

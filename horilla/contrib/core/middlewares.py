@@ -141,7 +141,6 @@ class HTMXRedirectMiddleware:
             )
             and "login" in response.url
         ):
-
             # Get the current page URL from HX-Current-URL header or Referer
             current_url = (
                 request.headers.get("HX-Current-URL")

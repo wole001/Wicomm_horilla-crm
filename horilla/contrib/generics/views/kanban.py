@@ -901,6 +901,5 @@ class HorillaKanbanView(HorillaListView):
                 render_to_string("partials/kanban_items.html", context, request=request)
             )
         except Exception as e:
-
             logger.error("Load more items failed: %s", str(e))
             return HttpResponse(status=500, content=f"Error: {str(e)}")

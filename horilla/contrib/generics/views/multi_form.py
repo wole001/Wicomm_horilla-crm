@@ -673,7 +673,6 @@ class HorillaMultiStepFormView(FormViewCommonMixin, FormView):
 
             if final_form.is_valid():
                 try:
-
                     instance = final_form.save(commit=False)
                     instance.company = final_form.cleaned_data.get("company") or (
                         getattr(_thread_local, "request", None).active_company

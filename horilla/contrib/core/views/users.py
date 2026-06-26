@@ -99,7 +99,7 @@ class UserNavbar(LoginRequiredMixin, HorillaNavView):
             f"{User._meta.app_label}.add_{User._meta.model_name}"
         ):
             return {
-                "url": f"""{ reverse_lazy('core:user_create_form')}?new=true""",
+                "url": f"""{reverse_lazy("core:user_create_form")}?new=true""",
                 "attrs": {"id": "user-create"},
             }
         return None
@@ -135,7 +135,7 @@ class UserListView(LoginRequiredMixin, HorillaListView):
             f"{User._meta.app_label}.add_{User._meta.model_name}"
         ):
             return {
-                "url": f"""{ reverse_lazy('core:user_create_form')}?new=true""",
+                "url": f"""{reverse_lazy("core:user_create_form")}?new=true""",
                 "attrs": 'id="user-create"',
             }
         return None
@@ -264,7 +264,7 @@ class UserKanbanView(LoginRequiredMixin, HorillaKanbanView):
 
     columns = [
         "first_name",
-        "role" "department",
+        "roledepartment",
         "contact_number",
         "state",
         "country",
@@ -336,7 +336,7 @@ class UserGroupByView(LoginRequiredMixin, HorillaGroupByView):
             f"{User._meta.app_label}.add_{User._meta.model_name}"
         ):
             return {
-                "url": f"""{ reverse_lazy('core:user_create_form')}?new=true""",
+                "url": f"""{reverse_lazy("core:user_create_form")}?new=true""",
                 "attrs": 'id="user-create"',
             }
         return None

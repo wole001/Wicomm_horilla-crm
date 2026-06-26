@@ -70,7 +70,6 @@ class GetModelFieldsView(LoginRequiredMixin, View):
             raise HttpNotFound(f"Missing parameters: {', '.join(missing_params)}")
 
         try:
-
             model = apps.get_model(app_label, module)
             field = next((f for f in model._meta.fields if f.name == field_name), None)
             if not field:
@@ -194,7 +193,6 @@ class GetUniqueValuesView(LoginRequiredMixin, View):
             raise HttpNotFound(f"Missing parameters: {', '.join(missing_params)}")
 
         try:
-
             model = apps.get_model(app_label, module)
             field = next((f for f in model._meta.fields if f.name == field_name), None)
             if not field:
@@ -282,7 +280,6 @@ class UpdateValueMappingStatusView(LoginRequiredMixin, View):
             )
 
         try:
-
             module = import_data.get("module")
             app_label = import_data.get("app_label")
             model = apps.get_model(app_label, module)

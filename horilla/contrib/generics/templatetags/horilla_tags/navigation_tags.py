@@ -66,7 +66,6 @@ def is_open(context, *url_names):
 
     for item in url_names:
         if isinstance(item, dict) and "url" in item:
-
             all_urls.add(item["url"].rstrip("/"))
         elif isinstance(item, (list, tuple)):
             for sub_item in item:

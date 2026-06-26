@@ -18,7 +18,6 @@ def _is_redundant_history_entry(entry, same_group_entries):
     Works for any model; no model names.
     """
     try:
-
         if getattr(entry, "action", None) != LogEntry.Action.UPDATE:
             return False
         ct = getattr(entry, "content_type", None)
@@ -197,7 +196,6 @@ def _get_mail_create_label(entry):
     if entry is None:
         return ""
     try:
-
         if getattr(entry, "action", None) != LogEntry.Action.CREATE:
             return ""
     except Exception:
@@ -282,7 +280,6 @@ def activity_create_details(entry):
     if entry is None:
         return None
     try:
-
         if getattr(entry, "action", None) != LogEntry.Action.CREATE:
             return None
     except Exception:

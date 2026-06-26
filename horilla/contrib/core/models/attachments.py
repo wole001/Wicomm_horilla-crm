@@ -1,4 +1,4 @@
-﻿"""
+"""
 This module defines the HorillaAttachment model,
 """
 

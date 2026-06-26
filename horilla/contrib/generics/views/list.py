@@ -491,7 +491,6 @@ class HorillaListView(HorillaListViewMixin, ListView):
         try:
             return queryset.order_by(order_field)
         except Exception as e:
-
             logger.warning("Could not sort by field '%s': %s", mapped_field, str(e))
             return queryset
 
@@ -680,7 +679,6 @@ class HorillaListView(HorillaListViewMixin, ListView):
 
         # Handle filter row addition
         if request.GET.get("add_filter_row") == "true":
-
             curr_row_id = int(request.GET.get("row_id"))
             new_row_id = curr_row_id + 1
             filter_rows = [{"row_id": new_row_id}]
@@ -1050,12 +1048,6 @@ class HorillaListView(HorillaListViewMixin, ListView):
                 context["next_page"] = context["page_obj"].next_page_number()
         context["search_url"] = self.search_url or self.request.path
         context["main_url"] = self.main_url or self.request.path
-        from horilla.urls import resolve as _resolve
-
-        try:
-            context["list_view_url_name"] = _resolve(self.request.path_info).url_name
-        except Exception:
-            context["list_view_url_name"] = ""
         context["main_session_id"] = getattr(self, "main_session_id", "mainSession")
         query_params = {
             item: self.request.GET.getlist(item) for item in self.request.GET

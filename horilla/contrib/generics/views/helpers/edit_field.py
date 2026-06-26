@@ -276,7 +276,6 @@ class UpdateFieldView(LoginRequiredMixin, View):
                 )
                 return HttpResponse(msg, status=400)
         else:
-
             value = request.POST.get(field_name)
 
             if value is not None:

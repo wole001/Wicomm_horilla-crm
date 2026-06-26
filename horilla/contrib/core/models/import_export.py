@@ -154,9 +154,9 @@ class ImportHistory(HorillaCoreModel):
         if seconds < 60:
             return f"{seconds:.1f}s"
         if seconds < 3600:
-            return f"{seconds/60:.1f}m"
+            return f"{seconds / 60:.1f}m"
 
-        return f"{seconds/3600:.1f}h"
+        return f"{seconds / 3600:.1f}h"
 
     @property
     def module_verbose_name(self):

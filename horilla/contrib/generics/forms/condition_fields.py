@@ -28,7 +28,7 @@ def _condition_field_label(model_field, field_name):
 
 
 def _condition_select_attrs(field_name, row_id, data_placeholder=None):
-    placeholder = data_placeholder or f'Select {field_name.replace("_", " ").title()}'
+    placeholder = data_placeholder or f"Select {field_name.replace('_', ' ').title()}"
     return {
         "class": "js-example-basic-single headselect",
         "data-placeholder": placeholder,
@@ -132,7 +132,7 @@ def add_condition_fields(form):
                 if field_name in form.condition_field_choices:
                     choices = form.condition_field_choices[field_name]
                     is_custom = False
-                    placeholder = f'Select {field_name.replace("_", " ").title()}'
+                    placeholder = f"Select {field_name.replace('_', ' ').title()}"
                 else:
                     choices = [("", "---------")] + list(model_field.choices)
                     is_custom = True

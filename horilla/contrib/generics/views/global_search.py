@@ -385,7 +385,6 @@ class GlobalSearchView(LoginRequiredMixin, View):
                 previous_url = safe_url(request, previous_url, "/")
 
                 if "?" in previous_url:
-
                     parsed = urlparse(previous_url)
                     query_params = parse_qs(parsed.query)
 
@@ -525,7 +524,6 @@ class GlobalSearchView(LoginRequiredMixin, View):
         if "filter" in query_params:
             filtered_params["filter"] = query_params["filter"]
         if "section" in query_params:
-
             section = get_section_info_for_model(model_name)
             filtered_params["section"] = section["section"]
         query_string = urlencode(filtered_params)

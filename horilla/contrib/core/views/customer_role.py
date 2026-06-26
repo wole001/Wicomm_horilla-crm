@@ -75,7 +75,7 @@ class CustomerRoleNavbar(LoginRequiredMixin, HorillaNavView):
         """
         if self.request.user.has_perm("core.add_customerrole"):
             return {
-                "url": f"""{ reverse_lazy('core:customer_role_create_form')}?new=true""",
+                "url": f"""{reverse_lazy("core:customer_role_create_form")}?new=true""",
                 "attrs": {"id": "customer-role-create"},
             }
         return None
@@ -90,7 +90,7 @@ class CustomerRoleNavbar(LoginRequiredMixin, HorillaNavView):
                 {
                     "action": _("Add Column to List"),
                     "attrs": f"""
-                            hx-get="{reverse_lazy('generics:column_selector')}?app_label={self.model_app_label}&model_name={self.model_name}&url_name={self.url_name}"
+                            hx-get="{reverse_lazy("generics:column_selector")}?app_label={self.model_app_label}&model_name={self.model_name}&url_name={self.url_name}"
                             onclick="openModal()"
                             hx-target="#modalBox"
                             hx-swap="innerHTML"
