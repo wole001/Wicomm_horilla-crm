@@ -49,7 +49,7 @@ class ReportExportView(ReportPreviewMixin, LoginRequiredMixin, View):
             if request.headers.get("HX-Request") == "true":
                 messages.error(self.request, e)
                 return RefreshResponse(request)
-            raise HttpNotFound(e)
+            raise HttpNotFound(e) from e
         export_format = request.GET.get("format", "excel")
 
         preview_data = self.get_preview_data(request, report)

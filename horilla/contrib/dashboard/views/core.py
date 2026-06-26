@@ -73,7 +73,7 @@ class DashboardNavbar(LoginRequiredMixin, HorillaNavView):
         ) or self.request.user.has_perm("dashboard.add_own_dashboard"):
             return {
                 "title": _("New Dashboard"),
-                "url": f"""{ reverse_lazy('dashboard:dashboard_create')}""",
+                "url": f"""{reverse_lazy("dashboard:dashboard_create")}""",
                 "attrs": {"id": "dashboard-create"},
             }
         return None
@@ -215,7 +215,7 @@ class DashboardDetailView(RecentlyViewedMixin, LoginRequiredMixin, TemplateView)
             if request.headers.get("HX-Request") == "true":
                 messages.error(self.request, e)
                 return RefreshResponse(request)
-            raise HttpNotFound(e)
+            raise HttpNotFound(e) from e
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):

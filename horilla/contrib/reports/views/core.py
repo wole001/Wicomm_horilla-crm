@@ -89,7 +89,7 @@ class ReportNavbar(LoginRequiredMixin, HorillaNavView):
         ) or self.request.user.has_perm("reports.add_own_report"):
             return {
                 "title": _("New Report"),
-                "url": f"""{ reverse_lazy('reports:create_report')}""",
+                "url": f"""{reverse_lazy("reports:create_report")}""",
                 "attrs": {"id": "report-create"},
             }
         return None
@@ -105,7 +105,7 @@ class ReportNavbar(LoginRequiredMixin, HorillaNavView):
                     "action": _("Load Default Reports"),
                     "attrs": f"""
                             id="reports-load"
-                            hx-get="{reverse_lazy('reports:load_default_reports')}"
+                            hx-get="{reverse_lazy("reports:load_default_reports")}"
                             hx-on:click="openModal();"
                             hx-target="#modalBox"
                             hx-swap="innerHTML"
@@ -122,7 +122,7 @@ class ReportNavbar(LoginRequiredMixin, HorillaNavView):
         ) or self.request.user.has_perm("reports.add_own_reportfolder"):
             return {
                 "title": _("New Folder"),
-                "url": f"""{ reverse_lazy('reports:create_folder')}?pk={self.request.GET.get('pk', '')}""",
+                "url": f"""{reverse_lazy("reports:create_folder")}?pk={self.request.GET.get("pk", "")}""",
                 "attrs": {"id": "report-folder-create"},
             }
         return None
@@ -157,7 +157,7 @@ class ReportsListView(LoginRequiredMixin, HorillaListView):
             "reports.add_reports"
         ) or self.request.user.has_perm("reports.add_own_reports"):
             return {
-                "url": f"""{ reverse_lazy('reports:load_default_reports')}?new=true""",
+                "url": f"""{reverse_lazy("reports:load_default_reports")}?new=true""",
                 "attrs": 'id="reports-load"',
                 "title": _("Load Default Reports"),
             }
@@ -487,7 +487,7 @@ class ReportFolderDetailView(LoginRequiredMixin, HorillaListView):
             if request.headers.get("HX-Request") == "true":
                 messages.error(self.request, e)
                 return RefreshResponse(request)
-            raise HttpNotFound(e)
+            raise HttpNotFound(e) from e
 
         return super().get(request, *args, **kwargs)
 
@@ -691,7 +691,7 @@ class SearchAvailableFieldsView(LoginRequiredMixin, DetailView):
             if request.headers.get("HX-Request") == "true":
                 messages.error(self.request, e)
                 return RefreshResponse(request)
-            raise HttpNotFound(e)
+            raise HttpNotFound(e) from e
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):

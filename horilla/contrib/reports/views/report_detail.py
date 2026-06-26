@@ -53,7 +53,7 @@ class ReportDetailView(ReportDetailDataMixin, RecentlyViewedMixin, DetailView):
             if request.headers.get("HX-Request") == "true":
                 messages.error(self.request, e)
                 return RefreshResponse(request)
-            raise HttpNotFound(e)
+            raise HttpNotFound(e) from e
 
         temp_report = self.create_temp_report(
             self.object,

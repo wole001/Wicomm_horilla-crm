@@ -453,7 +453,7 @@ class WorkflowRuleDetailView(LoginRequiredMixin, DetailView):
             if request.headers.get("HX-Request") == "true":
                 messages.error(self.request, exc)
                 return RefreshResponse(request)
-            raise HttpNotFound(exc)
+            raise HttpNotFound(exc) from exc
         return super().dispatch(request, *args, **kwargs)
 
 

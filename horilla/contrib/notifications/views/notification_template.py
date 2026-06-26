@@ -82,7 +82,7 @@ class NotificationTemplateNavbar(LoginRequiredMixin, HorillaNavView):
         """New button configuration"""
         if self.request.user.has_perm("notifications.add_notificationtemplate"):
             return {
-                "url": f"""{ reverse_lazy('notifications:notification_template_create_view')}?new=true""",
+                "url": f"""{reverse_lazy("notifications:notification_template_create_view")}?new=true""",
                 "attrs": 'id="notification-template-create"',
             }
         return None
@@ -115,7 +115,7 @@ class NotificationTemplateListView(LoginRequiredMixin, HorillaListView):
         """Button to show when no records exist"""
         if self.request.user.has_perm("notifications.add_notificationtemplate"):
             return {
-                "url": f"""{ reverse_lazy('notifications:notification_template_create_view')}?new=true""",
+                "url": f"""{reverse_lazy("notifications:notification_template_create_view")}?new=true""",
                 "attrs": 'id="notification-template-create"',
             }
         return None
@@ -307,7 +307,7 @@ class NotificationTemplateDetailView(LoginRequiredMixin, DetailView):
             if request.headers.get("HX-Request") == "true":
                 messages.error(self.request, e)
                 return RefreshResponse(request)
-            raise HttpNotFound(e)
+            raise HttpNotFound(e) from e
         return super().dispatch(request, *args, **kwargs)
 
     model = NotificationTemplate
