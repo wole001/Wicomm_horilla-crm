@@ -54,7 +54,7 @@ class WorkflowRule(HorillaCoreModel):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     def is_active_col(self):
         """Return HTML toggle for active status column."""

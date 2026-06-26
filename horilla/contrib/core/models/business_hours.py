@@ -478,7 +478,7 @@ class ShiftHour(BusinessHourDayMixin, HorillaCoreModel):
         ordering = ["name"]
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     @staticmethod
     def _is_midnight(t):
