@@ -1048,6 +1048,12 @@ class HorillaListView(HorillaListViewMixin, ListView):
                 context["next_page"] = context["page_obj"].next_page_number()
         context["search_url"] = self.search_url or self.request.path
         context["main_url"] = self.main_url or self.request.path
+        from horilla.urls import resolve as _resolve
+
+        try:
+            context["list_view_url_name"] = _resolve(self.request.path_info).url_name
+        except Exception:
+            context["list_view_url_name"] = ""
         context["main_session_id"] = getattr(self, "main_session_id", "mainSession")
         query_params = {
             item: self.request.GET.getlist(item) for item in self.request.GET
