@@ -11,8 +11,6 @@ import threading
 from django.template import engines
 
 from horilla.auth.models import User
-
-# Re-use the battle-tested MockRequest from automations rather than defining our own
 from horilla.contrib.automations.tasks import MockRequest as _WorkflowMockRequest
 from horilla.contrib.core.models import HorillaContentType
 from horilla.contrib.mail.models import (
