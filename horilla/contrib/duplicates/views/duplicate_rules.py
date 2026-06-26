@@ -2,7 +2,6 @@
 
 # Standard library imports
 from functools import cached_property
-from urllib.parse import urlencode
 
 # Third-party imports (Django)
 from django.contrib.auth.mixins import LoginRequiredMixin

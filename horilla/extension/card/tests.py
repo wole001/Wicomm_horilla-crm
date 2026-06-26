@@ -5,7 +5,7 @@ Tests for Horilla _inherit_card card view extensions.
 from django.test import SimpleTestCase
 
 from horilla.contrib.generics.views.card import HorillaCardView
-from horilla.extension.card import clear_card_extension_cache, resolve_card_view_class
+from horilla.extension.card import clear_card_extension_cache
 from horilla.extension.card.compose import compose_card_view_class
 from horilla.extension.card.metaclass import CardExtension
 from horilla.extension.card.registry import (

@@ -3,10 +3,9 @@ Tests for Horilla _inherit_nav nav view extensions.
 """
 
 from django.test import SimpleTestCase
-from django.views.generic import TemplateView
 
 from horilla.contrib.generics.views.navbar import HorillaNavView
-from horilla.extension.nav import clear_nav_extension_cache, resolve_nav_view_class
+from horilla.extension.nav import clear_nav_extension_cache
 from horilla.extension.nav.compose import compose_nav_view_class
 from horilla.extension.nav.metaclass import NavExtension
 from horilla.extension.nav.registry import (
