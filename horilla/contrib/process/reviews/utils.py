@@ -283,7 +283,6 @@ def _notify_approver_pending_review(job):
     record = job.content_object
     redirect_url = reverse_lazy("reviews:review_job_view")
     try:
-
         create_notification(
             user=approver,
             message=_(

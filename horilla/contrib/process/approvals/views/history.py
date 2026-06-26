@@ -241,7 +241,6 @@ class ApprovalHistoryDetailView(LoginRequiredMixin, TemplateView):
                 )
             )
             if not allowed:
-
                 return render(self.request, "403.html")
         record = safe_content_object(obj)
         can_edit_record = bool(
