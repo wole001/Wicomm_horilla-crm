@@ -22,6 +22,11 @@
         display: inline;
     }
 </style>
+{% if list_view_url_name %}
+<span id="column-selector-url-name-holder" hx-swap-oob="true">
+    <input type="hidden" id="active-list-url-name" name="url_name" value="{{ list_view_url_name }}">
+</span>
+{% endif %}
 <div
     id="{{ view_id|safe }}"
     style="position: relative"

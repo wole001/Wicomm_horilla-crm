@@ -36,6 +36,19 @@ from ..list import HorillaListView
 logger = logging.getLogger(__name__)
 
 
+def _get_path_context(request):
+    """Return the path context string used as a key for column visibility lookups.
+
+    Prefers HX-Current-URL (the real browser URL during HTMX requests) over
+    HTTP_REFERER so that modals opened from navbar/sub-views still resolve to
+    the correct page context.
+    """
+    hx_current = request.headers.get("HX-Current-URL", "")
+    url = hx_current or request.META.get("HTTP_REFERER", "")
+    path_context = urlparse(url).path.strip("/").replace("/", "_")
+    return re.sub(r"_\d+$", "", path_context)
+
+
 def get_default_columns_from_view(url_name, app_label, model_name, request):
     """
     Get default columns from the view class based on URL name.
@@ -104,11 +117,8 @@ def get_default_columns_from_view(url_name, app_label, model_name, request):
             try:
                 apps.get_model(app_label=app_label, model_name=model_name)
 
-                # Get columns from the view class
-                # Columns might be defined as class attribute
                 if hasattr(view_class, "columns") and view_class.columns:
                     columns = view_class.columns
-                    # Extract field names from columns
                     default_field_names = []
                     for col in columns:
                         if isinstance(col, (list, tuple)) and len(col) >= 2:
@@ -121,6 +131,55 @@ def get_default_columns_from_view(url_name, app_label, model_name, request):
                 return None
     except Exception as e:
         logger.debug("Error resolving URL name %s: %s", url_name, str(e))
+        return None
+
+
+def get_view_columns(url_name, app_label, model_name):
+    """Return the full [[label, field_name], ...] column list from a view class.
+
+    Used to populate the column selector with the view-defined columns (including
+    method-based columns like status_col, related_object) that don't exist on the
+    model's _meta field list.
+    """
+    try:
+        from horilla.urls import get_resolver
+
+        resolver = get_resolver()
+        if ":" in url_name:
+            app_name, pattern_name = url_name.split(":", 1)
+        else:
+            pattern_name = url_name
+            app_name = None
+
+        def _find(patterns, name, app):
+            for p in patterns:
+                if getattr(p, "name", None) == name:
+                    if app is None or getattr(p, "app_name", None) == app:
+                        return getattr(p, "callback", None)
+                if hasattr(p, "url_patterns"):
+                    r = _find(p.url_patterns, name, app)
+                    if r:
+                        return r
+            return None
+
+        view_func = _find(resolver.url_patterns, pattern_name, app_name)
+        if not view_func:
+            return None
+        view_class = getattr(view_func, "view_class", None) or getattr(
+            view_func, "cls", None
+        )
+        if not view_class or not issubclass(view_class, HorillaListView):
+            return None
+        columns = getattr(view_class, "columns", None)
+        if not columns:
+            return None
+        return [
+            [force_str(col[0]), col[1]]
+            for col in columns
+            if isinstance(col, (list, tuple)) and len(col) >= 2
+        ]
+    except Exception as e:
+        logger.debug("Error in get_view_columns for %s: %s", url_name, str(e))
         return None
 
     return None
@@ -147,12 +206,7 @@ class ListColumnSelectFormView(LoginRequiredMixin, FormView):
         if model_name and "." in model_name:
             model_name = model_name.split(".")[-1]
 
-        path_context = (
-            urlparse(self.request.META.get("HTTP_REFERER", ""))
-            .path.strip("/")
-            .replace("/", "_")
-        )
-        path_context = re.sub(r"_\d+$", "", path_context)
+        path_context = _get_path_context(self.request)
         user = self.request.user
 
         if app_label and model_name and url_name:
@@ -182,12 +236,7 @@ class ListColumnSelectFormView(LoginRequiredMixin, FormView):
         model_name = model_name.strip('"') if model_name else model_name
         if model_name and "." in model_name:
             model_name = model_name.split(".")[-1]
-        path_context = (
-            urlparse(self.request.META.get("HTTP_REFERER", ""))
-            .path.strip("/")
-            .replace("/", "_")
-        )
-        path_context = re.sub(r"_\d+$", "", path_context)
+        path_context = _get_path_context(self.request)
         context["app_label"] = app_label
         context["model_name"] = model_name
         context["url_name"] = url_name
@@ -219,6 +268,14 @@ class ListColumnSelectFormView(LoginRequiredMixin, FormView):
                     if hasattr(instance, "columns")
                     else model_fields
                 )
+
+                # When a url_name is provided, restrict all_fields to only the
+                # columns defined on the view so the selector shows only relevant
+                # fields for that list view (not every model field).
+                if url_name:
+                    view_cols = get_view_columns(url_name, app_label, model_name)
+                    if view_cols:
+                        all_fields = view_cols
 
                 # Filter out hidden fields based on field permissions
                 if all_fields:
@@ -280,6 +337,28 @@ class ListColumnSelectFormView(LoginRequiredMixin, FormView):
 
                     # Get removed_custom_field_lists and filter hidden fields
                     removed_custom_field_lists = visibility.removed_custom_fields or []
+                else:
+                    # No saved record — populate visible_fields from the view's default columns
+                    if url_name:
+                        default_field_names = get_default_columns_from_view(
+                            url_name, app_label, model_name, self.request
+                        )
+                        if default_field_names:
+                            all_fields_map = {
+                                f[1]: f[0]
+                                for f in all_fields
+                                if isinstance(f, (list, tuple)) and len(f) >= 2
+                            }
+                            visible_fields = [
+                                [
+                                    all_fields_map.get(
+                                        fn, fn.replace("_", " ").title()
+                                    ),
+                                    fn,
+                                ]
+                                for fn in default_field_names
+                                if fn in all_fields_map
+                            ]
                     # Filter out hidden fields from removed_custom_field_lists
                     if removed_custom_field_lists:
                         removed_field_names = [
@@ -446,12 +525,7 @@ class ListColumnSelectFormView(LoginRequiredMixin, FormView):
                     }
                 )
 
-            path_context = (
-                urlparse(self.request.META.get("HTTP_REFERER", ""))
-                .path.strip("/")
-                .replace("/", "_")
-            )
-            path_context = re.sub(r"_\d+$", "", path_context)
+            path_context = _get_path_context(self.request)
             try:
                 model = apps.get_model(app_label=app_label, model_name=model_name)
 
@@ -478,6 +552,13 @@ class ListColumnSelectFormView(LoginRequiredMixin, FormView):
                     if hasattr(instance, "columns")
                     else model_fields
                 )
+
+                # Restrict to view-defined columns only so the selector shows
+                # only fields relevant to this list view.
+                if url_name:
+                    view_cols = get_view_columns(url_name, app_label, model_name)
+                    if view_cols:
+                        all_fields = view_cols
 
                 # Filter out hidden fields based on field permissions
                 if all_fields:
@@ -672,12 +753,7 @@ class ResetColumnToDefaultView(LoginRequiredMixin, View):
         if model_name and "." in model_name:
             model_name = model_name.split(".")[-1]
 
-        path_context = (
-            urlparse(request.META.get("HTTP_REFERER", ""))
-            .path.strip("/")
-            .replace("/", "_")
-        )
-        path_context = re.sub(r"_\d+$", "", path_context)
+        path_context = _get_path_context(request)
 
         try:
             ListColumnVisibility.all_objects.filter(

@@ -83,12 +83,13 @@ class HorillaListColumnMixin:
             return columns
         app_label = self.model._meta.app_label
         model_name = self.model.__name__
-        context = (
-            urlparse(self.request.META.get("HTTP_REFERER", ""))
-            .path.strip("/")
-            .replace("/", "_")
+        hx_current = self.request.headers.get("HX-Current-URL", "")
+        _referer_url = hx_current or self.request.META.get("HTTP_REFERER", "")
+        context = re.sub(
+            r"_\d+$",
+            "",
+            urlparse(_referer_url).path.strip("/").replace("/", "_"),
         )
-        context = re.sub(r"_\d+$", "", context)
         current_path = resolve(self.request.path_info).url_name
         cache_key = f"visible_columns_{self.request.user.id}_{app_label}_{model_name}_{context}_{current_path}"
         cached_columns = cache.get(cache_key)
