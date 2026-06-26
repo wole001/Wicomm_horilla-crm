@@ -13,11 +13,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 # First party imports (Horilla)
-from horilla.contrib.core.api.docs import (
-    BULK_DELETE_DOCS,
-    BULK_UPDATE_DOCS,
-    SEARCH_FILTER_DOCS,
-)
+from horilla.contrib.core.api.docs import BULK_DELETE_DOCS, BULK_UPDATE_DOCS
 from horilla.contrib.core.api.mixins import BulkOperationsMixin, SearchFilterMixin
 from horilla.contrib.core.api.permissions import IsCompanyMember
 

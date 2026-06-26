@@ -8,8 +8,8 @@ from django.apps import apps
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db.migrations.recorder import MigrationRecorder
-from django.db.models import Case, F, Value, When
-from django.db.models.functions import Concat, Length, Replace, Substr
+from django.db.models import F, Value
+from django.db.models.functions import Concat, Replace, Substr
 
 
 class LogMixin:
