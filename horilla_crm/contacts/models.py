@@ -119,6 +119,7 @@ class Contact(HorillaCoreModel):
         this method is to get related account delete url
         """
         try:
+            account = None
             request = getattr(_thread_local, "request", None)
             if request and hasattr(request, "resolver_match"):
                 object_id = request.resolver_match.kwargs.get("pk")
