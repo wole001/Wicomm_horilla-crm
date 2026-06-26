@@ -42,7 +42,7 @@ class AttachmentListView(HorillaListView):
     columns = ["title", "created_by", "created_at"]
     bulk_select_option = False
     list_column_visibility = False
-    table_height_as_class = "h-[calc(_100vh_-_520px_)]"
+    table_height_as_class = "h-[calc(_100vh_-_550px_)]"
     table_width = False
 
 
