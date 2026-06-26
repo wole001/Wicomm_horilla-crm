@@ -2,7 +2,7 @@
 
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.11.2"
+__version__ = "1.11.3"
 __module_name__ = _("Workflow")
 __release_date__ = ""
 __description__ = _(
@@ -11,6 +11,11 @@ __description__ = _(
     "scheduled relative to record or rule dates."
 )
 __icon__ = "assets/icons/automation.svg"
+
+__1_11_3__ = _(
+    "Re-raise HttpNotFound with exception chaining in workflow detail views to "
+    "preserve context."
+)
 
 __1_11_2__ = _(
     "Migrated workflow execution engine transaction imports from django.db to horilla.db."

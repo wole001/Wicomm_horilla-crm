@@ -2,13 +2,22 @@
 
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "1.12.2"
+__version__ = "1.12.3"
 __module_name__ = _("Core System")
 __release_date__ = ""
 __description__ = _(
     "Core system providing authentication, configuration, utilities, and platform-level services."
 )
 __icon__ = "assets/icons/logo.png"
+
+__1_12_3__ = _(
+    "Redesigned sidebar to a fixed-width icon-nav with text labels and corrected the "
+    "sub-sidebar toggle button position when collapsed. Extension framework: renamed "
+    "model _inherit to _inherit_model across metaclass, registry, and migration ops. "
+    "Core: auto-sync user permissions when a role changes via signals; filter "
+    "allowed_users by active company in OwnerQuerysetMixin. Generics: fixed Add Column "
+    "to List in tabbed list views."
+)
 
 __1_12_2__ = _(
     "Added IP-based brute-force lockout on login and uniform forgot-password responses to "

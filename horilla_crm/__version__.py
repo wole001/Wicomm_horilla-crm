@@ -2,11 +2,17 @@
 
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.11.3"
+__version__ = "1.11.4"
 __module_name__ = "CRM"
 __release_date__ = ""
 __description__ = _("CRM module for managing leads, contacts, and opportunities.")
 __icon__ = "assets/icons/icon2.svg"
+
+__1_11_4__ = _(
+    "Contacts: initialize account before conditional relation lookup on model save. "
+    "Forecast: avoid constant-test checks when reading cached company access in "
+    "forecast-type tab views."
+)
 
 __1_11_3__ = _(
     "Forecast: excluded currency and current_amount from ForecastTargetForm; fixed "

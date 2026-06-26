@@ -2,13 +2,18 @@
 
 from horilla.utils.translation import gettext_lazy as _
 
-__version__ = "1.11.3"
+__version__ = "1.11.4"
 __module_name__ = "Activity"
 __release_date__ = ""
 __description__ = _(
     "Module for tracking and managing activities such as tasks,calls, events, and emails."
 )
 __icon__ = "activity/assets/icons/activity-red.svg"
+
+__1_11_4__ = _(
+    "Constrained activity tab list table height for consistent scrolling. Added "
+    "cursor-pointer to Pending and Completed Calls sub-tabs."
+)
 
 __1_11_3__ = _(
     "Disabled base owner_filtration on EmailListView. Centralised get_main_url in the "
