@@ -8,8 +8,6 @@ import logging
 
 # Third-party imports (Django)
 from django.conf import settings
-
-logger = logging.getLogger(__name__)
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.password_validation import validate_password
@@ -33,6 +31,8 @@ from horilla.web import HttpResponse
 
 # Local imports
 from ..models import Company
+
+logger = logging.getLogger(__name__)
 
 
 class ForgotPasswordView(View):
