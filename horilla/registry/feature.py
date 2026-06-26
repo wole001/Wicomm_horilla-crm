@@ -650,7 +650,6 @@ def register_model_for_feature(
             feature_name = resolved
 
         if feature_name in FEATURE_CONFIG:
-
             if not FEATURE_AUTO_REGISTER_ALL.get(feature_name, True):
                 # Explicitly requested features always bypass the include_models gate
                 if feature_name not in explicit_features:
