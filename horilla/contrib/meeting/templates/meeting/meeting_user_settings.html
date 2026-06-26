@@ -104,7 +104,7 @@
                                     <li><span class="font-medium">{% trans "Create an OAuth app" %}</span> — {% trans 'Click "Build App" → choose "OAuth" → select "User-managed".' %}</li>
                                     <li><span class="font-medium">{% trans "Add redirect URI" %}</span> — {% trans "Under OAuth settings, add this exact redirect URI:" %}
                                         <div class="mt-1 p-2 bg-white border border-dark-50 rounded flex items-center gap-2">
-                                            <code class="text-xs break-all select-all font-mono flex-1">{{ request.scheme }}://{{ request.get_host }}/meeting/oauth/zoom/callback/</code>
+                                            <code class="text-xs break-all select-all font-mono flex-1">{{ request.scheme }}://{{ request.get_host }}/meeting/zoom/callback/</code>
                                         </div>
                                     </li>
                                     <li><span class="font-medium">{% trans "Copy credentials" %}</span> — {% trans "Copy the Client ID and Client Secret from the app's Basic Information page." %}</li>
