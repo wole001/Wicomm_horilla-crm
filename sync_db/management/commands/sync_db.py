@@ -1,3 +1,7 @@
+"""
+Management command to sync database structure and remap app references.
+"""
+
 import json
 
 from django.apps import apps

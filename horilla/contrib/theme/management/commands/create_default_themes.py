@@ -1,3 +1,7 @@
+"""
+Management command to seed default HorillaColorTheme records.
+"""
+
 # Third-party imports (Django)
 from django.core.management.base import BaseCommand
 

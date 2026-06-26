@@ -1,3 +1,7 @@
+"""
+Re-export Django core exceptions for Horilla platform code.
+"""
+
 from django.core.exceptions import (
     AppRegistryNotReady,
     BadRequest,

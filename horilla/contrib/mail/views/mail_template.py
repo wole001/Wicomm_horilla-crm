@@ -523,6 +523,7 @@ class MailTemplateDetailView(LoginRequiredMixin, DetailView):
     context_object_name = "mail_template"
 
     def get_context_data(self, **kwargs):
+        """Add sanitized HTML body for safe template rendering in detail view."""
         context = super().get_context_data(**kwargs)
         from django.utils.safestring import mark_safe
 
