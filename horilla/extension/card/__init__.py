@@ -6,7 +6,10 @@ from horilla.extension.card.bootstrap import apply_card_extensions
 from horilla.extension.card.debug import get_card_extensions, print_card_view_mro
 from horilla.extension.card.metaclass import CardExtension
 from horilla.extension.card.registry import CARD_COMPOSED_MAP, CARD_EXTENSION_REGISTRY
-from horilla.extension.card.resolve import clear_card_extension_cache, resolve_card_view_class
+from horilla.extension.card.resolve import (
+    clear_card_extension_cache,
+    resolve_card_view_class,
+)
 
 __all__ = [
     "CardExtension",

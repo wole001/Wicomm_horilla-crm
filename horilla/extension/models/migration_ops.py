@@ -58,8 +58,7 @@ class InjectField(migrations.AddField):
     def describe(self):
         """Human-readable description for migration logging."""
         return (
-            f"Inject field {self.name} into "
-            f"{self.target_app_label}.{self.model_name}"
+            f"Inject field {self.name} into {self.target_app_label}.{self.model_name}"
         )
 
 
