@@ -8,7 +8,7 @@ from requests_oauthlib import OAuth2Session
 ZOOM_AUTH_URL = "https://zoom.us/oauth/authorize"
 ZOOM_TOKEN_URL = "https://zoom.us/oauth/token"
 ZOOM_API_BASE = "https://api.zoom.us/v2"
-ZOOM_SCOPES = []
+ZOOM_SCOPES = ["meeting:write:meeting", "user:read:user"]
 
 
 def _get_redirect_uri(request):
@@ -119,7 +119,13 @@ def create_meeting(config, title, start_datetime, end_datetime):
     }
     try:
         resp = oauth.post(f"{ZOOM_API_BASE}/users/me/meetings", json=payload)
-        resp.raise_for_status()
+        if not resp.ok:
+            try:
+                body = resp.json()
+                msg = body.get("message") or body.get("reason") or resp.text
+            except Exception:
+                msg = resp.text
+            return None, f"Zoom API error {resp.status_code}: {msg}"
         data = resp.json()
         return data.get("join_url"), None
     except Exception as e:
