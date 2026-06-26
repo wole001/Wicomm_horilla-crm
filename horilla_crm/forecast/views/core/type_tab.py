@@ -150,9 +150,8 @@ class ForecastTypeTabView(
         _log.debug("PERF calculate_totals: %.3fs", time.perf_counter() - _t1)
         _t1 = time.perf_counter()
 
-        currency_symbol = (
-            self.get_company_for_user.currency if self.get_company_for_user else "USD"
-        )
+        company = self.get_company_for_user
+        currency_symbol = company.currency if company else "USD"
 
         # Construct search_url and search_params for HTMX
         search_url = self.request.path
@@ -318,11 +317,8 @@ class ForecastChartsModalView(
 
         if not fiscal_year:
             context["forecast_chart_data"] = None
-            context["currency_symbol"] = (
-                self.get_company_for_user.currency
-                if self.get_company_for_user
-                else "USD"
-            )
+            company = self.get_company_for_user
+            context["currency_symbol"] = company.currency if company else "USD"
             return context
 
         company = (
@@ -352,8 +348,9 @@ class ForecastChartsModalView(
         periods_qs = Period.all_objects.select_related(
             "quarter", "quarter__fiscal_year"
         ).order_by("quarter__fiscal_year__start_date", "period_number")
-        if self.get_company_for_user:
-            periods_qs = periods_qs.filter(company=self.get_company_for_user)
+        company = self.get_company_for_user
+        if company:
+            periods_qs = periods_qs.filter(company=company)
 
         if beginning_period_id and ending_period_id:
             begin_p = periods_qs.filter(id=beginning_period_id).first()
@@ -416,9 +413,8 @@ class ForecastChartsModalView(
             chart_forecasts.append(obj)
 
         forecast_chart_data = get_forecast_chart_data(chart_forecasts, forecast_type)
-        currency_symbol = (
-            self.get_company_for_user.currency if self.get_company_for_user else "USD"
-        )
+        company = self.get_company_for_user
+        currency_symbol = company.currency if company else "USD"
 
         context["forecast_chart_data"] = forecast_chart_data
         context["currency_symbol"] = currency_symbol
