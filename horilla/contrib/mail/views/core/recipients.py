@@ -147,7 +147,6 @@ class EmailSuggestionView(LoginRequiredMixin, View):
                     "email" in field.name.lower()
                     or field.__class__.__name__ == "EmailField"
                 ):
-
                     try:
                         values = model.objects.values_list(
                             field.name, flat=True

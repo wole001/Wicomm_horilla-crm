@@ -86,7 +86,7 @@ class MailTemplateNavbar(LoginRequiredMixin, HorillaNavView):
         """Get the new button configuration if the user has permission to add mail templates"""
         if self.request.user.has_perm("mail.add_horillamailtemplate"):
             return {
-                "url": f"""{ reverse_lazy('mail:mail_template_create_view')}""",
+                "url": f"""{reverse_lazy("mail:mail_template_create_view")}""",
                 "target": "#horillaModalBox",
                 "onclick": "openhorillaModal();",
                 "attrs": {"id": "mail-template-create"},
@@ -120,7 +120,7 @@ class MailTemplateListView(LoginRequiredMixin, HorillaListView):
         """Get the add button configuration when there are no records."""
         if self.request.user.has_perm("mail.add_horillamailtemplate"):
             return {
-                "url": f"""{ reverse_lazy('mail:mail_template_create_view')}""",
+                "url": f"""{reverse_lazy("mail:mail_template_create_view")}""",
                 "target": "#horillaModalBox",
                 "onclick": "openhorillaModal();",
                 "attrs": {"id": "mail-template-create"},

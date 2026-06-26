@@ -285,7 +285,7 @@ class HorillaMail(HorillaCoreModel):
     )
 
     def __str__(self):
-        return f"[{self.mail_status}] {self.subject }"
+        return f"[{self.mail_status}] {self.subject}"
 
     def render_subject(self, context=None):
         """

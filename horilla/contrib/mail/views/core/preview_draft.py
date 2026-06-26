@@ -288,9 +288,9 @@ class HorillaMailPreviewView(LoginRequiredMixin, View):
                 for attachment in existing_attachments:
                     attachments.append(attachment)
                 for f in uploaded_files:
-
                     attachment = HorillaMailAttachment(
-                        mail=draft_mail, file=f  # each file individually
+                        mail=draft_mail,
+                        file=f,  # each file individually
                     )
                     attachment.save()
                     attachments.append(attachment)
@@ -485,7 +485,6 @@ class SaveDraftView(LoginRequiredMixin, View):
                     ).first()
 
             if not draft_mail:
-
                 draft_mail = HorillaMail.objects.create(
                     content_type=content_type,
                     object_id=object_id,

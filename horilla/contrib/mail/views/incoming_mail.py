@@ -72,7 +72,7 @@ class IncomingMailServerNavbar(LoginRequiredMixin, HorillaNavView):
         """New button configuration for the navbar."""
         if self.request.user.has_perm("mail.create_horillaemailconfiguration"):
             return {
-                "url": f"""{ reverse_lazy('mail:incoming_mail_server_type_selection')}?new=true""",
+                "url": f"""{reverse_lazy("mail:incoming_mail_server_type_selection")}?new=true""",
                 "attrs": {"id": "mail-server-create"},
                 "onclick": "openhorillaModal()",
                 "target": "#horillaModalBox",

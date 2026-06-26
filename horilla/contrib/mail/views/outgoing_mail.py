@@ -81,7 +81,7 @@ class MailServerNavbar(LoginRequiredMixin, HorillaNavView):
         """Return new button configuration if user has permission"""
         if self.request.user.has_perm("mail.create_horillaemailconfiguration"):
             return {
-                "url": f"""{ reverse_lazy('mail:mail_server_type_selection')}?new=true""",
+                "url": f"""{reverse_lazy("mail:mail_server_type_selection")}?new=true""",
                 "attrs": {"id": "mail-server-create"},
                 "onclick": "openhorillaModal()",
                 "target": "#horillaModalBox",
