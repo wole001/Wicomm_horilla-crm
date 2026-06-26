@@ -49,7 +49,7 @@ def generate_meeting_url(view_self, provider, host, activity):
                     pass
             return url or ""
 
-        elif provider == "ms_teams":
+        if provider == "ms_teams":
             from horilla.contrib.meeting.models import MicrosoftTeamsOAuthConfig
             from horilla.contrib.meeting.oauth.teams import create_meeting
 
@@ -66,7 +66,7 @@ def generate_meeting_url(view_self, provider, host, activity):
                     pass
             return url or ""
 
-        elif provider == "google_meet":
+        if provider == "google_meet":
             import time as _time
             from datetime import datetime as _dt
             from datetime import timedelta as _td

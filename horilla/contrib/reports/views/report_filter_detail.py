@@ -292,10 +292,7 @@ class ReportDetailFilteredView(LoginRequiredMixin, View):
                     field = model._meta.get_field(field_name)
                     if isinstance(field, ForeignKey):
                         return Q(**{f"{field_name}__isnull": True})
-                    else:
-                        return Q(**{f"{field_name}__isnull": True}) | Q(
-                            **{field_name: ""}
-                        )
+                    return Q(**{f"{field_name}__isnull": True}) | Q(**{field_name: ""})
                 except Exception:
                     return Q(**{f"{field_name}__isnull": True})
             filter_value = get_filter_value(field_name, value, model)
