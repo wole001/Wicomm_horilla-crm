@@ -9,10 +9,20 @@ from horilla.contrib.generics.views import HorillaListView, HorillaNavView, Hori
 
 # First party imports (Horilla)
 from horilla.urls import reverse_lazy
-from horilla.utils.decorators import htmx_required, method_decorator
+from horilla.utils.decorators import (
+    htmx_required,
+    method_decorator,
+    permission_required_or_denied,
+)
 from horilla.utils.translation import gettext_lazy as _
 
 
+@method_decorator(
+    permission_required_or_denied(
+        ["login_history.view_loginhistory", "login_history.view_own_loginhistory"]
+    ),
+    name="dispatch",
+)
 class UserLoginHistoryView(LoginRequiredMixin, HorillaView):
     """
     Main login history view of user
