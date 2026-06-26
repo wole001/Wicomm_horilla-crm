@@ -19,6 +19,7 @@ from horilla.contrib.generics.views import (
 from horilla.db.models import Q
 from horilla.urls import reverse_lazy
 from horilla.utils.decorators import htmx_required, method_decorator
+from horilla.utils.decorators.wrapper import permission_required_or_denied
 from horilla.utils.translation import gettext_lazy as _
 
 # Local imports
@@ -26,6 +27,10 @@ from ..filters import HolidayFilter
 from ..models import Holiday
 
 
+@method_decorator(
+    permission_required_or_denied(["core.view_holiday", "core.view_own_holiday"]),
+    name="dispatch",
+)
 class UserHolidayView(LoginRequiredMixin, HorillaView):
     """
     Templateviews for user sepcific holiday page
@@ -84,9 +89,9 @@ class UserHolidayListView(LoginRequiredMixin, HorillaListView):
         app_label = self.model._meta.app_label
         model_name = self.model._meta.model_name
 
-        if user.has_perm(f"{app_label}.view_{model_name}"):
-            queryset = self.model.objects.all()
-        elif user.has_perm(f"{app_label}.view_own_{model_name}"):
+        if user.has_perm(f"{app_label}.view_{model_name}") or user.has_perm(
+            f"{app_label}.view_own_{model_name}"
+        ):
             queryset = self.model.objects.filter(
                 Q(all_users=True) | Q(specific_users=user)
             ).distinct()
