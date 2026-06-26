@@ -29,8 +29,24 @@ def generate_meeting_url(view_self, provider, host, activity):
 
             config = ZoomOAuthConfig.objects.filter(user=host).first()
             if not config or not config.is_connected():
+                try:
+                    from django.contrib import messages
+
+                    messages.error(
+                        view_self.request,
+                        "Zoom account not connected. Go to My Settings → Meeting to connect.",
+                    )
+                except Exception:
+                    pass
                 return ""
-            url, _ = create_meeting(config, title, start, end)
+            url, error = create_meeting(config, title, start, end)
+            if error:
+                try:
+                    from django.contrib import messages
+
+                    messages.error(view_self.request, f"Zoom: {error}")
+                except Exception:
+                    pass
             return url or ""
 
         elif provider == "ms_teams":
@@ -108,8 +124,16 @@ def generate_meeting_url(view_self, provider, host, activity):
                 session.delete(del_url)
             return meet_url
 
-    except Exception:
-        pass
+    except Exception as exc:
+        logger.exception(
+            "Meeting URL generation failed for provider=%s: %s", provider, exc
+        )
+        try:
+            from django.contrib import messages
+
+            messages.error(view_self.request, f"Failed to generate meeting link: {exc}")
+        except Exception:
+            pass
     return ""
 
 
