@@ -1,10 +1,10 @@
-# Model `_inherit` extensions
+# Model `_inherit_model` extensions
 
-Extend existing `HorillaCoreModel` subclasses from a separate app without editing the target app's migrations. Platform tests use `_inherit = "core.Department"`; CRM apps commonly use paths such as `leads.Lead`.
+Extend existing `HorillaCoreModel` subclasses from a separate app without editing the target app's migrations. Platform tests use `_inherit_model = "core.Department"`; CRM apps commonly use paths such as `leads.Lead`.
 
 | Mechanism | Doc | Package |
 |-----------|-----|---------|
-| **`_inherit`** — add DB columns to existing models | This document (below) | `horilla/extension/models/` |
+| **`_inherit_model`** — add DB columns to existing models | This document (below) | `horilla/extension/models/` |
 | **`_inherit_form`** — extend create/edit forms | [forms/inherit.md](../forms/inherit.md) | `horilla/extension/forms/` |
 | **`_inherit_list`** — extend `HorillaListView` list columns and hooks | [list/inherit.md](../list/inherit.md) | `horilla/extension/list/` |
 | **`_inherit_filter`** — extend `HorillaFilterSet` filtersets | [filter/inherit.md](../filter/inherit.md) | `horilla/extension/filter/` |
@@ -17,7 +17,7 @@ See [Extension index](../inherit.md) for kanban, detail, and full package layout
 ```text
 my_lead_extensions/
 ├── apps.py               # AppLauncher; auto_import_modules includes "filters"
-├── models.py             # _inherit = "leads.Lead"
+├── models.py             # _inherit_model = "leads.Lead"
 ├── forms.py              # _inherit_form = "horilla_crm.leads.forms.LeadSingleForm"
 ├── filters.py            # _inherit_filter = "horilla_crm.leads.filters.LeadFilter"
 ├── navbars.py            # _inherit_nav = "horilla_crm.leads.views.core.LeadNavbar"
@@ -49,7 +49,7 @@ See [Extension index](../inherit.md#bootstrap) and [Registration and cache inval
 
 1. **`horilla/contrib/core/models/base.py`** sets `metaclass=ExtensionModelBase` on `HorillaCoreModel`.
 2. **`import horilla.extension`** runs `_patch_migration_autodetectors()` (patches `makemigrations` / `migrate`).
-3. Your app loads **`models.py`**; classes with `_inherit = "leads.Lead"` register with the metaclass.
+3. Your app loads **`models.py`**; classes with `_inherit_model = "leads.Lead"` register with the metaclass.
 4. Django registers **`leads.Lead`** → injected fields are attached to the target model.
 
 ### Form extension flow
@@ -89,7 +89,7 @@ See [Plan_HORILLA_INHERIT_MIGRATION.md](../../../Plan_HORILLA_INHERIT_MIGRATION.
 
 ---
 
-# Model extension (`_inherit`)
+# Model extension (`_inherit_model`)
 
 Extend existing Horilla models with new database columns **without** modifying core app migrations.
 
@@ -105,7 +105,7 @@ from horilla.utils.translation import gettext_lazy as _
 
 
 class LeadExtension(HorillaCoreModel):
-    _inherit = "leads.Lead"
+    _inherit_model = "leads.Lead"
 
     industry_code = models.CharField(
         max_length=20,
@@ -144,7 +144,7 @@ Migrations are written to **your extension app only** — `leads/migrations/` mu
 | Topic | Rule |
 |-------|------|
 | Base class | `HorillaCoreModel` |
-| `_inherit` format | `"app_label.ModelName"` e.g. `"leads.Lead"` — metaclass registers lazy ops with `model_name.lower()` |
+| `_inherit_model` format | `"app_label.ModelName"` e.g. `"leads.Lead"` — metaclass registers lazy ops with `model_name.lower()` |
 | `clean()` | Do not call `super().clean()`; target `clean()` runs first |
 | App order | Extension apps **after** target app in `INSTALLED_APPS` (required for metaclass registration); use client `local_settings.py` only |
 | Removal | `python manage.py migrate my_lead_extensions zero` then uninstall app |
@@ -215,7 +215,7 @@ from horilla.extension import (
 
 ## Pair with form, filter, and list extensions
 
-Model `_inherit` adds DB columns. UI belongs in extension apps:
+Model `_inherit_model` adds DB columns. UI belongs in extension apps:
 
 - [**Form extensions**](../forms/inherit.md) — `_inherit_form` on concrete CRM forms (e.g. `LeadSingleForm`)
 - [**Filter extensions**](../filter/inherit.md) — `_inherit_filter` on concrete filtersets (e.g. `LeadFilter` `exclude_append` / `search_fields_append`)

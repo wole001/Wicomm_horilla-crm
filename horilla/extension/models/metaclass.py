@@ -1,5 +1,5 @@
 """
-Metaclass for HorillaCoreModel _inherit model extensions.
+Metaclass for HorillaCoreModel _inherit_model extensions.
 """
 
 from django.apps import apps as django_apps
@@ -13,7 +13,7 @@ EXTENSION_REGISTRY = {}
 
 _SKIP_KEYS = frozenset(
     {
-        "_inherit",
+        "_inherit_model",
         "__module__",
         "__qualname__",
         "__doc__",
@@ -37,12 +37,12 @@ def _resolve_extension_app_label(module_name):
 
 class ExtensionModelBase(ModelBase):
     """
-    When _inherit is set, inject fields/methods onto the target model and return
-    a placeholder class (no DB table). Otherwise delegate to Django ModelBase.
+    When _inherit_model is set, inject fields/methods onto the target model and
+    return a placeholder class (no DB table). Otherwise delegate to Django ModelBase.
     """
 
     def __new__(cls, name, bases, namespace, **kwargs):
-        inherit = namespace.get("_inherit")
+        inherit = namespace.get("_inherit_model")
 
         if not inherit:
             return super().__new__(cls, name, bases, namespace, **kwargs)
@@ -50,7 +50,7 @@ class ExtensionModelBase(ModelBase):
         parts = inherit.rsplit(".", 1)
         if len(parts) != 2:
             raise ValueError(
-                f"_inherit must be 'app_label.ModelName', got: {inherit!r}"
+                f"_inherit_model must be 'app_label.ModelName', got: {inherit!r}"
             )
         app_label, model_name = parts
         # Must match Apps.register_model / do_pending_operations key:
@@ -111,7 +111,7 @@ class ExtensionModelBase(ModelBase):
             (object,),
             {
                 "_is_horilla_extension": True,
-                "_inherit": inherit,
+                "_inherit_model": inherit,
                 "_extension_fields": contributed_fields,
                 "__module__": module_name,
                 "__qualname__": namespace.get("__qualname__", name),

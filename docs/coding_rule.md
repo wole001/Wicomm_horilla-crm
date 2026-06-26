@@ -343,7 +343,7 @@ class LeadNavbarExtension(NavExtension):
 from horilla.contrib.core.models import HorillaCoreModel
 
 class LeadExtension(HorillaCoreModel):
-    _inherit = "leads.Lead"
+    _inherit_model = "leads.Lead"
 ```
 
 #### Composed runtime classes
@@ -398,7 +398,7 @@ Use the **declared hook names** exactly — the metaclass reads these class attr
 
 | Mechanism | Registration key | Hook examples |
 |-----------|------------------|---------------|
-| Model | `_inherit` | field names on class body |
+| Model | `_inherit_model` | field names on class body |
 | Form | `_inherit_form` | `field_order_insert`, `step_fields_append`, `fields_append` |
 | Filter | `_inherit_filter` | `exclude_append` (filter panel dropdown), `search_fields_append`, `fields_append` |
 | Nav | `_inherit_nav` | `actions_append`, `custom_view_type_update`, `column_selector_exclude_fields_append` |
@@ -437,17 +437,17 @@ Extension `_inherit_*` values are **full dotted paths** to an existing class:
 ```python
 _inherit_list = "horilla_crm.leads.views.core.LeadListView"
 _inherit_form = "horilla_crm.leads.forms.LeadSingleForm"
-_inherit = "leads.Lead"  # app_label.ModelName for models only
+_inherit_model = "leads.Lead"  # app_label.ModelName for models only
 ```
 
 - Use the real module path from the codebase (MCP `search_codebase` / `get_url_map` before guessing).
-- Model `_inherit` uses `"app_label.ModelName"`, not the full module path.
+- Model `_inherit_model` uses `"app_label.ModelName"`, not the full module path.
 
 ### Naming — reviewer checklist
 
 - [ ] New code under `horilla/extension/` avoids redundant `Horilla*` on classes and functions.
 - [ ] Public framework types in `horilla.contrib.*` keep existing `Horilla*` names.
-- [ ] Extension apps use `*Extension` class names and `_inherit` / `_inherit_form` / `_inherit_list`.
+- [ ] Extension apps use `*Extension` class names and `_inherit_model` / `_inherit_form` / `_inherit_list`.
 - [ ] Functions and variables are `snake_case`; constants are `UPPER_SNAKE_CASE`.
 - [ ] No new `HorillaHorilla*` or duplicated prefix typos.
 - [ ] Client-only apps are registered via `local_settings.py` (`INSTALLED_APPS += [...]`), not by editing `horilla/settings/base.py` unless you are core maintainers.

@@ -1,5 +1,5 @@
 """
-Horilla _inherit model extension system (_inherit on HorillaCoreModel).
+Horilla _inherit_model extension system (_inherit_model on HorillaCoreModel).
 """
 
 from horilla.extension.models.autodetect import HorillaAutodetector

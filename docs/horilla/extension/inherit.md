@@ -4,7 +4,7 @@ The Horilla **platform** supports extending installed apps in separate packages 
 
 | Mechanism | Doc | Package | Status |
 |-----------|-----|---------|--------|
-| **`_inherit`** — add DB columns to existing models | [models/inherit.md](./models/inherit.md) | `horilla/extension/models/` | Implemented |
+| **`_inherit_model`** — add DB columns to existing models | [models/inherit.md](./models/inherit.md) | `horilla/extension/models/` | Implemented |
 | **`_inherit_form`** — extend create/edit forms | [forms/inherit.md](./forms/inherit.md) | `horilla/extension/forms/` | Implemented |
 | **`_inherit_list`** — extend list views (`HorillaListView`) | [list/inherit.md](./list/inherit.md) | `horilla/extension/list/` | Implemented |
 | **`_inherit_card`** — extend card views (`HorillaCardView`) | [card/inherit.md](./card/inherit.md) | `horilla/extension/card/` | Implemented |
@@ -19,7 +19,7 @@ The Horilla **platform** supports extending installed apps in separate packages 
 horilla/extension/
 ├── __init__.py           # model API + makemigrations/migrate autodetector patch
 ├── bootstrap.py          # bootstrap_extensions() — compose all layers (URLconf hook)
-├── models/               # _inherit (metaclass, migrations, registry)
+├── models/               # _inherit_model (metaclass, migrations, registry)
 ├── forms/                # _inherit_form (registry, compose, resolve, bootstrap, cache)
 ├── filter/               # _inherit_filter (registry, compose, resolve, bootstrap, cache)
 ├── nav/                  # _inherit_nav (registry, compose, resolve, bootstrap, cache)
@@ -38,7 +38,7 @@ Each view/form subpackage includes a **`cache.py`** module (resolver cache + boo
 ```text
 my_lead_extensions/
 ├── apps.py               # AppLauncher; auto_import_modules = ["models", "forms", "filters", "navbars", "lists", ...]
-├── models.py             # _inherit = "leads.Lead"
+├── models.py             # _inherit_model = "leads.Lead"
 ├── forms.py              # _inherit_form = "horilla_crm.leads.forms.LeadSingleForm"
 ├── filters.py            # _inherit_filter = "horilla_crm.leads.filters.LeadFilter"
 ├── navbars.py            # _inherit_nav = "horilla_crm.leads.views.core.LeadNavbar"
@@ -52,7 +52,7 @@ my_lead_extensions/
 **Core platform example** (same mechanics; see `horilla/extension/*/tests.py`):
 
 ```text
-# Model: _inherit = "core.Department"
+# Model: _inherit_model = "core.Department"
 # Form:  _inherit_form = "horilla.contrib.core.forms.base.HolidayForm"
 # List:  _inherit_list = "horilla.contrib.core.views.users.UserListView"
 # Detail: _inherit_detail = "horilla.contrib.core.views.users.UserDetailView"
@@ -130,7 +130,7 @@ Do not import `horilla.extension` from `horilla/__init__.py` (risk of `AppRegist
 
 | Layer | Import | Registration class |
 |-------|--------|-------------------|
-| Model | `from horilla.contrib.core.models import HorillaCoreModel` | Subclass + `_inherit = "app_label.Model"` |
+| Model | `from horilla.contrib.core.models import HorillaCoreModel` | Subclass + `_inherit_model = "app_label.Model"` |
 | Form | `from horilla.extension.forms import FormExtension` | Subclass + `_inherit_form = "module.FormClass"` |
 | Filter | `from horilla.extension.filter import FilterExtension` | Subclass + `_inherit_filter = "module.FilterClass"` |
 | Nav | `from horilla.extension.nav import NavExtension` | Subclass + `_inherit_nav = "module.NavbarClass"` |

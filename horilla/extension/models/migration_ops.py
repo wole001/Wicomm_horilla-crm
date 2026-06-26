@@ -1,5 +1,5 @@
 """
-Custom migration operations for _inherit field injection.
+Custom migration operations for _inherit_model field injection.
 """
 
 from django.db import migrations, models

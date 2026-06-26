@@ -1,5 +1,5 @@
 """
-Horilla extension package: model _inherit and form _inherit_form.
+Horilla extension package: model _inherit_model and form _inherit_form.
 
 Patches makemigrations and migrate to use HorillaAutodetector so injected fields
 generate migrations in the owning extension app, not in the target app.

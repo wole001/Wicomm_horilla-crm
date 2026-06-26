@@ -1,5 +1,5 @@
 """
-Runtime registry for _inherit field injection ownership.
+Runtime registry for _inherit_model field injection ownership.
 
 INJECTION_MAP has no Django imports. lookup_injection_owner() may use the migration
 loader when the field was removed from the extension model before makemigrations.
