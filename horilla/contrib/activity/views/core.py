@@ -147,28 +147,28 @@ class HorillaActivitySectionView(DetailView):
     def add_task_button(self):
         """Return button configuration for creating a new task."""
         return {
-            "url": f"""{ reverse_lazy('activity:task_create_form')}""",
+            "url": f"""{reverse_lazy("activity:task_create_form")}""",
             "attrs": 'id="task-create"',
         }
 
     def add_meetings_button(self):
         """Return button configuration for creating a new meeting."""
         return {
-            "url": f"""{ reverse_lazy('activity:meeting_create_form')}""",
+            "url": f"""{reverse_lazy("activity:meeting_create_form")}""",
             "attrs": 'id="meeting-create"',
         }
 
     def add_call_button(self):
         """Return button configuration for creating a new call log."""
         return {
-            "url": f"""{ reverse_lazy('activity:call_create_form')}""",
+            "url": f"""{reverse_lazy("activity:call_create_form")}""",
             "attrs": 'id="call-create"',
         }
 
     def add_email_button(self):
         """Return button configuration for sending an email."""
         return {
-            "url": f"""{ reverse_lazy('mail:send_mail_view')}""",
+            "url": f"""{reverse_lazy("mail:send_mail_view")}""",
             "attrs": 'id="email-create"',
             "title": _("Send Email"),
         }
@@ -176,7 +176,7 @@ class HorillaActivitySectionView(DetailView):
     def add_event_button(self):
         """Return button configuration for creating a new event."""
         return {
-            "url": f"""{ reverse_lazy('activity:event_create_form')}""",
+            "url": f"""{reverse_lazy("activity:event_create_form")}""",
             "attrs": 'id="event-create"',
         }
 
@@ -308,7 +308,7 @@ class ActivityNavbar(LoginRequiredMixin, HorillaNavView):
             "activity.add_activity"
         ) or self.request.user.has_perm("activity.add_own_activity"):
             return {
-                "url": f"""{ reverse_lazy('activity:activity_create_form')}?new=true""",
+                "url": f"""{reverse_lazy("activity:activity_create_form")}?new=true""",
             }
         return None
 
