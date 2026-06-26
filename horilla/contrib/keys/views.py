@@ -38,6 +38,12 @@ from .models import ShortcutKey
 logger = logging.getLogger(__name__)
 
 
+@method_decorator(
+    permission_required_or_denied(
+        ["keys.view_shortcutkey", "keys.view_own_shortcutkey"]
+    ),
+    name="dispatch",
+)
 class ShortKeyView(LoginRequiredMixin, HorillaView):
     """
     TemplateView for short key view.

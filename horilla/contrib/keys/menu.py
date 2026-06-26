@@ -23,6 +23,7 @@ class ShortKeySettings:
     ]
     hx_select_id = "#short-key-view"
     order = 6
+    perm = ["keys.view_shortcutkey", "keys.view_own_shortcutkey"]
     attrs = {
         "hx-boost": "true",
         "hx-target": "#my-settings-content",
