@@ -95,6 +95,19 @@ Platform-wide hooks consumed by theme, currency, login, and installed apps, incl
 
 Theme app listens to **`pre_logout_signal`** / **`pre_login_render_signal`**—see [../theme/theme.md](../theme/theme.md).
 
+### Role-change permission sync (User model receivers)
+
+Two `User` `pre_save` / `post_save` receivers work together to keep `user_permissions` in sync whenever a user's role is changed through any code path (admin, API, bulk update, etc.):
+
+| Receiver | Signal | Behavior |
+|----------|--------|----------|
+| **`capture_user_old_role`** | `pre_save` | Snapshots `instance.role` onto `instance._previous_role` before the save, so the post-save handler can compare old vs. new role. No-ops for new users. |
+| **`sync_role_permissions_on_role_change`** | `post_save` | Skips when `created=True` or when `old_role == new_role`. Otherwise, inside `transaction.on_commit`: removes permissions from the old role (preserving any `view_own_*` defaults), then adds all permissions from the new role. Errors are logged but do not abort the save. |
+
+**Why `transaction.on_commit`?** The sync runs after the transaction commits, so it always reads the fully persisted role state and avoids acting on a partially-committed row.
+
+**`view_own_*` preservation:** Permissions whose `codename` starts with `view_own_` are never removed during role cleanup, even if the old role held them, because they represent per-user defaults that exist independently of role assignment.
+
 ---
 
 ## Documentation map
@@ -138,6 +151,70 @@ Ten class-based views manage business hour configuration per company.
 **Performance** — views use `select_related()` / `prefetch_related()` for company and holiday relations to avoid N+1 queries on the card and list pages.
 
 **HTMX return responses** — success handlers call `return_response` containing a script that reloads the detail view panel and shows a Django messages toast; cross-view reloads are orchestrated without full page refreshes.
+
+---
+
+## View and menu permission gates
+
+### Login history (`views/user_login_history.py` + `menu.py`)
+
+`UserLoginHistoryView` is guarded at dispatch level:
+
+```python
+@method_decorator(
+    permission_required_or_denied(
+        ["login_history.view_loginhistory", "login_history.view_own_loginhistory"]
+    ),
+    name="dispatch",
+)
+class UserLoginHistoryView(View): ...
+```
+
+The corresponding `LoginHistorySettings` My Settings menu entry declares `perm = ["login_history.view_loginhistory", "login_history.view_own_loginhistory"]` so the sidebar link is hidden for users who lack both permissions.
+
+### Holidays (`views/user_holidays.py` + `menu.py`)
+
+`UserHolidayView` is similarly guarded:
+
+```python
+@method_decorator(
+    permission_required_or_denied(
+        ["core.view_holiday", "core.view_own_holiday"]
+    ),
+    name="dispatch",
+)
+class UserHolidayView(View): ...
+```
+
+`UserHolidayListView.get_queryset` was also fixed: holders of either `view_holiday` **or** `view_own_holiday` now receive the same filtered queryset (user's own holidays plus all-users holidays), instead of the previous branch that silently excluded `view_holiday` holders from the filtered set.
+
+The `HolidaySettings` My Settings menu entry declares `perm = ["core.view_holiday", "core.view_own_holiday"]` to keep menu visibility consistent with the view guard.
+
+---
+
+## Form queryset mixin (`mixins.py` — `OwnerQuerysetMixin`)
+
+`OwnerQuerysetMixin` (defined in `horilla.contrib.core.mixins`) restricts FK / M2M `User` field choices on any `HorillaModelForm` based on the requesting user's permissions and active company.
+
+### Permission-level queryset
+
+| Condition | Queryset |
+|-----------|----------|
+| Superuser **or** holds `<app>.change_<model>` / `add_<model>` | All active users |
+| Holds `<app>.change_own_<model>` / `add_own_<model>` | Requesting user + recursive subordinates (via `role.subroles`) |
+| No matching permission | Requesting user only |
+
+### Company scoping (added)
+
+After the permission-level queryset is built, `OwnerQuerysetMixin` applies a company filter in this priority order:
+
+1. **Edited object's company** — when `instance.pk` exists and the object has a `company` field.
+2. **`request.active_company`** — set by `ActiveCompanyMiddleware`.
+3. **`request.user.company`** — fallback to the user's own company.
+
+If a company is resolved, `allowed_users = allowed_users.filter(company=company)` is applied, ensuring user-choice dropdowns never cross company boundaries regardless of the user's permission level.
+
+Non-User relation fields whose related model has a `company` field are also filtered by the same resolved company.
 
 ---
 

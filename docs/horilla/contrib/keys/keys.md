@@ -59,7 +59,36 @@ For uniqueness rules and conflict handling, see [default_shortcut_registration.m
 
 ## Menu (`menu.py`)
 
-Registers **My Settings** or **Settings** entry for the shortcut editor (`short-key-view` path). Exact HTMX attributes live in `menu.py`.
+`ShortKeySettings` is registered with `@my_settings_menu.register`:
+
+| Attribute | Value |
+|-----------|-------|
+| `title` | `_("Short Keys")` |
+| `url` | `reverse_lazy("keys:short_key_view")` |
+| `active_urls` | `["keys:short_key_view"]` |
+| `order` | `6` |
+| `perm` | `["keys.view_shortcutkey", "keys.view_own_shortcutkey"]` |
+
+The `perm` attribute uses **any-of** semantics (`has_any_perms`): the menu entry is visible when the user holds **either** `view_shortcutkey` **or** `view_own_shortcutkey`. Users without either permission do not see the entry in the My Settings sidebar.
+
+---
+
+## View permissions (`views.py`)
+
+`ShortKeyView` is protected at the dispatch level:
+
+```python
+@method_decorator(
+    permission_required_or_denied(
+        ["keys.view_shortcutkey", "keys.view_own_shortcutkey"]
+    ),
+    name="dispatch",
+)
+class ShortKeyView(View):
+    ...
+```
+
+Any request from a user who lacks both `view_shortcutkey` and `view_own_shortcutkey` is denied (HTTP 403) before the view body runs. This mirrors the menu-level `perm` filter so the two layers stay consistent.
 
 ---
 

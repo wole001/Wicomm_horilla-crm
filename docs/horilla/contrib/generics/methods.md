@@ -30,7 +30,13 @@ This avoids accidental late-binding confusion when generating dynamic classes.
 - `OwnerQuerysetMixin`
 - `HorillaModelForm`
 ### `OwnerQuerysetMixin` role
-Helps relation fields (especially owner/user-related choices) use permission-aware querysets.
+Filters User-related FK/M2M fields by the current user's permission level and role hierarchy:
+
+- **Superuser / `change`/`add` perm** — full `User.objects.all()` queryset.
+- **`change_own`/`add_own` perm** — current user + recursive subordinates (via `role.subroles`).
+- **No matching perm** — only the requesting user.
+
+Additionally, the queryset is scoped to the **active company**: when a company is resolved (from the edited object, the request's `active_company`, or `request.user.company`), `allowed_users` is filtered to that company only, preventing cross-company user choices in form dropdowns.
 ### `HorillaModelForm` role
 Provides Horilla form conventions/behaviors and base model form integration.
 ---

@@ -253,6 +253,12 @@ All four views extend **`HorillaSingleFormView`** with **`ActivityOwnerPermissio
 
 ---
 
+## UI details — call sub-tab styling (`activity_tab.html`)
+
+The **Pending Calls** and **Completed Calls** sub-tab buttons inside the activity tab include the `cursor-pointer` CSS class. This ensures the browser renders a pointer cursor on hover, giving users a consistent clickable affordance on both sub-tabs without requiring any JavaScript.
+
+---
+
 ## Related documentation
 
 - Core models and `HorillaContentType`: [../core/models.md](../core/models.md)

@@ -127,9 +127,10 @@ Filtering is applied in two stages before an item is included:
 - If `condition` is absent (defaults to `True`), the item always passes this stage.
 
 **Stage 2 — Permission check:**
-- If `permissions` is non-empty and a `request` is provided, `request.user.has_perms(permissions)` must return `True`.
+- If `perm` is non-empty and a `request` is provided, `request.user.has_any_perms(perm)` must return `True` — the user needs **at least one** of the listed permissions (any-of semantics).
+- A plain string is accepted and treated as a single-item list.
 - Unauthenticated users always fail the permission check.
-- Items with no `permissions` attribute skip this stage entirely.
+- Items with no `perm` attribute (or `perm = None`) skip this stage entirely.
 
 Items that pass both stages are collected and sorted by `order` using the same three-tier key as `main_section_menu`.
 
@@ -309,7 +310,7 @@ This executes the `@my_settings_menu.register` decorator, appending `ShortKeySet
 | `icon` | `str` or `None` | `None` | Static path to an optional icon |
 | `order` | `int` or `None` | `100` | Controls sidebar order (see sorting rules) |
 | `attrs` | `dict` | `{}` | Extra HTML attributes spread onto the `<a>` element |
-| `permissions` | `list[str]` | `[]` | Django permission strings — item hidden if user lacks any |
+| `perm` | `str` or `list[str]` | `None` | Django permission string(s) — item hidden unless user holds **at least one** (`has_any_perms`). `None` skips the check entirely. |
 | `condition` | `bool` or `callable` | `True` | Static flag or `def condition(request) -> bool` |
 
 ### `attrs` keys (common HTMX pattern)
@@ -349,24 +350,24 @@ If `condition` is callable and `request` is `None` (e.g. called outside a reques
 ### Permission filter
 
 ```python
-# Single permission
-permissions = ["horilla_keys.view_shortkey"]
+# Single permission (string form)
+perm = "keys.view_shortcutkey"
 
-# Multiple — user must hold ALL of them
-permissions = ["app.view_model", "app.change_model"]
+# Multiple — user needs ANY ONE of these (any-of semantics)
+perm = ["keys.view_shortcutkey", "keys.view_own_shortcutkey"]
 ```
 
-If `permissions` is an empty list (the default), this check is skipped and the item is always shown to authenticated users who passed the condition check.
+`get_my_settings_menu` calls `request.user.has_any_perms(perm)`, so the item is shown when the user holds **at least one** listed permission. If `perm` is absent or `None`, this check is skipped and the item is always shown to authenticated users who passed the condition check.
 
 ### Combined filtering table
 
-| `condition` | `permissions` | Authenticated | Result |
-|-------------|--------------|---------------|--------|
-| `True` / omitted | `[]` | Any | ✅ Included |
-| `True` / omitted | `["app.perm"]` | ✅ Has perm | ✅ Included |
-| `True` / omitted | `["app.perm"]` | ❌ Missing perm | ❌ Excluded |
+| `condition` | `perm` | Authenticated | Result |
+|-------------|--------|---------------|--------|
+| `True` / omitted | `None` / omitted | Any | ✅ Included |
+| `True` / omitted | `["app.perm"]` | ✅ Has any perm | ✅ Included |
+| `True` / omitted | `["app.perm"]` | ❌ Missing all | ❌ Excluded |
 | `False` | Any | Any | ❌ Excluded |
-| `callable` → `True` | `[]` | Any | ✅ Included |
+| `callable` → `True` | `None` / omitted | Any | ✅ Included |
 | `callable` → `False` | Any | Any | ❌ Excluded |
 | Any | Any | ❌ Unauthenticated | ❌ Excluded |
 
@@ -381,7 +382,7 @@ If `permissions` is an empty list (the default), this check is skipped and the i
 | Bare strings for `title` | Use `_("Title")` / `gettext_lazy` so labels are translatable |
 | Omitting `active_urls` | Always list the URL names used by the entry so the active state highlights correctly |
 | Leaving `order` at default `100` for all items | Set explicit values to control relative ordering across apps |
-| Checking permissions inside the view instead of here | Declare `permissions` on the class — keeps filtering in one place |
+| Checking permissions inside the view instead of here | Declare `perm` on the class — keeps filtering in one place |
 
 ---
 
@@ -400,7 +401,7 @@ If `permissions` is an empty list (the default), this check is skipped and the i
 | Feature | Without `my_settings_menu` | With `my_settings_menu` |
 |---------|---------------------------|--------------------------|
 | Entry definition | Edit core settings template | Define class in app's `menu.py` |
-| Permission filtering | Manual `{% if perms... %}` in templates | Declarative `permissions` list on class |
+| Permission filtering | Manual `{% if perms... %}` in templates | Declarative `perm` list on class (`has_any_perms`, any-of) |
 | Conditional visibility | Ad-hoc template logic | Declarative `condition` (static or callable) |
 | Sidebar ordering | Manual HTML position | Declarative `order` integer |
 | HTMX attributes | Hardcoded in HTML | Declared in `attrs` dict on class |
